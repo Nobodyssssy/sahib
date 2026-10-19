@@ -3,9 +3,11 @@
 window._homeTab = window._homeTab || 0;   /* 0 = today card, 1 = daily cycle */
 
 /* Home dashboard:
-   Today card (Hijri + Gregorian date, next prayer, event)
-   Quote of the day
-   Feature cards (Adkar, Prayer, Hijri, Names, Library) */
+   Hero (Hijri + Gregorian date, location, event)
+   Live next-prayer widget
+   Feature cards (Adkar, Prayer, Hijri, Names, Library, Tasbih)
+   Daily prayer cycle
+   Quote of the day + privacy note */
 
 async function renderHome(){
   const host = $('home-body');
@@ -15,19 +17,159 @@ async function renderHome(){
     const saved = await store.getMeta('quoteLang');
     _quoteLang = saved === 'en' ? 'en' : 'ar';
   }
+  if(typeof _loadCycleLang === 'function'){
+    try{ await _loadCycleLang(); }catch(err){ /* defaults are fine */ }
+  }
 
-  const todayHTML = await renderTodayCardHTML();
-  const quoteHTML = renderHomeQuoteHTML();
-  const featuresHTML = renderHomeFeaturesHTML();
+  const date = new Date();
+  const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
+  const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
+  const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
+  const monthEn = date.toLocaleDateString('en-US', { month: 'long' });
+  const greeting = greetingForNow(date);
+
+  const hijriLine = hijri
+    ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year} هـ`
+    : '';
+  const gregorianLine = `${weekdayEn} ${date.getDate()} ${monthEn} ${date.getFullYear()}`;
+
+  let location = null;
+  let todayData = null;
+  let nextDay = null;
+  let cycleHTML = '';
+
+  try{
+    if(typeof getToday === 'function'){
+      const result = await getToday();
+      if(result){
+        location = result.location;
+        todayData = result.today;
+      }
+    }
+    if(todayData && typeof getPrayerDay === 'function'){
+      const tomorrow = new Date(date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(12, 0, 0, 0);
+      try{ nextDay = await getPrayerDay(tomorrow); }catch(err){ /* optional */ }
+    }
+    if(todayData && nextDay &&
+       typeof _computeDailyCycle === 'function' &&
+       typeof _renderDailyCycleHTML === 'function'){
+      const cycle = _computeDailyCycle(todayData, nextDay);
+      if(cycle){
+        window._homeCycleData = { today: todayData, nextDay };
+        cycleHTML = _renderDailyCycleHTML(cycle, todayData, nextDay);
+      }
+    }
+  }catch(err){
+    location = null;
+  }
+
+  let eventChip = '';
+  try{
+    if(typeof getTodaysEvents === 'function'){
+      const events = getTodaysEvents();
+      if(events && events.length){
+        const ev = events[0];
+        eventChip = `<button type="button" class="home-chip home-event-chip" onclick="openHijriEvent('${ev.id}')">
+          ${icon(EVENT_ICONS[ev.type] || 'calendar', 14)} ${esc(ev.nameAr)}
+        </button>`;
+      }
+    }
+  }catch(err){ eventChip = ''; }
+
+  const adhkarCount = (typeof data !== 'undefined' && Array.isArray(data)) ? data.length : 0;
+  const favCount = (typeof favs !== 'undefined' && Array.isArray(favs)) ? favs.length : 0;
+  const bookCount = (typeof BOOKS !== 'undefined' && Array.isArray(BOOKS)) ? BOOKS.length : 0;
+
+  const locationChip = location && location.lat != null
+    ? `<button type="button" class="home-chip" onclick="openLocationPicker()">
+        ${icon('map-pin', 14)} ${esc(location.label || `${Number(location.lat).toFixed(2)}, ${Number(location.lng).toFixed(2)}`)}
+      </button>`
+    : `<button type="button" class="home-chip" onclick="openLocationPicker()">
+        ${icon('map-pin', 14)} Set location
+      </button>`;
 
   host.innerHTML = `
-    ${todayHTML}
-    ${quoteHTML}
-    ${featuresHTML}
+    <div class="home-container">
+      <div class="home-hero">
+        <section class="home-hero-card">
+          <div class="home-hero-copy">
+            <div class="home-greeting">${greeting}</div>
+            <div class="home-date-ar" id="home-today-date-ar">${hijriLine || gregorianLine}</div>
+            <div class="home-date-en" id="home-today-date-en">${gregorianLine}</div>
+          </div>
+          <div class="home-hero-stats">
+            <div class="home-stat">
+              <span class="home-stat-icon">${icon('book-open', 16)}</span>
+              <div class="home-stat-copy">
+                <div class="home-stat-num">${adhkarCount}</div>
+                <div class="home-stat-label">Adhkar</div>
+              </div>
+            </div>
+            <div class="home-stat">
+              <span class="home-stat-icon">${icon('star', 16)}</span>
+              <div class="home-stat-copy">
+                <div class="home-stat-num">${favCount}</div>
+                <div class="home-stat-label">Favorites</div>
+              </div>
+            </div>
+            <div class="home-stat">
+              <span class="home-stat-icon">${icon('library', 16)}</span>
+              <div class="home-stat-copy">
+                <div class="home-stat-num">${bookCount}</div>
+                <div class="home-stat-label">Library items</div>
+              </div>
+            </div>
+          </div>
+          <div class="home-hero-meta">
+            ${locationChip}
+            ${eventChip}
+            <button type="button" class="home-chip" onclick="openSettings('appearance')">
+              ${icon('sliders', 14)} Appearance
+            </button>
+          </div>
+        </section>
+
+        <div id="home-prayer-widget" class="home-prayer-widget-host" aria-live="polite"></div>
+      </div>
+
+      <div class="home-dashboard">
+        <div class="home-main-col">
+          <section>
+            <div class="home-section-head">
+              <div class="home-section-title">Explore Sahib</div>
+              <button type="button" class="home-section-link" onclick="focusGlobalSearch()">Search all adhkar</button>
+            </div>
+            ${renderHomeFeaturesHTML()}
+          </section>
+        </div>
+
+        <aside class="home-side-col">
+          ${renderHomeQuoteHTML()}
+          <div class="surface-card home-privacy-card">
+            <div class="home-privacy-icon">${icon('check-circle', 20)}</div>
+            <div>
+              <div class="home-privacy-title">Your data stays on this device</div>
+              <div class="home-privacy-text">No account, no analytics, no cloud sync. Adhkar, favorites, counters and prayer settings live in your browser's IndexedDB.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      ${cycleHTML ? `
+        <section class="home-cycle-section home-cycle-wide">
+          <div class="home-section-head">
+            <div class="home-section-title">Daily prayer cycle</div>
+            <button type="button" class="home-section-link" onclick="openPrayerView()">Prayer times</button>
+          </div>
+          ${cycleHTML}
+        </section>` : ''}
+    </div>
   `;
 
-  if(typeof _attachHomeTabsSwipe === 'function'){
-    setTimeout(_attachHomeTabsSwipe, 0);
+  if(typeof PrayerWidget !== 'undefined'){
+    PrayerWidget.mount('home-prayer-widget', { variant: 'hero', showTimes: true });
   }
 
   if(typeof injectHeaderIcons === 'function'){
@@ -35,137 +177,51 @@ async function renderHome(){
   }
 }
 
+function greetingForNow(date){
+  const h = date.getHours();
+  if(h < 5)  return 'Peaceful night · السلام عليكم';
+  if(h < 12) return 'Good morning · صباح الخير';
+  if(h < 17) return 'Good afternoon · طاب يومك';
+  if(h < 20) return 'Good evening · مساء الخير';
+  return 'Peaceful evening · مساء الخير';
+}
+
+/* Kept for older callers: today card only. The new dashboard renders the
+   hero directly, but this helper remains useful for other modules. */
 async function renderTodayCardHTML(){
   const date = new Date();
   const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
   const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
   const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
-  const monthEn = date.toLocaleDateString('en-US', { month: 'short' });
-
-  let hijriLine = '';
-  if(hijri){
-    hijriLine = `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year}`;
-  }
-
-  const gregorianLine = `${weekdayEn} ${date.getDate()} ${monthEn} ${date.getFullYear()}`;
 
   let prayerLine = '';
-  let todayData = null;
-  let location = null;
-  let nextDay = null;
-
   try{
-    if(typeof getToday === 'function'){
-      const result = await getToday();
-      if(result && result.today){
-        todayData = result.today;
-        location = result.location;
-
-        const next = findNextPrayer(result.today.timings);
-        if(next){
-          const timeStr = next.time;
-          const countdown = formatCountdown(next.minutesLeft);
-          prayerLine = `
-            <div class="home-today-prayer" onclick="openPrayerView()" style="cursor:pointer">
-              <span class="home-prayer-icon">${icon('mosque', 16)}</span>
-              <span class="home-prayer-label">${next.name}${next.tomorrow ? ' (tomorrow)' : ''}</span>
-              <span class="home-prayer-time">${timeStr}</span>
-              <span class="home-prayer-countdown">in ${countdown}</span>
-            </div>
-          `;
-        }
-
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const key = monthKey(location.lat, location.lng, tomorrow.getFullYear(), tomorrow.getMonth() + 1);
-        const cached = await store.getMeta(key);
-        if(cached && cached.data && typeof _findDayInMonth === 'function'){
-          nextDay = _findDayInMonth(cached.data, tomorrow);
-        }
-      }
+    const result = await getToday();
+    if(result && result.today){
+      const next = findNextPrayer(result.today.timings);
+      prayerLine = `
+        <div class="home-today-prayer" onclick="openPrayerView()">
+          <span class="home-prayer-icon">${icon('mosque', 16)}</span>
+          <span class="home-prayer-label">${next.name}${next.tomorrow ? ' (tomorrow)' : ''}</span>
+          <span class="home-prayer-time">${next.time}</span>
+          <span class="home-prayer-countdown">in ${formatCountdown(next.minutesLeft)}</span>
+        </div>`;
     }
   }catch(err){
     prayerLine = `
-      <div class="home-today-prayer" onclick="openLocationPicker()" style="cursor:pointer">
+      <div class="home-today-prayer" onclick="openLocationPicker()">
         <span class="home-prayer-icon">${icon('map-pin', 16)}</span>
         <span class="home-prayer-label">Set your location</span>
         <span class="home-prayer-countdown">for prayer times</span>
-      </div>
-    `;
+      </div>`;
   }
 
-  let eventLine = '';
-  try{
-    if(typeof getTodaysEvents === 'function' && typeof getTodayHijri === 'function'){
-      const events = getTodaysEvents();
-      if(events && events.length){
-        const ev = events[0];
-        eventLine = `
-          <div class="home-today-event" onclick="openHijriEvent('${ev.id}')">
-            <span class="home-event-icon">${icon(EVENT_ICONS[ev.type] || 'calendar', 14)}</span>
-            <span class="home-event-name">${ev.nameAr}</span>
-            <span class="home-event-arrow">${icon('chevron-left', 14)}</span>
-          </div>
-        `;
-      }
-    }
-  }catch(err){
-    eventLine = '';
-  }
-
-  const todayTabHTML = `
-    <div class="home-today-card">
-      <div class="home-today-date-ar" id="home-today-date-ar">${hijriLine}</div>
-      <div class="home-today-date-en" id="home-today-date-en">${gregorianLine}</div>
-      ${prayerLine}
-      ${eventLine}
-    </div>
-  `;
-
-  let cycleTabHTML = '';
-  if(
-    todayData && nextDay &&
-    typeof _computeDailyCycle === 'function' &&
-    typeof _renderDailyCycleHTML === 'function'
-  ){
-    try{
-      const cycle = _computeDailyCycle(todayData, nextDay);
-      if(cycle){
-        window._homeCycleData = { today: todayData, nextDay: nextDay };
-        cycleTabHTML = _renderDailyCycleHTML(cycle, todayData, nextDay);
-      }
-    }catch(err){
-      console.warn('[home] daily cycle render failed', err);
-    }
-  }
-
-  if(!cycleTabHTML){
-    return todayTabHTML;
-  }
-
-  const tab = window._homeTab || 0;
   return `
-    <div class="home-tabs" id="home-tabs" data-tab="${tab}">
-      <div class="home-tabs-header">
-        <div class="home-tabs-dots">
-          <span class="home-tab-dot ${tab === 0 ? 'on' : ''}" onclick="setHomeTab(0)"></span>
-          <span class="home-tab-dot ${tab === 1 ? 'on' : ''}" onclick="setHomeTab(1)"></span>
-        </div>
-        <div class="home-tabs-arrows">
-          <button class="home-tab-arrow" onclick="setHomeTab(0)" ${tab === 0 ? 'disabled' : ''}>${icon('chevron-right', 16)}</button>
-          <button class="home-tab-arrow" onclick="setHomeTab(1)" ${tab === 1 ? 'disabled' : ''}>${icon('chevron-left', 16)}</button>
-        </div>
-      </div>
-      <div class="home-tabs-body">
-        <div class="home-tab home-tab-today" data-index="0">
-          ${todayTabHTML}
-        </div>
-        <div class="home-tab home-tab-cycle" data-index="1">
-          ${cycleTabHTML}
-        </div>
-      </div>
-    </div>
-  `;
+    <div class="home-today-card">
+      <div class="home-today-date-ar">${hijri ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year}` : ''}</div>
+      <div class="home-today-date-en">${weekdayEn} ${date.getDate()} ${date.toLocaleDateString('en-US', { month: 'short' })} ${date.getFullYear()}</div>
+      ${prayerLine}
+    </div>`;
 }
 
 function setHomeTab(idx){
@@ -264,23 +320,26 @@ function toggleHomeQuote(event){
 
 function renderHomeFeaturesHTML(){
   const features = [
-    { id:'adkar',  icon:'book-open',  color:'#f5a623', labelAr:'الأذكار',     labelEn:'Adkar',           subAr:'حصن المسلم',        subEn:'Fortress of the Muslim', action:'goToAdkarCategories' },
-    { id:'prayer', icon:'mosque',     color:'#4caf89', labelAr:'الصلاة',      labelEn:'Prayer times',    subAr:'مواقيت الصلاة',      subEn:'Daily times',            action:'openPrayerView' },
-    { id:'hijri',  icon:'calendar',   color:'#8b4cc9', labelAr:'التقويم',     labelEn:'Hijri calendar',  subAr:'الأحداث الإسلامية', subEn:'Islamic events',         action:'openHijriView' },
-    { id:'asma',   icon:'sparkles',   color:'#c9604c', labelAr:'أسماء الله',   labelEn:'99 Names of Allah',subAr:'الأسماء الحسنى',    subEn:'Asma al-Husna',          action:'openAsmaView' },
-    { id:'books',  icon:'library',    color:'#4c7fc9', labelAr:'المكتبة',     labelEn:'Library',         subAr:'الكتب الإسلامية',   subEn:'Islamic books',          action:'openBooksView' },
-    { id:'tasbih', icon:'beads',      color:'#fab387', labelAr:'التسبيح',     labelEn:'Tasbih',          subAr:'مسبحة إلكترونية',   subEn:'Digital counter',        action:'openTasbihView' },
+    { id:'adkar',  icon:'book-open', labelAr:'الأذكار',      labelEn:'Adkar',            subAr:'حصن المسلم',        action:'goToAdkarCategories' },
+    { id:'prayer', icon:'mosque',    labelAr:'الصلاة',       labelEn:'Prayer times',     subAr:'مواقيت الصلاة',     action:'openPrayerView' },
+    { id:'hijri',  icon:'calendar',  labelAr:'التقويم',      labelEn:'Hijri calendar',   subAr:'الأحداث الإسلامية', action:'openHijriView' },
+    { id:'asma',   icon:'sparkles',  labelAr:'أسماء الله',   labelEn:'99 Names',         subAr:'الأسماء الحسنى',    action:'openAsmaView' },
+    { id:'books',  icon:'library',   labelAr:'المكتبة',      labelEn:'Library',          subAr:'الكتب الإسلامية',   action:'openBooksView' },
+    { id:'tasbih', icon:'beads',     labelAr:'التسبيح',      labelEn:'Tasbih',           subAr:'مسبحة إلكترونية',   action:'openTasbihView' }
   ];
 
   return `
     <div class="home-features-grid">
       ${features.map(f => `
-        <div class="home-feature-card" style="--cc:${f.color}" onclick="${f.action}()">
-          <div class="home-feature-icon">${icon(f.icon, 40)}</div>
-          <div class="home-feature-label-ar">${f.labelAr}</div>
-          <div class="home-feature-label-en">${f.labelEn}</div>
-          <div class="home-feature-sub">${f.subAr}</div>
-        </div>
+        <button type="button" class="home-feature-card feature-${f.id}" onclick="${f.action}()">
+          <span class="home-feature-icon">${icon(f.icon, 23)}</span>
+          <span class="home-feature-text">
+            <span class="home-feature-label-ar">${f.labelAr}</span>
+            <span class="home-feature-label-en">${f.labelEn}</span>
+            <span class="home-feature-sub">${f.subAr}</span>
+          </span>
+          <span class="home-feature-arrow">${icon('chevron-left', 15)}</span>
+        </button>
       `).join('')}
     </div>
   `;

@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.10.66';
+const VERSION = 'v2.10.68';
 const CACHE = `sahib-${VERSION}`;
 
 const APP_SHELL = [
@@ -17,6 +17,7 @@ const APP_SHELL = [
 
   './css/base.css',
   './css/layout.css',
+  './css/tokens.css',
   './css/views/home.css',
   './css/views/adkar.css',
   './css/views/prayer.css',
@@ -26,6 +27,7 @@ const APP_SHELL = [
   './css/views/books.css',
   './css/views/tasbih.css',
   './css/components.css',
+  './css/design.css',
   './css/responsive.css',
   
   './assets/icons/sprite.svg',
@@ -35,6 +37,10 @@ const APP_SHELL = [
   './assets/fonts/Tajawal-Regular.woff2',
   './assets/fonts/Tajawal-Medium.woff2',
   './assets/fonts/Tajawal-Bold.woff2',
+  './assets/fonts/Cairo-Variable.woff2',
+  './assets/fonts/Cairo-Latin.woff2',
+  './assets/fonts/Cairo-LatinExt.woff2',
+  './assets/fonts/Inter-Variable.woff2',
 
   './js/config.js',
   './js/utils.js',
@@ -44,12 +50,15 @@ const APP_SHELL = [
   './js/vendor/fuse.min.js',
   './js/db.js',
   './js/store.js',
+  './js/theme.js',
   './js/data-defaults.js',
   './js/hisn-data.js',
   './js/adhkar-taxonomy.js',
   './js/state.js',
   './js/search.js',
+  './js/vendor/adhan.js',
   './js/prayer.js',
+  './js/prayer-widget.js',
   './js/qibla.js',
   './js/location.js',
   './js/quotes.js',
@@ -95,6 +104,7 @@ const APP_SHELL = [
   './js/views/tasbih.js',
   './js/views/reader.js',
   './js/io.js',
+  './js/settings.js',
   './js/app.js',
 
   './icons/icon.svg',
@@ -250,7 +260,26 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-/* â”€â”€ Allow the page to trigger skipWaiting â”€â”€ */
+/* Allow the page to trigger skipWaiting */
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
+});
+
+/* Open or focus Sahib when a prayer reminder is tapped. */
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || './index.html';
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of windows) {
+      if ('focus' in client) {
+        await client.focus();
+        if ('navigate' in client) {
+          try { await client.navigate(target); } catch (err) { /* cross-origin or unavailable */ }
+        }
+        return;
+      }
+    }
+    if (self.clients.openWindow) await self.clients.openWindow(target);
+  })());
 });

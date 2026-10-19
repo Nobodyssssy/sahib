@@ -101,6 +101,8 @@ function showView(id){
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   $(id).classList.add('active');
 
+  if(typeof updateShellNav === 'function') updateShellNav(id);
+
   /* Search bar visibility — only on Adkar and Library views */
   const searchBar = document.getElementById('search-bar');
   if(searchBar){
@@ -158,14 +160,14 @@ function ensureCatsSettingsButton(){
 }
 
 function toggleTheme(){
+  if(typeof SAHIB_THEME !== 'undefined' && SAHIB_THEME.toggleMode){
+    SAHIB_THEME.toggleMode();
+    return;
+  }
   isLight = !isLight;
   document.body.classList.toggle('light', isLight);
-  /* Update the header toggle icon via helper */
   if(typeof updateThemeToggleIcon === 'function') updateThemeToggleIcon();
-  /* Sync the theme-color meta tag */
   if(typeof updateThemeColorMeta === 'function') updateThemeColorMeta();
-  /* Persist preference */
   store.setMeta('theme', isLight ? 'light' : 'dark');
-  /* Update menu if it's still open */
   if(typeof updateMenuState === 'function') updateMenuState();
 }

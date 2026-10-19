@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en" dir="rtl" data-theme="catppuccin" data-mode="dark" data-accent="gold" data-font="tajawal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d0f14">
+<meta name="theme-color" content="#1e1e2e">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="صاحب">
 <meta name="mobile-web-app-capable" content="yes">
 <title>صاحب · Sahib</title>
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/views/home.css">
@@ -23,6 +24,7 @@
 <link rel="stylesheet" href="css/views/books.css">
 <link rel="stylesheet" href="css/views/tasbih.css">
 <link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/design.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -30,10 +32,73 @@
 <!-- Icon sprite — loaded once, referenced everywhere via <use> -->
 <div id="svg-sprite-mount" style="display:none" aria-hidden="true"></div>
 
-  <!-- Left group: menu, favorites, add -->
-<header>
+  <div class="app-shell">
+  <!-- DESKTOP SIDEBAR -->
+  <aside class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
+    <div class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
+      <div class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></div>
+      <div class="sidebar-brand-text">
+        <div class="sidebar-brand-name">صاحب</div>
+        <div class="sidebar-brand-sub">Sahib Companion</div>
+      </div>
+    </div>
+
+    <nav class="side-nav" id="side-nav" aria-label="Sections">
+      <div class="side-nav-section" data-nav-section="main">Navigate</div>
+      <button type="button" class="side-nav-item" data-nav="home" onclick="goHomeView()">
+        <span class="side-icon" data-icon="home"></span>
+        <span class="side-text"><span class="side-label">Home</span><span class="side-label-ar">الرئيسية</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="cats" onclick="goToAdkarCategories()">
+        <span class="side-icon" data-icon="book-open"></span>
+        <span class="side-text"><span class="side-label">Adkar</span><span class="side-label-ar">الأذكار</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="prayer" onclick="openPrayerView()">
+        <span class="side-icon" data-icon="mosque"></span>
+        <span class="side-text"><span class="side-label">Prayer</span><span class="side-label-ar">الصلاة</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="hijri" onclick="openHijriView()">
+        <span class="side-icon" data-icon="calendar"></span>
+        <span class="side-text"><span class="side-label">Hijri</span><span class="side-label-ar">التقويم</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="asma" onclick="openAsmaView()">
+        <span class="side-icon" data-icon="sparkles"></span>
+        <span class="side-text"><span class="side-label">99 Names</span><span class="side-label-ar">الأسماء</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="books" onclick="openBooksView()">
+        <span class="side-icon" data-icon="library"></span>
+        <span class="side-text"><span class="side-label">Library</span><span class="side-label-ar">المكتبة</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="tasbih" onclick="openTasbihView()">
+        <span class="side-icon" data-icon="beads"></span>
+        <span class="side-text"><span class="side-label">Tasbih</span><span class="side-label-ar">التسبيح</span></span>
+      </button>
+
+      <div class="side-nav-section" data-nav-section="system">System</div>
+      <button type="button" class="side-nav-item" data-nav="search" onclick="goToAdkarCategories(); focusGlobalSearch()">
+        <span class="side-icon" data-icon="search"></span>
+        <span class="side-text"><span class="side-label">Search</span><span class="side-label-ar">بحث</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="settings" onclick="openSettings('appearance')">
+        <span class="side-icon" data-icon="settings"></span>
+        <span class="side-text"><span class="side-label">Settings</span><span class="side-label-ar">الإعدادات</span></span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-status" id="sidebar-status" title="Offline-first PWA">
+        <span class="sidebar-status-dot" id="sidebar-status-dot"></span>
+        <span id="sidebar-status-text">Local-first · offline ready</span>
+      </div>
+      <div class="sidebar-footnote">No accounts · no tracking</div>
+    </div>
+  </aside>
+
+  <div class="app-main">
+  <!-- TOP BAR -->
+<header class="topbar">
   <div class="header-left">
-    <button class="icon-btn" onclick="toggleMainMenu(event)" id="btn-menu" title="Menu" aria-label="Menu"></button>
+    <button class="icon-btn topbar-menu-btn" onclick="toggleMainMenu(event)" id="btn-menu" title="Menu" aria-label="Menu"></button>
     <div class="favs-anchor">
       <button class="icon-btn" onclick="toggleFavsMenu(event)" id="btn-favs" title="Favorites"></button>
       <div class="favs-menu" id="favs-menu" role="menu" aria-hidden="true">
@@ -51,10 +116,17 @@
     </div>
     <button class="icon-btn btn-add-icon" onclick="openForm()" title="Add dhikr"></button>
   </div>
+
+  <div class="topbar-center">
+    <div class="topbar-title" id="topbar-title">Home</div>
+    <div class="topbar-sub" id="topbar-sub">Your daily companion</div>
+  </div>
+
   <div class="header-right">
-    <div class="logo" onclick="goHomeView()" title="Home">
+    <div class="logo topbar-logo" onclick="goHomeView()" title="Home">
       <div class="logo-icon"><img src="icons/icon.svg" alt="صاحب"></div>
     </div>
+    <button class="icon-btn topbar-search-btn" onclick="focusGlobalSearch()" title="Search" aria-label="Search"><span class="btn-icon" data-icon="search"></span></button>
     <button class="icon-btn" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle theme"></button>
   </div>
 </header>
@@ -218,6 +290,9 @@
   </div>
   <div id="tasbih-body"></div>
 </div>
+
+  </div><!-- /app-main -->
+  </div><!-- /app-shell -->
 
 <!-- SESSION OVERLAY -->
 <div class="session-overlay" id="session-overlay">
@@ -411,12 +486,15 @@
 <!-- PDF.js removed — using EmbedPDF (PDFium WASM) via dynamic import in js/reader.js -->
 <script src="js/db.js"></script>
 <script src="js/store.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/data-defaults.js"></script>
 <script src="js/hisn-data.js"></script>
 <script src="js/adhkar-taxonomy.js"></script>
 <script src="js/state.js"></script>
 <script src="js/search.js"></script>
+<script src="js/vendor/adhan.js"></script>
 <script src="js/prayer.js"></script>
+<script src="js/prayer-widget.js"></script>
 <script src="js/qibla.js"></script>
 <script src="js/location.js"></script>
 <script src="js/quotes.js"></script>
@@ -450,41 +528,35 @@
 <script src="js/views/tasbih.js"></script>
 <script src="js/views/reader.js"></script>
 <script src="js/io.js"></script>
+<script src="js/settings.js"></script>
 <script src="js/app.js"></script>
-<div class="ov center" id="ov-settings" onclick="if(event.target === this) closeSettings()">
-  <div class="modal-box">
-    <div class="mh">
-      <h2>Settings</h2>
+<div class="ov center settings-ov" id="ov-settings" onclick="if(event.target === this) closeSettings()">
+  <div class="modal-box settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="mh settings-head">
+      <div class="settings-head-text">
+        <h2 id="settings-title">Settings</h2>
+        <div class="settings-sub">Preferences are stored locally on this device</div>
+      </div>
       <button class="btn-close" onclick="closeSettings()" aria-label="Close"><span class="btn-icon" data-icon="x"></span></button>
     </div>
 
-    <div class="mb">
-      <div class="fg">
-        <div class="fl">Theme</div>
-        <div class="filter-row">
-          <button type="button" class="filter-chip" data-theme-btn="dark">Dark</button>
-          <button type="button" class="filter-chip" data-theme-btn="light">Light</button>
-        </div>
-      </div>
-
-      <div class="fg">
-        <div class="fl">Color variant</div>
-        <div class="filter-row">
-          <button type="button" class="filter-chip" data-accent-btn="gold"><span class="accent-dot dot-gold"></span>Gold</button>
-          <button type="button" class="filter-chip" data-accent-btn="peach"><span class="accent-dot dot-peach"></span>Peach</button>
-          <button type="button" class="filter-chip" data-accent-btn="blue"><span class="accent-dot dot-blue"></span>Blue</button>
-          <button type="button" class="filter-chip" data-accent-btn="green"><span class="accent-dot dot-green"></span>Green</button>
-          <button type="button" class="filter-chip" data-accent-btn="mauve"><span class="accent-dot dot-mauve"></span>Mauve</button>
-        </div>
-      </div>
+    <div class="settings-tabs" id="settings-tabs" role="tablist">
+      <button type="button" class="settings-tab" role="tab" data-settings-tab="appearance" onclick="setSettingsTab('appearance')">Appearance</button>
+      <button type="button" class="settings-tab" role="tab" data-settings-tab="prayer" onclick="setSettingsTab('prayer')">Prayer</button>
+      <button type="button" class="settings-tab" role="tab" data-settings-tab="alerts" onclick="setSettingsTab('alerts')">Alerts</button>
+      <button type="button" class="settings-tab" role="tab" data-settings-tab="data" onclick="setSettingsTab('data')">Data</button>
+      <button type="button" class="settings-tab" role="tab" data-settings-tab="about" onclick="setSettingsTab('about')">About</button>
     </div>
 
-    <div class="mf">
+    <div class="mb settings-body" id="settings-body"></div>
+
+    <div class="mf settings-foot">
+      <button class="btn-cancel" onclick="closeSettings()">Close</button>
       <button class="btn-save" onclick="closeSettings()">Done</button>
     </div>
   </div>
 </div>
-</body>
+
 <script>
   // ── Service worker registration ──
   if ('serviceWorker' in navigator) {
@@ -516,4 +588,5 @@
     if (favs) setTimeout(() => toggleFavsView(), 100);
   });
 </script>
+</body>
 </html>

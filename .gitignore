@@ -65,3 +65,7 @@ tools/embedpdf-build/node_modules/
 tools/embedpdf-build/dist-*/
 tools/embedpdf-build/*.tgz*.pre-v3 
 *.v3bak 
+
+# --- Local IDE / working notes (not shipped) ---
+.vs/
+sahib-context.txt

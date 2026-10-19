@@ -1,8 +1,9 @@
-/* FILE: css/base.css — clean rebuild, all comments verified */
+/* FILE: css/base.css — foundation, fonts, resets and shared primitives.
+   Colour, spacing and type values live in css/tokens.css. */
 
 /* ═══════════════════════════════════════════════════════════
-Self-hosted fonts — Amiri (Arabic) + Tajawal (UI)
-═══════════════════════════════════════════════════════════ */
+   Self-hosted fonts — Amiri (Arabic) + Tajawal (UI)
+   ═══════════════════════════════════════════════════════════ */
 @font-face {
   font-family: 'Amiri';
   font-style: normal;
@@ -38,194 +39,77 @@ Self-hosted fonts — Amiri (Arabic) + Tajawal (UI)
   font-display: swap;
   src: url('../assets/fonts/Tajawal-Bold.woff2') format('woff2');
 }
-
-:root {
-  /* ─── Catppuccin Mocha palette ─── */
-  --ctp-rose:     #f38ba8;
-  --ctp-flamingo: #f2cdcd;
-  --ctp-pink:     #f5c2e7;
-  --ctp-mauve:    #cba6f7;
-  --ctp-red:      #f38ba8;
-  --ctp-maroon:   #eba0ac;
-  --ctp-peach:    #fab387;
-  --ctp-yellow:   #f9e2af;
-  --ctp-green:    #a6e3a1;
-  --ctp-teal:     #94e2d5;
-  --ctp-sky:      #89dceb;
-  --ctp-sapphire: #74c7ec;
-  --ctp-blue:     #89b4fa;
-  --ctp-lavender: #b4befe;
-  --ctp-text:     #cdd6f4;
-  --ctp-subtext1: #bac2de;
-  --ctp-subtext0: #a6adc8;
-  --ctp-overlay2: #9399b2;
-  --ctp-overlay1: #7f849c;
-  --ctp-overlay0: #6c7086;
-  --ctp-surface2: #585b70;
-  --ctp-surface1: #45475a;
-  --ctp-surface0: #313244;
-  --ctp-base:     #1e1e2e;
-  --ctp-mantle:   #181825;
-  --ctp-crust:    #11111b;
-
-  /* ─── Surfaces (Mocha) ─── */
-  --bg:      #181825;
-  --surface: #1e1e2e;
-  --surface2:#313244;
-  --surface3:#45475a;
-  --border:  #585b70;
-
-  /* ─── Accent (default gold — variants below override) ─── */
-  --accent:  #c9a84c;
-  --accent2: #e8c97a;
-  --glow:    rgba(201, 168, 76, .15);
-  --on-accent: #1a1200;
-
-  /* ─── Text ─── */
-  --text:  #cdd6f4;
-  --text2: #bac2de;
-  --text3: #a6adc8;
-
-  /* ─── Semantic ── */
-  --green:  #a6e3a1;
-  --red:    #f38ba8;
-  --blue:   #89b4fa;
-  --orange: #fab387;
-
-  /* ─── Cycle bar ─── */
-  --cycle-night:  #89b4fa;
-  --cycle-day:    #fab387;
-  --cycle-teal:   #94e2d5;
-  --cycle-mauve:  #cba6f7;
-  --cycle-yellow: #f9e2af;
-  --cycle-label:     rgba(255, 255, 255, .85);
-  --cycle-label-dim: rgba(255, 255, 255, .55);
-
-  /* ─── Shape & motion ─── */
-  --sh: 0 8px 32px rgba(0, 0, 0, .4);
-  --tr: .22s cubic-bezier(.4, 0, .2, 1);
-
-  /* ─── Radius ─── */
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   20px;
-  --radius-pill: 9999px;
-  --r:  16px;
-  --rs: 10px;
-
-  /* ─── Type scale ─── */
-  --fs-xs:  11px;
-  --fs-sm:  12px;
-  --fs-md:  14px;
-  --fs-lg:  16px;
-  --fs-xl:  20px;
-  --fs-2xl: 26px;
-  --fs-3xl: 34px;
-
-  /* ─── Spacing ─── */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
+/* Optional UI fonts. Cairo is subset for Arabic + Latin; Inter is Latin. */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/Cairo-Variable.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E,
+                 U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/Cairo-LatinExt.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02FF, U+0304, U+0308, U+0329,
+                 U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+                 U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/Cairo-Latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+                 U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191,
+                 U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/Inter-Variable.woff2') format('woff2');
 }
 
-.light {
-  /* ─── Catppuccin Latte palette ─── */
-  --ctp-rose:     #d20f39;
-  --ctp-flamingo: #dd7878;
-  --ctp-pink:     #ea76cb;
-  --ctp-mauve:    #8839ef;
-  --ctp-red:      #d20f39;
-  --ctp-maroon:   #e64553;
-  --ctp-peach:    #fe640b;
-  --ctp-yellow:   #df8e1d;
-  --ctp-green:    #40a02b;
-  --ctp-teal:     #179299;
-  --ctp-sky:      #04a5e5;
-  --ctp-sapphire: #209fb5;
-  --ctp-blue:     #1e66f5;
-  --ctp-lavender: #7287fd;
-  --ctp-text:     #4c4f69;
-  --ctp-subtext1: #5c5f77;
-  --ctp-subtext0: #6c6f85;
-  --ctp-overlay2: #7c7f93;
-  --ctp-overlay1: #8c8fa1;
-  --ctp-overlay0: #9ca0b0;
-  --ctp-surface2: #acb0be;
-  --ctp-surface1: #bcc0cc;
-  --ctp-surface0: #ccd0da;
-  --ctp-base:     #eff1f5;
-  --ctp-mantle:   #e6e9ef;
-  --ctp-crust:    #dce0e8;
+/* ═══════════════════════════════════════════════════════════
+   Base document
+   ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
 
-  /* ─── Surfaces (Latte) ─── */
-  --bg:      #e6e9ef;
-  --surface: #eff1f5;
-  --surface2:#ccd0da;
-  --surface3:#bcc0cc;
-  --border:  #acb0be;
-
-  /* ─── Accent (default — variants below override) ─── */
-  --accent:  #df8e1d;
-  --accent2: #fe640b;
-  --glow:    rgba(223, 142, 29, .15);
-  --on-accent: #1a1200;
-
-  /* ─── Text ─── */
-  --text:  #4c4f69;
-  --text2: #5c5f77;
-  --text3: #6c6f85;
-
-  /* ─── Semantic ─── */
-  --green:  #40a02b;
-  --red:    #d20f39;
-  --blue:   #1e66f5;
-  --orange: #fe640b;
-
-  /* ─── Cycle bar ─── */
-  --cycle-night:  #1e66f5;
-  --cycle-day:    #fe640b;
-  --cycle-teal:   #179299;
-  --cycle-mauve:  #8839ef;
-  --cycle-yellow: #df8e1d;
-  --cycle-label:     rgba(44, 48, 66, .85);
-  --cycle-label-dim: rgba(44, 48, 66, .60);
-
-  /* ─── Shape & motion ─── */
-  --sh: 0 8px 32px rgba(0, 0, 0, .08);
-}
-
-/* ─── Light mode card lift ─── */
-.light .adkar-card,
-.light .cat-card,
-.light .book-card,
-.light .continue-card,
-.light .home-feature-card,
-.light .home-today-card,
-.light .asma-card,
-.light .hijri-cell,
-.light .quote-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .04), 0 4px 12px rgba(0, 0, 0, .03);
-}
-
-/* ── Mobile baseline ── */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  color-scheme: dark;
+  background: var(--color-background);
 }
+html[data-mode="light"] { color-scheme: light; }
+
 body {
-  font-family: 'Tajawal', sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  background: var(--color-background);
+  color: var(--color-text-primary);
   min-height: 100vh;
   min-height: 100dvh;
-  transition: background var(--tr), color var(--tr);
+  transition: background var(--duration-normal) var(--ease-standard),
+              color var(--duration-normal) var(--ease-standard);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
+
+body.modal-open { overflow: hidden; }
+
 button, input, textarea, select {
   font-family: inherit;
   font-size: 16px;
@@ -235,30 +119,46 @@ button {
   user-select: none;
   touch-action: manipulation;
 }
-header {
-  padding-left: calc(20px + env(safe-area-inset-left));
-  padding-right: calc(20px + env(safe-area-inset-right));
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
-.toast {
-  bottom: calc(28px + env(safe-area-inset-bottom));
+a { color: var(--color-accent); }
+img, svg { max-width: 100%; }
+[hidden] { display: none !important; }
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
-.session-footer {
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border: 3px solid var(--color-background);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+* { scrollbar-width: thin; scrollbar-color: var(--color-border-strong) var(--color-background); }
+
+/* Arabic content keeps its own typographic rhythm everywhere. */
+.ar,
+[dir="rtl"] .ar,
+.arabic {
+  font-family: var(--font-arabic);
+  line-height: var(--line-height-arabic);
+  direction: rtl;
 }
 
 /* ═══════════════════════════════════════════════════════════
-Scrollbars & selection
-═══════════════════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border); }
-* { scrollbar-width: thin; scrollbar-color: var(--surface3) var(--bg); }
-::selection { background: var(--accent); color: var(--bg); }
-
-/* ═══════════════════════════════════════════════════════════
-Icons
-═══════════════════════════════════════════════════════════ */
+   Icons
+   ═══════════════════════════════════════════════════════════ */
 svg[aria-hidden="true"] {
   display: inline-block;
   vertical-align: middle;
@@ -272,121 +172,47 @@ svg[aria-hidden="true"] {
 @keyframes icon-spin { to { transform: rotate(360deg); } }
 
 /* ═══════════════════════════════════════════════════════════
-Accent variants — body[data-accent="gold|peach|blue|green|mauve"]
-═══════════════════════════════════════════════════════════ */
-body[data-accent="gold"] {
-  --accent: #c9a84c;
-  --accent2: #e8c97a;
-  --glow: rgba(201, 168, 76, .16);
-  --on-accent: #1a1200;
-}
-body.light[data-accent="gold"] {
-  --accent: #df8e1d;
-  --accent2: #fe640b;
-  --glow: rgba(223, 142, 29, .16);
-  --on-accent: #1a1200;
-}
-body[data-accent="peach"] {
-  --accent: #fab387;
-  --accent2: #f5bde6;
-  --glow: rgba(250, 179, 135, .16);
-  --on-accent: #1a1200;
-}
-body.light[data-accent="peach"] {
-  --accent: #fe640b;
-  --accent2: #df8e1d;
-  --glow: rgba(254, 100, 11, .16);
-  --on-accent: #1a1200;
-}
-body[data-accent="blue"] {
-  --accent: #89b4fa;
-  --accent2: #89dceb;
-  --glow: rgba(137, 180, 250, .16);
-  --on-accent: #1a1200;
-}
-body.light[data-accent="blue"] {
-  --accent: #1e66f5;
-  --accent2: #04a5e5;
-  --glow: rgba(30, 102, 245, .14);
-  --on-accent: #ffffff;
-}
-body[data-accent="green"] {
-  --accent: #a6e3a1;
-  --accent2: #94e2d5;
-  --glow: rgba(166, 227, 161, .16);
-  --on-accent: #1a1200;
-}
-body.light[data-accent="green"] {
-  --accent: #40a02b;
-  --accent2: #179299;
-  --glow: rgba(64, 160, 43, .14);
-  --on-accent: #ffffff;
-}
-body[data-accent="mauve"] {
-  --accent: #cba6f7;
-  --accent2: #f5bde6;
-  --glow: rgba(203, 166, 247, .16);
-  --on-accent: #1a1200;
-}
-body.light[data-accent="mauve"] {
-  --accent: #8839ef;
-  --accent2: #ea76cb;
-  --glow: rgba(136, 57, 239, .14);
-  --on-accent: #ffffff;
-}
-
-/* Keep text readable on accent-filled buttons */
-body[data-accent] .btn-add,
-body[data-accent] .btn-session,
-body[data-accent] .btn-session-next,
-body[data-accent] .btn-save,
-body[data-accent] .session-tap-btn,
-body[data-accent] .btn-newcat:hover,
-body[data-accent] .cbtn:hover,
-body[data-accent] .cbtn:active,
-body[data-accent] .quote-lang-btn.on,
-body[data-accent] .cycle-lang-btn.on,
-body[data-accent] .forbidden-lang-btn.on,
-body[data-accent] .tasbih-chip.on,
-body[data-accent] .tasbih-tap-btn,
-body[data-accent] .flash-btn.reveal {
-  color: var(--on-accent);
-}
-body[data-accent] .hijri-cell.today .hijri-day-num,
-body[data-accent] .hijri-cell.today .hijri-day-greg {
-  color: var(--on-accent);
-}
-
-/* ═══════════════════════════════════════════════════════════
-Settings modal extras
-═══════════════════════════════════════════════════════════ */
-#ov-settings .filter-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 14px;
-}
+   Settings — accent swatches (all nine accents, theme aware)
+   ═══════════════════════════════════════════════════════════ */
 .accent-dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
+  background: var(--dot-color, var(--color-accent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text-primary) 22%, transparent);
 }
-.dot-gold  { background: #c9a84c; }
-.dot-peach { background: #fab387; }
-.dot-blue  { background: #89b4fa; }
-.dot-green { background: #a6e3a1; }
-.dot-mauve { background: #cba6f7; }
-body.light .dot-gold  { background: #df8e1d; }
-body.light .dot-peach { background: #fe640b; }
-body.light .dot-blue  { background: #1e66f5; }
-body.light .dot-green { background: #40a02b; }
-body.light .dot-mauve { background: #8839ef; }
-#ov-settings .mf { justify-content: center; }
-#ov-settings .btn-save {
-  border-radius: var(--radius-pill);
-  padding: 10px 36px;
-  min-width: 150px;
-  font-size: 14px;
+.accent-dot.dot-gold  { --dot-color: var(--accent-gold, #f9e2af); }
+.accent-dot.dot-peach { --dot-color: var(--accent-peach, #fab387); }
+.accent-dot.dot-red   { --dot-color: var(--accent-red, #f38ba8); }
+.accent-dot.dot-mauve { --dot-color: var(--accent-mauve, #cba6f7); }
+.accent-dot.dot-blue  { --dot-color: var(--accent-blue, #89b4fa); }
+.accent-dot.dot-teal  { --dot-color: var(--accent-teal, #94e2d5); }
+.accent-dot.dot-green { --dot-color: var(--accent-green, #a6e3a1); }
+.accent-dot.dot-pink  { --dot-color: var(--accent-pink, #f5c2e7); }
+.accent-dot.dot-sky   { --dot-color: var(--accent-sky, #89dceb); }
+
+/* Compatibility helpers used by older inline markup. */
+.light .adkar-card,
+.light .cat-card,
+.light .book-card,
+.light .continue-card,
+.light .home-feature-card,
+.light .asma-card,
+.light .hijri-cell,
+.light .quote-card {
+  box-shadow: var(--shadow-sm);
+}
+
+.toast { bottom: calc(28px + env(safe-area-inset-bottom)); }
+.session-footer { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

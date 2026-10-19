@@ -31,12 +31,16 @@ function _formatStamp(ts){
   return `${day}/${mo} ${hh}:${mm}`;
 }
 
+let _prayerTab = 'today';
+
 async function openPrayerView(){
   showView('view-prayer');
+  _prayerTab = 'today';
   renderPrayerLoading();
 
   try{
     const loc = await getLocation();
+    const prefs = await getPrayerPrefs();
     const today = new Date();
     const year  = today.getFullYear();
     const month = today.getMonth() + 1;
@@ -48,6 +52,7 @@ async function openPrayerView(){
 
     _prayerData = {
       location:    loc,
+      prefs,
       cachedAt,
       stale,
       monthData,
@@ -55,6 +60,7 @@ async function openPrayerView(){
       monthMonth:  month,
       selectedDate: today,
       selectedDay: _findDayInMonth(monthData, today),
+      nextDay:     null,
     };
 
     if(!_prayerData.selectedDay){
@@ -65,11 +71,24 @@ async function openPrayerView(){
     await _loadCycleLang();
 
     renderPrayerView();
-    startCountdown();
     _attachPrayerSwipe();
   }catch(err){
     console.error('[prayer-view]', err);
-    renderPrayerError(err.message);
+    renderPrayerError(err);
+  }
+}
+
+function setPrayerTab(tab){
+  _prayerTab = tab === 'month' ? 'month' : 'today';
+  renderPrayerView();
+}
+
+function openPrayerMonthView(){
+  if(document.querySelector('#view-prayer.active')){
+    setPrayerTab('month');
+  } else {
+    _prayerTab = 'month';
+    openPrayerView().then(() => setPrayerTab('month'));
   }
 }
 
@@ -79,11 +98,34 @@ function closePrayerView(){
 }
 
 function _findDayInMonth(monthData, date){
-  const target =
-    String(date.getDate()).padStart(2,'0') + '-' +
+  const target = _dateKeyOf(date);
+  return monthData.find(d => d.date === target) || null;
+}
+
+function _dateKeyOf(date){
+  return String(date.getDate()).padStart(2,'0') + '-' +
     String(date.getMonth()+1).padStart(2,'0') + '-' +
     date.getFullYear();
-  return monthData.find(d => d.date === target) || null;
+}
+
+/* Maghrib-to-Maghrib cycle needs the following day. Mid-month that day is
+   already in the loaded month; on the last day of a month it lives in the
+   next month, so fetch it on demand and re-render once it arrives. */
+async function _prayerEnsureNextDay(nextDate){
+  const key = _dateKeyOf(nextDate);
+  if(!_prayerData || _prayerData.nextDayKey === key) return;
+  _prayerData.nextDayKey = key;
+  const selectedKey = _dateKeyOf(_prayerData.selectedDate);
+  try{
+    const result = await getMonth(nextDate.getFullYear(), nextDate.getMonth() + 1);
+    const day = _findDayInMonth(result.data, nextDate);
+    if(!_prayerData || _dateKeyOf(_prayerData.selectedDate) !== selectedKey) return;
+    _prayerData.nextDay = day || null;
+    if(_prayerTab === 'today') renderPrayerView();
+  }catch(err){
+    _prayerData.nextDayKey = null;
+    console.warn('[prayer-view] next day unavailable', err && err.message);
+  }
 }
 
 function _formatGregorianDate(day){
@@ -853,39 +895,94 @@ function renderPrayerLoading(){
     </div>`;
 }
 
-function renderPrayerError(msg){
-  const noLocation = msg === 'No location set' || !msg;
+function renderPrayerError(errOrMsg){
+  const message = errOrMsg && errOrMsg.message ? errOrMsg.message : String(errOrMsg || '');
+  const code = errOrMsg && errOrMsg.code ? errOrMsg.code : '';
+  const noLocation = code === 'NO_LOCATION' || message === 'No location set' || !message;
+  const noCsv = code === 'NO_CSV' || code === 'NO_CSV_MONTH';
+
+  const title = noLocation ? 'Choose your location' : (noCsv ? 'CSV schedule needed' : 'Could not load prayer times');
+  const text = noLocation
+    ? 'Pick your city manually, or use GPS for the most accurate times.'
+    : noCsv
+      ? message
+      : esc(message);
+
+  const iconName = noLocation ? 'map-pin' : (noCsv ? 'upload' : 'alert');
+  const actions = noLocation
+    ? `<button class="btn-save" onclick="openLocationPicker()">${icon('map-pin', 14)} Pick a city</button>
+       <button class="btn-cancel" onclick="useGPSLocation()">${icon('compass', 14)} Use GPS</button>`
+    : noCsv
+      ? `<button class="btn-save" onclick="openSettings('prayer')">${icon('upload', 14)} Import a schedule</button>
+         <button class="btn-cancel" onclick="onSettingProviderChange('aladhan')">${icon('layers', 14)} Use AlAdhan</button>`
+      : `<button class="btn-save" onclick="openPrayerView()">${icon('rotate-ccw', 14)} Try again</button>
+         <button class="btn-cancel" onclick="openSettings('prayer')">${icon('settings', 14)} Prayer settings</button>`;
+
   $('prayer-body').innerHTML = `
-    <div class="prayer-error">
-      <div style="color:var(--accent);margin-bottom:14px">${icon('mosque', 40)}</div>
-      <div style="font-weight:700;margin-bottom:6px">${
-        noLocation ? 'Choose your location' : 'Could not load prayer times'
-      }</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:18px;max-width:340px;margin-left:auto;margin-right:auto">${
-        noLocation
-          ? 'Pick your city manually, or use GPS for the most accurate times.'
-          : esc(msg)
-      }</div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn-save" onclick="openLocationPicker()">${icon('map-pin', 14)} Pick a city</button>
-        <button class="btn-cancel" onclick="useGPSLocation()">${icon('compass', 14)} Use GPS</button>
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:20px;max-width:340px;margin-left:auto;margin-right:auto;line-height:1.6">
+    <div class="prayer-error surface-card">
+      <div class="prayer-error-icon">${icon(iconName, 40)}</div>
+      <div class="prayer-error-title">${title}</div>
+      <div class="prayer-error-text">${text}</div>
+      <div class="prayer-error-actions">${actions}</div>
+      <div class="prayer-error-tip">
         Tip: GPS only works over HTTPS. Picking a city manually works everywhere, offline, on any device.
       </div>
     </div>`;
 }
 
-function renderPrayerView(){
-  if(!_prayerData || !_prayerData.selectedDay){
-    renderPrayerError('No data for this day');
-    return;
-  }
+function _isTodaySelected(){
+  if(!_prayerData || !_prayerData.selectedDate) return false;
+  const d = _prayerData.selectedDate;
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() &&
+         d.getMonth() === now.getMonth() &&
+         d.getDate() === now.getDate();
+}
 
-  const today = _prayerData.selectedDay;
+function _prayerSourceLabel(status){
+  if(!status) return 'Sahib';
+  const map = {
+    'aladhan': 'AlAdhan API',
+    'aladhan-cache': 'AlAdhan cache',
+    'local': 'Offline calculation',
+    'local-cache': 'Offline calculation',
+    'last-good': 'Offline snapshot',
+    'csv': 'CSV schedule'
+  };
+  return map[status.source] || status.providerLabel || 'Sahib';
+}
+
+function _prayerToolbarHTML(){
+  const prefs = (_prayerData && _prayerData.prefs) || (typeof PRAYER_DEFAULT_PREFS !== 'undefined' ? PRAYER_DEFAULT_PREFS : { timeFormat: '24h' });
+  const status = (typeof getPrayerStatus === 'function') ? getPrayerStatus() : null;
+  const adjusted = typeof hasPrayerAdjustments === 'function' && hasPrayerAdjustments(prefs);
+  const stale = _prayerData && _prayerData.stale;
+  const source = _prayerSourceLabel(status);
+  const freshness = stale
+    ? `Offline · ${_formatAgo(_prayerData.cachedAt)}`
+    : `Updated ${_formatAgo(_prayerData.cachedAt)}`;
+
+  return `
+    <div class="prayer-toolbar">
+      <div class="prayer-toolbar-group">
+        <button type="button" class="filter-chip ${_prayerTab === 'today' ? 'on' : ''}" onclick="setPrayerTab('today')">Today</button>
+        <button type="button" class="filter-chip ${_prayerTab === 'month' ? 'on' : ''}" onclick="setPrayerTab('month')">Monthly</button>
+        <button type="button" class="filter-chip" onclick="openSettings('prayer')">${icon('settings', 13)} Settings</button>
+      </div>
+      <div class="prayer-toolbar-group">
+        <span class="prayer-provider-badge">${icon('layers', 13)} <strong>${esc(source)}</strong> · ${esc(freshness)}</span>
+        ${adjusted ? `<span class="prayer-provider-badge">${icon('sliders', 13)} Adjustments on</span>` : ''}
+      </div>
+    </div>`;
+}
+
+function _renderTodayHTML(today, nextDay, cycleHTML){
   const location = _prayerData.location;
+  const prefs = _prayerData.prefs || PRAYER_DEFAULT_PREFS;
   const t = today.timings;
-  const next = findNextPrayer(t);
+  const isToday = _isTodaySelected();
+  const next = findNextPrayer(t, new Date());
+  const stale = !!_prayerData.stale;
 
   const prayers = [
     { name:'Fajr',    ar:'الفجر',   time: t.Fajr },
@@ -897,80 +994,280 @@ function renderPrayerView(){
   ];
 
   const list = prayers.map(p => {
-    const isNext = p.name === next.name && !p.isSunrise;
-    const iconName = isNext ? 'play' : (p.isSunrise ? 'sunrise' : 'circle-dot');
-    return `<div class="prayer-row ${isNext?'next':''} ${p.isSunrise?'sunrise':''}">
+    const isNext = isToday && p.name === next.name && !p.isSunrise;
+    const iconName = p.isSunrise ? 'sunrise' : (isNext ? 'play' : 'circle-dot');
+    return `<div class="prayer-row ${isNext ? 'next' : ''} ${p.isSunrise ? 'sunrise' : ''}">
       <span class="prayer-icon">${icon(iconName, 14)}</span>
       <span class="prayer-name">${p.name}</span>
       <span class="prayer-arabic">${p.ar}</span>
-      <span class="prayer-time">${p.time}</span>
+      <span class="prayer-time">${formatPrayerTime(p.time, prefs.timeFormat)}</span>
     </div>`;
   }).join('');
 
-  const nextDate = new Date(_prayerData.selectedDate);
-  nextDate.setDate(nextDate.getDate() + 1);
-  const nextDay =
-    (nextDate.getFullYear() === _prayerData.monthYear &&
-     (nextDate.getMonth() + 1) === _prayerData.monthMonth)
-      ? _findDayInMonth(_prayerData.monthData, nextDate)
-      : null;
+  const todayButton = !isToday
+    ? `<button type="button" class="filter-chip" onclick="prayerGoToday()">${icon('calendar', 13)} Back to today</button>`
+    : '';
 
-  const cycle = _computeDailyCycle(today, nextDay);
-  const cycleHTML = _renderDailyCycleHTML(cycle, today, nextDay);
-
-  $('prayer-body').innerHTML = `
-    <div class="prayer-card">
-      <div class="prayer-nav-row">
-        <button class="prayer-nav-btn" onclick="prayerGoPrevDay()" aria-label="Previous day">${icon('chevron-right', 18)}</button>
-        <div class="prayer-date-block">
-          <div class="prayer-date">${_formatGregorianDate(today)}</div>
-          ${today.hijri ? `<div class="prayer-hijri">${_formatHijriDate(today.hijri)}</div>` : ''}
+  return `
+    <div class="prayer-layout">
+      <div class="prayer-card">
+        <div class="prayer-nav-row">
+          <button class="prayer-nav-btn" onclick="prayerGoPrevDay()" aria-label="Previous day">${icon('chevron-right', 18)}</button>
+          <div class="prayer-date-block">
+            <div class="prayer-date">${_formatGregorianDate(today)}</div>
+            ${today.hijri ? `<div class="prayer-hijri">${_formatHijriDate(today.hijri)}</div>` : ''}
+          </div>
+          <button class="prayer-nav-btn" onclick="prayerGoNextDay()" aria-label="Next day">${icon('chevron-left', 18)}</button>
         </div>
-        <button class="prayer-nav-btn" onclick="prayerGoNextDay()" aria-label="Next day">${icon('chevron-left', 18)}</button>
+
+        <div class="prayer-loc">
+          ${icon('map-pin', 12)}
+          ${location.label ? esc(location.label) + ' \u00B7 ' : ''}${Number(location.lat).toFixed(3)}, ${Number(location.lng).toFixed(3)}
+          \u00B7 <a href="#" onclick="event.preventDefault();openLocationPicker()">Change</a>
+        </div>
+
+        <div class="prayer-updated ${stale ? 'stale' : ''}">
+          ${icon(stale ? 'alert' : 'check-circle', 12)}
+          ${stale ? 'Offline snapshot' : 'Updated'} \u00B7 ${_formatAgo(_prayerData.cachedAt)}
+        </div>
+
+        <div class="prayer-list-card">${list}</div>
+
+        <div class="prayer-day-actions">
+          ${todayButton}
+          <button type="button" class="filter-chip" onclick="setPrayerTab('month')">${icon('calendar', 13)} Monthly overview</button>
+        </div>
       </div>
-      <div class="prayer-loc">
-        ${icon('map-pin', 12)} ${location.label ? esc(location.label) + ' \u00B7 ' : ''}${location.lat.toFixed(3)}, ${location.lng.toFixed(3)}
-        \u00B7 <a href="#" onclick="event.preventDefault();openLocationPicker()" style="color:var(--accent);text-decoration:underline">Change</a>
-      </div>
-      <div class="prayer-updated" style="font-size:11px;color:var(--text3);margin-top:6px">
-        ${_prayerData.stale
-          ? 'Offline \u00B7 last update ' + _formatStamp(_prayerData.cachedAt) + ' (' + _formatAgo(_prayerData.cachedAt) + ')'
-          : 'Updated ' + _formatAgo(_prayerData.cachedAt)}
+
+      <div class="prayer-layout-side">
+        <div id="prayer-view-widget" aria-live="polite"></div>
+
+        <div class="surface-card prayer-quick-card">
+          <div class="settings-section-title">Timetable tools</div>
+          <div class="settings-inline-actions">
+            <button type="button" class="io-btn" onclick="setPrayerTab('month')">${icon('calendar', 14)} Monthly</button>
+            <button type="button" class="io-btn" onclick="printPrayerTimetable()">${icon('list', 14)} Print</button>
+            <button type="button" class="io-btn" onclick="exportPrayerMonthCsv()">${icon('download', 14)} Export CSV</button>
+            <button type="button" class="io-btn" onclick="openSettings('prayer')">${icon('settings', 14)} Prayer settings</button>
+          </div>
+          ${hasPrayerAdjustments(prefs) ? `<div class="settings-note">Times include your per-prayer minute adjustments.</div>` : ''}
+        </div>
       </div>
     </div>
 
-    <div class="prayer-countdown-card">
-      <div class="prayer-countdown-label">Next prayer</div>
-      <div class="prayer-countdown-name">${next.name}${next.tomorrow ? ' (tomorrow)' : ''}</div>
-      <div class="prayer-countdown-time">${next.time}</div>
-      <div class="prayer-countdown-remaining" id="prayer-countdown-remaining">
-        in ${formatCountdown(next.minutesLeft)}
+    ${cycleHTML}`;
+}
+
+const PRAYER_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function _renderMonthHTML(){
+  const data = _prayerData.monthData || [];
+  const prefs = _prayerData.prefs || PRAYER_DEFAULT_PREFS;
+  const now = new Date();
+  const label = `${PRAYER_MONTH_NAMES[_prayerData.monthMonth - 1]} ${_prayerData.monthYear}`;
+
+  const rows = data.map(day => {
+    const [d, m, y] = day.date.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const isToday = dt.getFullYear() === now.getFullYear() &&
+                    dt.getMonth() === now.getMonth() &&
+                    dt.getDate() === now.getDate();
+    return `<tr class="${isToday ? 'today' : ''}">
+      <td class="month-day">${d} <span>${esc(day.weekday ? day.weekday.slice(0, 3) : '')}</span></td>
+      <td>${formatPrayerTime(day.timings.Fajr, prefs.timeFormat)}</td>
+      <td>${formatPrayerTime(day.timings.Sunrise, prefs.timeFormat)}</td>
+      <td>${formatPrayerTime(day.timings.Dhuhr, prefs.timeFormat)}</td>
+      <td>${formatPrayerTime(day.timings.Asr, prefs.timeFormat)}</td>
+      <td>${formatPrayerTime(day.timings.Maghrib, prefs.timeFormat)}</td>
+      <td>${formatPrayerTime(day.timings.Isha, prefs.timeFormat)}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="prayer-month-card">
+      <div class="prayer-month-head">
+        <button class="prayer-nav-btn" onclick="prayerMonthOffset(-1)" aria-label="Previous month">${icon('chevron-right', 18)}</button>
+        <div>
+          <div class="prayer-month-title">${label}</div>
+          <div class="settings-file-name" style="text-align:center">${data.length} days · ${_prayerSourceLabel(getPrayerStatus())}</div>
+        </div>
+        <button class="prayer-nav-btn" onclick="prayerMonthOffset(1)" aria-label="Next month">${icon('chevron-left', 18)}</button>
       </div>
-    </div>
 
-    <div class="prayer-list-card">
-      ${list}
-    </div>
+      <div class="month-table-wrap">
+        <table class="month-table">
+          <thead>
+            <tr><th>Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
 
-    ${cycleHTML}
-  `;
+      <div class="month-legend">
+        ${_prayerData.stale ? 'Offline snapshot · ' : ''}Adjusted times are shown. Location: ${esc(_prayerData.location.label || (_prayerData.location.lat.toFixed(3) + ', ' + _prayerData.location.lng.toFixed(3)))}.
+      </div>
+
+      <div class="prayer-day-actions" style="justify-content:flex-start;margin-top:14px">
+        <button type="button" class="filter-chip" onclick="prayerMonthToday()">${icon('calendar', 13)} Current month</button>
+        <button type="button" class="filter-chip" onclick="printPrayerTimetable()">${icon('list', 13)} Print</button>
+        <button type="button" class="filter-chip" onclick="exportPrayerMonthCsv()">${icon('download', 13)} Export</button>
+        <button type="button" class="filter-chip" onclick="openSettings('prayer')">${icon('settings', 13)} Settings</button>
+      </div>
+    </div>`;
+}
+
+function renderPrayerView(){
+  if(!_prayerData || !_prayerData.selectedDay){
+    renderPrayerError('No data for this day');
+    return;
+  }
+
+  const today = _prayerData.selectedDay;
+
+  if(_prayerTab === 'month'){
+    $('prayer-body').innerHTML = `
+      ${_prayerToolbarHTML()}
+      ${_renderMonthHTML()}`;
+    if(typeof PrayerWidget !== 'undefined') PrayerWidget.unmount('prayer-view-widget');
+  } else {
+    const nextDate = new Date(_prayerData.selectedDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    let nextDay =
+      (nextDate.getFullYear() === _prayerData.monthYear &&
+       (nextDate.getMonth() + 1) === _prayerData.monthMonth)
+        ? _findDayInMonth(_prayerData.monthData, nextDate)
+        : null;
+    if(!nextDay && _prayerData.nextDay && _prayerData.nextDay.date === _dateKeyOf(nextDate)){
+      nextDay = _prayerData.nextDay;
+    }
+    if(!nextDay){
+      _prayerEnsureNextDay(nextDate);
+    }
+
+    const cycle = _computeDailyCycle(today, nextDay);
+    const cycleHTML = cycle ? _renderDailyCycleHTML(cycle, today, nextDay) : '';
+    window._homeCycleData = cycle ? { today, nextDay } : null;
+
+    $('prayer-body').innerHTML = `
+      ${_prayerToolbarHTML()}
+      ${_renderTodayHTML(today, nextDay, cycleHTML)}`;
+
+    _mountPrayerWidget();
+  }
 
   if(typeof injectHeaderIcons === 'function'){
     setTimeout(() => injectHeaderIcons(), 0);
   }
-
   _attachPrayerSwipe();
 }
 
+function _mountPrayerWidget(){
+  if(_prayerTab !== 'today' || typeof PrayerWidget === 'undefined') return;
+  PrayerWidget.mount('prayer-view-widget', { variant: 'panel', showTimes: false, showLink: false });
+}
+
 function startCountdown(){
-  if(_countdownTimer) clearInterval(_countdownTimer);
-  _countdownTimer = setInterval(() => {
-    if(!_prayerData || !_prayerData.selectedDay) return;
-    const el = $('prayer-countdown-remaining');
-    if(!el) return;
-    const next = findNextPrayer(_prayerData.selectedDay.timings);
-    el.textContent = `in ${formatCountdown(next.minutesLeft)}`;
-  }, 60000);
+  /* The shared PrayerWidget ticker handles the live countdown. */
+  _mountPrayerWidget();
+}
+
+async function prayerGoToday(){
+  const now = new Date();
+  if(now.getFullYear() !== _prayerData.monthYear || (now.getMonth() + 1) !== _prayerData.monthMonth){
+    await _prayerLoadMonth(now.getFullYear(), now.getMonth() + 1, true);
+    return;
+  }
+  _prayerData.selectedDate = now;
+  _prayerData.selectedDay = _findDayInMonth(_prayerData.monthData, now);
+  _prayerData.nextDay     = null;
+  _prayerData.nextDayKey  = null;
+  if(_prayerData.selectedDay){
+    _prayerTab = 'today';
+    renderPrayerView();
+  }
+}
+
+async function prayerMonthOffset(delta){
+  const d = new Date(_prayerData.monthYear, _prayerData.monthMonth - 1 + delta, 1);
+  await _prayerLoadMonth(d.getFullYear(), d.getMonth() + 1, false);
+}
+
+async function prayerMonthToday(){
+  const now = new Date();
+  await _prayerLoadMonth(now.getFullYear(), now.getMonth() + 1, true);
+}
+
+async function _prayerLoadMonth(year, month, selectToday){
+  try{
+    const result = await getMonth(year, month);
+    const now = new Date();
+    const isCurrent = year === now.getFullYear() && month === now.getMonth() + 1;
+    const target = (selectToday && isCurrent) ? now : new Date(year, month - 1, 1);
+    const day = _findDayInMonth(result.data, target) || result.data[0];
+    if(!day) throw new Error('No data for that month');
+
+    _prayerData.monthData  = result.data;
+    _prayerData.monthYear  = year;
+    _prayerData.monthMonth = month;
+    _prayerData.cachedAt   = result.ts || _prayerData.cachedAt;
+    _prayerData.stale      = !!result.stale;
+    _prayerData.selectedDate = target;
+    _prayerData.selectedDay  = day;
+    _prayerData.nextDay      = null;
+    _prayerData.nextDayKey   = null;
+    _prayerData.prefs = await getPrayerPrefs();
+    renderPrayerView();
+  }catch(err){
+    toast(err.message || 'Could not load that month', 'alert');
+    console.error('[prayer-view]', err);
+  }
+}
+
+async function exportPrayerMonthCsv(){
+  try{
+    let data, year, month;
+    if(_prayerData && _prayerData.monthData && _prayerData.monthData.length){
+      data = _prayerData.monthData;
+      year = _prayerData.monthYear;
+      month = _prayerData.monthMonth;
+    } else {
+      const now = new Date();
+      year = now.getFullYear();
+      month = now.getMonth() + 1;
+      const result = await getMonth(year, month);
+      data = result.data;
+    }
+
+    const lines = ['Fajr,Shuruq,Dhuhr,Asr,Maghrib,Isha,Date,Day,Month'];
+    data.forEach(day => {
+      const [d, m] = day.date.split('-');
+      const t = day.timings;
+      lines.push([
+        cleanTime(t.Fajr), cleanTime(t.Sunrise), cleanTime(t.Dhuhr),
+        cleanTime(t.Asr), cleanTime(t.Maghrib), cleanTime(t.Isha),
+        day.date, String(Number(d)), String(Number(m))
+      ].join(','));
+    });
+
+    const blob = new Blob(['\uFEFF' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `sahib-prayer-${year}-${String(month).padStart(2, '0')}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast('Prayer CSV exported', 'download');
+  }catch(err){
+    toast(err.message || 'Could not export prayer times', 'alert');
+  }
+}
+
+async function printPrayerTimetable(){
+  const prayerView = document.querySelector('#view-prayer.active');
+  if(!prayerView){
+    await openPrayerView();
+  }
+  setPrayerTab('month');
+  setTimeout(() => window.print(), 250);
 }
 
 async function prayerGoPrevDay(){ await _prayerGoToOffset(-1); }
@@ -1012,6 +1309,9 @@ async function _prayerLoadDay(targetDate){
 
   _prayerData.selectedDate = targetDate;
   _prayerData.selectedDay  = day;
+  _prayerData.nextDay      = null;
+  _prayerData.nextDayKey   = null;
+  _prayerData.prefs = await getPrayerPrefs();
   renderPrayerView();
 }
 
@@ -1049,12 +1349,8 @@ async function refreshLocation(){
   toast('Updating location...', 'compass');
   try{
     const loc = await requestGPSLocation();
-    const now = new Date();
-    const key = monthKey(loc.lat, loc.lng, now.getFullYear(), now.getMonth() + 1);
-    const cached = await store.getMeta(key);
-    if(!cached){
-      await ensureCache();
-    }
+    await store.setMeta('location', loc);
+    await ensureCache();
     toast('Location updated', 'map-pin');
     openPrayerView();
   }catch(err){

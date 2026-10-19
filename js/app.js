@@ -20,18 +20,24 @@
     /* 3. Build the fuzzy search index (once data is loaded) */
     rebuildSearchIndex();
 
-    /* 4. Restore theme + accent preference */
-    const savedTheme = await store.getMeta('theme');
-    const savedAccent = await store.getMeta('accent') || 'gold';
-    if(savedTheme === 'light'){
-      isLight = true;
-      document.body.classList.add('light');
+    /* 4. Restore theme, accent and font preferences through the theme engine */
+    if (typeof SAHIB_THEME !== 'undefined') {
+      await SAHIB_THEME.init();
+    } else {
+      updateThemeColorMeta();
     }
-    applyAccent(savedAccent);
-    updateThemeColorMeta();
+
+    /* 4.1 Prayer surfaces: shared countdown ticker + reminders */
+    if (typeof PrayerWidget !== 'undefined') {
+      try { PrayerWidget.init(); } catch (err) { console.warn('[prayer-widget]', err); }
+    }
+    if (typeof PrayerAlerts !== 'undefined') {
+      try { await PrayerAlerts.init(); } catch (err) { console.warn('[prayer-alerts]', err); }
+    }
 
     /* 5. Inject header icons */
     injectHeaderIcons();
+    initShell();
 
     /* 5.1 Render home dashboard */
     renderHome();
@@ -119,10 +125,29 @@ function injectHeaderIcons(){
     if(name && slot) slot.innerHTML = icon(name, 18);
   });
 
+  /* Desktop sidebar icons */
+  document.querySelectorAll('.side-nav-item[data-nav]').forEach(btn => {
+    const slot = btn.querySelector('.side-icon');
+    const name = slot && slot.dataset.icon;
+    if(name && slot && !slot.dataset.injected){
+      slot.innerHTML = icon(name, 18);
+      slot.dataset.injected = '1';
+    }
+  });
+
   /* Any element with data-icon that contains a .btn-icon span (global, any view) */
   document.querySelectorAll('[data-icon] > .btn-icon').forEach(span => {
     const parent = span.parentElement;
     const name = parent.getAttribute('data-icon');
+    if(name && !span.dataset.injected) {
+      span.innerHTML = icon(name, 15);
+      span.dataset.injected = '1';
+    }
+  });
+
+  /* Standalone .btn-icon[data-icon] — icon name carried by the span itself */
+  document.querySelectorAll('.btn-icon[data-icon]').forEach(span => {
+    const name = span.getAttribute('data-icon');
     if(name && !span.dataset.injected) {
       span.innerHTML = icon(name, 15);
       span.dataset.injected = '1';
@@ -148,129 +173,76 @@ function updateThemeToggleIcon(){
 function updateThemeColorMeta(){
   const meta = document.querySelector('meta[name="theme-color"]');
   if(!meta) return;
-  const bg = getComputedStyle(document.body).getPropertyValue('--bg').trim();
-  meta.setAttribute('content', bg || (document.body.classList.contains('light') ? '#e6e9ef' : '#181825'));
+  const root = document.documentElement;
+  const bg = getComputedStyle(root).getPropertyValue('--color-background').trim()
+          || getComputedStyle(document.body).getPropertyValue('--bg').trim();
+  meta.setAttribute('content', bg || (root.classList.contains('light') ? '#eff1f5' : '#1e1e2e'));
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Theme + Accent settings
+   App shell — sidebar navigation, page titles, online status
    ═══════════════════════════════════════════════════════════ */
-const ACCENTS = ['gold', 'peach', 'blue', 'green', 'mauve'];
-
-function applyAccent(accent){
-  if(!ACCENTS.includes(accent)) accent = 'gold';
-  document.body.dataset.accent = accent;
-}
-
-function applyTheme(mode){
-  if(mode === 'light'){
-    isLight = true;
-    document.body.classList.add('light');
-  } else {
-    isLight = false;
-    document.body.classList.remove('light');
-  }
-  if(typeof updateThemeToggleIcon === 'function') updateThemeToggleIcon();
-  updateThemeColorMeta();
-}
-
-function setThemeMode(mode){
-  applyTheme(mode);
-  store.setMeta('theme', mode === 'light' ? 'light' : 'dark');
-  updateSettingsUI();
-}
-
-function setAccent(accent){
-  if(!ACCENTS.includes(accent)) accent = 'gold';
-  applyAccent(accent);
-  store.setMeta('accent', accent);
-  updateThemeColorMeta();
-  updateSettingsUI();
-}
-
-function openSettings(){
-  const menuOverlay = document.querySelector('.menu-overlay.open');
-  if(menuOverlay) menuOverlay.classList.remove('open');
-
-  updateSettingsUI();
-  const ov = document.getElementById('ov-settings');
-  if(ov){
-    ov.classList.add('open');
-    document.body.classList.add('modal-open');
-  }
-}
-
-function closeSettings(){
-  const ov = document.getElementById('ov-settings');
-  if(ov){
-    ov.classList.remove('open');
-    document.body.classList.remove('modal-open');
-  }
-}
-
-function updateSettingsUI(){
-  const theme = document.body.classList.contains('light') ? 'light' : 'dark';
-  const accent = document.body.dataset.accent || 'gold';
-
-  document.querySelectorAll('#ov-settings [data-theme-btn]').forEach(btn => {
-    btn.classList.toggle('on', btn.getAttribute('data-theme-btn') === theme);
-  });
-
-  document.querySelectorAll('#ov-settings [data-accent-btn]').forEach(btn => {
-    btn.classList.toggle('on', btn.getAttribute('data-accent-btn') === accent);
-  });
-}
-
-window.setThemeMode = setThemeMode;
-window.setAccent = setAccent;
-window.openSettings = openSettings;
-window.closeSettings = closeSettings;
-
-/* Settings chips — one click handler, selection always follows real state */
-document.addEventListener('click', (e) => {
-  const chip = e.target.closest('[data-accent-btn], [data-theme-btn]');
-  if(!chip) return;
-  if(chip.hasAttribute('data-accent-btn')){
-    setAccent(chip.getAttribute('data-accent-btn'));
-  } else {
-    setThemeMode(chip.getAttribute('data-theme-btn'));
-  }
-  updateSettingsUI();
-});
-
-/* ═══════════════════════════════════════════════════════════
-Attribution footer (v2) — appended into the Settings modal body
-every time it opens. Append-only: safe even if an older
-injectAttribution exists (this one wins).
-═══════════════════════════════════════════════════════════ */
-window.injectAttribution = function(){
-  const ov = document.getElementById('ov-settings');
-  if(!ov) return;
-  if(ov.querySelector('.settings-attribution')) return;
-  const body = ov.querySelector('.mb') || ov.querySelector('.modal-body') || ov.querySelector('.modal-box') || ov;
-  const footer = document.createElement('div');
-  footer.className = 'settings-attribution';
-  footer.style.cssText = 'margin-top:18px; padding-top:14px; border-top:1px solid var(--border); font-size:11px; color:var(--text3); line-height:1.7; text-align:center; direction:ltr;';
-  footer.innerHTML =
-    '<strong style="color:var(--text2); display:block; margin-bottom:6px; letter-spacing:.05em; text-transform:uppercase;">Attribution & Sources</strong>' +
-    'Adhkar: <a href="https://sunnah.com/hisn" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">Hisn al-Muslim</a> · ' +
-    'Prayer: <a href="https://aladhan.com" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">Aladhan API</a><br>' +
-    'Palette: <a href="https://catppuccin.com" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">Catppuccin</a> · ' +
-    'Fonts: Amiri & Tajawal (OFL)<br>' +
-    'Icons: Lucide (ISC) · PDF: PDF.js (Apache 2.0)<br>' +
-    '<span style="opacity:.6; margin-top:8px; display:block; font-style:italic;">Built for personal and community use.</span>';
-  body.appendChild(footer);
+const SHELL_VIEW_MAP = {
+  'view-home':    { nav: 'home',    title: 'Home',    sub: 'Your daily companion' },
+  'view-cats':    { nav: 'cats',    title: 'Adkar',   sub: 'Fortress of the Muslim' },
+  'view-adkar':   { nav: 'cats',    title: 'Adkar',   sub: 'Category collection' },
+  'view-favs':    { nav: 'cats',    title: 'Favorites', sub: 'Saved adhkar' },
+  'view-fav-books': { nav: 'books', title: 'Favorite books', sub: 'Saved library items' },
+  'view-search':  { nav: 'search',  title: 'Search',  sub: 'All adhkar' },
+  'view-prayer':  { nav: 'prayer',  title: 'Prayer',  sub: 'Times, countdown and daily cycle' },
+  'view-hijri':   { nav: 'hijri',   title: 'Hijri Calendar', sub: 'Islamic dates and events' },
+  'view-asma':    { nav: 'asma',    title: '99 Names of Allah', sub: 'Asma al-Husna' },
+  'view-books':   { nav: 'books',   title: 'Library', sub: 'Books and reading' },
+  'view-tasbih':  { nav: 'tasbih',  title: 'Tasbih',  sub: 'Digital counter' }
 };
-(function(){
-  const orig = window.openSettings;
-  if(typeof orig === 'function'){
-    window.openSettings = function(){
-      const r = orig.apply(this, arguments);
-      try{ window.injectAttribution(); }catch(e){ console.warn('[attrib]', e); }
-      return r;
-    };
-  }
-})();
+
+function updateShellNav(viewId){
+  const meta = SHELL_VIEW_MAP[viewId];
+  const navKey = meta ? meta.nav : 'home';
+
+  document.querySelectorAll('.side-nav-item[data-nav]').forEach(btn => {
+    const on = btn.getAttribute('data-nav') === navKey;
+    btn.classList.toggle('active', on);
+    if(on) btn.setAttribute('aria-current', 'page');
+    else btn.removeAttribute('aria-current');
+  });
+
+  const title = document.getElementById('topbar-title');
+  const sub   = document.getElementById('topbar-sub');
+  if(title) title.textContent = meta ? meta.title : 'Sahib';
+  if(sub)   sub.textContent   = meta ? meta.sub   : '';
+
+  document.title = meta && meta.title !== 'Home'
+    ? `صاحب · ${meta.title}`
+    : 'صاحب · Sahib';
+}
+
+function focusGlobalSearch(){
+  if(typeof goToAdkarCategories === 'function') goToAdkarCategories();
+  setTimeout(() => {
+    const input = document.getElementById('search-input');
+    if(input){
+      input.focus();
+      input.select();
+    }
+  }, 80);
+}
+
+function updateSidebarStatus(){
+  const dot = document.getElementById('sidebar-status-dot');
+  const txt = document.getElementById('sidebar-status-text');
+  if(!dot || !txt) return;
+  const online = navigator.onLine;
+  dot.classList.toggle('offline', !online);
+  txt.textContent = online ? 'Local-first · offline ready' : 'Offline · cached content';
+}
+
+function initShell(){
+  updateShellNav((document.querySelector('.view.active') || {}).id || 'view-home');
+  updateSidebarStatus();
+  window.addEventListener('online', updateSidebarStatus);
+  window.addEventListener('offline', updateSidebarStatus);
+}
 
 
 /* =================================================================

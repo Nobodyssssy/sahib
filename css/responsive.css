@@ -159,11 +159,84 @@
    ══════════════════════════════════════════ */
 @media(min-width:1024px){
   .cats-grid{max-width:1100px;margin:0 auto;}
-  .adkar-grid,.search-results{max-width:820px;margin:0 auto;}
+  .adkar-grid,.search-results{max-width:1100px;margin:0 auto;}
 }
 /* ══════════════════════════════════════════
    DESKTOP (≥ 1200) — a bit more air
    ══════════════════════════════════════════ */
 @media(min-width:1200px){
   .cats-grid{grid-template-columns:repeat(4,1fr);}
+  .adkar-grid,.search-results{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1240px;}
+}
+/* ══════════════════════════════════════════════════════════
+   PC SHELL FALLBACK — Stage 1 (keeps narrow windows usable;
+   full Android optimisation is Stage 2 and belongs here too)
+   ══════════════════════════════════════════════════════════ */
+@media(max-width:1180px){
+  :root{ --sidebar-width:216px; --page-gutter:24px; }
+  .home-features-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .cat-cards-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
+}
+
+@media(max-width:960px){
+  .app-sidebar{ display:none; }
+  .app-main{ margin-inline-start:0; }
+  .topbar-menu-btn{ display:inline-flex; }
+  .topbar{ grid-template-columns:1fr auto 1fr; padding:8px 16px; }
+  .topbar-center{ display:none; }
+  .topbar-logo{ display:none; }
+  .home-hero,
+  .home-dashboard,
+  .prayer-layout{ grid-template-columns:1fr; }
+  .home-hero-card{ min-height:220px; }
+  .hijri-container{
+    grid-template-columns:1fr;
+    grid-template-areas:"hhead" "hgrid" "htoday" "hside";
+  }
+  .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .adkar-grid,
+  .search-results{ grid-template-columns:1fr; }
+  .cat-cards-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .continue-strip{ grid-template-columns:1fr; }
+  .settings-grid-3{ grid-template-columns:1fr 1fr; }
+  .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .pw-countdown-unit{ font-size:28px; }
+}
+
+@media(max-width:720px){
+  .page-gutter,
+  .home-container,
+  .prayer-container,
+  .asma-container,
+  .books-container,
+  .hijri-container{ padding-inline:14px; }
+  .home-container{ padding-bottom:88px; }
+  .home-features-grid{ grid-template-columns:1fr 1fr; }
+  .cats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); padding-inline:14px; }
+  .adkar-grid{ padding-inline:14px; }
+  .settings-modal{ max-height:92vh; }
+  .settings-grid-2,
+  .settings-grid-3{ grid-template-columns:1fr; }
+  .theme-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
+  .font-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .pw-times{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+  .pw-countdown-unit{ font-size:24px; }
+  .pw-prayer-name{ font-size:24px; }
+  .settings-tabs{ padding-inline:12px; }
+  .mh,.mb,.mf{ padding-inline:16px; }
+  .month-table th,.month-table td{ padding:6px 5px; font-size:10px; }
+  .hijri-grid{ gap:4px; padding:8px; }
+  .hijri-cell{ min-height:56px; }
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP (≥ 961px)
+   The fixed sidebar and topbar replace the legacy back bar.
+   ══════════════════════════════════════════ */
+@media(min-width:961px){
+  .back-bar{ display:none; }
 }

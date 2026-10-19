@@ -1,0 +1,430 @@
+/* ==========================================================================
+   SAHIB TOKENS v3.0
+   Single source of truth for all visual design.
+   Load order: tokens.css -> base.css -> layout.css -> views/*.css
+               -> components.css -> responsive.css
+   Nothing in this file is a component. Only tokens.
+   ========================================================================== */
+
+/* ---------- LAYER 1: RAW PALETTES ---------- */
+
+/* AURA */
+[data-theme="aura"][data-mode="dark"] {
+  --raw-bg: #15141b; --raw-bg-alt: #1c1b22;
+  --raw-surface: #201f27; --raw-surface-raised: #27262f; --raw-surface-sunken: #100f14;
+  --raw-border: #2d2c38; --raw-border-subtle: #232229; --raw-border-strong: #3d3c4a;
+  --raw-text-primary: #edecee; --raw-text-secondary: #b8b6c0;
+  --raw-text-muted: #7a7783; --raw-text-disabled: #4a4852;
+  --raw-success: #61ffca; --raw-warning: #ffca85; --raw-danger: #ff6767; --raw-info: #82aaff;
+  --raw-on-accent: #15141b;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.45);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.55);
+  --accent-gold: #ffd47f;  --accent-peach: #ffb173;
+  --accent-red: #ff6767;   --accent-mauve: #a277ff;
+  --accent-blue: #82aaff;  --accent-teal: #61ffca;
+  --accent-green: #8be88b; --accent-pink: #f694ff;
+  --accent-sky: #7fdcff;
+}
+[data-theme="aura"][data-mode="light"] {
+  --raw-bg: #fafaff; --raw-bg-alt: #f2f1f8;
+  --raw-surface: #ffffff; --raw-surface-raised: #ffffff; --raw-surface-sunken: #ecebf5;
+  --raw-border: #dcdae8; --raw-border-subtle: #e8e6f1; --raw-border-strong: #bfbccf;
+  --raw-text-primary: #1a1925; --raw-text-secondary: #4a4756;
+  --raw-text-muted: #6f6c80; --raw-text-disabled: #a5a2b3;
+  --raw-success: #15803d; --raw-warning: #b45309; --raw-danger: #be123c; --raw-info: #1d4ed8;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 2px rgba(20,20,40,0.08);
+  --raw-shadow-md: 0 4px 12px rgba(20,20,40,0.10);
+  --raw-shadow-lg: 0 12px 32px rgba(20,20,40,0.14);
+  --accent-gold: #b07300;  --accent-peach: #c05603;
+  --accent-red: #c21f43;   --accent-mauve: #7b3ed4;
+  --accent-blue: #1e50c4;  --accent-teal: #0e7c6b;
+  --accent-green: #15803d; --accent-pink: #b81a6b;
+  --accent-sky: #0369a1;
+}
+
+/* CATPPUCCIN (Mocha / Latte) */
+[data-theme="catppuccin"][data-mode="dark"] {
+  --raw-bg: #1e1e2e; --raw-bg-alt: #181825;
+  --raw-surface: #313244; --raw-surface-raised: #45475a; --raw-surface-sunken: #11111b;
+  --raw-border: #45475a; --raw-border-subtle: #313244; --raw-border-strong: #585b70;
+  --raw-text-primary: #cdd6f4; --raw-text-secondary: #bac2de;
+  --raw-text-muted: #a6adc8; --raw-text-disabled: #6c7086;
+  --raw-success: #a6e3a1; --raw-warning: #f9e2af; --raw-danger: #f38ba8; --raw-info: #89b4fa;
+  --raw-on-accent: #1e1e2e;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.45);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.55);
+  --accent-gold: #f9e2af;  --accent-peach: #fab387;
+  --accent-red: #f38ba8;   --accent-mauve: #cba6f7;
+  --accent-blue: #89b4fa;  --accent-teal: #94e2d5;
+  --accent-green: #a6e3a1; --accent-pink: #f5c2e7;
+  --accent-sky: #89dceb;
+}
+[data-theme="catppuccin"][data-mode="light"] {
+  --raw-bg: #eff1f5; --raw-bg-alt: #e6e9ef;
+  --raw-surface: #dce0e8; --raw-surface-raised: #ccd0da; --raw-surface-sunken: #dce0e8;
+  --raw-border: #ccd0da; --raw-border-subtle: #e6e9ef; --raw-border-strong: #bcc0cc;
+  --raw-text-primary: #4c4f69; --raw-text-secondary: #5c5f77;
+  --raw-text-muted: #6c6f85; --raw-text-disabled: #9ca0b0;
+  --raw-success: #40a02b; --raw-warning: #b86e1a; --raw-danger: #d20f39; --raw-info: #1e66f5;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 2px rgba(76,79,105,0.10);
+  --raw-shadow-md: 0 4px 12px rgba(76,79,105,0.12);
+  --raw-shadow-lg: 0 12px 32px rgba(76,79,105,0.16);
+  --accent-gold: #b07300;  --accent-peach: #d25602;
+  --accent-red: #c81a44;   --accent-mauve: #7c3aed;
+  --accent-blue: #1e66f5;  --accent-teal: #0f766e;
+  --accent-green: #15803d; --accent-pink: #be185d;
+  --accent-sky: #0369a1;
+}
+
+/* DRACULA (dark) / ALUCARD (light) */
+[data-theme="dracula"][data-mode="dark"] {
+  --raw-bg: #282a36; --raw-bg-alt: #21222c;
+  --raw-surface: #44475a; --raw-surface-raised: #4d5066; --raw-surface-sunken: #1d1e26;
+  --raw-border: #44475a; --raw-border-subtle: #343746; --raw-border-strong: #6272a4;
+  --raw-text-primary: #f8f8f2; --raw-text-secondary: #d8d8d2;
+  --raw-text-muted: #b8b8b2; --raw-text-disabled: #6272a4;
+  --raw-success: #50fa7b; --raw-warning: #f1fa8c; --raw-danger: #ff5555; --raw-info: #8be9fd;
+  --raw-on-accent: #282a36;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.45);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.50);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.60);
+  --accent-gold: #f1fa8c;  --accent-peach: #ffb86c;
+  --accent-red: #ff5555;   --accent-mauve: #bd93f9;
+  --accent-blue: #6ea4f5;  --accent-teal: #8be9fd;
+  --accent-green: #50fa7b; --accent-pink: #ff79c6;
+  --accent-sky: #58d4f5;
+}
+[data-theme="dracula"][data-mode="light"] {
+  --raw-bg: #fffbeb; --raw-bg-alt: #f5f0dd;
+  --raw-surface: #eae5cf; --raw-surface-raised: #ddd8c2; --raw-surface-sunken: #f0ebd8;
+  --raw-border: #d8d3bd; --raw-border-subtle: #e8e3cd; --raw-border-strong: #b8b29a;
+  --raw-text-primary: #1f1f1f; --raw-text-secondary: #3a3830;
+  --raw-text-muted: #5c5a4e; --raw-text-disabled: #8c8a7a;
+  --raw-success: #14710a; --raw-warning: #846e15; --raw-danger: #b8321c; --raw-info: #036a96;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 2px rgba(31,31,31,0.10);
+  --raw-shadow-md: 0 4px 12px rgba(31,31,31,0.12);
+  --raw-shadow-lg: 0 12px 32px rgba(31,31,31,0.16);
+  --accent-gold: #846e15;  --accent-peach: #a34d14;
+  --accent-red: #b8321c;   --accent-mauve: #644ac9;
+  --accent-blue: #0e5b9e;  --accent-teal: #036a96;
+  --accent-green: #14710a; --accent-pink: #a3144d;
+  --accent-sky: #1a7fa0;
+}
+
+/* TOKYO NIGHT (dark) / TOKYO NIGHT DAY (light) */
+[data-theme="tokyo-night"][data-mode="dark"] {
+  --raw-bg: #1a1b26; --raw-bg-alt: #16161e;
+  --raw-surface: #292e42; --raw-surface-raised: #3b4261; --raw-surface-sunken: #16161e;
+  --raw-border: #292e42; --raw-border-subtle: #1f2335; --raw-border-strong: #3b4261;
+  --raw-text-primary: #c0caf5; --raw-text-secondary: #a9b1d6;
+  --raw-text-muted: #7a88b8; --raw-text-disabled: #565f89;
+  --raw-success: #9ece6a; --raw-warning: #e0af68; --raw-danger: #f7768e; --raw-info: #7aa2f7;
+  --raw-on-accent: #1a1b26;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.45);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.55);
+  --accent-gold: #e0af68;  --accent-peach: #ff9e64;
+  --accent-red: #f7768e;   --accent-mauve: #bb9af7;
+  --accent-blue: #7aa2f7;  --accent-teal: #73daca;
+  --accent-green: #9ece6a; --accent-pink: #ff75b7;
+  --accent-sky: #7dcfff;
+}
+[data-theme="tokyo-night"][data-mode="light"] {
+  --raw-bg: #e1e2e7; --raw-bg-alt: #d5d6e0;
+  --raw-surface: #ffffff; --raw-surface-raised: #f0f1f5; --raw-surface-sunken: #d0d5e3;
+  --raw-border: #c8cad3; --raw-border-subtle: #d8dae0; --raw-border-strong: #a8abb8;
+  --raw-text-primary: #3760bf; --raw-text-secondary: #4b5f9e;
+  --raw-text-muted: #6172b0; --raw-text-disabled: #848cb5;
+  --raw-success: #587539; --raw-warning: #8c6c3e; --raw-danger: #d02050; --raw-info: #2e7de9;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 2px rgba(55,96,191,0.08);
+  --raw-shadow-md: 0 4px 12px rgba(55,96,191,0.10);
+  --raw-shadow-lg: 0 12px 32px rgba(55,96,191,0.14);
+  --accent-gold: #8c6c3e;  --accent-peach: #b15c00;
+  --accent-red: #d02050;   --accent-mauve: #9854f1;
+  --accent-blue: #2e7de9;  --accent-teal: #118c74;
+  --accent-green: #587539; --accent-pink: #c026d3;
+  --accent-sky: #007197;
+}
+
+/* ROSE PINE (dark) / DAWN (light) */
+[data-theme="rose-pine"][data-mode="dark"] {
+  --raw-bg: #191724; --raw-bg-alt: #1f1d2e;
+  --raw-surface: #26233a; --raw-surface-raised: #393552; --raw-surface-sunken: #16141f;
+  --raw-border: #393552; --raw-border-subtle: #26233a; --raw-border-strong: #524f67;
+  --raw-text-primary: #e0def4; --raw-text-secondary: #c8c4e0;
+  --raw-text-muted: #908caa; --raw-text-disabled: #6e6a86;
+  --raw-success: #5e9e7a; --raw-warning: #f6c177; --raw-danger: #eb6f92; --raw-info: #7ea5cc;
+  --raw-on-accent: #191724;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.50);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.60);
+  --accent-gold: #f6c177;  --accent-peach: #eb9d5c;
+  --accent-red: #eb6f92;   --accent-mauve: #c4a7e7;
+  --accent-blue: #7ea5cc;  --accent-teal: #9ccfd8;
+  --accent-green: #5e9e7a; --accent-pink: #ebbcba;
+  --accent-sky: #78b8c8;
+}
+[data-theme="rose-pine"][data-mode="light"] {
+  --raw-bg: #faf4ed; --raw-bg-alt: #f2e9e1;
+  --raw-surface: #fffaf3; --raw-surface-raised: #f4ede8; --raw-surface-sunken: #f2e9e1;
+  --raw-border: #dfdad9; --raw-border-subtle: #eae4dd; --raw-border-strong: #cecacd;
+  --raw-text-primary: #575279; --raw-text-secondary: #6e6a86;
+  --raw-text-muted: #797593; --raw-text-disabled: #9893a5;
+  --raw-success: #286983; --raw-warning: #b7791f; --raw-danger: #b4637a; --raw-info: #56949f;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 2px rgba(87,82,121,0.10);
+  --raw-shadow-md: 0 4px 12px rgba(87,82,121,0.12);
+  --raw-shadow-lg: 0 12px 32px rgba(87,82,121,0.16);
+  --accent-gold: #b7791f;  --accent-peach: #c9662b;
+  --accent-red: #b4637a;   --accent-mauve: #907aa9;
+  --accent-blue: #286983;  --accent-teal: #56949f;
+  --accent-green: #3d7d4e; --accent-pink: #b56b83;
+  --accent-sky: #3d7e8c;
+}
+
+/* ---------- LAYER 2: ACCENT MAPPING ---------- */
+[data-accent="gold"]  { --raw-accent: var(--accent-gold,  #f9e2af); }
+[data-accent="peach"] { --raw-accent: var(--accent-peach, #fab387); }
+[data-accent="red"]   { --raw-accent: var(--accent-red,   #f38ba8); }
+[data-accent="mauve"] { --raw-accent: var(--accent-mauve, #cba6f7); }
+[data-accent="blue"]  { --raw-accent: var(--accent-blue,  #89b4fa); }
+[data-accent="teal"]  { --raw-accent: var(--accent-teal,  #94e2d5); }
+[data-accent="green"] { --raw-accent: var(--accent-green, #a6e3a1); }
+[data-accent="pink"]  { --raw-accent: var(--accent-pink,  #f5c2e7); }
+[data-accent="sky"]   { --raw-accent: var(--accent-sky,   #89dceb); }
+:root:not([data-accent]) { --raw-accent: var(--accent-gold, #f9e2af); }
+
+/* ---------- LAYER 3: SEMANTIC TOKENS ---------- */
+:root {
+  /* Surfaces */
+  --color-background:      var(--raw-bg);
+  --color-surface:         var(--raw-surface);
+  --color-surface-raised:  var(--raw-surface-raised);
+  --color-surface-sunken:  var(--raw-surface-sunken);
+  --color-surface-overlay: color-mix(in srgb, var(--raw-bg) 88%, transparent);
+
+  /* Text */
+  --color-text-primary:    var(--raw-text-primary);
+  --color-text-secondary:  var(--raw-text-secondary);
+  --color-text-muted:      var(--raw-text-muted);
+  --color-text-disabled:   var(--raw-text-disabled);
+
+  /* Borders */
+  --color-border:          var(--raw-border);
+  --color-border-subtle:   var(--raw-border-subtle);
+  --color-border-strong:   var(--raw-border-strong);
+
+  /* Accent */
+  --color-accent:           var(--raw-accent);
+  --color-accent-secondary: color-mix(in oklch, var(--raw-accent) 70%, white 30%);
+  --color-on-accent:        var(--raw-on-accent);
+  --color-accent-subtle:    color-mix(in oklch, var(--raw-accent) 18%, var(--color-surface));
+  --color-accent-border:    color-mix(in oklch, var(--raw-accent) 50%, var(--color-border));
+  --color-accent-glow:      color-mix(in oklch, var(--raw-accent) 40%, transparent);
+
+  /* Status */
+  --color-success: var(--raw-success); --color-on-success: var(--raw-on-accent);
+  --color-warning: var(--raw-warning); --color-on-warning: var(--raw-on-accent);
+  --color-danger:  var(--raw-danger);  --color-on-danger:  var(--raw-on-accent);
+  --color-info:    var(--raw-info);
+
+  /* Interaction */
+  --color-hover:    color-mix(in srgb, var(--color-text-primary)  6%, transparent);
+  --color-active:   color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-selected: color-mix(in oklch, var(--raw-accent) 22%, transparent);
+  --color-focus-ring: var(--color-accent);
+
+  /* Shadows */
+  --shadow-sm: var(--raw-shadow-sm);
+  --shadow-md: var(--raw-shadow-md);
+  --shadow-lg: var(--raw-shadow-lg);
+
+  /* Radius */
+  --radius-xs: 4px;  --radius-sm: 6px;  --radius-md: 10px;
+  --radius-lg: 14px; --radius-xl: 20px; --radius-full: 9999px;
+
+  /* Spacing */
+  --space-1:  4px; --space-2:  8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+  /* Typography */
+  --font-arabic:    'Amiri', 'Times New Roman', serif;
+  --font-ui:        'Tajawal', -apple-system, BlinkMacSystemFont,
+                    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-developer: var(--font-ui);
+  --font-mono:      ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+  --font-size-xs:      12px;  --font-size-sm:      13px;
+  --font-size-body:    15px;  --font-size-md:      16px;
+  --font-size-lg:      18px;  --font-size-heading: 22px;
+  --font-size-display: 28px;
+
+  --line-height-tight:   1.25;
+  --line-height-body:    1.55;
+  --line-height-arabic:  1.85;
+
+  /* Motion */
+  --ease-standard:   cubic-bezier(0.2, 0, 0.2, 1);
+  --duration-fast:   120ms;
+  --duration-normal: 200ms;
+  --duration-slow:   320ms;
+
+  /* Layout */
+  --content-max-width: 1200px;
+  --header-height:     60px;
+
+  /* ===== LEGACY ALIASES (migration safety net; remove per-file as components migrate) ===== */
+  --accent:    var(--color-accent);
+  --accent2:   var(--color-accent-secondary);
+  --on-accent: var(--color-on-accent);
+  --glow:      var(--color-accent-glow);
+  --bg:        var(--color-background);
+  --card:      var(--color-surface);
+  --card2:     var(--color-surface-raised);
+  --border:    var(--color-border);
+  --text:      var(--color-text-primary);
+  --text-dim:  var(--color-text-muted);
+  --green:     var(--color-success);
+  --red:       var(--color-danger);
+  --yellow:    var(--color-warning);
+  --blue:      var(--color-info);
+}
+
+/* ---------- FONT OVERRIDES ---------- */
+[data-font="tajawal"] { --font-ui: 'Tajawal', sans-serif; }
+[data-font="cairo"]   { --font-ui: 'Cairo', sans-serif; }
+[data-font="inter"]   { --font-ui: 'Inter', sans-serif; }
+[data-font="system"]  { --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+/* ---------- REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+/* ==========================================================================
+   SAHIB TOKENS v3.1 — compatibility bridge for the existing component CSS.
+   The app now uses semantic tokens; legacy names stay as aliases so no view
+   is left with an undefined colour while it is migrated to the new system.
+   ========================================================================== */
+
+:root {
+  /* Surfaces */
+  --surface:          var(--color-surface);
+  --surface2:         var(--color-surface-raised);
+  --surface3:         color-mix(in srgb, var(--color-surface-raised) 72%, var(--color-text-primary) 6%);
+  --surface-hover:    var(--color-hover);
+
+  /* Text */
+  --text2:            var(--color-text-secondary);
+  --text3:            var(--color-text-muted);
+
+  /* Status */
+  --orange:           var(--color-warning);
+  --yellow:           var(--color-warning);
+
+  /* Shape & motion */
+  --sh:               var(--shadow-lg);
+  --tr:               var(--duration-normal) var(--ease-standard);
+  --r:                var(--radius-lg);
+  --rs:               var(--radius-md);
+  --radius-pill:      var(--radius-full);
+
+  /* Type scale */
+  --fs-xs:            var(--font-size-xs);
+  --fs-sm:            var(--font-size-sm);
+  --fs-md:            var(--font-size-body);
+  --fs-lg:            var(--font-size-md);
+  --fs-xl:            var(--font-size-heading);
+  --fs-2xl:           var(--font-size-display);
+  --fs-3xl:           36px;
+
+  /* Spacing */
+  --sp-1:             var(--space-1);
+  --sp-2:             var(--space-2);
+  --sp-3:             var(--space-3);
+  --sp-4:             var(--space-4);
+  --sp-5:             var(--space-6);
+  --sp-6:             var(--space-8);
+
+  /* Palette aliases used by the tasbih and daily-cycle components */
+  --ctp-rose:         var(--color-danger);
+  --ctp-flamingo:     var(--accent-pink);
+  --ctp-pink:         var(--accent-pink);
+  --ctp-mauve:        var(--accent-mauve);
+  --ctp-red:          var(--color-danger);
+  --ctp-maroon:       var(--color-danger);
+  --ctp-peach:        var(--accent-peach);
+  --ctp-yellow:       var(--accent-gold);
+  --ctp-green:        var(--color-success);
+  --ctp-teal:         var(--accent-teal);
+  --ctp-sky:          var(--accent-sky);
+  --ctp-sapphire:     var(--accent-blue);
+  --ctp-blue:         var(--accent-blue);
+  --ctp-lavender:     var(--accent-mauve);
+  --ctp-text:         var(--color-text-primary);
+  --ctp-subtext1:     var(--color-text-secondary);
+  --ctp-subtext0:     var(--color-text-muted);
+  --ctp-overlay2:     var(--color-text-muted);
+  --ctp-overlay1:     var(--color-text-disabled);
+  --ctp-overlay0:     var(--color-text-disabled);
+  --ctp-surface2:     var(--color-border-strong);
+  --ctp-surface1:     var(--color-border);
+  --ctp-surface0:     var(--color-surface-raised);
+  --ctp-base:         var(--color-background);
+  --ctp-mantle:       var(--color-background);
+  --ctp-crust:        var(--color-surface-sunken);
+
+  /* Daily cycle semantics */
+  --cycle-night:      var(--accent-blue);
+  --cycle-day:        var(--accent-gold);
+  --cycle-teal:       var(--accent-teal);
+  --cycle-mauve:      var(--accent-mauve);
+  --cycle-yellow:     var(--accent-gold);
+  --cycle-label:      var(--color-text-primary);
+  --cycle-label-dim:  var(--color-text-muted);
+
+  /* Application shell */
+  --sidebar-width:    248px;
+  --sidebar-gap:      var(--space-6);
+  --topbar-height:    72px;
+  --page-gutter:      clamp(20px, 2.5vw, 40px);
+  --elevated-border:  1px solid var(--color-border);
+  --focus-ring:       0 0 0 3px var(--color-accent-glow);
+
+  /* Semantic status surfaces */
+  --success-subtle:   color-mix(in oklch, var(--color-success) 14%, var(--color-surface));
+  --warning-subtle:   color-mix(in oklch, var(--color-warning) 14%, var(--color-surface));
+  --danger-subtle:    color-mix(in oklch, var(--color-danger) 14%, var(--color-surface));
+  --info-subtle:      color-mix(in oklch, var(--color-info) 14%, var(--color-surface));
+  --accent-subtle:    var(--color-accent-subtle);
+  --accent-border:    var(--color-accent-border);
+}
+
+/* Fallback palette when no theme attributes are present yet (avoids a flash). */
+:root:not([data-theme]) {
+  --raw-bg: #1e1e2e; --raw-bg-alt: #181825;
+  --raw-surface: #313244; --raw-surface-raised: #45475a; --raw-surface-sunken: #11111b;
+  --raw-border: #45475a; --raw-border-subtle: #313244; --raw-border-strong: #585b70;
+  --raw-text-primary: #cdd6f4; --raw-text-secondary: #bac2de;
+  --raw-text-muted: #a6adc8; --raw-text-disabled: #6c7086;
+  --raw-success: #a6e3a1; --raw-warning: #f9e2af; --raw-danger: #f38ba8; --raw-info: #89b4fa;
+  --raw-on-accent: #1e1e2e;
+  --raw-shadow-sm: 0 1px 2px rgba(0,0,0,0.40);
+  --raw-shadow-md: 0 4px 12px rgba(0,0,0,0.45);
+  --raw-shadow-lg: 0 12px 32px rgba(0,0,0,0.55);
+  --accent-gold: #f9e2af; --accent-peach: #fab387;
+  --accent-red: #f38ba8; --accent-mauve: #cba6f7;
+  --accent-blue: #89b4fa; --accent-teal: #94e2d5;
+  --accent-green: #a6e3a1; --accent-pink: #f5c2e7;
+  --accent-sky: #89dceb;
+}
