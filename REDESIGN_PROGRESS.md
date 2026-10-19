@@ -185,7 +185,8 @@ Screenshots reviewed at 1200/1440/1920 for Home, settings tabs, Prayer today/mon
 ## 8. Git and deployment status
 
 - Branch: `redesign/pc-first` (from `main` @ `820bf24`).
-- Desktop checkpoint commit: recorded below after commit.
+- Desktop checkpoint implementation commit: `802cd14` — “Redesign desktop UI and add offline prayer engine”.
+- This progress document is updated in a follow-up docs commit on the same branch.
 - Deployment: **not performed.** No production deployment before desktop review, per the checkpoint rule. `main`/GitHub Pages remain unchanged.
 - Secrets: none added. No force-push or remote-branch deletion.
 
