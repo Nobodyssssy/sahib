@@ -178,6 +178,8 @@ function _closeDetailFromHistory(){
 
 /* UI-driven close. Pops the history entry. */
 function closeDetail(){
+  const ov = $('ov-detail');
+  if(!ov || !ov.classList.contains('open')) return;
   if(window.history && window.history.length > 1){
     history.back();
     return;

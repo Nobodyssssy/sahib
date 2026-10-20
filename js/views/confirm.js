@@ -1,13 +1,26 @@
 'use strict';
 
+let _confirmReturnFocus = null;
+
+function _openConfirm(){
+  _confirmReturnFocus = document.activeElement;
+  $('ov-confirm').classList.add('open');
+  lockBody();
+  const focusCancel = () => {
+    const cancel = $('ov-confirm').querySelector('.btn-cancel');
+    if(cancel) cancel.focus();
+  };
+  focusCancel();
+  setTimeout(focusCancel, 50);
+}
+
 function askDelDhikr(id){
   delId = id;
   delCat = null;
   $('conf-ico').innerHTML = icon('trash', 32);
-  $('conf-t').textContent = 'Delete this dhikr?';
-  $('conf-x').textContent = 'This cannot be undone.';
-  $('ov-confirm').classList.add('open');
-  lockBody();
+  $('conf-t').textContent = 'حذف هذا الذكر؟';
+  $('conf-x').textContent = 'Delete this dhikr? This cannot be undone.';
+  _openConfirm();
 }
 
 function askDelCat(key){
@@ -18,10 +31,9 @@ function askDelCat(key){
     Array.isArray(d.categories) && d.categories.includes(key)
   ).length;
   $('conf-ico').innerHTML = icon('layers', 32);
-  $('conf-t').textContent = `Delete "${c.ar}"?`;
-  $('conf-x').textContent = `This will remove it from ${n} adkar. Dhikr that were only in this category will be deleted entirely.`;
-  $('ov-confirm').classList.add('open');
-  lockBody();
+  $('conf-t').textContent = `حذف «${c.ar}»؟`;
+  $('conf-x').textContent = `Delete this category? It will be removed from ${n} adkar. Dhikr that were only in this category will be deleted entirely.`;
+  _openConfirm();
 }
 
 function closeConfirm(){
@@ -29,6 +41,10 @@ function closeConfirm(){
   delId = null;
   delCat = null;
   unlockBody();
+  if(_confirmReturnFocus && typeof _confirmReturnFocus.focus === 'function'){
+    _confirmReturnFocus.focus();
+  }
+  _confirmReturnFocus = null;
 }
 
 function doDelete(){

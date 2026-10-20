@@ -80,6 +80,11 @@ function updateSettingsUI(){
     el.classList.toggle('active', el.getAttribute('data-accent-option') === state.accent));
   document.querySelectorAll('[data-font-option]').forEach(el =>
     el.classList.toggle('active', el.getAttribute('data-font-option') === state.font));
+  document.querySelectorAll('[data-sidebar-position-option]').forEach(el => {
+    const on = el.getAttribute('data-sidebar-position-option') === state.sidebarPosition;
+    el.classList.toggle('active', on);
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
 }
 
 async function renderSettingsBody(){
@@ -120,9 +125,9 @@ async function _hydratePrayerLocation(){
    APPEARANCE
    ═══════════════════════════════════════════════════════════ */
 function _appearanceHTML(){
-  const state = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.state : { theme: 'catppuccin', mode: 'dark', accent: 'gold', font: 'tajawal' };
+  const state = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.state : { theme: 'catppuccin', mode: 'dark', accent: 'gold', font: 'tajawal', sidebarPosition: 'right' };
   const themes = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.THEMES : [];
-  const accents = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.ACCENTS : [];
+  const accents = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.accentsForTheme(state.theme) : [];
   const fonts = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.FONTS : [];
 
   return `
@@ -131,7 +136,10 @@ function _appearanceHTML(){
       <div class="theme-grid">
         ${themes.map(t => `
           <button type="button" class="theme-card ${state.theme === t.id ? 'active' : ''}" data-theme-option="${t.id}" onclick="setThemeFamily('${t.id}')">
-            <span class="theme-preview t-${t.id}"></span>
+            <span class="theme-preview t-${t.id}" aria-hidden="true">
+              <span class="theme-preview-sheet"></span>
+              <span class="theme-preview-glyph">ص</span>
+            </span>
             <span class="theme-card-name">${esc(t.label)}</span>
             <span class="theme-card-hint">${esc(t.hint)}</span>
           </button>`).join('')}
@@ -148,14 +156,32 @@ function _appearanceHTML(){
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">Accent</div>
+      <div class="settings-section-title">Accent · ${esc((themes.find(t => t.id === state.theme) || {}).label || state.theme)}</div>
       <div class="accent-grid">
         ${accents.map(a => `
-          <button type="button" class="accent-option ${state.accent === a.id ? 'active' : ''}" data-accent-option="${a.id}" onclick="setAccentOption('${a.id}')">
+          <button type="button" class="accent-option ${state.accent === a.id ? 'active' : ''}" data-accent-option="${a.id}" onclick="setAccentOption('${a.id}')" aria-label="${esc(a.label)} accent">
             <span class="accent-dot dot-${a.id}"></span>
             <span>${esc(a.label)}</span>
           </button>`).join('')}
       </div>
+      <div class="settings-section-desc">Nine accents tuned for this theme family. Switching family keeps the accent role and re-inks it from that family’s palette.</div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Navigation</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-title">Sidebar position</div>
+          <div class="settings-row-desc">Physical side of the screen. Works independently of text direction.</div>
+        </div>
+        <div class="settings-row-actions">
+          <div class="segmented" role="group" aria-label="Sidebar position">
+            <button type="button" class="${state.sidebarPosition === 'left' ? 'active' : ''}" data-sidebar-position-option="left" aria-pressed="${state.sidebarPosition === 'left'}" onclick="setSidebarPositionOption('left')">Left</button>
+            <button type="button" class="${state.sidebarPosition === 'right' ? 'active' : ''}" data-sidebar-position-option="right" aria-pressed="${state.sidebarPosition === 'right'}" onclick="setSidebarPositionOption('right')">Right</button>
+          </div>
+        </div>
+      </div>
+      <div class="settings-note">The collapse control lives at the top of the sidebar. Its state is remembered on this device.</div>
     </div>
 
     <div class="settings-section">
@@ -189,7 +215,7 @@ function _appearanceHTML(){
 function setThemeFamily(id){
   if(typeof SAHIB_THEME === 'undefined') return;
   SAHIB_THEME.setTheme(id);
-  updateSettingsUI();
+  renderSettingsBody();
 }
 
 function setThemeModeOption(mode){
@@ -210,12 +236,26 @@ function setFontOption(id){
   updateSettingsUI();
 }
 
+function setSidebarPositionOption(position){
+  if(typeof SAHIB_THEME === 'undefined') return;
+  SAHIB_THEME.setSidebarPosition(position);
+  updateSettingsUI();
+}
+
+async function toggleSidebarCollapseOption(){
+  if(typeof SAHIB_THEME === 'undefined') return;
+  await SAHIB_THEME.toggleSidebarCollapsed();
+  updateSettingsUI();
+}
+
 async function resetAppearanceSettings(){
   if(typeof SAHIB_THEME === 'undefined') return;
   await SAHIB_THEME.setTheme('catppuccin');
   await SAHIB_THEME.setMode('dark');
   await SAHIB_THEME.setAccent('gold');
   await SAHIB_THEME.setFont('tajawal');
+  await SAHIB_THEME.setSidebarPosition('right');
+  await SAHIB_THEME.setSidebarCollapsed(false);
   updateSettingsUI();
   toast('Appearance reset', 'check');
 }
@@ -573,103 +613,291 @@ async function _alertsHTML(){
     : permission === 'denied' ? 'Blocked in browser settings'
     : permission === 'unsupported' ? 'Not supported by this browser'
     : 'Not requested yet';
+  const localStandard = await _getLocalAdhan('standard');
+  const localFajr = await _getLocalAdhan('fajr');
+  const standardSelected = (a.audio.standard === 'local' && !localStandard) ? 'azhar' : a.audio.standard;
+  const fajrSelected = (a.audio.fajr === 'local' && !localFajr) ? 'fajr-balakong' : a.audio.fajr;
 
   return `
-    <div class="settings-section">
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">Approaching reminders</div>
-          <div class="settings-row-desc">In-app reminder before each prayer while Sahib is open or installed.</div>
+    <div class="alerts-panel">
+      <section class="alert-master ${a.enabled ? 'is-on' : ''}">
+        <div class="alert-master-copy">
+          <div class="settings-section-title">Prayer alerts</div>
+          <h3>Remember the next prayer</h3>
+          <p>${a.enabled
+            ? 'A quiet nudge before the prayer and, if you choose, at the moment it enters.'
+            : 'Alerts are off. Turn this on to use the per-prayer schedule below.'}</p>
         </div>
-        <div class="settings-row-actions">
-          <button type="button" class="switch ${a.enabled ? 'on' : ''}" data-alert-switch="enabled" role="switch" aria-checked="${a.enabled}" onclick="togglePrayerAlertSetting('enabled')" aria-label="Approaching reminders"></button>
-        </div>
-      </div>
+        <button type="button" class="switch ${a.enabled ? 'on' : ''}" data-alert-switch="enabled" role="switch" aria-checked="${a.enabled}" onclick="togglePrayerAlertSetting('enabled')" aria-label="Prayer alerts"></button>
+      </section>
 
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">Lead time</div>
-          <div class="settings-row-desc">How long before the prayer the reminder appears.</div>
+      <section class="settings-section">
+        <div class="alert-setting-grid">
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-title">Lead time</div>
+              <div class="settings-row-desc">How long before the prayer the reminder appears.</div>
+            </div>
+            <div class="settings-row-actions">
+              <select class="fse" style="width:auto" onchange="setAlertLead(this.value)" aria-label="Reminder lead time">
+                ${[5, 10, 15, 20, 30, 45, 60].map(m => `<option value="${m}" ${a.leadMinutes === m ? 'selected' : ''}>${m} min before</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-row-title">At the entered time</div>
+              <div class="settings-row-desc">A second reminder when the prayer begins.</div>
+            </div>
+            <div class="settings-row-actions">
+              <button type="button" class="switch ${a.atTime ? 'on' : ''}" data-alert-switch="atTime" role="switch" aria-checked="${a.atTime}" onclick="togglePrayerAlertSetting('atTime')" aria-label="Reminder when the prayer enters"></button>
+            </div>
+          </div>
         </div>
-        <div class="settings-row-actions">
-          <select class="fse" style="width:auto" onchange="setAlertLead(this.value)">
-            ${[5, 10, 15, 20, 30, 45, 60].map(m => `<option value="${m}" ${a.leadMinutes === m ? 'selected' : ''}>${m} min</option>`).join('')}
-          </select>
-        </div>
-      </div>
+      </section>
 
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">When the prayer enters</div>
-          <div class="settings-row-desc">A second reminder at the exact entered time.</div>
+      <section class="settings-section">
+        <div class="settings-section-title">Per prayer</div>
+        <div class="alert-prayer-list">
+          ${PRAYER_ALERTABLE.map(name => {
+            const pp = a.perPrayer[name] || { mode: 'off' };
+            const mode = pp.mode || (pp.alert === false ? 'off' : 'chime');
+            return `
+              <div class="alert-prayer-row ${mode === 'off' ? 'is-off' : ''}">
+                <div class="alert-prayer-name"><strong>${PRAYER_NAMES_AR[name] || name}</strong><span>${name}</span></div>
+                <div class="alert-mode" role="group" aria-label="${name} alert">
+                  ${['off', 'chime', 'adhan'].map(value => `
+                    <button type="button" class="alert-mode-btn ${mode === value ? 'active' : ''}"
+                            data-pp-mode="${name}:${value}" aria-pressed="${mode === value}"
+                            onclick="setPerPrayerMode('${name}','${value}')">${value === 'off' ? 'Off' : value === 'chime' ? 'Chime' : 'Adhan'}</button>`).join('')}
+                </div>
+              </div>`;
+          }).join('')}
         </div>
-        <div class="settings-row-actions">
-          <button type="button" class="switch ${a.atTime ? 'on' : ''}" data-alert-switch="atTime" role="switch" aria-checked="${a.atTime}" onclick="togglePrayerAlertSetting('atTime')" aria-label="Reminder when the prayer enters"></button>
-        </div>
-      </div>
-    </div>
+        <div class="settings-section-desc">Off suppresses the alert for that prayer. Chime is a short original tone. Adhan plays the selected recording.</div>
+      </section>
 
-    <div class="settings-section">
-      <div class="settings-section-title">Per prayer</div>
-      <div class="alert-prayer-list">
-        ${PRAYER_ALERTABLE.map(name => {
-          const pp = a.perPrayer[name] || { alert: true, sound: true };
-          return `
-            <div class="alert-prayer-row">
-              <div class="alert-prayer-name"><strong>${name}</strong><span>${PRAYER_NAMES_AR[name] || ''}</span></div>
-              <button type="button" class="switch ${pp.alert ? 'on' : ''}" data-pp-switch="${name}:alert" role="switch" aria-checked="${pp.alert}" onclick="togglePerPrayerSetting('${name}','alert')" aria-label="${name} reminder"></button>
-              <button type="button" class="switch ${pp.sound ? 'on' : ''}" data-pp-switch="${name}:sound" role="switch" aria-checked="${pp.sound}" onclick="togglePerPrayerSetting('${name}','sound')" aria-label="${name} chime"></button>
-            </div>`;
-        }).join('')}
-      </div>
-      <div class="settings-section-desc">Right toggle: reminder · left toggle: chime.</div>
-    </div>
+      <section class="settings-section">
+        <div class="settings-section-title">Adhan audio</div>
+        <div class="adhan-audio-grid">
+          <div class="adhan-field">
+            <label class="adhan-label" for="adhan-standard-select">Standard adhan</label>
+            <select class="fse" id="adhan-standard-select" onchange="setAdhanSource('standard', this.value)">
+              ${_adhanOptionsHTML('standard', standardSelected, localStandard)}
+            </select>
+            <div class="adhan-file-meta">${localStandard ? `${esc(localStandard.name)} · ${_audioSize(localStandard.size)} · ${_audioDuration(localStandard.duration)}` : 'Bundled CC0 field recordings. No network needed.'}</div>
+            <div class="adhan-file-actions">
+              <label class="io-btn adhan-file-label">
+                <span class="btn-icon" data-icon="upload"></span> Choose local file
+                <input type="file" accept="audio/*,.mp3,.ogg,.oga,.wav,.m4a,.aac" onchange="importAdhanFile('standard', this)" hidden>
+              </label>
+              ${localStandard ? `<button type="button" class="btn-cancel" onclick="clearLocalAdhan('standard')">Remove local file</button>` : ''}
+            </div>
+          </div>
 
-    <div class="settings-section">
-      <div class="settings-section-title">Chime</div>
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">Sound</div>
-          <div class="settings-row-desc">A short built-in chime. No recitation audio is bundled.</div>
+          <div class="adhan-field">
+            <label class="adhan-label" for="adhan-fajr-select">Fajr adhan</label>
+            <select class="fse" id="adhan-fajr-select" onchange="setAdhanSource('fajr', this.value)">
+              ${_adhanOptionsHTML('fajr', fajrSelected, localFajr)}
+            </select>
+            <div class="adhan-file-meta">${localFajr ? `${esc(localFajr.name)} · ${_audioSize(localFajr.size)} · ${_audioDuration(localFajr.duration)}` : 'Bundled Fajr recording. The Fajr preview uses this file.'}</div>
+            <div class="adhan-file-actions">
+              <label class="io-btn adhan-file-label">
+                <span class="btn-icon" data-icon="upload"></span> Choose local Fajr file
+                <input type="file" accept="audio/*,.mp3,.ogg,.oga,.wav,.m4a,.aac" onchange="importAdhanFile('fajr', this)" hidden>
+              </label>
+              ${localFajr ? `<button type="button" class="btn-cancel" onclick="clearLocalAdhan('fajr')">Remove local file</button>` : ''}
+            </div>
+          </div>
         </div>
-        <div class="settings-row-actions">
-          <button type="button" class="switch ${a.sound ? 'on' : ''}" data-alert-switch="sound" role="switch" aria-checked="${a.sound}" onclick="togglePrayerAlertSetting('sound')" aria-label="Chime"></button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">Volume</div>
-          <div class="settings-row-desc" id="settings-volume-label">${Math.round(a.volume * 100)}%</div>
-        </div>
-        <div class="settings-row-actions">
-          <input type="range" min="0" max="100" value="${Math.round(a.volume * 100)}" oninput="onSoundVolumeChange(this.value)" style="width:160px">
-          <button type="button" class="io-btn" onclick="previewPrayerChime()">Preview</button>
-        </div>
-      </div>
-      <div class="settings-note">
-        Browsers require one interaction with the page before audio can play — tapping Preview unlocks it for this session.
-      </div>
-    </div>
 
-    <div class="settings-section">
-      <div class="settings-section-title">Browser notifications</div>
-      <div class="settings-row">
-        <div class="settings-row-info">
-          <div class="settings-row-title">Notification permission: <strong>${esc(permissionLabel)}</strong></div>
-          <div class="settings-row-desc">Optional. In-app reminders work without it.</div>
+        <div class="adhan-play-row">
+          <button type="button" class="io-btn adhan-preview-btn" onclick="previewAdhanFromSettings('standard')">${icon('play', 14)} Preview standard</button>
+          <button type="button" class="io-btn adhan-preview-btn" onclick="previewAdhanFromSettings('fajr')">${icon('play', 14)} Preview Fajr</button>
+          <button type="button" class="btn-cancel" onclick="stopAdhanFromSettings()">Stop</button>
+          <label class="adhan-volume">Volume
+            <input type="range" min="0" max="100" value="${Math.round(a.volume * 100)}" oninput="onSoundVolumeChange(this.value)" aria-label="Adhan volume">
+            <span id="settings-volume-label">${Math.round(a.volume * 100)}%</span>
+          </label>
+          <button type="button" class="io-btn" onclick="previewPrayerChime()">${icon('volume', 14)} Test chime</button>
         </div>
-        <div class="settings-row-actions">
-          ${permission === 'granted'
-            ? `<button type="button" class="btn-cancel" onclick="testPrayerNotification()">Test</button>`
-            : `<button type="button" class="btn-save" onclick="enablePrayerNotifications()">Enable notifications</button>`}
+
+        <div class="settings-note">
+          <strong>Local files:</strong> audio is validated, kept in IndexedDB on this device and available offline. It is never uploaded or synced. Clearing browser storage removes it.
         </div>
-      </div>
-      <div class="settings-note">
-        <strong>Browser limits:</strong> reminders run while Sahib is open, installed, or recently active. Background delivery is not
-        guaranteed by any browser, and audio may be muted until the page has been touched. Sahib never asks for notification
-        permission on its own — only from this button.
-      </div>
+        <div class="settings-note">
+          <strong>Browser limits:</strong> audio starts only after you touch or type on the page. While the installed PWA is fully closed or suspended, browsers may pause timers and stop audio or notifications; Sahib cannot guarantee background playback. Keep Sahib open at prayer time for the most reliable alert.
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-title">Notifications</div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Browser notifications</div>
+            <div class="settings-row-desc">Permission: <strong>${esc(permissionLabel)}</strong>. Optional; in-app reminders and audio work without it.</div>
+          </div>
+          <div class="settings-row-actions">
+            <button type="button" class="switch ${a.notify ? 'on' : ''}" data-alert-switch="notify" role="switch" aria-checked="${a.notify}" onclick="togglePrayerAlertSetting('notify')" aria-label="Browser notifications"></button>
+            ${permission === 'granted'
+              ? `<button type="button" class="btn-cancel" onclick="testPrayerNotification()">Test</button>`
+              : `<button type="button" class="btn-save" onclick="enablePrayerNotifications()">Enable</button>`}
+          </div>
+        </div>
+        <div class="settings-note">
+          Sahib never asks for notification permission on its own. A notification is still subject to your operating system's focus and battery settings.
+        </div>
+      </section>
     </div>`;
+}
+
+function _adhanOptionsHTML(kind, selected, localMeta){
+  const bundled = (typeof ADHAN_BUNDLED !== 'undefined' && ADHAN_BUNDLED[kind]) ? ADHAN_BUNDLED[kind] : [];
+  return bundled.map(source =>
+    `<option value="${source.id}" ${selected === source.id ? 'selected' : ''}>${esc(source.label)} · ${esc(source.credit)}</option>`
+  ).join('') + (localMeta
+    ? `<option value="local" ${selected === 'local' ? 'selected' : ''}>Local file · ${esc(localMeta.name)}</option>`
+    : '');
+}
+
+function _audioSize(bytes){
+  const n = Number(bytes) || 0;
+  if(n >= 1048576) return `${(n / 1048576).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(n / 1024))} KB`;
+}
+
+function _audioDuration(seconds){
+  const n = Number(seconds);
+  if(!Number.isFinite(n) || n <= 0) return 'duration unknown';
+  const m = Math.floor(n / 60);
+  const s = Math.round(n % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+async function _getLocalAdhan(kind){
+  try{
+    if(typeof ADHAN_LOCAL_KEYS === 'undefined') return null;
+    return await store.getMeta(ADHAN_LOCAL_KEYS[kind]);
+  }catch(err){
+    return null;
+  }
+}
+
+function _readAudioDuration(file){
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const audio = document.createElement('audio');
+    let done = false;
+    const finish = (value) => {
+      if(done) return;
+      done = true;
+      URL.revokeObjectURL(url);
+      resolve(value);
+    };
+    audio.preload = 'metadata';
+    audio.onloadedmetadata = () => finish(Number.isFinite(audio.duration) ? audio.duration : null);
+    audio.onerror = () => finish(null);
+    setTimeout(() => finish(null), 6000);
+    audio.src = url;
+  });
+}
+
+async function importAdhanFile(kind, input){
+  const file = input && input.files && input.files[0];
+  if(!file) return;
+  const name = file.name || 'recording';
+  const extOk = /\.(mp3|ogg|oga|wav|m4a|aac)$/i.test(name);
+  const typeOk = !file.type || /^audio\//i.test(file.type);
+  const maxBytes = (typeof ADHAN_LOCAL_MAX_BYTES !== 'undefined') ? ADHAN_LOCAL_MAX_BYTES : 20 * 1024 * 1024;
+  if(!extOk || !typeOk){
+    toast('Choose an MP3, OGG, WAV, M4A or AAC audio file', 'alert');
+    input.value = '';
+    return;
+  }
+  if(file.size <= 0 || file.size > maxBytes){
+    toast(`Audio must be smaller than ${Math.round(maxBytes / 1048576)} MB`, 'alert');
+    input.value = '';
+    return;
+  }
+  const duration = await _readAudioDuration(file);
+  const maxSeconds = (typeof ADHAN_LOCAL_MAX_SECONDS !== 'undefined') ? ADHAN_LOCAL_MAX_SECONDS : 720;
+  if(duration && duration > maxSeconds){
+    toast('That recording is longer than 12 minutes', 'alert');
+    input.value = '';
+    return;
+  }
+  try{
+    await store.setMeta(ADHAN_LOCAL_KEYS[kind], {
+      name,
+      type: file.type || 'audio/mpeg',
+      size: file.size,
+      duration,
+      ts: Date.now(),
+      blob: file
+    });
+    await savePrayerPrefs({ alerts: { audio: { [kind]: 'local' } } });
+    toast('Audio saved on this device', 'check');
+    renderSettingsBody();
+  }catch(err){
+    console.error('[adhan] save failed', err);
+    toast('Could not save that audio file', 'alert');
+  }finally{
+    input.value = '';
+  }
+}
+
+async function clearLocalAdhan(kind){
+  try{
+    if(typeof db !== 'undefined' && db.meta && db.meta.delete){
+      await db.meta.delete(ADHAN_LOCAL_KEYS[kind]);
+    } else {
+      await store.setMeta(ADHAN_LOCAL_KEYS[kind], null);
+    }
+    const fallback = kind === 'fajr' ? 'fajr-balakong' : 'azhar';
+    await savePrayerPrefs({ alerts: { audio: { [kind]: fallback } } });
+    if(typeof stopPrayerAdhan === 'function') stopPrayerAdhan();
+    toast('Local audio removed', 'check');
+    renderSettingsBody();
+  }catch(err){
+    toast('Could not remove the local audio file', 'alert');
+  }
+}
+
+async function setAdhanSource(kind, value){
+  const allowed = kind === 'fajr' ? ['fajr-balakong', 'local'] : ['azhar', 'quseir', 'local'];
+  const next = allowed.includes(value) ? value : allowed[0];
+  await savePrayerPrefs({ alerts: { audio: { [kind]: next } } });
+  renderSettingsBody();
+}
+
+async function previewAdhanFromSettings(kind){
+  stopAdhanFromSettings();
+  const ok = (typeof PrayerAlerts !== 'undefined')
+    ? await PrayerAlerts.previewAdhan(kind)
+    : false;
+  if(!ok){
+    toast('Audio could not play. Check the file and tap Preview again.', 'alert');
+  }
+}
+
+function stopAdhanFromSettings(){
+  if(typeof PrayerAlerts !== 'undefined' && PrayerAlerts.stopAdhan) PrayerAlerts.stopAdhan();
+}
+
+async function setPerPrayerMode(name, mode){
+  if(!['off', 'chime', 'adhan'].includes(mode)) return;
+  const prefs = await getPrayerPrefs();
+  const pp = { ...(prefs.alerts.perPrayer[name] || {}) };
+  pp.mode = mode;
+  pp.alert = mode !== 'off';
+  pp.sound = mode !== 'off';
+  await savePrayerPrefs({ alerts: { perPrayer: { [name]: pp } } });
+  document.querySelectorAll(`[data-pp-mode^="${name}:"]`).forEach(btn => {
+    const on = btn.getAttribute('data-pp-mode') === `${name}:${mode}`;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.closest('.alert-prayer-row')?.classList.toggle('is-off', mode === 'off');
+  });
 }
 
 async function togglePrayerAlertSetting(field){
@@ -744,6 +972,7 @@ function _dataHTML(){
       <div class="settings-section-title">Backup</div>
       <div class="settings-section-desc">
         Your adhkar, categories and favorites are exported as a single JSON file. Nothing is uploaded anywhere.
+        Daily Practice completions, trackers and custom reminders have a separate backup under Practice settings.
       </div>
       <div class="settings-inline-actions">
         <button type="button" class="io-btn" onclick="exportData()"><span class="btn-icon" data-icon="download"></span> Export JSON</button>
@@ -806,9 +1035,9 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.10.68 · service worker v2.10.68<br>
+        <strong>Version:</strong> v2.10.70 · service worker v2.10.70<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
-        Open-Meteo geocoding, and books/audio already shipped with the app.
+        Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>
     </div>
 
@@ -820,6 +1049,11 @@ function _aboutHTML(){
         <a href="https://github.com/batoulapps/adhan-js" target="_blank" rel="noopener">Adhan.js</a> (MIT, © Batoul Apps).<br>
         <strong>Prayer feature study:</strong> <a href="https://github.com/Khiro95/Awqat-Salaat" target="_blank" rel="noopener">Awqat Salaat</a> by Khiro95 (MIT, © 2023 Khiro) —
         used as a behavioural reference for reminders, CSV import and per-prayer adjustments. No Awqat Salaat code or audio assets are bundled.<br>
+        <strong>Adhan recordings:</strong>
+        <a href="https://freesound.org/people/AhmadAiuby/sounds/683120/" target="_blank" rel="noopener">Al-Azhar Park, Cairo</a> and
+        <a href="https://freesound.org/people/AhmadAiuby/sounds/555065/" target="_blank" rel="noopener">Quseir by the sea</a> by Ahmad Aiuby;
+        <a href="https://freesound.org/people/aridtrax/sounds/863861/" target="_blank" rel="noopener">Fajr, Balakong</a> by aridtrax.
+        All three are CC0 1.0 public-domain recordings; full provenance is in <code>assets/adhan/LICENSES.md</code>.<br>
         <strong>Themes:</strong> Catppuccin, Aura, Dracula, Tokyo Night, Rosé Pine (community palettes).<br>
         <strong>Fonts:</strong> Amiri, Tajawal, Cairo, Inter — SIL Open Font License.<br>
         <strong>Icons:</strong> Lucide (ISC). <strong>PDF:</strong> EmbedPDF / PDFium.

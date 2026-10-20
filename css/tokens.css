@@ -174,7 +174,7 @@
   --raw-bg: #faf4ed; --raw-bg-alt: #f2e9e1;
   --raw-surface: #fffaf3; --raw-surface-raised: #f4ede8; --raw-surface-sunken: #f2e9e1;
   --raw-border: #dfdad9; --raw-border-subtle: #eae4dd; --raw-border-strong: #cecacd;
-  --raw-text-primary: #575279; --raw-text-secondary: #6e6a86;
+  --raw-text-primary: #575279; --raw-text-secondary: #68647f;
   --raw-text-muted: #797593; --raw-text-disabled: #9893a5;
   --raw-success: #286983; --raw-warning: #b7791f; --raw-danger: #b4637a; --raw-info: #56949f;
   --raw-on-accent: #ffffff;
@@ -202,12 +202,17 @@
 
 /* ---------- LAYER 3: SEMANTIC TOKENS ---------- */
 :root {
-  /* Surfaces */
-  --color-background:      var(--raw-bg);
-  --color-surface:         var(--raw-surface);
-  --color-surface-raised:  var(--raw-surface-raised);
-  --color-surface-sunken:  var(--raw-surface-sunken);
+  /* Surfaces — a faint warm paper wash keeps every theme family tactile
+     without replacing its own palette. */
+  /* Keep each theme's paper hue: oklch mixing let the near-neutral raw surfaces
+     inherit the warm brown's hue, flattening the five families into one cream. */
+  --color-background:      color-mix(in srgb, var(--raw-bg) 97%, #b78a57);
+  --color-surface:         color-mix(in srgb, var(--raw-surface) 97%, #b78a57);
+  --color-surface-raised:  color-mix(in srgb, var(--raw-surface-raised) 97%, #b78a57);
+  --color-surface-sunken:  color-mix(in srgb, var(--raw-surface-sunken) 98%, #b78a57);
   --color-surface-overlay: color-mix(in srgb, var(--raw-bg) 88%, transparent);
+  --color-paper-edge:      color-mix(in oklch, var(--color-border) 62%, #b78a57);
+  --color-rule:            color-mix(in oklch, var(--color-text-primary) 16%, transparent);
 
   /* Text */
   --color-text-primary:    var(--raw-text-primary);
@@ -222,11 +227,11 @@
 
   /* Accent */
   --color-accent:           var(--raw-accent);
-  --color-accent-secondary: color-mix(in oklch, var(--raw-accent) 70%, white 30%);
+  --color-accent-secondary: color-mix(in oklch, var(--raw-accent) 78%, var(--color-text-primary) 22%);
   --color-on-accent:        var(--raw-on-accent);
-  --color-accent-subtle:    color-mix(in oklch, var(--raw-accent) 18%, var(--color-surface));
-  --color-accent-border:    color-mix(in oklch, var(--raw-accent) 50%, var(--color-border));
-  --color-accent-glow:      color-mix(in oklch, var(--raw-accent) 40%, transparent);
+  --color-accent-subtle:    color-mix(in oklch, var(--raw-accent) 14%, var(--color-surface));
+  --color-accent-border:    color-mix(in oklch, var(--raw-accent) 44%, var(--color-border));
+  --color-accent-glow:      color-mix(in oklch, var(--raw-accent) 34%, transparent);
 
   /* Status */
   --color-success: var(--raw-success); --color-on-success: var(--raw-on-accent);
@@ -237,17 +242,17 @@
   /* Interaction */
   --color-hover:    color-mix(in srgb, var(--color-text-primary)  6%, transparent);
   --color-active:   color-mix(in srgb, var(--color-text-primary) 10%, transparent);
-  --color-selected: color-mix(in oklch, var(--raw-accent) 22%, transparent);
+  --color-selected: color-mix(in oklch, var(--raw-accent) 18%, transparent);
   --color-focus-ring: var(--color-accent);
 
-  /* Shadows */
+  /* Shadows — printed-paper lift, not floating glass. */
   --shadow-sm: var(--raw-shadow-sm);
   --shadow-md: var(--raw-shadow-md);
   --shadow-lg: var(--raw-shadow-lg);
 
-  /* Radius */
-  --radius-xs: 4px;  --radius-sm: 6px;  --radius-md: 10px;
-  --radius-lg: 14px; --radius-xl: 20px; --radius-full: 9999px;
+  /* Radius — restrained, closer to cut paper than app cards. */
+  --radius-xs: 2px;  --radius-sm: 4px;  --radius-md: 6px;
+  --radius-lg: 10px; --radius-xl: 12px; --radius-full: 9999px;
 
   /* Spacing */
   --space-1:  4px; --space-2:  8px; --space-3: 12px; --space-4: 16px;
@@ -256,8 +261,10 @@
 
   /* Typography */
   --font-arabic:    'Amiri', 'Times New Roman', serif;
+  --font-display:   'Amiri', Georgia, 'Times New Roman', serif;
   --font-ui:        'Tajawal', -apple-system, BlinkMacSystemFont,
                     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-label:     'Inter', 'Segoe UI', var(--font-ui);
   --font-developer: var(--font-ui);
   --font-mono:      ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
 
@@ -277,8 +284,26 @@
   --duration-slow:   320ms;
 
   /* Layout */
-  --content-max-width: 1200px;
+  --content-max-width: 1240px;
   --header-height:     60px;
+  --sidebar-width:     244px;
+  --sidebar-collapsed-width: 68px;
+  --topbar-height:     68px;
+  --page-gutter:       clamp(20px, 2.5vw, 40px);
+
+  /* Generated ornament — a quiet interlaced lattice, not an image asset. */
+  --pattern-girih:
+    repeating-linear-gradient(45deg,
+      transparent 0 23px,
+      color-mix(in oklch, var(--color-text-primary) 5%, transparent) 24px 25px,
+      transparent 26px 47px),
+    repeating-linear-gradient(-45deg,
+      transparent 0 23px,
+      color-mix(in oklch, var(--color-text-primary) 4%, transparent) 24px 25px,
+      transparent 26px 47px);
+  --pattern-grain:
+    radial-gradient(color-mix(in oklch, var(--color-text-primary) 8%, transparent) 0.55px, transparent 0.7px);
+  --texture-opacity: .22;
 
   /* ===== LEGACY ALIASES (migration safety net; remove per-file as components migrate) ===== */
   --accent:    var(--color-accent);
@@ -295,6 +320,38 @@
   --red:       var(--color-danger);
   --yellow:    var(--color-warning);
   --blue:      var(--color-info);
+}
+
+/* ---------- CONTRAST CALIBRATION ----------
+   Light accents and status colours are pushed darker on paper surfaces so
+   small labels and filled buttons clear WCAG AA with white ink. Muted text
+   is nudged toward the primary ink in both modes so 12–13px metadata stays
+   legible without losing the hierarchy. */
+:root {
+  --color-text-muted: color-mix(in oklch, var(--raw-text-muted) 58%, var(--color-text-primary) 42%);
+}
+[data-mode="light"] {
+  --color-on-accent: #ffffff;
+  --color-accent: color-mix(in oklch, var(--raw-accent) 75%, #1a1208 25%);
+  --color-accent-secondary: color-mix(in oklch, var(--color-accent) 86%, #000000 14%);
+  --color-success: color-mix(in oklch, var(--raw-success) 64%, #071a08 36%);
+  --color-warning: color-mix(in oklch, var(--raw-warning) 72%, #1f1202 28%);
+  --color-danger:  color-mix(in oklch, var(--raw-danger) 80%, #22030b 20%);
+  --color-info:    color-mix(in oklch, var(--raw-info) 76%, #041421 24%);
+  --color-on-success: #ffffff;
+  --color-on-warning: #ffffff;
+  --color-on-danger:  #ffffff;
+}
+[data-theme="dracula"][data-mode="dark"] {
+  --accent-red: #ff6b6b;
+  --raw-danger: #ffb0b0;
+}
+[data-theme="catppuccin"][data-mode="light"] {
+  --raw-text-muted: #5b5e74;
+}
+[data-theme="tokyo-night"][data-mode="light"] {
+  --raw-text-primary: #24418f;
+  --raw-text-secondary: #344b8a;
 }
 
 /* ---------- FONT OVERRIDES ---------- */
@@ -394,9 +451,9 @@
   --cycle-label-dim:  var(--color-text-muted);
 
   /* Application shell */
-  --sidebar-width:    248px;
+  --sidebar-width:    244px;
   --sidebar-gap:      var(--space-6);
-  --topbar-height:    72px;
+  --topbar-height:    68px;
   --page-gutter:      clamp(20px, 2.5vw, 40px);
   --elevated-border:  1px solid var(--color-border);
   --focus-ring:       0 0 0 3px var(--color-accent-glow);

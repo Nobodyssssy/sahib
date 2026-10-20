@@ -35,9 +35,6 @@ function renderCatsGrid(){
   /* Render the daily quote card above the categories */
   if(typeof renderQuoteCard === 'function') renderQuoteCard();
 
-  /* Ensure the page header has the settings button */
-  ensureCatsSettingsButton();
-  
   const g = $('cats-grid');
   const sortedCats = cats.slice().sort((a, b) => _catOrderIndex(a.key) - _catOrderIndex(b.key));
   g.innerHTML = sortedCats.map(c => {
@@ -48,22 +45,43 @@ function renderCatsGrid(){
     const done = items.filter(d => (counters[`c_${d.id}`]||0) >= d.repeat).length;
     const pct = n > 0 ? Math.round(done / n * 100) : 0;
     const iconName = c.icon || CAT_ICONS[c.key] || CAT_ICON_DEFAULT;
-	return `<div class="cat-card" style="--cc:${c.color}" onclick="openCat('${c.key}')">
-	  <div class="cat-icon" style="background:${c.color}22;color:${c.color}">${icon(iconName, 24)}</div>
-	  <div class="cat-name">${c.ar}</div>
-      <div class="cat-en">${c.en}</div>
-      <span class="cat-count" style="color:${c.color};border-color:${c.color};background:${c.color}18">${n} adkar</span>
-      ${n>0?`<div class="cat-prog-bar"><div class="cat-prog-fill" style="width:${pct}%;background:${c.color}"></div></div>
-      <div style="font-size:10px;color:var(--text3)">${done}/${n} done today</div>`:''}
-		<div class="cat-edit-row" onclick="event.stopPropagation()">
-		<button class="cat-sm-btn edit" onclick="openEditCat('${c.key}')" title="Edit">${icon('pencil', 12)}</button>
-		<button class="cat-sm-btn del" onclick="askDelCat('${c.key}')" title="Delete">${icon('trash', 12)}</button>
-	  </div>
-    </div>`;
+    const catLabel = c.ar || c.en || c.key;
+    return `<article class="cat-card" style="--cc:${c.color}">
+      <button type="button" class="cat-open" onclick="openCat('${c.key}')" aria-label="Open ${esc(c.en || c.key)} adkar">
+        <span class="cat-icon">${icon(iconName, 24)}</span>
+        <span class="cat-name">${esc(c.ar)}</span>
+        <span class="cat-en">${esc(c.en)}</span>
+        <span class="cat-count">${n} adkar</span>
+        ${n > 0 ? `<span class="cat-prog-bar" aria-hidden="true"><span class="cat-prog-fill" style="width:${pct}%"></span></span>
+        <span class="cat-progress-label">${done}/${n} today</span>` : ''}
+      </button>
+      <div class="cat-actions">
+        <button type="button" class="cat-start-btn" onclick="startSessionFromCategory('${c.key}', event)" aria-label="Start ${esc(c.en || c.key)} session">
+          ${icon('play', 13)}<span>Start session</span>
+        </button>
+        <button type="button" class="cat-sm-btn edit" onclick="openEditCat('${c.key}')" title="Edit ${esc(c.en || catLabel)}" aria-label="Edit ${esc(c.en || catLabel)}">${icon('pencil', 12)}</button>
+        <button type="button" class="cat-sm-btn del" onclick="askDelCat('${c.key}')" title="Delete ${esc(c.en || catLabel)}" aria-label="Delete ${esc(c.en || catLabel)}">${icon('trash', 12)}</button>
+      </div>
+    </article>`;
   }).join('')
-  + `<div class="cat-new-card" onclick="openCatMgr()">
-       <span style="font-size:24px">＋</span><span>New category</span>
-     </div>`;
+  + `<button type="button" class="cat-new-card" onclick="openCatMgr()">
+       <span class="cat-new-plus">${icon('plus', 20)}</span><span>New category</span>
+     </button>`;
+}
+
+/* Category-card CTA: set the active category and enter the session without
+   requiring a second tap on the Adkar list. Other card controls remain
+   separate buttons, so they can never trigger this action. */
+function startSessionFromCategory(key, event){
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  currentCat = key;
+  const cat = (typeof getCat === 'function') ? getCat(key) : null;
+  const title = document.getElementById('adkar-view-title');
+  if(title && cat) title.textContent = cat.ar;
+  if(typeof startSession === 'function') startSession();
 }
 
 function openCat(key){
@@ -145,19 +163,9 @@ function goHome(){
   goHomeView();
 }
 
-/* Add ⚙️ settings button to the categories view header (one-time) */
-function ensureCatsSettingsButton(){
-  const header = document.querySelector('#view-cats .page-header');
-  if(!header) return;
-  if(header.querySelector('.cats-settings-btn')) return;  /* already added */
-
-  const btn = document.createElement('button');
-  btn.className = 'icon-btn cats-settings-btn';
-  btn.title = 'Manage categories';
-  btn.innerHTML = '⚙️';
-  btn.onclick = () => openCatMgr();
-  header.appendChild(btn);
-}
+/* Kept as a compatibility no-op: the add and manage actions now live in the
+   static page header beside each other. */
+function ensureCatsSettingsButton(){}
 
 function toggleTheme(){
   if(typeof SAHIB_THEME !== 'undefined' && SAHIB_THEME.toggleMode){

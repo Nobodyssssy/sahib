@@ -16,6 +16,24 @@ const PRAYER_ICONS = {
   Fajr: 'sunrise', Dhuhr: 'sun', Asr: 'sun', Maghrib: 'sunset', Isha: 'moon'
 };
 
+/* Bundled adhan recordings. Each source is documented in
+   assets/adhan/LICENSES.md and must be CC0 / public-domain before it is added. */
+const ADHAN_BUNDLED = {
+  standard: [
+    { id: 'azhar', label: 'Al-Azhar Park, Cairo', src: 'assets/adhan/al-azhar-park.mp3', credit: 'Ahmad Aiuby · CC0' },
+    { id: 'quseir', label: 'Quseir by the sea, Egypt', src: 'assets/adhan/quseir-sea.mp3', credit: 'Ahmad Aiuby · CC0' }
+  ],
+  fajr: [
+    { id: 'fajr-balakong', label: 'Balakong, Kuala Lumpur', src: 'assets/adhan/fajr-balakong.mp3', credit: 'aridtrax · CC0' }
+  ]
+};
+const ADHAN_LOCAL_KEYS = {
+  standard: 'adhanLocalStandard',
+  fajr: 'adhanLocalFajr'
+};
+const ADHAN_LOCAL_MAX_BYTES = 20 * 1024 * 1024;
+const ADHAN_LOCAL_MAX_SECONDS = 12 * 60;
+
 function _pwDateFormat(key){
   const parts = String(key || '').split('-').map(Number);
   if(parts.length !== 3) return null;
@@ -162,6 +180,9 @@ const PrayerWidget = (() => {
         <div class="pw-empty-icon">${typeof icon === 'function' ? icon(noLoc ? 'map-pin' : 'mosque', 26) : ''}</div>
         <div class="pw-empty-title">${noLoc ? 'Set your location' : 'Could not load prayer times'}</div>
         <div class="pw-empty-text">${_pwEsc(message || (noLoc ? 'Prayer times need a city or coordinates. Stored on this device only.' : 'Try again, or use offline calculation in settings.'))}</div>
+        ${noLoc ? `<div class="pw-empty-times" aria-hidden="true">
+          ${['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(name => `<div><span>${name}</span><strong>—</strong></div>`).join('')}
+        </div>` : ''}
         <div class="pw-empty-actions">
           ${noLoc
             ? `<button type="button" class="btn-save" data-pw-action="location">Choose location</button>`
@@ -200,15 +221,18 @@ const PrayerWidget = (() => {
 
       <div class="pw-main">
         <div class="pw-main-name">
-          <div class="pw-prayer-name" data-pw="next-name">—</div>
           <div class="pw-prayer-ar" data-pw="next-ar"></div>
+          <div class="pw-prayer-name" data-pw="next-name">—</div>
         </div>
-        <div class="pw-countdown" aria-label="Time remaining">
-          <span class="pw-countdown-unit" data-pw="h">--</span>
-          <span class="pw-countdown-sep">:</span>
-          <span class="pw-countdown-unit" data-pw="m">--</span>
-          <span class="pw-countdown-sep">:</span>
-          <span class="pw-countdown-unit" data-pw="s">--</span>
+        <div class="pw-countdown-block">
+          <div class="pw-countdown-label">Remaining</div>
+          <div class="pw-countdown" aria-label="Time remaining">
+            <span class="pw-countdown-unit" data-pw="h">--</span>
+            <span class="pw-countdown-sep">:</span>
+            <span class="pw-countdown-unit" data-pw="m">--</span>
+            <span class="pw-countdown-sep">:</span>
+            <span class="pw-countdown-unit" data-pw="s">--</span>
+          </div>
         </div>
       </div>
 
@@ -512,6 +536,89 @@ function playPrayerChime(volume = 0.55){
 }
 
 /* ═══════════════════════════════════════════════════════════
+   ADHAN AUDIO
+   Bundled CC0 field recordings plus optional user files stored in
+   IndexedDB. No external CDN and no fake preview buttons.
+   ═══════════════════════════════════════════════════════════ */
+let _sahibAdhanAudio = null;
+let _sahibAdhanObjectUrl = null;
+
+function _adhanAudioPrefs(prefs){
+  if(prefs && prefs.alerts && prefs.alerts.audio) return prefs.alerts.audio;
+  return { standard: 'azhar', fajr: 'fajr-balakong' };
+}
+
+async function resolveAdhanSource(kind, prefs){
+  const audio = _adhanAudioPrefs(prefs);
+  const selection = kind === 'fajr' ? audio.fajr : audio.standard;
+  if(selection === 'local'){
+    try{
+      const saved = await store.getMeta(ADHAN_LOCAL_KEYS[kind]);
+      if(saved && saved.blob){
+        const url = URL.createObjectURL(saved.blob);
+        return { url, local: true, name: saved.name || 'Local recording', revoke: true };
+      }
+    }catch(err){
+      console.warn('[adhan] local file unavailable', err);
+    }
+  }
+  const list = ADHAN_BUNDLED[kind] || ADHAN_BUNDLED.standard;
+  const picked = list.find(item => item.id === selection) || list[0];
+  return picked ? { ...picked, url: picked.src || picked.url, local: false } : null;
+}
+
+function stopPrayerAdhan(){
+  if(_sahibAdhanAudio){
+    try{ _sahibAdhanAudio.pause(); }catch(err){ /* already stopped */ }
+    _sahibAdhanAudio = null;
+  }
+  if(_sahibAdhanObjectUrl){
+    try{ URL.revokeObjectURL(_sahibAdhanObjectUrl); }catch(err){ /* ignore */ }
+    _sahibAdhanObjectUrl = null;
+  }
+}
+
+async function playPrayerAdhan(kind, volume, prefs){
+  unlockPrayerAudio();
+  stopPrayerAdhan();
+  if(!prefs) prefs = await getPrayerPrefs();
+  const source = await resolveAdhanSource(kind, prefs);
+  if(!source || !source.url) return false;
+  const audio = new Audio(source.url);
+  audio.preload = 'auto';
+  audio.volume = Math.max(0, Math.min(1, Number(volume) || 0));
+  _sahibAdhanAudio = audio;
+  if(source.revoke) _sahibAdhanObjectUrl = source.url;
+  const cleanup = () => {
+    if(_sahibAdhanAudio === audio){
+      _sahibAdhanAudio = null;
+      if(_sahibAdhanObjectUrl === source.url){
+        try{ URL.revokeObjectURL(source.url); }catch(err){ /* ignore */ }
+        _sahibAdhanObjectUrl = null;
+      }
+    }
+  };
+  audio.addEventListener('ended', cleanup, { once: true });
+  try{
+    await audio.play();
+    return true;
+  }catch(err){
+    cleanup();
+    console.warn('[adhan] playback blocked or unavailable', err.message);
+    return false;
+  }
+}
+
+async function previewPrayerAdhan(kind, volume){
+  const prefs = await getPrayerPrefs();
+  return playPrayerAdhan(kind === 'fajr' ? 'fajr' : 'standard', volume == null ? prefs.alerts.volume : volume, prefs);
+}
+
+function adhanPreviewPlaying(){
+  return !!(_sahibAdhanAudio && !_sahibAdhanAudio.paused && !_sahibAdhanAudio.ended);
+}
+
+/* ═══════════════════════════════════════════════════════════
    PRAYER ALERTS
    ═══════════════════════════════════════════════════════════ */
 const PrayerAlerts = (() => {
@@ -599,9 +706,11 @@ const PrayerAlerts = (() => {
     return events;
   }
 
-  function _soundAllowed(name, prefs){
-    const pp = prefs.alerts.perPrayer[name];
-    return !!(prefs.alerts.sound && pp && pp.sound !== false);
+  function _alertMode(pp){
+    if(!pp) return 'off';
+    if(pp.mode === 'off' || pp.mode === 'chime' || pp.mode === 'adhan') return pp.mode;
+    if(pp.alert === false) return 'off';
+    return pp.sound === false ? 'off' : 'chime';
   }
 
   function _notificationAllowed(prefs){
@@ -645,6 +754,8 @@ const PrayerAlerts = (() => {
     state.fired.add(key);
 
     const pp = prefs.alerts.perPrayer[event.name] || {};
+    const mode = _alertMode(pp);
+    if(mode === 'off') return;
     const time = formatPrayerTime(
       event.tomorrow ? (state.nextDay && state.nextDay.timings.Fajr) : (state.today && state.today.timings[event.name]),
       prefs.timeFormat
@@ -658,8 +769,13 @@ const PrayerAlerts = (() => {
       message = `${event.name} in ${mins} min · ${time}`;
     }
 
-    if(pp.alert !== false && typeof toast === 'function') toast(message, 'mosque');
-    if(_soundAllowed(event.name, prefs)) playPrayerChime(prefs.alerts.volume);
+    if(typeof toast === 'function') toast(message, 'mosque');
+    if(mode === 'adhan'){
+      playPrayerAdhan(event.name === 'Fajr' ? 'fajr' : 'standard', prefs.alerts.volume, prefs)
+        .then(ok => { if(!ok && typeof toast === 'function') toast('Adhan audio could not start — tap Preview in Alerts to unlock audio.', 'alert'); });
+    } else if(mode === 'chime'){
+      playPrayerChime(prefs.alerts.volume);
+    }
     if(_notificationAllowed(prefs)) _notify(`Sahib · ${event.name}`, message);
   }
 
@@ -671,7 +787,7 @@ const PrayerAlerts = (() => {
 
     for(const event of _events(now)){
       const pp = prefs.alerts.perPrayer[event.name];
-      if(!pp || pp.alert === false) continue;
+      if(_alertMode(pp) === 'off') continue;
       const diff = event.date.getTime() - nowMs;
 
       if(diff > 0 && diff <= leadMs && nowMs >= event.date.getTime() - leadMs){
@@ -710,6 +826,15 @@ const PrayerAlerts = (() => {
     return playPrayerChime(volume == null ? 0.55 : volume);
   }
 
+  async function previewAdhan(kind, volume){
+    const prefs = state.prefs || await getPrayerPrefs();
+    return playPrayerAdhan(kind, volume == null ? prefs.alerts.volume : volume, prefs);
+  }
+
+  function stopAdhan(){
+    stopPrayerAdhan();
+  }
+
   async function testNotification(){
     const prefs = state.prefs || await getPrayerPrefs();
     _notify('Sahib · Prayer reminder', `This is how a ${prefs.alerts.leadMinutes}-minute reminder will appear.`);
@@ -720,8 +845,12 @@ const PrayerAlerts = (() => {
     requestNotificationPermission,
     notificationState,
     previewChime,
+    previewAdhan,
+    stopAdhan,
+    adhanPreviewPlaying,
     testNotification,
     playChime: playPrayerChime,
+    playAdhan: playPrayerAdhan,
     state
   };
 })();
@@ -730,3 +859,10 @@ window.PrayerWidget = PrayerWidget;
 window.PrayerAlerts = PrayerAlerts;
 window.playPrayerChime = playPrayerChime;
 window.unlockPrayerAudio = unlockPrayerAudio;
+window.ADHAN_BUNDLED = ADHAN_BUNDLED;
+window.ADHAN_LOCAL_KEYS = ADHAN_LOCAL_KEYS;
+window.ADHAN_LOCAL_MAX_BYTES = ADHAN_LOCAL_MAX_BYTES;
+window.ADHAN_LOCAL_MAX_SECONDS = ADHAN_LOCAL_MAX_SECONDS;
+window.resolveAdhanSource = resolveAdhanSource;
+window.previewPrayerAdhan = previewPrayerAdhan;
+window.stopPrayerAdhan = stopPrayerAdhan;

@@ -1,13 +1,10 @@
 'use strict';
 /* Home dashboard tab state */
-window._homeTab = window._homeTab || 0;   /* 0 = today card, 1 = daily cycle */
+window._homeTab = window._homeTab || 0;
 
-/* Home dashboard:
-   Hero (Hijri + Gregorian date, location, event)
-   Live next-prayer widget
-   Feature cards (Adkar, Prayer, Hijri, Names, Library, Tasbih)
-   Daily prayer cycle
-   Quote of the day + privacy note */
+/* Home is an editorial daily page, not a feature directory:
+   date + next prayer, the daybook, today's reading, a quiet index, and the
+   prayer cycle. Daily Practice is the first thing after the prayer anchor. */
 
 async function renderHome(){
   const host = $('home-body');
@@ -27,6 +24,7 @@ async function renderHome(){
   const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
   const monthEn = date.toLocaleDateString('en-US', { month: 'long' });
   const greeting = greetingForNow(date);
+  const greetingAr = greetingArForNow(date);
 
   const hijriLine = hijri
     ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year} هـ`
@@ -65,6 +63,10 @@ async function renderHome(){
     location = null;
   }
 
+  if (typeof SahibPractice !== 'undefined' && SahibPractice.setTimings && todayData?.timings) {
+    SahibPractice.setTimings(todayData.timings);
+  }
+
   let eventChip = '';
   try{
     if(typeof getTodaysEvents === 'function'){
@@ -78,93 +80,80 @@ async function renderHome(){
     }
   }catch(err){ eventChip = ''; }
 
-  const adhkarCount = (typeof data !== 'undefined' && Array.isArray(data)) ? data.length : 0;
-  const favCount = (typeof favs !== 'undefined' && Array.isArray(favs)) ? favs.length : 0;
-  const bookCount = (typeof BOOKS !== 'undefined' && Array.isArray(BOOKS)) ? BOOKS.length : 0;
-
   const locationChip = location && location.lat != null
     ? `<button type="button" class="home-chip" onclick="openLocationPicker()">
         ${icon('map-pin', 14)} ${esc(location.label || `${Number(location.lat).toFixed(2)}, ${Number(location.lng).toFixed(2)}`)}
       </button>`
-    : `<button type="button" class="home-chip" onclick="openLocationPicker()">
-        ${icon('map-pin', 14)} Set location
-      </button>`;
+    : `<span class="home-chip home-chip--quiet">${icon('map-pin', 14)} Location not set</span>`;
 
   host.innerHTML = `
-    <div class="home-container">
+    <div class="home-container almanac-home">
       <div class="home-hero">
         <section class="home-hero-card">
+          <div class="home-hero-topline">
+            <span class="home-greeting"><span>${esc(greeting)}</span><span class="home-greeting-ar" lang="ar" dir="rtl">${esc(greetingAr)}</span></span>
+            <span class="home-local-mark">${icon('lock', 12)} Local only</span>
+          </div>
           <div class="home-hero-copy">
-            <div class="home-greeting">${greeting}</div>
             <div class="home-date-ar" id="home-today-date-ar">${hijriLine || gregorianLine}</div>
             <div class="home-date-en" id="home-today-date-en">${gregorianLine}</div>
           </div>
-          <div class="home-hero-stats">
-            <div class="home-stat">
-              <span class="home-stat-icon">${icon('book-open', 16)}</span>
-              <div class="home-stat-copy">
-                <div class="home-stat-num">${adhkarCount}</div>
-                <div class="home-stat-label">Adhkar</div>
-              </div>
-            </div>
-            <div class="home-stat">
-              <span class="home-stat-icon">${icon('star', 16)}</span>
-              <div class="home-stat-copy">
-                <div class="home-stat-num">${favCount}</div>
-                <div class="home-stat-label">Favorites</div>
-              </div>
-            </div>
-            <div class="home-stat">
-              <span class="home-stat-icon">${icon('library', 16)}</span>
-              <div class="home-stat-copy">
-                <div class="home-stat-num">${bookCount}</div>
-                <div class="home-stat-label">Library items</div>
-              </div>
-            </div>
-          </div>
+          <div class="home-hero-rule" aria-hidden="true"></div>
           <div class="home-hero-meta">
             ${locationChip}
             ${eventChip}
-            <button type="button" class="home-chip" onclick="openSettings('appearance')">
-              ${icon('sliders', 14)} Appearance
-            </button>
+          </div>
+          <div class="home-hero-colophon">
+            <span>A companion for the ordinary day.</span>
+            <span>Sahib almanac · ${date.getFullYear()}</span>
           </div>
         </section>
 
         <div id="home-prayer-widget" class="home-prayer-widget-host" aria-live="polite"></div>
       </div>
 
-      <div class="home-dashboard">
-        <div class="home-main-col">
-          <section>
-            <div class="home-section-head">
-              <div class="home-section-title">Explore Sahib</div>
-              <button type="button" class="home-section-link" onclick="focusGlobalSearch()">Search all adhkar</button>
-            </div>
-            ${renderHomeFeaturesHTML()}
-          </section>
-        </div>
+      <div class="home-daybook-grid">
+        ${renderHomePracticePanel()}
 
-        <aside class="home-side-col">
-          ${renderHomeQuoteHTML()}
-          <div class="surface-card home-privacy-card">
-            <div class="home-privacy-icon">${icon('check-circle', 20)}</div>
+        <section class="home-reading">
+          <div class="home-section-head">
             <div>
-              <div class="home-privacy-title">Your data stays on this device</div>
-              <div class="home-privacy-text">No account, no analytics, no cloud sync. Adhkar, favorites, counters and prayer settings live in your browser's IndexedDB.</div>
+              <div class="home-section-kicker">From the Qur’an and Sunnah</div>
+              <div class="home-section-title">Today’s reading</div>
             </div>
+            <button type="button" class="home-section-link" onclick="openBooksView()">Library ${icon('arrow-left', 13)}</button>
           </div>
-        </aside>
+          ${renderHomeQuoteHTML()}
+        </section>
       </div>
+
+      <section class="home-index-section">
+        <div class="home-section-head">
+          <div>
+            <div class="home-section-kicker">The Sahib index</div>
+            <div class="home-section-title">Everything else, kept quiet</div>
+          </div>
+          <button type="button" class="home-section-link" onclick="focusGlobalSearch()">Search all adhkar ${icon('search', 13)}</button>
+        </div>
+        ${renderHomeFeaturesHTML()}
+      </section>
 
       ${cycleHTML ? `
         <section class="home-cycle-section home-cycle-wide">
           <div class="home-section-head">
-            <div class="home-section-title">Daily prayer cycle</div>
-            <button type="button" class="home-section-link" onclick="openPrayerView()">Prayer times</button>
+            <div>
+              <div class="home-section-kicker">The shape of the day</div>
+              <div class="home-section-title">Daily prayer cycle</div>
+            </div>
+            <button type="button" class="home-section-link" onclick="openPrayerView()">Prayer times ${icon('arrow-left', 13)}</button>
           </div>
           ${cycleHTML}
         </section>` : ''}
+
+      <footer class="home-colophon">
+        <span>${icon('check-circle', 14)} Local-first · no accounts · no tracking</span>
+        <span>Adhkar, favourite reading, prayer settings and practice history stay in this browser.</span>
+      </footer>
     </div>
   `;
 
@@ -177,17 +166,96 @@ async function renderHome(){
   }
 }
 
-function greetingForNow(date){
-  const h = date.getHours();
-  if(h < 5)  return 'Peaceful night · السلام عليكم';
-  if(h < 12) return 'Good morning · صباح الخير';
-  if(h < 17) return 'Good afternoon · طاب يومك';
-  if(h < 20) return 'Good evening · مساء الخير';
-  return 'Peaceful evening · مساء الخير';
+function renderHomePracticePanel(){
+  if(typeof SahibPractice === 'undefined' || !SahibPractice.isReady()){
+    return `<section class="home-practice-panel"><div class="home-practice-loading">Opening the daybook…</div></section>`;
+  }
+  const snap = SahibPractice.getHomeSummary();
+  const due = snap.due.slice(0, 3);
+  const done = snap.completed.length;
+  const waiting = snap.due.length;
+  const next = snap.next;
+  const tracker = snap.trackers.find(item => ['soon','due','overdue'].includes(item.state));
+
+  if(!snap.enabled.length){
+    return `<section class="home-practice-panel home-practice-panel--empty">
+      <div class="home-practice-head">
+        <div><span class="home-section-kicker">Daily practice · الورد</span><h2>The daybook is yours to set.</h2></div>
+        <span class="home-practice-mark">${icon('practice', 20)}</span>
+      </div>
+      <p class="home-practice-intro">Choose a few routines you already intend to keep. Nothing is enabled for you, and nothing is turned into a score.</p>
+      <div class="home-practice-empty-actions">
+        <button class="home-practice-primary" onclick="openPracticeView('all')">Choose a few practices ${icon('arrow-left', 14)}</button>
+        <button class="home-text-action" onclick="openPracticeForm()">Make a personal reminder</button>
+      </div>
+    </section>`;
+  }
+
+  const rows = due.length ? due.map(item => {
+    const p = item.practice;
+    const time = p.timeLabel || p.reminderTime || (p.relativeTo ? p.relativeTo : '');
+    return `<div class="home-practice-row">
+      <button class="home-practice-copy" onclick="openPracticeDetail('${esc(p.id)}')">
+        <span class="home-practice-row-top"><span class="home-practice-time">${esc(time)}</span><span class="home-practice-status">${esc(item.status === 'overdue' ? 'Past its rhythm' : item.status === 'approaching' ? 'Approaching' : 'Waiting')}</span></span>
+        <span class="home-practice-title"><span lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span>${esc(p.title)}</span></span>
+        <span class="home-practice-meta">${p.schedule?.type === 'interval' ? 'A private time limit' : esc(p.summary || '')}</span>
+      </button>
+      <span class="home-practice-arrow">${icon('arrow-left', 14)}</span>
+    </div>`;
+  }).join('') : `<div class="home-practice-quiet">${icon('check', 15)}<p><strong>Nothing else is due today.</strong><span>The rest of the day is yours.</span></p></div>`;
+
+  const completedRows = snap.completed.slice(0, 2).map(row => {
+    const p = row.practice;
+    return `<div class="home-practice-done-row">
+      <span class="home-practice-done-check">${icon('check', 12)}</span>
+      <button class="home-practice-done-copy" onclick="openPracticeDetail('${esc(p.id)}')">
+        <strong>${esc(p.title)}</strong><span>Completed today</span>
+      </button>
+      <button class="home-text-action" onclick="practiceUndo('${esc(p.id)}')">Undo</button>
+    </div>`;
+  }).join('');
+
+  return `<section class="home-practice-panel">
+    <div class="home-practice-head">
+      <div><span class="home-section-kicker">Daily practice · الورد</span><h2>Today’s few things</h2></div>
+      <button class="home-section-link" onclick="openPracticeView('today')">Open daybook ${icon('arrow-left', 13)}</button>
+    </div>
+    <div class="home-practice-summary"><span>${waiting ? `${waiting} waiting` : 'A clear day'}</span><span>${done ? `${done} completed` : 'Nothing completed yet'}</span><span class="home-practice-summary-local">${icon('lock', 11)} on this device</span></div>
+    <div class="home-practice-list">${rows}${completedRows}</div>
+    <div class="home-practice-foot">
+      <span>${tracker ? `${esc(tracker.practice.title)} · ${tracker.state === 'overdue' ? `${Math.abs(tracker.daysLeft)} days beyond your limit` : tracker.state === 'due' ? 'at your chosen limit' : `${tracker.daysLeft} days left`}` : next ? `Next · ${esc(_homeDate(next.key))} · ${esc(next.practice.title)}` : 'A quiet fortnight ahead.'}</span>
+      <button class="home-text-action" onclick="showPracticeAll()">All practices</button>
+    </div>
+  </section>`;
 }
 
-/* Kept for older callers: today card only. The new dashboard renders the
-   hero directly, but this helper remains useful for other modules. */
+function _homeDate(key){
+  if(!key) return '';
+  const parts = String(key).split('-').map(Number);
+  if(parts.length !== 3) return key;
+  return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function greetingForNow(date){
+  const h = date.getHours();
+  if(h < 5)  return 'Peaceful night';
+  if(h < 12) return 'Good morning';
+  if(h < 17) return 'Good afternoon';
+  if(h < 20) return 'Good evening';
+  return 'Peaceful evening';
+}
+
+function greetingArForNow(date){
+  const h = date.getHours();
+  if(h < 5)  return 'سلامٌ في الليل';
+  if(h < 12) return 'صباح الخير';
+  if(h < 17) return 'طاب نهارك';
+  if(h < 20) return 'مساء الخير';
+  return 'سلامٌ في المساء';
+}
+
+/* Kept for older callers: a compact today card. The home page renders its
+   own editorial hero, but other modules still use this helper. */
 async function renderTodayCardHTML(){
   const date = new Date();
   const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
@@ -265,32 +333,23 @@ function renderHomeQuoteHTML(){
   const tafsirClass = lang === 'ar' ? 'ar' : 'en';
   const badgeIconName = q.type === 'quran' ? 'book-open' : 'mosque';
   const badgeLabel = q.type === 'quran' ? 'Verse' : 'Hadith';
-
   const isExpanded = (typeof _quoteExpanded !== 'undefined') ? _quoteExpanded : false;
 
   return `
     <div class="quote-card home-quote-card ${isExpanded ? 'expanded' : ''}" id="quote-card" onclick="toggleHomeQuote(event)">
-      ${(() => {
-        const date = new Date();
-        const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
-        const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
-        if(hijri){
-          return `<div class="quote-dateline">${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year}</div>`;
-        }
-        return '';
-      })()}
       <div class="quote-header">
         <div class="quote-badge">
           <span class="quote-badge-icon">${icon(badgeIconName, 14)}</span>
-          <span>${badgeLabel} \u00B7 ${q.time}</span>
+          <span>${badgeLabel} · ${q.time}</span>
         </div>
         <span class="quote-expand-hint">${icon(isExpanded ? 'chevron-up' : 'chevron-down', 14)}</span>
       </div>
 
       <div class="quote-text">${q.ar}</div>
       <div class="quote-ref">${q.ref}</div>
+      ${tafsirText ? `<div class="home-reading-preview ${tafsirClass}" ${lang === 'ar' ? 'dir="rtl"' : 'dir="ltr"'}><span>Reflection</span>${esc(tafsirText.length > 170 ? `${tafsirText.slice(0, 167).trim()}…` : tafsirText)}</div>` : ''}
 
-      <div class="quote-teaser">Tap to read tafsir</div>
+      <div class="quote-teaser">Open today’s tafsir ${icon('arrow-left', 13)}</div>
 
       <div class="quote-tafsir-wrap">
         <div class="quote-tafsir-header">
@@ -320,25 +379,28 @@ function toggleHomeQuote(event){
 
 function renderHomeFeaturesHTML(){
   const features = [
-    { id:'adkar',  icon:'book-open', labelAr:'الأذكار',      labelEn:'Adkar',            subAr:'حصن المسلم',        action:'goToAdkarCategories' },
-    { id:'prayer', icon:'mosque',    labelAr:'الصلاة',       labelEn:'Prayer times',     subAr:'مواقيت الصلاة',     action:'openPrayerView' },
-    { id:'hijri',  icon:'calendar',  labelAr:'التقويم',      labelEn:'Hijri calendar',   subAr:'الأحداث الإسلامية', action:'openHijriView' },
-    { id:'asma',   icon:'sparkles',  labelAr:'أسماء الله',   labelEn:'99 Names',         subAr:'الأسماء الحسنى',    action:'openAsmaView' },
-    { id:'books',  icon:'library',   labelAr:'المكتبة',      labelEn:'Library',          subAr:'الكتب الإسلامية',   action:'openBooksView' },
-    { id:'tasbih', icon:'beads',     labelAr:'التسبيح',      labelEn:'Tasbih',           subAr:'مسبحة إلكترونية',   action:'openTasbihView' }
+    { id:'practice', icon:'practice', ar:'الورد', en:'Daily practice', note:'What you chose to keep', action:"openPracticeView('today')" },
+    { id:'adkar', icon:'book-open', ar:'الأذكار', en:'Adkar', note:'Morning, evening and the daily fortress', action:'goToAdkarCategories()' },
+    { id:'prayer', icon:'mosque', ar:'الصلاة', en:'Prayer times', note:'The day’s five anchors', action:'openPrayerView()' },
+    { id:'hijri', icon:'calendar', ar:'التقويم الهجري', en:'Hijri calendar', note:'Lunar dates and events', action:'openHijriView()' },
+    { id:'asma', icon:'sparkles', ar:'الأسماء الحسنى', en:'99 Names', note:'A slow reading of the names', action:'openAsmaView()' },
+    { id:'books', icon:'library', ar:'المكتبة', en:'Library', note:'Books and local reading', action:'openBooksView()' },
+    { id:'tasbih', icon:'beads', ar:'المسبحة', en:'Tasbih', note:'A quiet counter', action:'openTasbihView()' },
+    { id:'search', icon:'search', ar:'البحث', en:'Search', note:'Find any dhikr or book', action:'goToAdkarCategories();focusGlobalSearch()' }
   ];
 
   return `
-    <div class="home-features-grid">
-      ${features.map(f => `
-        <button type="button" class="home-feature-card feature-${f.id}" onclick="${f.action}()">
-          <span class="home-feature-icon">${icon(f.icon, 23)}</span>
-          <span class="home-feature-text">
-            <span class="home-feature-label-ar">${f.labelAr}</span>
-            <span class="home-feature-label-en">${f.labelEn}</span>
-            <span class="home-feature-sub">${f.subAr}</span>
+    <div class="home-index-list">
+      ${features.map((f, i) => `
+        <button type="button" class="home-index-item ${f.id === 'practice' ? 'home-index-item--practice' : ''}" onclick="${f.action}">
+          <span class="home-index-num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="home-index-glyph">${icon(f.icon, 17)}</span>
+          <span class="home-index-copy">
+            <span class="home-index-ar" lang="ar" dir="rtl">${f.ar}</span>
+            <span class="home-index-en">${f.en}</span>
+            <span class="home-index-note">${f.note}</span>
           </span>
-          <span class="home-feature-arrow">${icon('chevron-left', 15)}</span>
+          <span class="home-index-arrow">${icon('arrow-left', 14)}</span>
         </button>
       `).join('')}
     </div>

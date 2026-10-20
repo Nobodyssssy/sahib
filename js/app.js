@@ -11,6 +11,12 @@
     /* 1. Load everything from IndexedDB into memory */
     await initState();
 
+    /* 1a. Daily Practice lives in the existing meta store. Loading it here
+       keeps Home and the practice view on the same local snapshot. */
+    if (typeof SahibPractice !== 'undefined' && SahibPractice.init) {
+      await SahibPractice.init();
+    }
+
     /* 1b. Load icon sprite into the DOM (so <use> references work) */
     await loadIconSprite();
 
@@ -53,6 +59,58 @@
         
         const settings = document.getElementById('ov-settings');
         if(settings && settings.classList.contains('open')) closeSettings();
+
+        const confirm = document.getElementById('ov-confirm');
+        if(confirm && confirm.classList.contains('open') && typeof closeConfirm === 'function') closeConfirm();
+
+        const editCat = document.getElementById('ov-editcat');
+        if(editCat && editCat.classList.contains('open') && typeof closeEditCat === 'function') closeEditCat();
+
+        const cats = document.getElementById('ov-cats');
+        if(cats && cats.classList.contains('open') && typeof closeCatMgr === 'function') closeCatMgr();
+
+        const form = document.getElementById('ov-form');
+        if(form && form.classList.contains('open') && typeof closeForm === 'function') closeForm();
+
+        const detail = document.getElementById('ov-detail');
+        if(detail && detail.classList.contains('open') && typeof closeDetail === 'function') closeDetail();
+
+        /* Practice overlays are created dynamically; close the topmost one. */
+        const practiceOverlays = ['ov-practice-reminders','ov-practice-settings','ov-practice-form','ov-practice-detail'];
+        for (const id of practiceOverlays) {
+          const el = document.getElementById(id);
+          if(el && el.classList.contains('open')){
+            if(id === 'ov-practice-detail' && typeof closePracticeDetail === 'function') closePracticeDetail();
+            else if(id === 'ov-practice-form' && typeof closePracticeForm === 'function') closePracticeForm();
+            else if(id === 'ov-practice-settings' && typeof closePracticeSettings === 'function') closePracticeSettings();
+            else if(id === 'ov-practice-reminders' && typeof closePracticeReminders === 'function') closePracticeReminders();
+            break;
+          }
+        }
+      }
+
+      if(e.key === 'Tab'){
+        const openOverlays = [...document.querySelectorAll('.ov.open')];
+        const modal = openOverlays.length
+          ? openOverlays[openOverlays.length - 1]
+          : document.querySelector('.session-overlay.open');
+        if(!modal) return;
+        const focusables = [...modal.querySelectorAll('a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')]
+          .filter(el => !el.hidden && el.getClientRects().length > 0);
+        if(!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        if(!modal.contains(active)){
+          e.preventDefault();
+          first.focus();
+        } else if(e.shiftKey && active === first){
+          e.preventDefault();
+          last.focus();
+        } else if(!e.shiftKey && active === last){
+          e.preventDefault();
+          first.focus();
+        }
       }
     });
 
@@ -109,9 +167,6 @@ function injectHeaderIcons(){
 
   if(typeof updateFavsButton === 'function') updateFavsButton();
 
-  const btnAdd = document.querySelector('.btn-add-icon');
-  if(btnAdd) btnAdd.innerHTML = icon('plus', 18);
-
   updateThemeToggleIcon();
 
   /* Search icon */
@@ -159,6 +214,16 @@ function injectHeaderIcons(){
   if(clearBtn && clearBtn.children.length === 0){
     clearBtn.innerHTML = icon('x', 16);
   }
+
+  /* Standalone data-icon slots (sidebar collapse, page actions, etc.) */
+  document.querySelectorAll('[data-icon]').forEach(el => {
+    if(el.dataset.injected === '1' || el.children.length > 0) return;
+    const name = el.getAttribute('data-icon');
+    if(name){
+      el.innerHTML = icon(name, 18);
+      el.dataset.injected = '1';
+    }
+  });
 }
 
 /* Sync the theme toggle icon with current state */
@@ -184,6 +249,7 @@ function updateThemeColorMeta(){
    ═══════════════════════════════════════════════════════════ */
 const SHELL_VIEW_MAP = {
   'view-home':    { nav: 'home',    title: 'Home',    sub: 'Your daily companion' },
+  'view-practice': { nav: 'practice', title: 'Daily Practice', sub: 'A local daybook of chosen routines' },
   'view-cats':    { nav: 'cats',    title: 'Adkar',   sub: 'Fortress of the Muslim' },
   'view-adkar':   { nav: 'cats',    title: 'Adkar',   sub: 'Category collection' },
   'view-favs':    { nav: 'cats',    title: 'Favorites', sub: 'Saved adhkar' },

@@ -56,10 +56,18 @@
     padding:0 12px 90px;
     gap:10px;
   }
+  .home-features-grid{ grid-template-columns:1fr; }
+  .home-hero-meta{ gap:4px; }
+  .home-hero-colophon{ font-size:10px; }
   .cat-card{
-    padding:16px 12px;
-    gap:6px;
+    padding:0;
+    gap:0;
   }
+  .cat-open{ padding:18px 10px 12px; }
+  .cat-actions{ padding:5px; gap:3px; }
+  .cat-start-btn{ font-size:8px; letter-spacing:.03em; padding-inline:5px; }
+  .cat-sm-btn{ width:26px; height:26px; }
+  .alert-mode-btn{ min-width:47px; padding:5px 6px; font-size:8px; }
   .cat-icon{width:38px;height:38px;font-size:17px;}
   .cat-name{font-size:14px;}
   .cat-en{font-size:10px;}
@@ -165,7 +173,7 @@
    DESKTOP (≥ 1200) — a bit more air
    ══════════════════════════════════════════ */
 @media(min-width:1200px){
-  .cats-grid{grid-template-columns:repeat(4,1fr);}
+  .cats-grid{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1240px;}
   .adkar-grid,.search-results{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1240px;}
 }
 /* ══════════════════════════════════════════════════════════
@@ -183,7 +191,11 @@
 
 @media(max-width:960px){
   .app-sidebar{ display:none; }
-  .app-main{ margin-inline-start:0; }
+  html[data-sidebar-position] .app-main{
+    margin-left:0;
+    margin-right:0;
+    margin-inline-start:0;
+  }
   .topbar-menu-btn{ display:inline-flex; }
   .topbar{ grid-template-columns:1fr auto 1fr; padding:8px 16px; }
   .topbar-center{ display:none; }
@@ -191,7 +203,13 @@
   .home-hero,
   .home-dashboard,
   .prayer-layout{ grid-template-columns:1fr; }
-  .home-hero-card{ min-height:220px; }
+  .home-hero-card{
+    min-height:220px;
+    border-inline-end:0;
+    border-bottom:1px solid var(--color-border);
+  }
+  .home-hero .prayer-widget{ min-height:auto; }
+  .home-features-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .hijri-container{
     grid-template-columns:1fr;
     grid-template-areas:"hhead" "hgrid" "htoday" "hside";
@@ -215,6 +233,12 @@
   .hijri-container{ padding-inline:14px; }
   .home-container{ padding-bottom:88px; }
   .home-features-grid{ grid-template-columns:1fr 1fr; }
+  .home-reading .quote-text{ font-size:clamp(23px,5vw,32px); }
+  .home-hero-card{ padding:26px 20px; }
+  .home-hero .prayer-widget{ padding:24px 20px; }
+  .home-colophon{ flex-direction:column; }
+  .page-header{ padding-block:20px 14px; }
+  .page-title{ font-size:28px; }
   .cats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); padding-inline:14px; }
   .adkar-grid{ padding-inline:14px; }
   .settings-modal{ max-height:92vh; }
@@ -223,7 +247,13 @@
   .theme-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
   .font-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .pw-times{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+  .settings-adjust-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .alert-setting-grid{ grid-template-columns:1fr; }
+  .adhan-audio-grid{ grid-template-columns:1fr; }
+  .adhan-volume{ width:100%; margin-inline-start:0; }
+  .adhan-volume input{ flex:1; width:auto; }
+  .pw-main{ align-items:flex-start; gap:12px; }
+  .pw-times{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; }
   .pw-countdown-unit{ font-size:24px; }
   .pw-prayer-name{ font-size:24px; }
   .settings-tabs{ padding-inline:12px; }
@@ -239,4 +269,125 @@
    ══════════════════════════════════════════ */
 @media(min-width:961px){
   .back-bar{ display:none; }
+}
+
+/* ==========================================================================
+   DAILY PRACTICE / DAYBOOK
+   ========================================================================== */
+@media(max-width:1180px){
+  .home-daybook-grid{ grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr); }
+  .practice-today-layout{ grid-template-columns:minmax(0,1.3fr) minmax(270px,.7fr); }
+  .practice-form-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:980px){
+  .almanac-home .home-hero{ grid-template-columns:1fr; }
+  .almanac-home .home-hero-card{ padding-inline-end:0; }
+  .almanac-home .home-prayer-widget-host{ border-inline-start:0; border-top:1px solid var(--color-rule); padding-inline-start:0; }
+  .home-daybook-grid{ grid-template-columns:1fr; }
+  .practice-head{ grid-template-columns:1fr; align-items:start; }
+  .practice-head-side{ align-items:start; }
+  .practice-head-date{ text-align:start; }
+  .practice-today-layout{ grid-template-columns:1fr; }
+  .practice-rail{ border-inline-start:0; border-top:1px solid var(--color-rule); padding-inline-start:0; padding-top:20px; }
+  .practice-calendar-layout{ grid-template-columns:1fr; }
+  .practice-detail-grid{ grid-template-columns:1fr; gap:20px; }
+  .almanac-home .home-index-list{ column-gap:32px; }
+}
+@media(max-width:720px){
+  .practice-container{ padding-inline:14px; padding-bottom:88px; }
+  .practice-head-actions{ flex-wrap:wrap; }
+  .practice-head-actions .practice-primary{ order:-1; }
+  .practice-tabs{ gap:18px; overflow-x:auto; }
+  .practice-tab{ flex:0 0 auto; font-size:12px; }
+  .practice-tab-panel{ padding-top:18px; }
+  .practice-day-heading{ flex-direction:column; align-items:start; gap:8px; }
+  .practice-day-heading > p{ white-space:normal; }
+  .practice-entry{ grid-template-columns:minmax(0,1fr) auto; gap:9px 12px; padding:16px 0; }
+  .practice-entry-time{ grid-column:1 / -1; display:flex; align-items:baseline; gap:8px; text-align:start; }
+  .practice-entry-time span{ max-width:none; margin-top:0; }
+  .practice-entry-spine{ display:none; }
+  .practice-entry-copy{ grid-column:1; }
+  .practice-entry-actions{ grid-column:2; grid-row:2; align-items:end; }
+  .practice-entry-title{ gap:6px; }
+  .practice-ar{ font-size:23px; }
+  .practice-entry-summary{ font-size:12px; }
+  .practice-day-foot{ align-items:start; flex-direction:column; }
+  .practice-welcome-choices,
+  .almanac-home .home-index-list{ grid-template-columns:1fr; }
+  .practice-welcome{ padding:22px 18px; }
+  .practice-view-intro,
+  .practice-view-intro--actions{ flex-direction:column; align-items:start; gap:10px; }
+  .practice-view-intro > p{ text-align:start; }
+  .practice-intro-actions{ flex-wrap:wrap; }
+  .practice-upcoming-group{ grid-template-columns:76px minmax(0,1fr); gap:16px; }
+  .practice-upcoming-day{ font-size:28px; }
+  .practice-cal-cell{ min-height:58px; padding:6px; }
+  .practice-cal-greg{ font-size:16px; }
+  .practice-cal-hijri{ font-size:10px; }
+  .practice-cal-dots{ inset-inline-start:6px; bottom:5px; }
+  .practice-cal-legend{ flex-direction:column; gap:4px; }
+  .practice-calendar-day{ margin-top:8px; }
+  .practice-form{ padding:14px 16px 18px; }
+  .practice-form-grid{ grid-template-columns:1fr; }
+  .practice-form-grid:has(.practice-field:nth-child(2):last-child){ grid-template-columns:1fr; }
+  .practice-sched-row{ gap:10px; }
+  .practice-form-actions{ flex-direction:column-reverse; align-items:stretch; }
+  .practice-form-actions .practice-primary,
+  .practice-form-actions .practice-text-btn{ justify-content:center; }
+  .practice-detail-body{ padding:16px; }
+  .practice-modal-head{ padding:14px 16px 12px; }
+  .practice-detail-lead h3{ font-size:29px; }
+  .practice-detail-actions{ flex-direction:column; align-items:stretch; }
+  .practice-detail-actions > *{ justify-content:center; }
+  .practice-settings-body,
+  .practice-reminder-body{ padding:4px 16px 18px; }
+  .practice-reminder-row{ grid-template-columns:62px minmax(0,1fr); gap:12px; }
+  .practice-reminder-row .practice-text-btn{ grid-column:2; justify-self:start; }
+  .practice-reminder-foot{ flex-direction:column; }
+  .practice-catalog-head{ flex-direction:column; align-items:start; gap:4px; }
+  .practice-catalog-row{ grid-template-columns:30px minmax(0,1fr); }
+  .practice-details-btn{ grid-column:2; justify-self:start; margin-top:0; }
+  .practice-catalog-foot{ flex-direction:column; align-items:start; }
+  .almanac-home .home-hero-card{ padding-block:22px 18px; }
+  .home-hero-topline{ align-items:start; }
+  .home-greeting{ line-height:1.7; }
+  .home-local-mark{ flex:0 0 auto; }
+  .home-date-ar{ font-size:clamp(25px,7vw,34px); }
+  .home-date-en{ font-size:15px; }
+  .home-hero-colophon{ flex-direction:column; gap:4px; }
+  .home-practice-panel{ padding:18px 16px 15px; }
+  .home-practice-head{ gap:10px; }
+  .home-practice-head .home-section-link{ white-space:nowrap; }
+  .home-practice-summary{ gap:8px; }
+  .home-practice-summary-local{ margin-inline-start:0; }
+  .home-practice-meta{ white-space:normal; }
+  .home-practice-title > span:not([lang]){ white-space:normal; }
+  .home-practice-foot{ flex-direction:column; align-items:start; gap:6px; }
+  .almanac-home .home-reading .quote-card{ height:auto; }
+  .almanac-home .home-index-list{ column-gap:0; }
+  .home-index-item{ grid-template-columns:24px 22px minmax(0,1fr) 16px; }
+  .home-index-ar{ font-size:19px; }
+}
+@media(max-width:980px){
+  .practice-catalog-layout{ display:block; }
+  .practice-catalog-index{ display:none; }
+}
+@media(max-width:480px){
+  .practice-tabs{ gap:14px; }
+  .practice-head-actions{ width:100%; }
+  .practice-head-actions .practice-primary{ flex:1; }
+  .practice-icon-btn{ flex:0 0 38px; }
+  .practice-cal-cell{ min-height:50px; padding:5px; }
+  .practice-cal-hijri{ display:none; }
+  .practice-cal-dots{ bottom:4px; }
+  .practice-calendar-head strong{ font-size:21px; }
+  .practice-upcoming-time{ font-size:11px; }
+  .home-practice-title > span:not([lang]){ white-space:normal; }
+  .home-practice-row{ grid-template-columns:minmax(0,1fr) 14px; gap:9px; }
+  .home-practice-title > span[lang="ar"]{ font-size:19px; }
+  .home-index-note{ display:none; }
+  .home-cycle-wide{ display:none; }
+  .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .pw-empty-times > div:nth-child(3n){ border-inline-end:0; }
+  .pw-empty-times > div:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
 }

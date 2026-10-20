@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl" data-theme="catppuccin" data-mode="dark" data-accent="gold" data-font="tajawal">
+<html lang="en" dir="rtl" data-theme="catppuccin" data-mode="dark" data-accent="gold" data-font="tajawal" data-sidebar-position="right" data-sidebar-collapsed="false">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -35,12 +35,19 @@
   <div class="app-shell">
   <!-- DESKTOP SIDEBAR -->
   <aside class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
-    <div class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
-      <div class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></div>
-      <div class="sidebar-brand-text">
-        <div class="sidebar-brand-name">صاحب</div>
-        <div class="sidebar-brand-sub">Sahib Companion</div>
+    <div class="sidebar-head">
+      <div class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
+        <div class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></div>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-brand-name">صاحب</div>
+          <div class="sidebar-brand-sub">Sahib Companion</div>
+        </div>
       </div>
+      <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn"
+              onclick="toggleSidebarCollapse()" aria-controls="app-sidebar" aria-expanded="true"
+              aria-label="Collapse sidebar" title="Collapse sidebar">
+        <span data-icon="panel-left"></span>
+      </button>
     </div>
 
     <nav class="side-nav" id="side-nav" aria-label="Sections">
@@ -48,6 +55,10 @@
       <button type="button" class="side-nav-item" data-nav="home" onclick="goHomeView()">
         <span class="side-icon" data-icon="home"></span>
         <span class="side-text"><span class="side-label">Home</span><span class="side-label-ar">الرئيسية</span></span>
+      </button>
+      <button type="button" class="side-nav-item" data-nav="practice" onclick="openPracticeView('today')">
+        <span class="side-icon" data-icon="practice"></span>
+        <span class="side-text"><span class="side-label">Practice</span><span class="side-label-ar">الورد</span></span>
       </button>
       <button type="button" class="side-nav-item" data-nav="cats" onclick="goToAdkarCategories()">
         <span class="side-icon" data-icon="book-open"></span>
@@ -114,7 +125,6 @@
         </button>
       </div>
     </div>
-    <button class="icon-btn btn-add-icon" onclick="openForm()" title="Add dhikr"></button>
   </div>
 
   <div class="topbar-center">
@@ -141,6 +151,11 @@
     <span class="menu-label">Home</span>
   </button>
 
+  <button class="menu-item" onclick="closeMainMenu();openPracticeView('today')" data-icon="practice">
+    <span class="menu-icon"></span>
+    <span class="menu-label">Daily practice</span>
+  </button>
+
   <button class="menu-item" onclick="closeMainMenu();goToAdkarCategories()" data-icon="book-open">
     <span class="menu-icon"></span>
     <span class="menu-label">Adkar</span>
@@ -158,7 +173,7 @@
 
   <button class="menu-item" onclick="closeMainMenu();openAsmaView()" data-icon="sparkles">
     <span class="menu-icon"></span>
-    <span class="menu-label">Names of Allah 99</span>
+    <span class="menu-label">99 Names of Allah</span>
   </button>
 
   <button class="menu-item" onclick="closeMainMenu();openBooksView()" data-icon="library">
@@ -198,6 +213,11 @@
   <div class="home-container" id="home-body"></div>
 </div>
 
+<!-- VIEW: DAILY PRACTICE -->
+<div class="view" id="view-practice">
+  <div class="practice-container" id="practice-body"></div>
+</div>
+
 <!-- VIEW: CATEGORIES (adkar) -->
 <div class="view" id="view-cats">
   <div class="back-bar">
@@ -205,8 +225,16 @@
   </div>
   <div class="page-header">
     <div>
-      <div class="page-title">Categories · الفئات</div>
+      <div class="page-title">Adkar · الأذكار</div>
       <div class="page-sub" id="daily-reset-info"></div>
+    </div>
+    <div class="page-header-actions">
+      <button type="button" class="icon-btn page-add-btn" onclick="openForm()" title="Add dhikr" aria-label="Add dhikr">
+        <span data-icon="plus"></span>
+      </button>
+      <button type="button" class="icon-btn page-settings-btn" onclick="openCatMgr()" title="Manage categories" aria-label="Manage categories">
+        <span data-icon="settings"></span>
+      </button>
     </div>
   </div>
   <div class="cats-grid" id="cats-grid"></div>
@@ -333,7 +361,7 @@
 
 <!-- DHIKR FORM -->
 <div class="ov center" id="ov-form" onclick="if(event.target===this)closeForm()">
-  <div class="modal-box">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="form-title">
     <div class="mh">
       <h2 id="form-title">Add Dhikr</h2>
       <button class="btn-close" onclick="closeForm()" aria-label="Close"><span class="btn-icon" data-icon="x"></span></button>
@@ -388,9 +416,9 @@
 
 <!-- CATEGORY MANAGER -->
 <div class="ov center" id="ov-cats" onclick="if(event.target===this)closeCatMgr()">
-  <div class="modal-box">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="cats-title">
     <div class="mh">
-      <h2>Categories</h2>
+      <h2 id="cats-title">Categories</h2>
       <button class="btn-close" onclick="closeCatMgr()" aria-label="Close"><span class="btn-icon" data-icon="x"></span></button>
     </div>
     <div class="mb" id="cat-list-body" style="gap:7px"></div>
@@ -428,9 +456,9 @@
 
 <!-- EDIT CATEGORY -->
 <div class="ov center" id="ov-editcat" onclick="if(event.target===this)closeEditCat()">
-  <div class="modal-box" style="max-width:360px">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="editcat-title" style="max-width:360px">
     <div class="mh">
-      <h2>Edit Category</h2>
+      <h2 id="editcat-title">Edit Category</h2>
       <button class="btn-close" onclick="closeEditCat()" aria-label="Close"><span class="btn-icon" data-icon="x"></span></button>
     </div>
     <div class="mb">
@@ -447,7 +475,7 @@
 
 <!-- CONFIRM -->
 <div class="ov center" id="ov-confirm" onclick="if(event.target===this)closeConfirm()">
-  <div class="confirm-inner">
+  <div class="confirm-inner" role="alertdialog" aria-modal="true" aria-labelledby="conf-t" aria-describedby="conf-x">
     <div class="conf-ico" id="conf-ico"></div>
     <div class="conf-t" id="conf-t">Delete?</div>
     <div class="conf-x" id="conf-x">This cannot be undone.</div>
@@ -458,7 +486,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="importmap">
 {
@@ -501,6 +529,7 @@
 <script src="js/dates.js"></script>
 <script src="js/hijri-events.js"></script>
 <script src="js/hijri-calendar.js"></script>
+<script src="js/practices-data.js"></script>
 <script src="js/asma-data.js"></script>
 <script src="js/asma.js"></script>
 <script src="js/books-data.js"></script>
@@ -510,6 +539,7 @@
 <script src="js/reader.js"></script>
 <script src="js/views/cats.js"></script>
 <script src="js/views/home.js"></script>
+<script src="js/views/practice.js"></script>
 <script src="js/views/quote.js"></script>
 <script src="js/views/adkar.js"></script>
 <script src="js/views/search.js"></script>
@@ -551,7 +581,6 @@
     <div class="mb settings-body" id="settings-body"></div>
 
     <div class="mf settings-foot">
-      <button class="btn-cancel" onclick="closeSettings()">Close</button>
       <button class="btn-save" onclick="closeSettings()">Done</button>
     </div>
   </div>

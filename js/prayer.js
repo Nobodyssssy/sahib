@@ -82,14 +82,18 @@ const PRAYER_DEFAULT_PREFS = {
     leadMinutes: 10,
     atTime: true,
     notify: false,
-    sound: false,
+    sound: true,
     volume: 0.55,
+    audio: {
+      standard: 'azhar',
+      fajr: 'fajr-balakong'
+    },
     perPrayer: {
-      Fajr:    { alert: true, sound: true },
-      Dhuhr:   { alert: true, sound: true },
-      Asr:     { alert: true, sound: true },
-      Maghrib: { alert: true, sound: true },
-      Isha:    { alert: true, sound: true }
+      Fajr:    { alert: true, sound: true, mode: 'chime' },
+      Dhuhr:   { alert: true, sound: true, mode: 'chime' },
+      Asr:     { alert: true, sound: true, mode: 'chime' },
+      Maghrib: { alert: true, sound: true, mode: 'chime' },
+      Isha:    { alert: true, sound: true, mode: 'chime' }
     }
   }
 };
@@ -218,6 +222,12 @@ function _normalizePrayerPrefs(raw){
   if(Number.isFinite(lead)) out.alerts.leadMinutes = Math.max(1, Math.min(120, Math.round(lead)));
   const vol = Number(alerts.volume);
   if(Number.isFinite(vol)) out.alerts.volume = Math.max(0, Math.min(1, vol));
+  if(alerts.audio && typeof alerts.audio === 'object'){
+    const standard = alerts.audio.standard;
+    const fajr = alerts.audio.fajr;
+    if(['azhar', 'quseir', 'local'].includes(standard)) out.alerts.audio.standard = standard;
+    if(['fajr-balakong', 'local'].includes(fajr)) out.alerts.audio.fajr = fajr;
+  }
 
   if(alerts.perPrayer && typeof alerts.perPrayer === 'object'){
     PRAYER_ALERTABLE.forEach(name => {
@@ -225,6 +235,13 @@ function _normalizePrayerPrefs(raw){
       if(src && typeof src === 'object'){
         out.alerts.perPrayer[name].alert = src.alert !== false;
         out.alerts.perPrayer[name].sound = src.sound !== false;
+        if(src.mode === 'off' || src.mode === 'chime' || src.mode === 'adhan'){
+          out.alerts.perPrayer[name].mode = src.mode;
+        } else if(src.alert === false || src.sound === false){
+          out.alerts.perPrayer[name].mode = 'off';
+        } else {
+          out.alerts.perPrayer[name].mode = 'chime';
+        }
       }
     });
   }
@@ -246,6 +263,9 @@ async function savePrayerPrefs(patch){
   if(patch && patch.adjustments) next.adjustments = { ...current.adjustments, ...patch.adjustments };
   if(patch && patch.alerts){
     next.alerts = { ...current.alerts, ...patch.alerts };
+    if(patch.alerts.audio){
+      next.alerts.audio = { ...current.alerts.audio, ...patch.alerts.audio };
+    }
     if(patch.alerts.perPrayer){
       next.alerts.perPrayer = _clone(current.alerts.perPrayer);
       Object.keys(patch.alerts.perPrayer).forEach(name => {

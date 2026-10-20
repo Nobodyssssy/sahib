@@ -3,7 +3,7 @@
 **Branch:** `redesign/pc-first` (created from `main` @ `820bf24`, which matches `origin/main`)
 **Scope:** PC-first UI/UX redesign, universal theme system, and Awqat Salaat prayer-feature integration.
 **Checkpoint rule:** Desktop is finished, tested and reviewed before Android-specific work begins.
-**Last updated:** 2026-10-19
+**Last updated:** 2026-10-20
 
 ---
 
@@ -18,7 +18,7 @@
 | Prayer | `js/prayer.js` fetches full months from AlAdhan (method 19, school 0), caches per month, keeps a `prayer-last-good` offline snapshot, prefetches 90 days. `js/views/prayer.js` renders timetable, next-prayer card, Maghrib→Maghrib daily cycle, night thirds, forbidden windows. |
 | Location | `js/location.js`: Open-Meteo geocoding + manual coordinates + explicit GPS gesture. GPS is never mandatory. |
 | Themes | `js/app.js` + `css/base.css`: Catppuccin Mocha/Latte, five accents (`body[data-accent]`). |
-| Service worker | `sw.js` v2.10.68: precached app shell, cache-first same-origin, network-first navigation, `sahib-books` + `sahib-asma-audio` exempt from cleanup. VERSION must be bumped on any js/css/html change. |
+| Service worker | `sw.js` v2.10.71: precached app shell, cache-first same-origin, network-first navigation, `sahib-books` + `sahib-asma-audio` exempt from cleanup. VERSION must be bumped on any js/css/html change. |
 | Responsive | `css/responsive.css` is the only authority for responsive overrides. `layout.css` has legacy media rules; no new ones are added there. |
 | Verified contracts | `getMonth()` → `{ data, ts, stale }`; `state.js` keeps `item.categories`; no raw `#tag` badges; `sahib-books`/`sahib-asma-audio` cache exemptions. |
 
@@ -101,6 +101,17 @@ Reviewed source areas:
 - Bumped `sw.js` to **v2.10.68**, added new CSS/JS/vendor/font assets, removed a duplicate `quote.js` entry, and added a `notificationclick` handler that focuses/opens Sahib.
 - Cache cleanup continues to preserve `sahib-books` and `sahib-asma-audio`. All 93 local app-shell entries were verified to exist; SW registers, claims clients, serves an offline reload, and caches all shell assets.
 
+### 3.5 Desktop review pass — 2026-10-20
+
+- Wrote `DESIGN_REVIEW.md` against the hand-bound almanac direction and the Sahib almanac skill.
+- Static audit: `node --check` passed on every changed/new JS file; `css/design.css` contains no literal `\n`/`\r`/`\t` typos, braces and comments are balanced, and all 14 stylesheets parse in Edge.
+- Shell audit: 100 `APP_SHELL` entries with no duplicates or missing files; 68 local `index.html` references and 54 scripts all resolve.
+- Headless Edge smoke: Home, Daily Practice (Today/Upcoming/Calendar/All), Prayer, Hijri, Asma, Library, Tasbih, Categories and Settings render; no horizontal overflow at 1920/1600/1440/1280/1200/1024/960/768/390; no console errors in the final pass.
+- Theme pass: all five families in light and dark; nine accent fills measured 7.08:1–12.91:1 for primary-button text.
+- Contrast pass: fixed the active sidebar Arabic label, light-mode daily-cycle metadata that was overridden by more specific legacy prayer rules, and Rosé Pine light secondary ink. Re-test: 0 AA failures across the ten theme/mode combinations.
+- Offline pass: `caches.keys()` returns only `sahib-v2.10.71` and `sahib-books`; offline reload boots Home from cache.
+- Bumped `sw.js` to **v2.10.71**. No Android/touch work was started.
+
 ---
 
 ## 4. Key implementation decisions
@@ -147,11 +158,11 @@ Reviewed source areas:
 
 - `node --check` on `js/app.js`, `js/prayer.js`, `js/prayer-widget.js`, `js/settings.js`, `js/theme.js`, `js/views/home.js`, `js/views/prayer.js`, `js/views/cats.js`, `sw.js` — all pass.
 - UTF-8 sanity check on all edited JS/CSS — no mojibake.
-- App-shell audit: 93/93 local sw.js entries exist.
+- App-shell audit: 100/100 local sw.js entries exist.
 
-### Headless browser (Edge via Playwright)
+### Headless browser (Edge headless via CDP)
 
-Final run: **37/37 checks pass**, no page/console/request errors.
+Desktop checkpoint run: **37/37 checks pass**, no page/console/request errors.
 
 - Boot/shell/Home render, widget countdown and six prayer cells.
 - `_pwSchedule` transitions at 04:59, 05:01, 12:11, 15:21, 18:01, 19:31.
@@ -163,7 +174,19 @@ Final run: **37/37 checks pass**, no page/console/request errors.
 - Modules: categories, prayer, Hijri (31 cells), Asma (99 cards), Library, Tasbih, favorites, category→adkar (25 cards), detail overlay, global search (26 results).
 - Layout: no horizontal overflow at 1200/1440/1920; prayer month table has no overflow; print media rules present.
 - Narrow fallback: 960/768/480/390 px no horizontal overflow, sidebar hidden, widget present.
-- Additional: settings modal fits at 960/900/768/480; topbar search icon focuses the search input; settings close button works; About GitHub link is a real button; print switches to month and calls `window.print()` once; SW `sahib-v2.10.68` active with controller after reload; offline reload boots Home with widgets.
+- Additional: settings modal fits at 960/900/768/480; topbar search icon focuses the search input; settings close button works; About GitHub link is a real button; print switches to month and calls `window.print()` once; SW `sahib-v2.10.71` active with controller after reload; offline reload boots Home with widgets.
+
+### Desktop review pass — 2026-10-20
+
+- `node --check` on all changed/new JS — pass.
+- `css/design.css`: no literal escape typos; 1265/1265 braces; 60/60 comments; all 14 stylesheets parse in Edge.
+- `sw.js`: 100 shell entries, 0 duplicates, 0 missing; `index.html`: 68 local references, 0 missing.
+- Modules verified: Home, Daily Practice (four tabs), Prayer, Hijri, Asma, Library, Tasbih, Categories, Settings.
+- Overflow: none at 1920/1600/1440/1280/1200/1024/960/768/390.
+- Themes: 5 families × light/dark; 9 accent fills measured 7.08:1–12.91:1 for primary-button text.
+- Contrast: 0 AA failures across all ten theme/mode combinations after fixes (active sidebar Arabic ink, light-mode cycle metadata, Rosé Pine light secondary ink).
+- Offline: `caches.keys()` = `sahib-v2.10.71` + `sahib-books`; offline reload boots Home.
+- Full report: `DESIGN_REVIEW.md`.
 
 ### Visual review
 
@@ -186,7 +209,8 @@ Screenshots reviewed at 1200/1440/1920 for Home, settings tabs, Prayer today/mon
 
 - Branch: `redesign/pc-first` (from `main` @ `820bf24`).
 - Desktop checkpoint implementation commit: `802cd14` — “Redesign desktop UI and add offline prayer engine”.
-- This progress document is updated in a follow-up docs commit on the same branch.
+- Desktop review pass commit: “Add desktop almanac review pass and contrast fixes” (same branch).
+- This progress document is updated alongside the review pass on the same branch.
 - Deployment: **not performed.** No production deployment before desktop review, per the checkpoint rule. `main`/GitHub Pages remain unchanged.
 - Secrets: none added. No force-push or remote-branch deletion.
 
@@ -196,6 +220,9 @@ Screenshots reviewed at 1200/1440/1920 for Home, settings tabs, Prayer today/mon
 
 ### Desktop review gate
 
+- [x] Desktop implementation reviewed against the hand-bound almanac direction.
+- [x] Static, browser, theme, contrast, overflow and offline checks run.
+- [x] Blocking contrast issues fixed and re-tested.
 - [ ] User review of this desktop checkpoint; collect fixes.
 - [ ] Resolve any review feedback while keeping responsive rules in `css/responsive.css`.
 

@@ -52,6 +52,9 @@ function toast(msg, iconName){
     ? icon(iconName, 14) + ' '
     : '';
   t.innerHTML = ico + esc(msg);
+  t.dataset.kind = iconName === 'alert'
+    ? 'danger'
+    : (iconName === 'check' || iconName === 'check-circle' ? 'success' : 'neutral');
   t.classList.add('show');
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => t.classList.remove('show'), 2800);

@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.10.68';
+const VERSION = 'v2.10.71';
 const CACHE = `sahib-${VERSION}`;
 
 const APP_SHELL = [
@@ -31,6 +31,10 @@ const APP_SHELL = [
   './css/responsive.css',
   
   './assets/icons/sprite.svg',
+  './assets/adhan/al-azhar-park.mp3',
+  './assets/adhan/quseir-sea.mp3',
+  './assets/adhan/fajr-balakong.mp3',
+  './assets/adhan/LICENSES.md',
   './assets/asma-audio/index.json',
   './assets/fonts/Amiri-Regular.woff2',
   './assets/fonts/Amiri-Bold.woff2',
@@ -65,6 +69,7 @@ const APP_SHELL = [
   './js/dates.js',
   './js/hijri-events.js',
   './js/hijri-calendar.js',
+  './js/practices-data.js',
   './js/asma-data.js',
   './js/asma.js',
   './js/books-data.js',
@@ -86,6 +91,7 @@ const APP_SHELL = [
 
   './js/views/cats.js',
   './js/views/home.js',
+  './js/views/practice.js',
   './js/views/adkar.js',
   './js/views/search.js',
   './js/views/favs.js',
@@ -167,6 +173,26 @@ self.addEventListener('fetch', (event) => {
 
   /* Handle same-origin requests and book-proxy requests. */
   if (!isSameOrigin && !isBookProxy) return;
+
+  /* Bundled adhan recordings: serve the full cached file before the Range
+     short-circuit so offline reminders work when <audio> requests a byte
+     range. Local user files never travel through the service worker. */
+  if (url.pathname.includes('/assets/adhan/') && url.pathname.endsWith('.mp3')) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const cacheKey = new Request(url.origin + url.pathname, { method: 'GET' });
+      const cached = await cache.match(cacheKey);
+      if (cached) return cached;
+      try {
+        const res = await fetch(cacheKey);
+        if (res && res.status === 200) await cache.put(cacheKey, res.clone());
+        return res;
+      } catch (err) {
+        return new Response('', { status: 504 });
+      }
+    })());
+    return;
+  }
 
   /* Asma audio mp3s: dedicated runtime cache, cache-first, exempt from version cleanup.
      Handled BEFORE the Range short-circuit because <audio> sends Range: bytes=0-

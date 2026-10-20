@@ -108,11 +108,32 @@ There is no framework and no build step.
   Do not auto-scrape. Use it manually to confirm any Arabic you write
   into `js/hisn-data.js`.
   
+### Desktop Almanac Shell
+
+- PC-first redesign using the hand-bound almanac direction: dated masthead, ruled sections, a reading page, a quiet index and a daybook.
+- Fixed desktop sidebar and topbar with English/Arabic navigation labels and a collapsible sidebar.
+- Semantic token system in `css/tokens.css`:
+  - five theme families: Catppuccin, Aura, Dracula, Tokyo Night, Rosé Pine
+  - light and dark modes for each
+  - nine accents
+  - four typefaces: Tajawal, Cairo, Inter, System
+- Persisted appearance preferences via `js/theme.js`.
+- Settings modal with Appearance, Prayer, Alerts, Data and About tabs.
+- Daily Practice daybook (`js/views/practice.js`) with Today, Upcoming, Calendar and All Practices.
+- Responsive overrides remain in `css/responsive.css`; desktop composition lives in `css/design.css`.
+
 ### Prayer Times and Daily Cycle
 
 - Prayer times through the Aladhan API.
+- Provider modes: AlAdhan (default), automatic fallback, offline Adhan.js calculation and validated CSV schedules.
+- Per-prayer adjustments and live next-prayer countdown.
 - Location support with GPS or manual city selection.
 - Monthly prayer data is cached locally.
+- Reminders:
+  - approaching and at-time alerts
+  - per-prayer toggles, quiet hours and lead time in Settings
+  - synthesized chime or bundled adhan recordings
+  - optional browser notifications, requested only after an explicit user action
 - Offline fallback:
   - the last successful prayer month is stored under `prayer-last-good`
   - when the network fails, the app serves the snapshot with a stale flag
@@ -171,7 +192,7 @@ There is no framework and no build step.
   
 ### Library and Reader
 
-- Curated local PDF library stored under `assets/books`.
+- Curated 70-book library served from the private `sahib-assets` repository through the Cloudflare Worker proxy. The app no longer ships `assets/books`.
 - Nine category folders, 70 books total:
   1. Quran and Its Sciences (5)
   2. Hadith and Its Sciences (9)
@@ -232,10 +253,14 @@ There is no framework and no build step.
   - Zoomed past fit-width, the scroll container gains a horizontal scrollbar; the wrap and canvas are unclamped.
   - Zoom resets to 100% on each reader open.
 
-### Current state (as of v2.10.66)
+### Current state (as of v2.10.71)
 
 - `window.HISN_VERSION = 11`.
-- `sw.js VERSION = v2.10.66`.
+- `sw.js VERSION = v2.10.71`.
+- Desktop almanac shell, five theme families, light/dark modes, nine accents and four typefaces are live.
+- Daily Practice daybook is live with a local IndexedDB-backed state.
+- Prayer providers: AlAdhan, automatic fallback, offline Adhan.js and CSV.
+- Desktop design review completed: `DESIGN_REVIEW.md`.
 - Fresh-install adhkar count: 256 Hisn entries, 22 buckets.
 - 99 names enriched with `about`, `aboutAr`, `tafsirAr`, `tafsirEn`, `quran`.
 - Asma detail modal shipped with progressive disclosure, inline AR/EN toggle, per-name audio with dedicated `sahib-asma-audio` cache.
