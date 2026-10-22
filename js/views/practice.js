@@ -1,7 +1,7 @@
 'use strict';
 
 /* ==========================================================================
-   SAHIB Â· DAILY PRACTICE
+   SAHIB · DAILY PRACTICE
    A local-first daybook for recurring worship, personal routines and honest
    time-limit trackers. State is stored in the existing IndexedDB `meta` store
    under `practiceStateV1`; no new database version is required.
@@ -12,7 +12,7 @@ const SahibPractice = (() => {
   const VERSION = 1;
   const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEKDAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const HIJRI_MONTHS_EN = ['Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani', 'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', 'Shaâ€˜ban', 'Ramadan', 'Shawwal', 'Dhul-Qaâ€˜dah', 'Dhul-Hijjah'];
+  const HIJRI_MONTHS_EN = ['Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani', 'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', 'Sha‘ban', 'Ramadan', 'Shawwal', 'Dhul-Qa‘dah', 'Dhul-Hijjah'];
 
   const runtime = {
     ready: false,
@@ -169,7 +169,7 @@ const SahibPractice = (() => {
     const h = _hijri(date);
     if (!h) return '';
     const ar = h.monthNameAr || '';
-    return `${h.day} ${ar} ${h.year} Ù‡Ù€`;
+    return `${h.day} ${ar} ${h.year} هـ`;
   }
 
   function _fmtLong(date) {
@@ -246,20 +246,20 @@ const SahibPractice = (() => {
       const days = Array.isArray(s.days) ? s.days : [];
       return days.length ? days.map(d => WEEKDAYS_EN[d]).join(' & ') : 'Choose days';
     }
-    if (s.type === 'gregorian-monthly') return `Monthly Â· day ${s.day || 1}`;
+    if (s.type === 'gregorian-monthly') return `Monthly · day ${s.day || 1}`;
     if (s.type === 'hijri-monthly') {
       const days = Array.isArray(s.days) ? s.days : [];
-      return `Hijri Â· ${days.length ? days.join(', ') : 'choose days'}`;
+      return `Hijri · ${days.length ? days.join(', ') : 'choose days'}`;
     }
     if (s.type === 'hijri-yearly') {
       const days = Array.isArray(s.days) ? s.days : [];
-      return `Hijri Â· ${days.join(', ') || 'â€”'} ${_hijriMonthName(s.month || 1)}`;
+      return `Hijri · ${days.join(', ') || '—'} ${_hijriMonthName(s.month || 1)}`;
     }
     if (s.type === 'hijri-range') {
-      return `Hijri Â· ${s.start || 1}â€“${s.end || 1} ${_hijriMonthName(s.month || 1)}`;
+      return `Hijri · ${s.start || 1}–${s.end || 1} ${_hijriMonthName(s.month || 1)}`;
     }
     if (s.type === 'interval') return `Every ${s.everyDays || 40} days`;
-    if (s.type === 'once') return s.date ? `Once Â· ${_fmtDate(s.date)}` : 'One date Â· not set';
+    if (s.type === 'once') return s.date ? `Once · ${_fmtDate(s.date)}` : 'One date · not set';
     return 'No date set';
   }
 
@@ -367,7 +367,7 @@ const SahibPractice = (() => {
     await _save();
     closePracticeDetail();
     _refreshSurfaces();
-    toast(`${p.title} Â· marked done`, 'check');
+    toast(`${p.title} · marked done`, 'check');
   }
 
   async function _undo(id, dateKey = _dateKey()) {
@@ -396,7 +396,7 @@ const SahibPractice = (() => {
     await _save();
     closePracticeDetail();
     _refreshSurfaces();
-    toast(`${p.title} Â· set aside`, 'calm');
+    toast(`${p.title} · set aside`, 'calm');
   }
 
   async function _snooze(id, days = 1) {
@@ -408,7 +408,7 @@ const SahibPractice = (() => {
     await _save();
     closePracticeDetail();
     _refreshSurfaces();
-    toast(`${p.title} Â· returned ${Number(days) === 1 ? 'tomorrow' : `in ${days} days`}`, 'clock');
+    toast(`${p.title} · returned ${Number(days) === 1 ? 'tomorrow' : `in ${days} days`}`, 'clock');
   }
 
   async function _unsnooze(id) {
@@ -429,7 +429,7 @@ const SahibPractice = (() => {
     await _save();
     closePracticeDetail();
     _refreshSurfaces();
-    toast(`${p.title} Â· starting date saved`, 'check');
+    toast(`${p.title} · starting date saved`, 'check');
   }
 
   async function _toggleEnabled(id) {
@@ -438,7 +438,7 @@ const SahibPractice = (() => {
     const next = !runtime.data.enabled[id];
     runtime.data.enabled[id] = next;
     if (next && p.schedule?.type === 'interval' && !runtime.data.lastDone[id]) {
-      toast('Tracker added Â· set the last-completed date', 'clock');
+      toast('Tracker added · set the last-completed date', 'clock');
     } else {
       toast(next ? `${p.title} added` : `${p.title} paused`, next ? 'check' : 'calm');
     }
@@ -621,10 +621,10 @@ const SahibPractice = (() => {
       return `<p class="practice-tracker-line">No starting date yet. <button class="practice-text-btn" onclick="openPracticeDetail('${esc(practice.id)}')">Set a date</button></p>`;
     }
     const label = state === 'overdue'
-      ? `Day ${elapsed} of ${every} Â· ${Math.abs(daysLeft)} ${Math.abs(daysLeft) === 1 ? 'day' : 'days'} beyond your chosen limit`
+      ? `Day ${elapsed} of ${every} · ${Math.abs(daysLeft)} ${Math.abs(daysLeft) === 1 ? 'day' : 'days'} beyond your chosen limit`
       : state === 'due'
-        ? `Day ${every} of ${every} Â· at your chosen limit`
-        : `Day ${elapsed} of ${every} Â· ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`;
+        ? `Day ${every} of ${every} · at your chosen limit`
+        : `Day ${elapsed} of ${every} · ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`;
     return `<div class="practice-tracker-line"><div class="practice-meter practice-meter--${state}"><span style="width:${Math.min(100, Math.round((elapsed / every) * 100))}%"></span></div><p>${esc(label)}</p></div>`;
   }
 
@@ -643,7 +643,7 @@ const SahibPractice = (() => {
         <h3 class="practice-entry-title"><span class="practice-ar" lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span class="practice-en">${esc(p.title)}</span></h3>
         <p class="practice-entry-summary">${esc(p.summary || '')}</p>
         ${isTracker ? _renderTrackerLine(item.tracker) : ''}
-        <div class="practice-entry-meta"><span>${esc(_scheduleText(p))}</span><span class="practice-meta-sep">Â·</span>${_sourceLink(p)}</div>
+        <div class="practice-entry-meta"><span>${esc(_scheduleText(p))}</span><span class="practice-meta-sep">·</span>${_sourceLink(p)}</div>
       </div>
       <div class="practice-entry-actions">
         <button class="practice-done-btn" onclick="practiceDone('${esc(p.id)}')" aria-label="Mark ${esc(p.title)} done for today">${icon('check', 12)} Mark done</button>
@@ -659,7 +659,7 @@ const SahibPractice = (() => {
       <span class="practice-finished-mark" aria-hidden="true">${done ? icon('check', 14) : ''}</span>
       <div class="practice-finished-copy">
         <strong>${esc(p.title)}</strong>
-        <span>${done ? 'Completed today' : 'Set aside for today Â· no failure implied'}</span>
+        <span>${done ? 'Completed today' : 'Set aside for today · no failure implied'}</span>
       </div>
       <button class="practice-text-btn" onclick="practiceUndo('${esc(p.id)}')">Undo</button>
     </article>`;
@@ -753,7 +753,7 @@ const SahibPractice = (() => {
       <div class="practice-main-column">
         <div class="practice-day-heading">
           <div><h2>Due today</h2></div>
-          <p>${snap.due.length} waiting Â· ${snap.completed.length} complete${snap.skipped.length ? ` Â· ${snap.skipped.length} set aside` : ''}</p>
+          <p>${snap.due.length} waiting · ${snap.completed.length} complete${snap.skipped.length ? ` · ${snap.skipped.length} set aside` : ''}</p>
         </div>
         <div class="practice-agenda">${dueHtml}</div>
         ${completed}${skipped}${snoozed}
@@ -787,7 +787,7 @@ const SahibPractice = (() => {
     const html = groups.map(group => {
       const hijri = _hijri(group.date);
       return `<section class="practice-upcoming-group">
-        <div class="practice-upcoming-date"><span class="practice-upcoming-day">${group.date.getDate()}</span><span class="practice-upcoming-month">${group.date.toLocaleDateString('en-GB', { month: 'short' })} Â· ${esc(WEEKDAYS_SHORT[group.date.getDay()])}</span>${hijri ? `<span class="practice-upcoming-hijri">${hijri.day} ${esc(hijri.monthNameAr || '')}</span>` : ''}</div>
+        <div class="practice-upcoming-date"><span class="practice-upcoming-day">${group.date.getDate()}</span><span class="practice-upcoming-month">${group.date.toLocaleDateString('en-GB', { month: 'short' })} · ${esc(WEEKDAYS_SHORT[group.date.getDay()])}</span>${hijri ? `<span class="practice-upcoming-hijri">${hijri.day} ${esc(hijri.monthNameAr || '')}</span>` : ''}</div>
         <div class="practice-upcoming-items">${group.items.map(item => `<button class="practice-upcoming-item" onclick="openPracticeDetail('${esc(item.practice.id)}')">
           <span class="practice-upcoming-copy"><strong>${esc(item.practice.title)}</strong><span>${esc(_scheduleText(item.practice))}</span></span>
           <span class="practice-upcoming-time">${esc(_timeText(item.practice, group.date))}${item.practice.relativeTo ? `<small>${esc(_timeSub(item.practice))}</small>` : ''}</span>
@@ -823,7 +823,7 @@ const SahibPractice = (() => {
     const hijriMonthLabel = firstHijri && lastHijri
       ? (Number(firstHijri.month) === Number(lastHijri.month)
           ? firstHijri.monthNameAr
-          : `${firstHijri.monthNameAr} â€“ ${lastHijri.monthNameAr}`)
+          : `${firstHijri.monthNameAr} – ${lastHijri.monthNameAr}`)
       : '';
     const cells = [];
     for (let i = 0; i < 42; i++) {
@@ -854,7 +854,7 @@ const SahibPractice = (() => {
         </div>
       </div>`;
     }).join('') : `<p class="practice-rail-empty">No dated practices for this day. Daily anchors continue on Today.</p>`;
-    return `<div class="practice-view-intro"><div><span class="practice-eyebrow">Lunar and weekly rhythm</span><h2>Calendar</h2></div><p>Hijri dates follow the browserâ€™s Umm al-Qura conversion. Local moon-sighting may differ by a day.</p></div>
+    return `<div class="practice-view-intro"><div><span class="practice-eyebrow">Lunar and weekly rhythm</span><h2>Calendar</h2></div><p>Hijri dates follow the browser’s Umm al-Qura conversion. Local moon-sighting may differ by a day.</p></div>
       <div class="practice-calendar-layout">
         <section class="practice-calendar-panel" aria-label="Practice calendar">
           <div class="practice-calendar-head">
@@ -884,7 +884,7 @@ const SahibPractice = (() => {
         <div class="practice-catalog-copy">
           <div class="practice-catalog-title"><strong>${esc(p.title)}</strong><span lang="ar" dir="rtl">${esc(p.titleAr || '')}</span>${_statusChip(p)}</div>
           <p>${esc(p.summary || '')}</p>
-          <div class="practice-entry-meta"><span>${esc(_scheduleText(p))}</span><span class="practice-meta-sep">Â·</span><span>${esc(_timeText(p))}</span>${p.schedule?.type === 'manual' ? '<span class="practice-meta-sep">Â·</span><span>Set a date in details</span>' : ''}</div>
+          <div class="practice-entry-meta"><span>${esc(_scheduleText(p))}</span><span class="practice-meta-sep">·</span><span>${esc(_timeText(p))}</span>${p.schedule?.type === 'manual' ? '<span class="practice-meta-sep">·</span><span>Set a date in details</span>' : ''}</div>
         </div>
         <button class="practice-text-btn practice-details-btn" onclick="openPracticeDetail('${esc(p.id)}')">Details ${icon('arrow-left', 13)}</button>
       </div>`).join('')}</div>
@@ -901,7 +901,7 @@ const SahibPractice = (() => {
           <div class="practice-catalog-foot"><p>Sources are shown for every built-in practice. Personal notes stay separate from the sourced text.</p><span>Backups and reminders live in Practice settings.</span></div>
         </div>
         <aside class="practice-catalog-index" aria-label="Practice categories">
-          <div class="practice-catalog-index-head"><span class="practice-eyebrow">Contents</span><span>${all.length} practices Â· ${activeCount} active</span></div>
+          <div class="practice-catalog-index-head"><span class="practice-eyebrow">Contents</span><span>${all.length} practices · ${activeCount} active</span></div>
           <nav>${index}</nav>
           <p>Everything is opt-in. Turning a practice off keeps its history.</p>
         </aside>
@@ -912,7 +912,7 @@ const SahibPractice = (() => {
     const host = $('practice-body');
     if (!host) return;
     if (!runtime.ready) {
-      host.innerHTML = '<div class="practice-loading">Opening your daybookâ€¦</div>';
+      host.innerHTML = '<div class="practice-loading">Opening your daybook…</div>';
       init().then(renderPracticeView);
       return;
     }
@@ -927,7 +927,7 @@ const SahibPractice = (() => {
     host.innerHTML = `<div class="practice-page">
       <div class="practice-head">
         <div class="practice-head-copy">
-          <span class="practice-eyebrow">Sahib Â· daily practice Â· ÙˆÙØ±Ø¯</span>
+          <span class="practice-eyebrow">Sahib · daily practice · وِرد</span>
           <h1>Your daybook</h1>
           <p>A quiet record of what you chose to keep. Nothing is switched on for you.</p>
         </div>
@@ -1016,7 +1016,7 @@ const SahibPractice = (() => {
   function _nextDatesText(practice) {
     const next = _nextOccurrences(practice, 3);
     if (!next.length) return practice.schedule?.type === 'manual' ? 'No date has been chosen yet.' : 'No upcoming dates in the next year.';
-    return next.map(d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })).join(' Â· ');
+    return next.map(d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })).join(' · ');
   }
 
   function _renderDetail() {
@@ -1041,7 +1041,7 @@ const SahibPractice = (() => {
           <div>
             <h4 class="practice-subhead">Schedule</h4>
             <p class="practice-detail-strong">${esc(_scheduleText(p))}</p>
-            <p class="practice-detail-muted">${esc(_timeText(p))} Â· ${esc(p.advanceMinutes ? `${p.advanceMinutes} min advance notice` : 'No advance notice')}</p>
+            <p class="practice-detail-muted">${esc(_timeText(p))} · ${esc(p.advanceMinutes ? `${p.advanceMinutes} min advance notice` : 'No advance notice')}</p>
             <p class="practice-detail-muted">Next dates: ${esc(_nextDatesText(p))}</p>
             ${tracker ? `<div class="practice-detail-tracker">${_trackerDetail(tracker)}<div class="practice-last-done"><label for="practice-last-done">Last completed</label><input type="date" id="practice-last-done" max="${_dateKey()}" value="${esc(runtime.data.lastDone[p.id] || '')}"><button class="practice-secondary" onclick="practiceSaveLastDone('${esc(p.id)}')">Save date</button></div><p class="practice-detail-muted">Leave the field blank if you do not know. Sahib will not guess or invent a history.</p></div>` : ''}
           </div>
@@ -1052,10 +1052,10 @@ const SahibPractice = (() => {
             <button class="practice-text-btn" onclick="practiceEdit('${esc(p.id)}')">Edit reminder & schedule</button>
           </div>
         </div>
-        <div class="practice-detail-history"><h4 class="practice-subhead">Recent history</h4>${history.length ? `<ul>${history.map(e => `<li><span>${esc(_fmtDate(e.date))}</span><span>${e.status === 'done' ? 'Completed' : 'Set aside'}${e.source === 'backfill' ? ' Â· recorded by you' : ''}</span></li>`).join('')}</ul>` : `<p class="practice-detail-muted">No history yet. Nothing has been assumed.</p>`}</div>
+        <div class="practice-detail-history"><h4 class="practice-subhead">Recent history</h4>${history.length ? `<ul>${history.map(e => `<li><span>${esc(_fmtDate(e.date))}</span><span>${e.status === 'done' ? 'Completed' : 'Set aside'}${e.source === 'backfill' ? ' · recorded by you' : ''}</span></li>`).join('')}</ul>` : `<p class="practice-detail-muted">No history yet. Nothing has been assumed.</p>`}</div>
         <div class="practice-detail-actions">
           ${p.link ? `<button class="practice-secondary" onclick="practiceOpenLink('${esc(p.id)}')">${esc(p.link.label)}</button>` : ''}
-          ${p.enabled ? `${doneToday ? `<button class="practice-secondary" onclick="practiceUndo('${esc(p.id)}')">Undo todayâ€™s completion</button>` : `<button class="practice-primary" onclick="practiceDone('${esc(p.id)}')">Mark done today</button>`}<button class="practice-secondary" onclick="practiceSnooze('${esc(p.id)}',1)">Snooze 1 day</button><button class="practice-secondary" onclick="practiceSkip('${esc(p.id)}')">Set aside today</button>` : `<button class="practice-primary" onclick="practiceToggle('${esc(p.id)}')">Add to my daybook</button>`}
+          ${p.enabled ? `${doneToday ? `<button class="practice-secondary" onclick="practiceUndo('${esc(p.id)}')">Undo today’s completion</button>` : `<button class="practice-primary" onclick="practiceDone('${esc(p.id)}')">Mark done today</button>`}<button class="practice-secondary" onclick="practiceSnooze('${esc(p.id)}',1)">Snooze 1 day</button><button class="practice-secondary" onclick="practiceSkip('${esc(p.id)}')">Set aside today</button>` : `<button class="practice-primary" onclick="practiceToggle('${esc(p.id)}')">Add to my daybook</button>`}
           ${p.builtIn ? '' : `<button class="practice-danger-text" onclick="practiceDelete('${esc(p.id)}')">Delete personal practice</button>`}
         </div>
         <p class="practice-detail-foot">${p.schedule?.type === 'interval' ? 'A time limit is sourced guidance and a personal reminder, not a ruling about your worship.' : 'Sahib does not record this as an obligation. Your history is stored only in this browser.'}</p>
@@ -1065,14 +1065,14 @@ const SahibPractice = (() => {
 
   function _trackerDetail(tracker) {
     if (tracker.state === 'setup') {
-      return `<div class="practice-detail-tracker-box"><span class="practice-detail-tracker-number">â€”</span><p>No starting date set</p><div class="practice-meter practice-meter--setup"><span style="width:0%"></span></div></div>`;
+      return `<div class="practice-detail-tracker-box"><span class="practice-detail-tracker-number">—</span><p>No starting date set</p><div class="practice-meter practice-meter--setup"><span style="width:0%"></span></div></div>`;
     }
     const pct = Math.min(100, Math.round((tracker.elapsed / tracker.every) * 100));
     return `<div class="practice-detail-tracker-box">
       <div class="practice-detail-tracker-title"><strong>Day ${tracker.elapsed}</strong><span>of ${tracker.every}</span></div>
       <div class="practice-meter practice-meter--${tracker.state}"><span style="width:${pct}%"></span></div>
       <p>${tracker.state === 'overdue' ? `${Math.abs(tracker.daysLeft)} ${Math.abs(tracker.daysLeft) === 1 ? 'day' : 'days'} beyond your chosen limit` : tracker.daysLeft === 0 ? 'At your chosen limit' : `${tracker.daysLeft} ${tracker.daysLeft === 1 ? 'day' : 'days'} remaining`}</p>
-      <p class="practice-detail-muted">Last completed ${esc(_fmtDate(tracker.last))} Â· chosen rhythm every ${tracker.every} days</p>
+      <p class="practice-detail-muted">Last completed ${esc(_fmtDate(tracker.last))} · chosen rhythm every ${tracker.every} days</p>
     </div>`;
   }
 
@@ -1112,15 +1112,15 @@ const SahibPractice = (() => {
         ${!builtIn ? `<div class="practice-form-section">
           <h3 class="practice-form-section-title">What it is</h3>
           <div class="practice-form-grid">
-            <label class="practice-field"><span>Title</span><input id="pf-title" dir="auto" required maxlength="80" value="${esc(title)}" placeholder="Read a page of Qurâ€™an"></label>
-            <label class="practice-field"><span>Arabic title <small>optional</small></span><input id="pf-title-ar" dir="rtl" lang="ar" maxlength="80" value="${esc(titleAr)}" placeholder="ÙˆØ±Ø¯ Ø´Ø®ØµÙŠ"></label>
+            <label class="practice-field"><span>Title</span><input id="pf-title" dir="auto" required maxlength="80" value="${esc(title)}" placeholder="Read a page of Qur’an"></label>
+            <label class="practice-field"><span>Arabic title <small>optional</small></span><input id="pf-title-ar" dir="rtl" lang="ar" maxlength="80" value="${esc(titleAr)}" placeholder="وِرد شخصي"></label>
             <label class="practice-field"><span>Category</span><select id="pf-category">${PRACTICE_CATEGORIES.map(c => `<option value="${c.id}" ${c.id === category ? 'selected' : ''}>${esc(c.label)}</option>`).join('')}</select></label>
           </div>
         </div>` : ''}
         <div class="practice-form-section">
           <h3 class="practice-form-section-title">When it returns</h3>
           <div class="practice-form-grid practice-form-grid--rhythm">
-            <label class="practice-field"><span>Rhythm</span><select id="pf-schedule" onchange="practiceFormScheduleChanged(this.value)">${[['daily','Every day'],['weekly','Weekly'],['gregorian-monthly','Monthly Â· Gregorian day'],['hijri-monthly','Monthly Â· Hijri day'],['hijri-yearly','Yearly Â· Hijri date'],['hijri-range','Hijri season'],['interval','Every N days'],['once','One date'],['manual','No date yet']].map(([value,label]) => `<option value="${value}" ${scheduleType === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
+            <label class="practice-field"><span>Rhythm</span><select id="pf-schedule" onchange="practiceFormScheduleChanged(this.value)">${[['daily','Every day'],['weekly','Weekly'],['gregorian-monthly','Monthly · Gregorian day'],['hijri-monthly','Monthly · Hijri day'],['hijri-yearly','Yearly · Hijri date'],['hijri-range','Hijri season'],['interval','Every N days'],['once','One date'],['manual','No date yet']].map(([value,label]) => `<option value="${value}" ${scheduleType === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
           </div>
           <div class="practice-form-schedule">
             <div class="practice-sched-row" data-sched="weekly"><span>Days</span><div class="practice-weekday-checks">${WEEKDAYS_SHORT.map((day, i) => `<label><input type="checkbox" name="pf-weekday" value="${i}" ${days.map(Number).includes(i) ? 'checked' : ''}><span>${day}</span></label>`).join('')}</div></div>
@@ -1324,7 +1324,7 @@ const SahibPractice = (() => {
         </section>
         <section class="practice-settings-section">
           <h3 class="practice-subhead">Your data</h3>
-          <p class="practice-detail-muted">Practice settings and completion history live in this browserâ€™s IndexedDB. They are included in a practice backup, not sent anywhere.</p>
+          <p class="practice-detail-muted">Practice settings and completion history live in this browser’s IndexedDB. They are included in a practice backup, not sent anywhere.</p>
           <div class="practice-settings-actions"><button class="practice-secondary" onclick="practiceExport()">Export practice data</button><label class="practice-secondary practice-file-label">Restore from file<input type="file" accept="application/json,.json" onchange="practiceImportFile(this)"></label><button class="practice-text-btn" onclick="practiceResetSetup()">Replay first-run choices</button></div>
         </section>
         <section class="practice-settings-section">
@@ -1405,7 +1405,7 @@ const SahibPractice = (() => {
     const items = snap.due;
     const list = items.length ? items.map(item => `<div class="practice-reminder-row">
       <div class="practice-reminder-time">${esc(_timeText(item.practice))}<span>${esc(_timeSub(item.practice))}</span></div>
-      <div class="practice-reminder-copy"><strong>${esc(item.practice.title)}</strong><span>${esc(_scheduleText(item.practice))} Â· ${esc(_category(item.practice.category).label)}</span></div>
+      <div class="practice-reminder-copy"><strong>${esc(item.practice.title)}</strong><span>${esc(_scheduleText(item.practice))} · ${esc(_category(item.practice.category).label)}</span></div>
       <button class="practice-text-btn" onclick="openPracticeDetail('${esc(item.practice.id)}')">Details</button>
     </div>`).join('') : `<p class="practice-rail-empty">Nothing is waiting right now. The daybook can stay quiet.</p>`;
     _overlay('ov-practice-reminders', `<div class="modal-box practice-reminder-modal" role="dialog" aria-modal="true" aria-labelledby="practice-reminders-title">
@@ -1451,15 +1451,15 @@ const SahibPractice = (() => {
     });
     await _save();
     if (dueNow.length === 1) {
-      toast(`${dueNow[0].practice.title} Â· ${_timeText(dueNow[0].practice)}`, 'bell');
+      toast(`${dueNow[0].practice.title} · ${_timeText(dueNow[0].practice)}`, 'bell');
     } else {
-      toast(`${dueNow.length} practices are waiting Â· open your daybook`, 'bell');
+      toast(`${dueNow.length} practices are waiting · open your daybook`, 'bell');
     }
     if (runtime.data.settings.notify) {
       const body = runtime.data.settings.group
-        ? dueNow.map(item => item.practice.title).join(' Â· ')
-        : dueNow.map(item => `${item.practice.title} â€” ${_timeText(item.practice)}`).join('\n');
-      _sendNotification('Sahib Â· Daily practice', body);
+        ? dueNow.map(item => item.practice.title).join(' · ')
+        : dueNow.map(item => `${item.practice.title} — ${_timeText(item.practice)}`).join('\n');
+      _sendNotification('Sahib · Daily practice', body);
     }
     return dueNow;
   }
@@ -1524,7 +1524,7 @@ const SahibPractice = (() => {
   async function _deletePractice(id) {
     const p = _get(id);
     if (!p || p.builtIn) return;
-    if (!window.confirm(`Delete â€œ${p.title}â€ and its local history? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete “${p.title}” and its local history? This cannot be undone.`)) return;
     runtime.data.custom = runtime.data.custom.filter(x => x.id !== id);
     delete runtime.data.enabled[id];
     delete runtime.data.overrides[id];

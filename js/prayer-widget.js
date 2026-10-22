@@ -205,6 +205,7 @@ const PrayerWidget = (() => {
     const cells = times.map(name => `
       <div class="pw-time-cell ${name === 'Sunrise' ? 'sunrise' : ''}" data-pw-cell="${name}">
         <span>${name === 'Sunrise' ? 'Sunrise' : name}</span>
+        <em class="pw-time-ar" lang="ar" dir="rtl">${name === 'Sunrise' ? 'الشروق' : (PRAYER_NAMES_AR[name] || '')}</em>
         <strong>${_pwEsc(formatPrayerTime(inst.today.timings[name], prefs.timeFormat))}</strong>
       </div>`).join('');
 
@@ -221,8 +222,9 @@ const PrayerWidget = (() => {
 
       <div class="pw-main">
         <div class="pw-main-name">
-          <div class="pw-prayer-ar" data-pw="next-ar"></div>
+          <div class="pw-prayer-ar" data-pw="next-ar" lang="ar" dir="rtl"></div>
           <div class="pw-prayer-name" data-pw="next-name">—</div>
+          <div class="pw-main-time" data-pw="next-time-main"></div>
         </div>
         <div class="pw-countdown-block">
           <div class="pw-countdown-label">Remaining</div>
@@ -230,7 +232,7 @@ const PrayerWidget = (() => {
             <span class="pw-countdown-unit" data-pw="h">--</span>
             <span class="pw-countdown-sep">:</span>
             <span class="pw-countdown-unit" data-pw="m">--</span>
-            <span class="pw-countdown-sep">:</span>
+            <span class="pw-countdown-sep pw-countdown-sep--seconds">:</span>
             <span class="pw-countdown-unit" data-pw="s">--</span>
           </div>
         </div>
@@ -287,7 +289,9 @@ const PrayerWidget = (() => {
     _set(inst, 's', clock.s);
     _set(inst, 'next-name', next.name);
     _set(inst, 'next-ar', PRAYER_NAMES_AR[next.name] || '');
-    _set(inst, 'next-time', formatPrayerTime(next.tomorrow && inst.nextDay ? inst.nextDay.timings[next.name] : inst.today.timings[next.name], prefs.timeFormat));
+    const nextTimeText = formatPrayerTime(next.tomorrow && inst.nextDay ? inst.nextDay.timings[next.name] : inst.today.timings[next.name], prefs.timeFormat);
+    _set(inst, 'next-time', nextTimeText);
+    _set(inst, 'next-time-main', nextTimeText);
     _set(inst, 'period', next.tomorrow
       ? `${next.name} tomorrow${next.estimated ? ' (estimated)' : ''} · ${formatPrayerTime(inst.today.timings[next.name], prefs.timeFormat)}`
       : `Until ${next.name} · ${formatPrayerTime(inst.today.timings[next.name], prefs.timeFormat)}`);

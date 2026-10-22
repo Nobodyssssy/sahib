@@ -128,7 +128,7 @@ select:focus-visible,
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
-a { color: var(--color-accent); }
+a { color: var(--color-accent-text); }
 img, svg { max-width: 100%; }
 [hidden] { display: none !important; }
 

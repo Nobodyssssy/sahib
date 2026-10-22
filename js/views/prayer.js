@@ -995,7 +995,7 @@ function _renderTodayHTML(today, nextDay, cycleHTML){
 
   const list = prayers.map(p => {
     const isNext = isToday && p.name === next.name && !p.isSunrise;
-    const iconName = p.isSunrise ? 'sunrise' : (isNext ? 'play' : 'circle-dot');
+    const iconName = p.isSunrise ? 'sunrise' : 'circle-dot';
     return `<div class="prayer-row ${isNext ? 'next' : ''} ${p.isSunrise ? 'sunrise' : ''}">
       <span class="prayer-icon">${icon(iconName, 14)}</span>
       <span class="prayer-name">${p.name}</span>

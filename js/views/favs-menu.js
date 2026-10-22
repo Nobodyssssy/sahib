@@ -119,7 +119,7 @@ async function renderFavBooksGrid(){
 /* A book is "favorite" when it has at least one bookmark OR non-trivial reading progress. */
 function getFavoriteBooks(){
   if(!_bookmarks) _bookmarks = {};
-  if(!_readingProgress) _readingProgress = {};
+  const progress = _readingProgress || {};
 
   const ids = new Set();
 
@@ -129,16 +129,16 @@ function getFavoriteBooks(){
     if(Array.isArray(list) && list.length) ids.add(k);
   });
 
-  Object.keys(_readingProgress).forEach(k => {
-    const p = _readingProgress[k];
+  Object.keys(progress).forEach(k => {
+    const p = progress[k];
     if(p && p.page > 1) ids.add(k);
   });
 
   const books = Array.from(ids).map(getBookById).filter(Boolean);
 
   books.sort((a, b) => {
-    const pa = _readingProgress[a.id];
-    const pb = _readingProgress[b.id];
+    const pa = progress[a.id];
+    const pb = progress[b.id];
     const ta = pa && pa.lastRead ? pa.lastRead : 0;
     const tb = pb && pb.lastRead ? pb.lastRead : 0;
     return tb - ta;

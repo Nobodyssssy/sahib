@@ -67,11 +67,29 @@ async function renderQuoteCard(){
   };
 }
 
+/* Language switch on Home must stay inside the folio reading card. The shared
+   legacy renderer replaces that card with the old rounded markup, so re-render
+   only the Home card and return focus to the language button. */
+function _renderHomeQuoteInPlace(lang){
+  const host = document.getElementById('quote-card');
+  if(!host || !host.classList.contains('home-quote-card')) return false;
+  if(typeof renderHomeQuoteHTML !== 'function') return false;
+  const html = renderHomeQuoteHTML();
+  if(!html) return false;
+  host.outerHTML = html;
+  const next = document.getElementById('quote-card');
+  if(!next) return true;
+  const target = next.querySelector(`.quote-lang-btn[data-lang="${lang}"]`);
+  if(target) target.focus();
+  return true;
+}
+
 async function setQuoteLang(lang){
   if(lang !== 'ar' && lang !== 'en') return;
   _quoteLang = lang;
+  const renderedInPlace = _renderHomeQuoteInPlace(lang);
+  if(!renderedInPlace) renderQuoteCard();
   await store.setMeta('quoteLang', lang);
-  renderQuoteCard();
 }
 
 let _lastSlot = null;

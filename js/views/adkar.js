@@ -158,7 +158,7 @@ function renderCatChips(catKeys){
   if(!Array.isArray(catKeys) || !catKeys.length) return '';
   return catKeys.map(key => {
     const c = getCat(key);
-    return `<span class="badge badge-cat" style="background:${c.color}22;border-color:${c.color};color:${c.color}">${c.ar}</span>`;
+    return `<span class="badge badge-cat" style="background:${c.color}22;border-color:${c.color}">${c.ar}</span>`;
   }).join('');
 }
 

@@ -371,12 +371,12 @@ function bookCardHTML(b){
 
 function getRecentlyReadBooks(limit){
   limit = limit || 3;
-  if(!_readingProgress) _readingProgress = {};
+  const progress = _readingProgress || {};
 
   const seen = new Set();
   const result = [];
 
-  const recent = Object.entries(_readingProgress)
+  const recent = Object.entries(progress)
     .filter(([_, p]) => p && p.lastRead && (!p.totalPages || p.page < p.totalPages))
     .sort((a, b) => b[1].lastRead - a[1].lastRead);
 

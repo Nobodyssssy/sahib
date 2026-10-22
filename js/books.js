@@ -78,11 +78,16 @@ function getCategoryBookCounts(){
    ========================================================================== */
 
 let _readingProgress = null;
+let _readingProgressLoaded = false;
 
 async function loadReadingProgress(){
-  if(_readingProgress) return _readingProgress;
+  /* Callers such as the header star may run before IndexedDB answers. An empty
+     object is not proof that progress was loaded, so track the load explicitly
+     instead of trusting the cache's truthiness. */
+  if(_readingProgressLoaded && _readingProgress !== null) return _readingProgress;
   const stored = await store.getMeta('books-progress');
   _readingProgress = (stored && typeof stored === 'object') ? stored : {};
+  _readingProgressLoaded = true;
   return _readingProgress;
 }
 

@@ -12,7 +12,7 @@ header{
   border-radius:9px;display:flex;align-items:center;justify-content:center;
   font-size:16px;transition:transform var(--tr);
 }
-.logo-text{font-family:'Amiri',serif;font-size:19px;color:var(--accent);font-weight:700;line-height:1;}
+.logo-text{font-family:'Amiri',serif;font-size:19px;color: var(--color-accent-text);font-weight:700;line-height:1;}
 .logo-sub{font-size:10px;color:var(--text3);}
 .logo-date{
   font-size:10px;
@@ -108,7 +108,7 @@ header{
 .page-header .cats-settings-btn{
   flex-shrink:0;
 }
-.page-title{font-family:'Amiri',serif;font-size:22px;color:var(--accent);}
+.page-title{font-family:'Amiri',serif;font-size:22px;color: var(--color-accent-text);}
 .page-sub{font-size:11px;color:var(--text3);margin-top:2px;}
 
 /* CATS GRID */
@@ -161,7 +161,7 @@ header{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:8px;color:var(--text3);font-size:13px;min-height:130px;
 }
-.cat-new-card:hover{border-color:var(--accent);color:var(--accent);}
+.cat-new-card:hover{border-color:var(--accent);color: var(--color-accent-text);}
 
 /* ADKAR LIST */
 .back-bar{padding:14px 20px 0;display:flex;align-items:center;gap:10px;}
@@ -169,7 +169,7 @@ header{
 
 /* FAVS */
 .favs-header{padding:20px 20px 14px;display:flex;align-items:center;gap:10px;}
-.favs-title{font-family:'Amiri',serif;font-size:20px;color:var(--accent);}
+.favs-title{font-family:'Amiri',serif;font-size:20px;color: var(--color-accent-text);}
 
 /* SEARCH RESULTS */
 .search-results{padding:14px 20px 80px;display:flex;flex-direction:column;gap:10px;}
@@ -234,7 +234,7 @@ header{
 .logo-text{
   font-family:'Amiri',serif;
   font-size:17px;
-  color:var(--accent);
+  color: var(--color-accent-text);
   font-weight:700;
   line-height:1.1;
   direction:rtl;
@@ -315,7 +315,7 @@ header{
 }
 .menu-item:hover{
   background:var(--glow);
-  color:var(--accent);
+  color: var(--color-accent-text);
 }
 .menu-icon{
   width:22px;
@@ -331,7 +331,7 @@ header{
   height:18px;
 }
 .menu-item:hover .menu-icon{
-  color:var(--accent);
+  color: var(--color-accent-text);
 }
 .menu-label{
   flex:1;
@@ -373,12 +373,12 @@ header{
 
 /* Add button is gold */
 .btn-add-icon{
-  color:var(--accent) !important;
+  color: var(--color-accent-text) !important;
   font-weight:700;
 }
 .btn-add-icon:hover{
   background:var(--glow) !important;
-  color:var(--accent2) !important;
+  color: var(--color-accent-text) !important;
 }
 
 /* Favorites button has star color */
@@ -402,15 +402,15 @@ header{
 #btn-favs,
 #btn-favs svg,
 header #btn-favs {
-color: var(--accent2) !important;
+color: var(--color-accent-text) !important;
 }
 #btn-favs:hover {
-color: var(--accent2) !important;
+color: var(--color-accent-text) !important;
 border-color: var(--accent2) !important;
 background: color-mix(in srgb, var(--accent2) 12%, transparent) !important;
 }
 #btn-favs.active {
-color: var(--accent2) !important;
+color: var(--color-accent-text) !important;
 border-color: var(--accent2) !important;
 background: color-mix(in srgb, var(--accent2) 15%, transparent) !important;
 }

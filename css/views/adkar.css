@@ -83,7 +83,7 @@
 .badge-repeat {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .badge-sahih {
   background: rgba(76, 175, 137, .12);
@@ -159,7 +159,7 @@
 }
 .adkar-btn.fav.on {
   opacity: 1;
-  color: var(--accent2);
+  color: var(--color-accent-text);
   border-color: var(--accent2);
   background: color-mix(in srgb, var(--accent2) 10%, transparent);
 }
@@ -167,7 +167,7 @@
   fill: var(--accent2);
 }
 .adkar-btn.fav:hover {
-  color: var(--accent2);
+  color: var(--color-accent-text);
   border-color: var(--accent2);
 }
 .adkar-btn.edit:hover {
@@ -249,7 +249,7 @@
   margin: 12px 0 2px;
   font-size: 12px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--color-accent-text);
   letter-spacing: .04em;
 }
 .adkar-group-head::after {
@@ -342,7 +342,7 @@
 .filter-chip.on {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 /* ── Session header/footer ── */
@@ -370,7 +370,7 @@
 }
 .btn-session-skip:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 /* ── Light mode tweaks ── */
@@ -389,7 +389,7 @@
 /* ═══════════════════════════════════════════════════════════
    Session overlay — overrides components.css
    ═══════════════════════════════════════════════════════════ */
-.session-overlay .session-situation { color: var(--accent); }
+.session-overlay .session-situation { color: var(--color-accent-text); }
 
 .session-overlay .session-hadith {
   background: color-mix(in srgb, var(--ctp-yellow) 10%, transparent);

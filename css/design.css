@@ -1,12 +1,12 @@
-/* ==========================================================================
-   SAHIB DESIGN SYSTEM — desktop-first surface styles (Stage 1)
+﻿/* ==========================================================================
+   SAHIB DESIGN SYSTEM â€” desktop-first surface styles (Stage 1)
    Loaded after components.css. All colours come from css/tokens.css.
    Responsive overrides live in css/responsive.css only.
    ========================================================================== */
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    APP SHELL
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 body {
   background:
     radial-gradient(1200px 700px at 100% -10%, color-mix(in oklch, var(--color-accent) 7%, transparent), transparent 60%),
@@ -58,7 +58,7 @@ body {
   font-family: var(--font-arabic);
   font-size: 24px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   line-height: 1.1;
 }
 .sidebar-brand-sub {
@@ -99,7 +99,7 @@ body {
 .side-nav-item.active {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .side-icon {
   width: 22px;
@@ -155,9 +155,9 @@ body {
   flex-direction: column;
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOP BAR
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .topbar {
   position: sticky;
   top: 0;
@@ -214,13 +214,13 @@ body {
 .icon-btn:hover {
   background: color-mix(in oklch, var(--color-accent) 12%, var(--color-surface-raised));
   border-color: var(--color-accent-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   transform: translateY(-1px);
 }
 .icon-btn.active {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 /* Search bar sits under the topbar and follows its own visibility rules. */
@@ -250,9 +250,9 @@ body {
 .search-icon { inset-inline-start: 16px; }
 .search-clear { inset-inline-end: 14px; }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    VIEWS & PAGE CHROME
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .view { display: none; width: 100%; animation: fadeIn .2s var(--ease-standard); }
 .view.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -298,7 +298,7 @@ body {
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
 }
-.btn-back:hover { border-color: var(--color-accent-border); color: var(--color-accent); background: var(--color-accent-subtle); }
+.btn-back:hover { border-color: var(--color-accent-border); color: var(--color-accent-text); background: var(--color-accent-subtle); }
 
 /* Generic surfaces */
 .surface-card,
@@ -314,9 +314,9 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BUTTONS & CONTROLS
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .btn-save,
 .btn-session,
 .btn-add {
@@ -368,7 +368,7 @@ body {
   border-radius: var(--radius-full);
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
@@ -378,7 +378,14 @@ body {
 .filter-chip.on {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+.chip-count {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-text);
+  border: 1px solid var(--color-accent-border);
+  font-variant-numeric: tabular-nums;
+  opacity: 1;
 }
 
 /* Forms */
@@ -418,16 +425,16 @@ body {
   border-radius: var(--radius-md);
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   font-size: 13px;
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
 }
-.io-btn:hover { border-color: var(--color-accent-border); color: var(--color-accent); }
+.io-btn:hover { border-color: var(--color-accent-border); color: var(--color-accent-text); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MODALS & SHEETS
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ov {
   position: fixed;
   inset: 0;
@@ -516,7 +523,7 @@ body {
 .sheet-cat {
   font-family: var(--font-arabic);
   font-size: 19px;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .sheet-body { padding: var(--space-5) var(--space-6); overflow-y: auto; }
 .confirm-inner {
@@ -566,11 +573,11 @@ body {
   transition: opacity var(--duration-normal) var(--ease-standard), transform var(--duration-normal) var(--ease-standard);
 }
 .scroll-top-btn.show { opacity: 1; pointer-events: auto; }
-.scroll-top-btn:hover { color: var(--color-accent); border-color: var(--color-accent-border); transform: translateY(-2px); }
+.scroll-top-btn:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); transform: translateY(-2px); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HOME DASHBOARD
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .home-container {
   width: 100%;
   max-width: var(--content-max-width);
@@ -649,7 +656,7 @@ body {
   place-items: center;
   flex-shrink: 0;
   background: var(--color-accent-subtle);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .home-stat-copy { min-width: 0; }
 .home-stat-num {
@@ -684,12 +691,12 @@ body {
   color: var(--color-text-secondary);
   font-size: 12px;
 }
-.home-chip svg { width: 14px; height: 14px; color: var(--color-accent); }
+.home-chip svg { width: 14px; height: 14px; color: var(--color-accent-text); }
 .home-event-chip {
   cursor: pointer;
   border-color: var(--color-accent-border);
   background: var(--color-accent-subtle);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-family: var(--font-arabic);
   font-size: 14px;
 }
@@ -718,7 +725,7 @@ body {
 .home-section-link {
   background: none;
   border: none;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-size: 12px;
   cursor: pointer;
   font-family: inherit;
@@ -771,7 +778,7 @@ body {
 .home-feature-label-en { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
 .home-feature-sub { font-size: 11px; color: var(--color-text-muted); font-family: inherit; direction: inherit; }
 .home-feature-arrow { margin-inline-start: auto; color: var(--color-text-disabled); display: flex; }
-.home-feature-card:hover .home-feature-arrow { color: var(--color-accent); }
+.home-feature-card:hover .home-feature-arrow { color: var(--color-accent-text); }
 
 .feature-adkar  { --cc: var(--accent-gold,  #f9e2af); }
 .feature-prayer { --cc: var(--accent-teal,  #94e2d5); }
@@ -817,7 +824,7 @@ body {
   padding: var(--space-5);
   border-radius: var(--radius-xl);
 }
-.quote-dateline { font-family: var(--font-arabic); font-size: 13px; color: var(--color-accent); }
+.quote-dateline { font-family: var(--font-arabic); font-size: 13px; color: var(--color-accent-text); }
 .quote-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 .quote-badge {
   display: inline-flex;
@@ -837,7 +844,7 @@ body {
   text-align: right;
   margin: var(--space-4) 0 var(--space-3);
 }
-.quote-ref { font-size: 12px; color: var(--color-accent); }
+.quote-ref { font-size: 12px; color: var(--color-accent-text); }
 .quote-teaser { font-size: 11px; color: var(--color-text-secondary); margin-top: var(--space-3); }
 .quote-tafsir-body { font-size: 14px; line-height: 1.8; color: var(--color-text-secondary); }
 .quote-lang-toggle { display: inline-flex; gap: 4px; padding: 3px; border-radius: var(--radius-full); background: var(--color-surface-raised); border: 1px solid var(--color-border); }
@@ -852,9 +859,9 @@ body {
 }
 .quote-lang-btn.on { background: var(--color-accent); color: var(--color-on-accent); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PRAYER WIDGET
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .prayer-widget {
   padding: var(--space-5);
   display: flex;
@@ -893,7 +900,7 @@ body {
   border-radius: var(--radius-lg);
   display: grid;
   place-items: center;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: var(--color-accent-subtle);
   border: 1px solid var(--color-accent-border);
   margin-bottom: var(--space-1);
@@ -939,12 +946,12 @@ body {
   color: var(--color-text-muted);
 }
 .pw-status.live { color: var(--color-success); border-color: color-mix(in oklch, var(--color-success) 40%, var(--color-border)); }
-.pw-status.entered { color: var(--color-accent); border-color: var(--color-accent-border); background: var(--color-accent-subtle); }
+.pw-status.entered { color: var(--color-accent-text); border-color: var(--color-accent-border); background: var(--color-accent-subtle); }
 .pw-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 
 .pw-main { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); position: relative; z-index: 1; }
 .pw-prayer-name { font-family: var(--font-arabic); font-size: 30px; line-height: 1.15; color: var(--color-text-primary); }
-.pw-prayer-ar { font-family: var(--font-arabic); font-size: 18px; color: var(--color-accent); }
+.pw-prayer-ar { font-family: var(--font-arabic); font-size: 18px; color: var(--color-accent-text); }
 .pw-prayer-time { font-family: var(--font-mono); font-size: 20px; color: var(--color-text-primary); direction: ltr; }
 
 .pw-countdown {
@@ -1003,17 +1010,18 @@ body {
 .pw-time-cell.next {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
-.pw-time-cell.next strong { color: var(--color-accent); }
-.pw-time-cell.sunrise { opacity: .82; }
+.pw-time-cell.next strong { color: var(--color-accent-text); }
+.pw-time-cell.sunrise { opacity: 1; color: var(--color-text-primary); }
+.pw-time-cell.sunrise strong { color: var(--color-text-primary); }
 .pw-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: 11px; color: var(--color-text-muted); position: relative; z-index: 1; }
-.pw-foot a, .pw-foot button { color: var(--color-accent); background: none; border: none; cursor: pointer; font-family: inherit; font-size: inherit; }
+.pw-foot a, .pw-foot button { color: var(--color-accent-text); background: none; border: none; cursor: pointer; font-family: inherit; font-size: inherit; }
 .pw-foot button:hover { text-decoration: underline; }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CATEGORY GRID
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cats-grid {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1040,9 +1048,9 @@ body {
 .cat-en { font-size: 11px; }
 .cat-count { font-size: 11px; }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ADKAR LIST & DETAIL
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .adkar-grid {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1107,9 +1115,9 @@ body {
 }
 .adkar-empty-icon { color: var(--color-text-disabled); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PRAYER VIEW
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .prayer-container {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1138,7 +1146,7 @@ body {
   color: var(--color-text-secondary);
   font-size: 11px;
 }
-.prayer-provider-badge strong { color: var(--color-accent); font-weight: 600; }
+.prayer-provider-badge strong { color: var(--color-accent-text); font-weight: 600; }
 
 .prayer-layout {
   display: grid;
@@ -1162,7 +1170,7 @@ body {
   border-radius: var(--radius-xl);
   display: grid;
   place-items: center;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: var(--color-accent-subtle);
   border: 1px solid var(--color-accent-border);
 }
@@ -1194,7 +1202,7 @@ body {
   place-items: center;
   transition: all var(--duration-fast) var(--ease-standard);
 }
-.prayer-nav-btn:hover { border-color: var(--color-accent-border); color: var(--color-accent); }
+.prayer-nav-btn:hover { border-color: var(--color-accent-border); color: var(--color-accent-text); }
 .prayer-date { font-size: 20px; }
 .prayer-hijri { font-size: 15px; }
 .prayer-loc { margin-top: var(--space-3); font-size: 12px; color: var(--color-text-muted); }
@@ -1227,7 +1235,7 @@ body {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent-border);
 }
-.prayer-row.sunrise { color: var(--color-text-muted); }
+.prayer-row.sunrise { color: var(--color-text-muted); opacity: 1; }
 .prayer-icon {
   width: 30px; height: 30px;
   border-radius: var(--radius-sm);
@@ -1240,7 +1248,7 @@ body {
 .prayer-name { font-weight: 600; color: var(--color-text-primary); }
 .prayer-arabic { font-family: var(--font-arabic); font-size: 15px; color: var(--color-text-muted); }
 .prayer-time { font-family: var(--font-mono); font-size: 15px; color: var(--color-text-primary); direction: ltr; }
-.prayer-row.next .prayer-time { color: var(--color-accent); font-weight: 700; }
+.prayer-row.next .prayer-time { color: var(--color-accent-text); font-weight: 700; }
 
 /* Monthly timetable */
 .prayer-month-card { padding: var(--space-5); }
@@ -1260,7 +1268,7 @@ body {
 }
 .month-table td { font-family: var(--font-mono); color: var(--color-text-secondary); direction: ltr; }
 .month-table td.month-day { font-family: inherit; direction: inherit; color: var(--color-text-primary); font-weight: 600; }
-.month-table tr.today td { background: var(--color-accent-subtle); color: var(--color-accent); }
+.month-table tr.today td { background: var(--color-accent-subtle); color: var(--color-accent-text); }
 .month-table tr:hover td { background: var(--color-hover); }
 .month-legend { font-size: 11px; color: var(--color-text-muted); margin-top: var(--space-3); }
 
@@ -1280,9 +1288,9 @@ body {
 }
 .night-third { border-radius: var(--radius-md); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HIJRI CALENDAR
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .hijri-container {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1341,9 +1349,9 @@ body {
 }
 .hijri-weekday { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-text-muted); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ASMA
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .asma-container {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1386,9 +1394,9 @@ body {
 .asma-card-ar { font-family: var(--font-arabic); font-size: 22px; color: var(--color-text-primary); }
 .asma-card-sub { font-size: 11px; color: var(--color-text-muted); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LIBRARY
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .books-container {
   width: 100%;
   max-width: var(--content-max-width);
@@ -1459,9 +1467,9 @@ body {
 .books-beginner-title { font-family: var(--font-arabic); font-size: 18px; color: var(--color-text-primary); }
 .books-beginner-sub { font-size: 12px; color: var(--color-text-muted); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TASBIH
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 #view-tasbih .tasbih-container,
 .tasbih-wrap,
 .tasbih-container {
@@ -1486,11 +1494,11 @@ body {
   padding: 7px 14px;
   cursor: pointer;
 }
-.tasbih-chip.on { background: var(--color-accent-subtle); border-color: var(--color-accent); color: var(--color-accent); }
+.tasbih-chip.on { background: var(--color-accent-subtle); border-color: var(--color-accent); color: var(--color-accent-text); }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SETTINGS
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .settings-modal { width: min(920px, 100%); max-width: 920px; }
 .settings-head { align-items: flex-start; }
 .settings-head-text { display: flex; flex-direction: column; gap: 2px; }
@@ -1515,7 +1523,7 @@ body {
   white-space: nowrap;
 }
 .settings-tab:hover { color: var(--color-text-primary); background: var(--color-hover); }
-.settings-tab.active { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+.settings-tab.active { color: var(--color-accent-text); border-bottom-color: var(--color-accent); }
 .settings-body { gap: var(--space-6); }
 .settings-section { display: flex; flex-direction: column; gap: var(--space-3); }
 .settings-section-title {
@@ -1625,7 +1633,7 @@ body {
   font-size: 13px;
 }
 .font-option .font-sample { display: block; font-size: 18px; color: var(--color-text-primary); margin-bottom: 2px; }
-.font-option.active { border-color: var(--color-accent); color: var(--color-accent); }
+.font-option.active { border-color: var(--color-accent); color: var(--color-accent-text); }
 .font-option[data-font-option="cairo"] .font-sample { font-family: 'Cairo', var(--font-ui); }
 .font-option[data-font-option="inter"] .font-sample { font-family: 'Inter', var(--font-ui); }
 .font-option[data-font-option="system"] .font-sample { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -1695,7 +1703,7 @@ body {
 .import-errors { color: var(--color-danger); font-size: 12px; line-height: 1.7; }
 .import-ok { color: var(--color-success); font-size: 12px; }
 .settings-attribution { text-align: start; direction: ltr; }
-.settings-attribution a { color: var(--color-accent); }
+.settings-attribution a { color: var(--color-accent-text); }
 .settings-adjust-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-2); }
 .settings-adjust {
   display: flex;
@@ -1717,6 +1725,7 @@ body {
   border-radius: var(--radius-xs, 4px);
   background: var(--color-surface-sunken);
   border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
   direction: ltr;
   display: inline-block;
   margin: 2px 0;
@@ -1727,14 +1736,14 @@ body {
 .settings-row-actions .switch[disabled] { opacity: .4; pointer-events: none; }
 .settings-row-actions select.fse { min-width: 92px; }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PRINT
-   ═══════════════════════════════════════════════════════════ */
-/* ═══════════════════════════════════════════════════════════
-   ALMANAC DIRECTION — hand-bound reference book
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ALMANAC DIRECTION â€” hand-bound reference book
    Desktop composition lives here. Width/RTL behaviour is owned
    exclusively by css/responsive.css.
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 html {
   --sidebar-offset: var(--sidebar-width);
@@ -1771,7 +1780,7 @@ body::before {
   cursor: not-allowed;
 }
 
-/* ── Shell ───────────────────────────────────────────────── */
+/* â”€â”€ Shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .app-sidebar {
   inset-inline-start: auto;
   inset-inline-end: auto;
@@ -1859,7 +1868,7 @@ body::before {
               background var(--duration-fast) var(--ease-standard);
 }
 .sidebar-collapse-btn:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-border);
   background: transparent;
 }
@@ -1903,7 +1912,7 @@ html[data-sidebar-collapsed="true"] .sidebar-collapse-btn svg { transform: rotat
   background: var(--color-accent);
 }
 .side-icon { color: var(--color-text-muted); }
-.side-nav-item.active .side-icon { color: var(--color-accent); }
+.side-nav-item.active .side-icon { color: var(--color-accent-text); }
 .side-label { font-size: 13px; font-weight: 600; letter-spacing: 0; }
 .side-label-ar {
   font-family: var(--font-arabic);
@@ -1952,7 +1961,7 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before {
 }
 html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
 
-/* ── Top bar ─────────────────────────────────────────────── */
+/* â”€â”€ Top bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .topbar {
   height: var(--topbar-height);
   padding: 0 var(--page-gutter);
@@ -1996,7 +2005,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   background: transparent;
 }
 
-/* ── Page header / category index ───────────────────────── */
+/* â”€â”€ Page header / category index â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .page-header {
   align-items: flex-end;
   gap: var(--space-4);
@@ -2028,11 +2037,11 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   color: var(--color-text-secondary);
 }
 .page-header-actions .icon-btn:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-accent-border);
   background: var(--color-accent-subtle);
 }
-.page-header-actions .page-add-btn { color: var(--color-accent); border-color: var(--color-accent-border); }
+.page-header-actions .page-add-btn { color: var(--color-accent-text); border-color: var(--color-accent-border); }
 
 .cats-grid { gap: 12px; }
 .cat-card {
@@ -2146,7 +2155,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   border: 1px solid var(--color-accent-border);
   border-radius: 2px;
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-family: var(--font-label);
   font-size: 9px;
   font-weight: 700;
@@ -2185,10 +2194,10 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   text-transform: uppercase;
   cursor: pointer;
 }
-.cat-new-card:hover { color: var(--color-accent); border-color: var(--color-accent-border); }
-.cat-new-plus { display: inline-flex; color: var(--color-accent); }
+.cat-new-card:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); }
+.cat-new-plus { display: inline-flex; color: var(--color-accent-text); }
 
-/* ── Adkar list ──────────────────────────────────────────── */
+/* â”€â”€ Adkar list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .adkar-card {
   border-radius: var(--radius-sm);
   border-color: var(--color-border-subtle);
@@ -2205,7 +2214,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
 }
 .adkar-text { font-family: var(--font-arabic); font-size: 20px; line-height: 1.85; }
 
-/* ── Home ────────────────────────────────────────────────── */
+/* â”€â”€ Home â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .home-container { gap: var(--space-8); padding-top: 28px; }
 .home-hero {
   position: relative;
@@ -2245,7 +2254,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-size: 8.5px;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .home-greeting::before { content: ''; width: 18px; height: 1px; background: var(--color-accent); }
 .home-date-ar {
@@ -2278,8 +2287,8 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-size: 9px;
   letter-spacing: .04em;
 }
-.home-chip:hover { color: var(--color-accent); border-color: var(--color-accent-border); }
-.home-chip svg { color: var(--color-accent); }
+.home-chip:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); }
+.home-chip svg { color: var(--color-accent-text); }
 .home-hero-colophon {
   font-family: var(--font-label);
   font-size: 8.5px;
@@ -2317,7 +2326,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-size: 8.5px;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .pw-status {
   padding: 3px 7px;
@@ -2341,7 +2350,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .pw-main { align-items: flex-end; gap: var(--space-3); }
 .pw-countdown-block { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
@@ -2378,10 +2387,10 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   color: var(--color-text-muted);
 }
 .pw-time-cell strong { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); }
-.pw-time-cell.next { background: transparent; color: var(--color-accent); border-bottom: 2px solid var(--color-accent); }
-.pw-time-cell.next strong { color: var(--color-accent); }
+.pw-time-cell.next { background: transparent; color: var(--color-accent-text); border-bottom: 2px solid var(--color-accent); }
+.pw-time-cell.next strong { color: var(--color-accent-text); }
 .pw-foot { font-family: var(--font-label); font-size: 8.5px; letter-spacing: .04em; color: var(--color-text-muted); }
-.pw-foot a, .pw-foot button { color: var(--color-accent); }
+.pw-foot a, .pw-foot button { color: var(--color-accent-text); }
 
 .home-section-head {
   align-items: baseline;
@@ -2408,7 +2417,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   letter-spacing: .11em;
   text-transform: uppercase;
 }
-.home-section-link:hover { color: var(--color-accent); border-color: var(--color-accent); text-decoration: none; }
+.home-section-link:hover { color: var(--color-accent-text); border-color: var(--color-accent); text-decoration: none; }
 
 .home-reading { display: flex; flex-direction: column; gap: 0; }
 .home-reading .quote-card {
@@ -2461,7 +2470,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-size: 8.5px;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .home-reading .quote-badge {
   font-family: var(--font-label);
@@ -2482,7 +2491,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   font-size: 9px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .home-reading .quote-teaser { font-family: var(--font-label); font-size: 10.5px; letter-spacing: .04em; color: var(--color-text-secondary); }
 .home-reading .quote-tafsir-body { max-width: 75ch; font-family: var(--font-ui); font-size: 14px; line-height: 1.75; }
@@ -2527,7 +2536,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   margin-top: 2px;
   border-radius: 0;
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .home-feature-icon svg { width: 18px; height: 18px; }
 .home-feature-text { gap: 0; }
@@ -2552,7 +2561,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-standard);
 }
-.home-feature-card:hover .home-feature-arrow { color: var(--color-accent); opacity: 1; }
+.home-feature-card:hover .home-feature-arrow { color: var(--color-accent-text); opacity: 1; }
 .home-cycle-wide { margin-top: 0; }
 .home-colophon {
   display: flex;
@@ -2567,16 +2576,17 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   color: var(--color-text-muted);
 }
 .home-colophon span:first-child { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-secondary); }
-.home-colophon svg { color: var(--color-accent); }
+.home-colophon svg { color: var(--color-accent-text); }
 
-/* ── Settings, dialogs, forms ────────────────────────────── */
+/* â”€â”€ Settings, dialogs, forms â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-box {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
   box-shadow: var(--shadow-lg);
 }
-.settings-modal { width: min(920px, 100%); max-width: 920px; }
+.settings-modal { width: min(920px, 100%); max-width: 920px; max-height: min(94vh, 940px); }
+.settings-body { scrollbar-gutter: stable; }
 .settings-head { align-items: flex-start; }
 .settings-sub { font-family: var(--font-label); font-size: 9px; letter-spacing: .07em; color: var(--color-text-muted); }
 .settings-tabs {
@@ -2596,7 +2606,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
   border-bottom: 2px solid transparent;
 }
 .settings-tab:hover { color: var(--color-text-primary); background: transparent; }
-.settings-tab.active { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+.settings-tab.active { color: var(--color-accent-text); border-bottom-color: var(--color-accent); }
 .settings-body { gap: 24px; }
 .settings-section { gap: 12px; }
 .settings-section-title {
@@ -2721,7 +2731,7 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
 .mf { border-top: 1px solid var(--color-border); }
 .mh h2 { font-family: var(--font-display); font-weight: 400; }
 
-/* ── Alerts ──────────────────────────────────────────────── */
+/* â”€â”€ Alerts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .alerts-panel { display: flex; flex-direction: column; gap: 24px; }
 .alert-master {
   display: flex;
@@ -2995,7 +3005,7 @@ html[data-mode="light"] .cycle-forbidden.selected { opacity: 1; }
   border-radius: 2px;
   border-color: var(--color-border);
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 .cycle-help-btn:hover { background: var(--color-accent-subtle); }
 .cycle-title {
@@ -3030,7 +3040,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 .cycle-panel-dur {
   border-radius: 2px;
   background: var(--color-accent-subtle);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 /* Session: the tap target becomes a brass seal, not a glowing orb. */
@@ -3080,7 +3090,15 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 .detail-lang-btn.on { background: var(--color-accent); color: var(--color-on-accent); }
 .badge-sahih, .badge-hasan, .badge-daif, .badge-repeat, .badge-tag {
   border-radius: 2px;
+  color: var(--color-text-primary);
 }
+.badge.badge-cat { color: var(--color-text-primary); }
+.situation-pill {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-border);
+  color: var(--color-accent-text);
+}
+.btn-session-skip { color: var(--color-text-primary); }
 .detail-fold {
   border-radius: 2px;
   background: var(--color-surface-sunken);
@@ -3088,7 +3106,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 
 /* ---------- MODULE CONSISTENCY PASS ----------
-   The older module screens still carried pill controls, 10–12px card radii and
+   The older module screens still carried pill controls, 10â€“12px card radii and
    gradients. These overrides bring the less-frequented pages onto the same
    almanac grammar without changing their layout or behaviour. */
 .segmented {
@@ -3126,7 +3144,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 .filter-chip:hover {
   border-color: var(--color-accent-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: var(--color-accent-subtle);
 }
 .filter-chip.on {
@@ -3168,7 +3186,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   border-radius: 2px;
   background: transparent;
   border-color: var(--color-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 #view-prayer .prayer-nav-btn:hover {
   background: var(--color-accent-subtle);
@@ -3184,14 +3202,14 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   border: 1px solid var(--color-accent-border);
   border-radius: 2px;
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 #view-prayer .prayer-row.next .prayer-icon {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: var(--color-on-accent);
 }
-#view-prayer .prayer-row.next .prayer-time { color: var(--color-accent); }
+#view-prayer .prayer-row.next .prayer-time { color: var(--color-accent-text); }
 #view-prayer .prayer-row:hover { background: var(--color-hover); }
 #view-prayer .prayer-widget .pw-progress-fill { background: var(--color-accent); }
 
@@ -3229,7 +3247,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent-border);
 }
-#view-hijri .hijri-cell.has-event .hijri-day-num { color: var(--color-accent); }
+#view-hijri .hijri-cell.has-event .hijri-day-num { color: var(--color-accent-text); }
 #view-hijri .hijri-cell.today {
   background: var(--color-accent);
   border-color: var(--color-accent);
@@ -3256,7 +3274,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 #view-books .books-offline-btn:hover {
   border-color: var(--color-accent-border);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   background: var(--color-accent-subtle);
 }
 #view-books .books-beginner-banner {
@@ -3307,7 +3325,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   border-color: var(--color-accent-border);
   background: var(--color-accent-subtle);
 }
-#view-asma .asma-card-num { color: var(--color-accent); }
+#view-asma .asma-card-num { color: var(--color-accent-text); opacity: 1; }
 #view-asma .asma-flash-btn { border-radius: 2px; }
 
 /* Tasbih */
@@ -3336,7 +3354,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 #view-tasbih .tasbih-settings-btn:hover {
   transform: none;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-accent-border);
   background: var(--color-accent-subtle);
 }
@@ -3380,7 +3398,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 #view-tasbih .tasbih-minus-btn:hover,
 #view-tasbih .tasbih-reset-btn:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-color: var(--color-accent-border);
   background: var(--color-accent-subtle);
 }
@@ -3495,7 +3513,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 }
 
 /* ==========================================================================
-   DAILY PRACTICE · the daybook
+   DAILY PRACTICE Â· the daybook
    ========================================================================== */
 .practice-container {
   width: 100%;
@@ -3557,7 +3575,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   color: var(--color-text-secondary);
   cursor: pointer;
 }
-.practice-icon-btn:hover { color: var(--color-accent); border-color: var(--color-accent-border); background: var(--color-hover); }
+.practice-icon-btn:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); background: var(--color-hover); }
 .practice-bell-count {
   position: absolute;
   top: -7px;
@@ -3593,7 +3611,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 .practice-primary { border: 1px solid var(--color-accent); background: var(--color-accent); color: var(--color-on-accent); }
 .practice-primary:hover { background: var(--color-accent-secondary); border-color: var(--color-accent-secondary); }
 .practice-secondary { border: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); }
-.practice-secondary:hover { border-color: var(--color-accent-border); color: var(--color-accent); background: var(--color-hover); }
+.practice-secondary:hover { border-color: var(--color-accent-border); color: var(--color-accent-text); background: var(--color-hover); }
 .practice-danger-text { border: 1px solid transparent; background: transparent; color: var(--color-danger); }
 .practice-danger-text:hover { border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border)); background: color-mix(in srgb, var(--color-danger) 8%, transparent); }
 .practice-primary--small { min-height: 34px; padding: 7px 12px; }
@@ -3612,7 +3630,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   cursor: pointer;
   text-align: start;
 }
-.practice-text-btn:hover { color: var(--color-accent); border-bottom-color: var(--color-accent-border); }
+.practice-text-btn:hover { color: var(--color-accent-text); border-bottom-color: var(--color-accent-border); }
 .practice-page button:focus-visible,
 .practice-page a:focus-visible,
 .practice-overlay button:focus-visible,
@@ -3683,9 +3701,9 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   border-bottom: 1px solid var(--color-border-subtle);
 }
 .practice-entry.is-overdue .practice-entry-time strong { color: var(--color-warning); }
-.practice-entry.is-approaching .practice-entry-time strong { color: var(--color-accent); }
+.practice-entry.is-approaching .practice-entry-time strong { color: var(--color-accent-text); }
 .practice-entry-time { padding-top: 2px; text-align: end; }
-.practice-entry-time strong { display: block; font-family: var(--font-display); font-size: 21px; font-weight: 400; line-height: 1; color: var(--color-accent); }
+.practice-entry-time strong { display: block; font-family: var(--font-display); font-size: 21px; font-weight: 400; line-height: 1; color: var(--color-accent-text); }
 .practice-entry-time span { display: block; max-width: 76px; margin-top: 5px; color: var(--color-text-muted); font-family: var(--font-label); font-size: 8.5px; line-height: 1.35; letter-spacing: .05em; text-transform: uppercase; }
 .practice-entry-spine { width: 1px; min-height: 100%; background: var(--color-border-subtle); }
 .practice-entry-kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 5px; color: var(--color-text-muted); font-family: var(--font-label); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
@@ -3705,7 +3723,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
   white-space: nowrap;
 }
 .practice-chip--recommended,
-.practice-chip--sunnah { border-color: var(--color-accent-border); color: var(--color-accent); }
+.practice-chip--sunnah { border-color: var(--color-accent-border); color: var(--color-accent-text); }
 .practice-chip--sourced-limit { border-color: color-mix(in srgb, var(--color-warning) 42%, var(--color-border)); color: var(--color-warning); }
 .practice-chip--seasonal { border-color: color-mix(in srgb, var(--color-info) 40%, var(--color-border)); color: var(--color-info); }
 .practice-entry-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 9px; margin: 0 0 5px; }
@@ -3715,7 +3733,7 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-hijri-dates {
 .practice-entry-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; color: var(--color-text-muted); font-family: var(--font-label); font-size: 10px; line-height: 1.5; }
 .practice-meta-sep { color: var(--color-text-muted); }
 .practice-source-link { color: var(--color-text-muted); text-decoration: underline; text-decoration-color: var(--color-border); text-underline-offset: 2px; }
-a.practice-source-link:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+a.practice-source-link:hover { color: var(--color-accent-text); text-decoration-color: var(--color-accent); }
 .practice-entry-actions { display: flex; flex-direction: column; align-items: end; gap: 7px; padding-top: 1px; }
 .practice-done-btn {
   display: inline-flex;
@@ -3728,7 +3746,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
   border: 1px solid var(--color-accent-border);
   border-radius: var(--radius-xs);
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .04em;
@@ -3747,7 +3765,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-subhead { margin: 0 0 10px; font-family: var(--font-label); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-muted); }
 .practice-finished-block { margin-top: var(--space-6); }
 .practice-finished { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--color-border-subtle); }
-.practice-finished-mark { display: inline-grid; place-items: center; width: 20px; height: 20px; flex: 0 0 20px; border: 1px solid var(--color-border); border-radius: var(--radius-full); color: var(--color-accent); }
+.practice-finished-mark { display: inline-grid; place-items: center; width: 20px; height: 20px; flex: 0 0 20px; border: 1px solid var(--color-border); border-radius: var(--radius-full); color: var(--color-accent-text); }
 .practice-finished.is-done .practice-finished-mark { border-color: var(--color-accent-border); background: var(--color-accent-subtle); }
 .practice-finished.is-snoozed .practice-finished-mark { color: var(--color-text-muted); }
 .practice-finished-copy { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -3755,7 +3773,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-finished-copy span { font-size: 10px; color: var(--color-text-muted); }
 .practice-finished .practice-text-btn { margin-inline-start: auto; }
 .practice-quiet { display: flex; gap: 12px; padding: 24px 0; border-bottom: 1px solid var(--color-border-subtle); }
-.practice-quiet-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border: 1px solid var(--color-accent-border); border-radius: var(--radius-full); color: var(--color-accent); }
+.practice-quiet-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border: 1px solid var(--color-accent-border); border-radius: var(--radius-full); color: var(--color-accent-text); }
 .practice-quiet p { margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .practice-quiet strong { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
 .practice-quiet span { font-size: 12px; color: var(--color-text-muted); }
@@ -3774,7 +3792,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-rail-block--quiet p { margin: 0 0 8px; color: var(--color-text-muted); font-size: 12px; line-height: 1.65; }
 .practice-tracker-list { display: flex; flex-direction: column; }
 .practice-tracker-mini { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 10px 0; border: 0; border-bottom: 1px solid var(--color-border-subtle); background: transparent; text-align: start; cursor: pointer; }
-.practice-tracker-mini:hover .practice-tracker-mini-top { color: var(--color-accent); }
+.practice-tracker-mini:hover .practice-tracker-mini-top { color: var(--color-accent-text); }
 .practice-tracker-mini-top { display: flex; justify-content: space-between; gap: 12px; color: var(--color-text-secondary); font-size: 11px; }
 .practice-tracker-mini-top > span:last-child { font-family: var(--font-label); font-size: 9px; color: var(--color-text-muted); }
 .practice-tracker-mini-sub { font-size: 10px; color: var(--color-text-muted); }
@@ -3788,11 +3806,11 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-empty p { margin: 10px 0 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.75; }
 .practice-welcome-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
 .practice-welcome-choice { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border: 0; border-bottom: 1px solid var(--color-border-subtle); background: transparent; text-align: start; cursor: pointer; }
-.practice-welcome-choice:hover .practice-welcome-text strong { color: var(--color-accent); }
+.practice-welcome-choice:hover .practice-welcome-text strong { color: var(--color-accent-text); }
 .practice-welcome-text { display: flex; flex-direction: column; gap: 2px; }
 .practice-welcome-text strong { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
 .practice-welcome-text span { font-family: var(--font-label); font-size: 9px; color: var(--color-text-muted); }
-.practice-welcome-add { display: inline-flex; align-items: center; gap: 4px; color: var(--color-accent); font-family: var(--font-label); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.practice-welcome-add { display: inline-flex; align-items: center; gap: 4px; color: var(--color-accent-text); font-family: var(--font-label); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .practice-welcome-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 22px; }
 .practice-empty { max-width: 720px; padding: 48px 0; }
 .practice-empty--bordered { padding: 34px; border-top: 1px solid var(--color-rule); border-bottom: 1px solid var(--color-rule); }
@@ -3806,7 +3824,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-upcoming-list { border-top: 1px solid var(--color-rule); }
 .practice-upcoming-group { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 28px; padding: 20px 0; border-bottom: 1px solid var(--color-border-subtle); }
 .practice-upcoming-date { display: flex; flex-direction: column; gap: 2px; }
-.practice-upcoming-day { font-family: var(--font-display); font-size: 34px; line-height: 1; color: var(--color-accent); }
+.practice-upcoming-day { font-family: var(--font-display); font-size: 34px; line-height: 1; color: var(--color-accent-text); }
 .practice-upcoming-month { font-family: var(--font-label); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
 .practice-upcoming-hijri { margin-top: 4px; font-family: var(--font-arabic); font-size: 13px; color: var(--color-text-muted); }
 .practice-upcoming-items { display: flex; flex-direction: column; width: 100%; align-items: stretch; }
@@ -3817,7 +3835,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-upcoming-copy span { font-family: var(--font-label); font-size: 10.5px; color: var(--color-text-muted); }
 .practice-upcoming-time { display: flex; flex-direction: column; align-items: end; gap: 2px; font-family: var(--font-label); font-size: 11px; letter-spacing: .04em; color: var(--color-text-secondary); white-space: nowrap; text-align: end; }
 .practice-upcoming-time small { font-size: 9.5px; color: var(--color-text-muted); }
-.practice-upcoming-item:hover .practice-upcoming-copy strong { color: var(--color-accent); }
+.practice-upcoming-item:hover .practice-upcoming-copy strong { color: var(--color-accent-text); }
 
 /* Calendar */
 .practice-calendar-layout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr); gap: clamp(24px, 3vw, 48px); align-items: start; }
@@ -3827,7 +3845,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-calendar-head strong { display: block; font-family: var(--font-display); font-size: 24px; font-weight: 400; }
 .practice-calendar-head span { display: block; margin-top: 2px; font-family: var(--font-arabic); font-size: 15px; color: var(--color-text-muted); }
 .practice-cal-nav { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--color-border); border-radius: var(--radius-xs); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
-.practice-cal-nav:hover { color: var(--color-accent); border-color: var(--color-accent-border); }
+.practice-cal-nav:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); }
 .practice-cal-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--color-rule); border-bottom: 1px solid var(--color-rule); }
 .practice-cal-weekdays span { padding: 8px 4px; color: var(--color-text-muted); font-family: var(--font-label); font-size: 10px; letter-spacing: .08em; text-align: center; text-transform: uppercase; }
 .practice-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-bottom: 1px solid var(--color-rule); }
@@ -3867,7 +3885,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-catalog-index nav { display: flex; flex-direction: column; margin-top: 8px; }
 .practice-catalog-index-link { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--color-border-subtle); color: var(--color-text-secondary); text-decoration: none; }
 .practice-catalog-index-link:hover strong,
-.practice-catalog-index-link:focus-visible strong { color: var(--color-accent); }
+.practice-catalog-index-link:focus-visible strong { color: var(--color-accent-text); }
 .practice-catalog-index-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .practice-catalog-index-num { padding-top: 2px; color: var(--color-text-muted); font-family: var(--font-label); font-size: 10px; letter-spacing: .06em; }
 .practice-catalog-index-link strong { display: block; color: var(--color-text-primary); font-family: var(--font-display); font-size: 15px; font-weight: 400; line-height: 1.3; }
@@ -3989,7 +4007,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-weekday-checks { display: flex; flex-wrap: wrap; gap: 7px; direction: ltr; }
 .practice-weekday-checks label { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 9px; border: 1px solid var(--color-border); border-radius: var(--radius-xs); color: var(--color-text-secondary); font-family: var(--font-label); font-size: 10.5px; cursor: pointer; }
 .practice-weekday-checks input { accent-color: var(--color-accent); }
-.practice-weekday-checks label:has(input:checked) { border-color: var(--color-accent-border); background: var(--color-accent-subtle); color: var(--color-accent); }
+.practice-weekday-checks label:has(input:checked) { border-color: var(--color-accent-border); background: var(--color-accent-subtle); color: var(--color-accent-text); }
 .practice-form-source { margin: 4px 0 14px; padding: 10px 12px; border-inline-start: 1px solid var(--color-border-strong); background: var(--color-surface-sunken); }
 .practice-form-source p { margin: 3px 0 0; color: var(--color-text-secondary); font-size: 11px; line-height: 1.6; }
 .practice-form-actions { display: flex; justify-content: flex-start; align-items: center; gap: 16px; padding-top: 12px; border-top: 1px solid var(--color-rule); }
@@ -4043,7 +4061,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .practice-reminder-foot { display: flex; justify-content: space-between; gap: 20px; align-items: start; padding-top: 16px; }
 .practice-reminder-foot p { max-width: 62ch; margin: 0; color: var(--color-text-muted); font-size: 10px; line-height: 1.65; }
 
-/* Home · daybook panel */
+/* Home Â· daybook panel */
 .almanac-home { max-width: min(1480px, 100%); gap: var(--space-8); }
 .almanac-home .home-hero {
   grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr);
@@ -4098,7 +4116,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .home-practice-panel--empty { border-top-color: var(--color-border-strong); }
 .home-practice-head { display: flex; justify-content: space-between; align-items: start; gap: 18px; }
 .home-practice-head h2 { margin: 4px 0 0; font-family: var(--font-display); font-size: clamp(24px, 2.2vw, 31px); font-weight: 400; line-height: 1.1; }
-.home-practice-mark { color: var(--color-accent); opacity: .65; }
+.home-practice-mark { color: var(--color-accent-text); opacity: .65; }
 .home-practice-intro { max-width: 58ch; margin: 12px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.7; }
 .home-practice-empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 18px; }
 .home-practice-primary { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 8px 12px; border: 1px solid var(--color-accent); border-radius: var(--radius-xs); background: var(--color-accent); color: var(--color-on-accent); font-family: var(--font-label); font-size: 10px; letter-spacing: .04em; cursor: pointer; }
@@ -4123,14 +4141,14 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .home-practice-title > span:not([lang]) { overflow: hidden; color: var(--color-text-secondary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .home-practice-meta { overflow: hidden; color: var(--color-text-muted); font-size: 10px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
 .home-practice-arrow { color: var(--color-text-muted); opacity: .6; }
-.home-practice-row:hover .home-practice-arrow { color: var(--color-accent); opacity: 1; }
-.home-practice-quiet { display: flex; gap: 10px; align-items: start; padding: 22px 0 18px; color: var(--color-accent); }
+.home-practice-row:hover .home-practice-arrow { color: var(--color-accent-text); opacity: 1; }
+.home-practice-quiet { display: flex; gap: 10px; align-items: start; padding: 22px 0 18px; color: var(--color-accent-text); }
 .home-practice-quiet p { display: flex; flex-direction: column; gap: 3px; margin: 0; }
 .home-practice-quiet strong { color: var(--color-text-secondary); font-size: 12px; font-weight: 500; }
 .home-practice-quiet span { color: var(--color-text-muted); font-size: 11px; }
 .home-practice-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 12px; color: var(--color-text-muted); font-size: 10px; line-height: 1.5; }
 .home-text-action { padding: 0; border: 0; border-bottom: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); font-family: var(--font-ui); font-size: 11px; cursor: pointer; }
-.home-text-action:hover { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+.home-text-action:hover { color: var(--color-accent-text); border-bottom-color: var(--color-accent); }
 .almanac-home .home-reading { min-width: 0; }
 .almanac-home .home-reading .quote-card { height: auto; margin: 0; border-radius: var(--radius-xs); }
 .almanac-home .home-reading .quote-text { font-size: clamp(20px, 1.8vw, 25px); line-height: 1.9; }
@@ -4140,7 +4158,7 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .almanac-home .home-index-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; border-top: 1px solid var(--color-rule); }
 .home-index-item { display: grid; grid-template-columns: 27px 24px minmax(0, 1fr) 16px; align-items: center; gap: 11px; padding: 15px 0; border: 0; border-bottom: 1px solid var(--color-border-subtle); background: transparent; text-align: start; cursor: pointer; }
 .home-index-item:hover { background: var(--color-hover); }
-.home-index-item:hover .home-index-en { color: var(--color-accent); }
+.home-index-item:hover .home-index-en { color: var(--color-accent-text); }
 .home-index-num { color: var(--color-text-muted); font-family: var(--font-label); font-size: 9px; letter-spacing: .1em; }
 .home-index-glyph { color: var(--color-text-muted); }
 .home-index-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
@@ -4150,13 +4168,13 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
 .home-index-arrow { color: var(--color-text-muted); opacity: .55; }
 .home-index-item--practice .home-index-num,
 .home-index-item--practice .home-index-glyph,
-.home-index-item--practice .home-index-en { color: var(--color-accent); }
+.home-index-item--practice .home-index-en { color: var(--color-accent-text); }
 .almanac-home .home-cycle-wide { margin-top: var(--space-4); }
 .almanac-home .home-colophon { padding-top: 4px; }
 
 /* Cycle legibility: keep the printed-strip character, but let the names read. */
 .cycle-seg-label {
-  opacity: .92;
+  opacity: 1;
   padding: 2px 4px;
   border-radius: 1px;
   background: color-mix(in srgb, var(--color-surface) 84%, transparent);
@@ -4359,3 +4377,1140 @@ a.practice-source-link:hover { color: var(--color-accent); text-decoration-color
   }
   .prayer-row.next { background: #eee !important; }
 }
+
+/* ==========================================================================
+   DAILY DESK — 2026-10-20 recovery direction
+   A prayer-led personal desk: one date, one live prayer band, one reading,
+   and the daybook as its margin. Flat rules; no widget cards.
+   ========================================================================== */
+
+/* The live time is part of the desk prayer statement, not other widgets. */
+.pw-main-time { display: none; }
+
+/* ── Home shell ───────────────────────────────────────────── */
+.desk-home {
+  direction: ltr;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding: 10px var(--page-gutter) 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Masthead: date left, day context right ───────────────── */
+.desk-masthead {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 88px);
+  align-items: end;
+  height: auto;
+  padding: 8px 0 22px;
+  border-bottom: 1px solid var(--color-rule);
+  background: transparent;
+}
+.desk-date-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+.desk-day-number {
+  font-family: var(--font-display);
+  font-size: clamp(54px, 5vw, 76px);
+  font-weight: 400;
+  line-height: .82;
+  letter-spacing: -.045em;
+  color: var(--color-accent-text);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.desk-date-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding-top: 4px;
+}
+.desk-weekday {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.desk-month {
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+.desk-hijri {
+  margin-top: 6px;
+  font-family: var(--font-arabic);
+  font-size: clamp(19px, 1.7vw, 23px);
+  line-height: 1.35;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.desk-masthead-right {
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  min-width: 0;
+  max-width: 560px;
+  padding-bottom: 4px;
+  text-align: end;
+}
+.desk-eyebrow {
+  display: block;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+}
+.desk-eyebrow [lang="ar"] {
+  font-family: var(--font-arabic);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-primary);
+}
+.desk-day-line {
+  margin: 6px 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.65vw, 24px);
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+.desk-masthead-side {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.desk-masthead-side .home-chip {
+  min-height: 30px;
+  padding: 6px 9px;
+  border-color: var(--color-border);
+  border-radius: 2px;
+  background: transparent;
+  font-size: 11px;
+  letter-spacing: .02em;
+  color: var(--color-text-secondary);
+}
+.desk-masthead-side .home-chip:hover { background: var(--color-hover); }
+.desk-masthead-side .home-chip--quiet { color: var(--color-text-secondary); }
+.desk-masthead-side .home-event-chip {
+  border-color: var(--color-accent-border);
+  color: var(--color-accent-text);
+  font-family: var(--font-arabic);
+  font-size: 14px;
+}
+
+/* ── Next prayer + chronological day rail ─────────────────── */
+.desk-now { border-bottom: 1px solid var(--color-rule); }
+.desk-prayer-host { min-width: 0; }
+.desk-now .prayer-widget {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "head head"
+    "main foot"
+    "progress progress"
+    "times times";
+  column-gap: clamp(24px, 4vw, 56px);
+  row-gap: 0;
+  padding: 21px 0 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.desk-now .pw-head {
+  grid-area: head;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  padding-bottom: 5px;
+}
+.desk-now .pw-head-info { display: flex; align-items: center; gap: 12px; }
+.desk-now .pw-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--color-text-secondary);
+}
+.desk-now .pw-status { display: none; }
+.desk-now .pw-prayer-time { display: none; }
+.desk-now .pw-main {
+  grid-area: main;
+  align-items: flex-end;
+  gap: clamp(20px, 4vw, 44px);
+  padding: 2px 0 0;
+}
+.desk-now .pw-main-name {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "ar ar"
+    "name time";
+  align-items: baseline;
+  column-gap: 14px;
+  min-width: 0;
+}
+.desk-now .pw-prayer-ar {
+  grid-area: ar;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 4.1vw, 62px);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--color-text-primary);
+}
+.desk-now .pw-prayer-name {
+  grid-area: name;
+  margin-top: 2px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--color-accent-text);
+}
+.desk-now .pw-main-time {
+  display: block;
+  grid-area: time;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 1.1;
+  color: var(--color-text-secondary);
+}
+.desk-now .pw-countdown-block { flex: 0 0 auto; }
+.desk-now .pw-countdown { gap: 1px; }
+.desk-now .pw-countdown-unit {
+  font-size: clamp(30px, 2.8vw, 40px);
+  line-height: 1.1;
+  color: var(--color-text-primary);
+}
+.desk-now .pw-countdown-sep { font-size: 20px; }
+.desk-now .pw-countdown-label {
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  color: var(--color-text-secondary);
+}
+.desk-now .pw-period { display: none; }
+.desk-now .pw-progress {
+  grid-area: progress;
+  height: 2px;
+  margin: 13px 0 15px;
+  background: var(--color-border);
+}
+.desk-now .pw-progress-fill { background: var(--color-accent); }
+.desk-now .pw-foot {
+  grid-area: foot;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 0 0 4px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-align: end;
+}
+.desk-now .pw-foot a,
+.desk-now .pw-foot button {
+  color: var(--color-accent-text);
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+}
+.desk-now .pw-times {
+  grid-area: times;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+  background: transparent;
+}
+.desk-now .pw-time-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-height: 58px;
+  padding: 10px 13px;
+  border: 0;
+  border-inline-end: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.desk-now .pw-time-cell:last-child { border-inline-end: 0; }
+.desk-now .pw-time-cell span {
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.desk-now .pw-time-cell strong {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+.desk-now .pw-time-cell.next {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-text);
+  box-shadow: inset 0 -2px 0 var(--color-accent);
+}
+.desk-now .pw-time-cell.next strong { color: var(--color-accent-text); }
+.desk-now .pw-time-cell.sunrise { opacity: 1; }
+.desk-now .pw-time-cell.sunrise strong { color: var(--color-text-secondary); }
+
+/* ── Two-axis board: reading page + daybook margin ────────── */
+.desk-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, .85fr);
+  align-items: start;
+  border-bottom: 1px solid var(--color-rule);
+}
+.desk-panel {
+  min-width: 0;
+  padding: 26px 0 34px;
+}
+.desk-reading {
+  display: flex;
+  flex-direction: column;
+  padding-inline-end: clamp(24px, 3.2vw, 52px);
+  border-inline-end: 1px solid var(--color-border-subtle);
+}
+.desk-practice {
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: clamp(24px, 3vw, 44px);
+}
+.desk-practice.home-practice-panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.desk-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin-bottom: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-rule);
+}
+.desk-panel-title {
+  margin: 4px 0 0;
+  font-family: var(--font-ui);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -.01em;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.desk-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.desk-link:hover { color: var(--color-accent-text); border-color: var(--color-accent); }
+.desk-link svg { width: 12px; height: 12px; }
+.desk-home .desk-link svg,
+.desk-home .desk-shelf-link svg,
+.desk-home .desk-continue-arrow svg,
+.desk-home .quote-teaser svg { transform: scaleX(-1); }
+
+/* ── Reading page ─────────────────────────────────────────── */
+.desk-reading .quote-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.desk-reading .quote-card:hover { transform: none; }
+.desk-reading .quote-header { padding-top: 13px; }
+.desk-reading .quote-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  color: var(--color-text-secondary);
+}
+.desk-reading .quote-badge-icon { color: var(--color-accent-text); }
+.desk-reading .quote-text {
+  max-width: 33ch;
+  margin: 18px 0 14px;
+  font-family: var(--font-arabic);
+  font-size: clamp(28px, 2.7vw, 42px);
+  line-height: 1.72;
+  color: var(--color-text-primary);
+}
+.desk-reading .quote-ref {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--color-accent-text);
+}
+.desk-reading .home-reading-preview {
+  max-width: 58ch;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-subtle);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+}
+.desk-reading .home-reading-preview > span {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.desk-reading .home-reading-preview.ar {
+  font-family: var(--font-arabic);
+  font-size: 19px;
+  line-height: 1.8;
+  text-align: right;
+}
+.desk-reading .quote-teaser {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  padding-top: 13px;
+  border-top: 1px solid var(--color-border-subtle);
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .03em;
+  color: var(--color-text-secondary);
+}
+.desk-reading .quote-teaser:hover { color: var(--color-accent-text); }
+.desk-reading .quote-tafsir-body { max-width: 64ch; font-size: 13.5px; line-height: 1.78; }
+.desk-reading .quote-lang-toggle { margin-top: 10px; }
+
+/* Continue + a single, quiet shelf line */
+.desk-reading-foot {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-rule);
+}
+.desk-continue-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  min-height: 32px;
+}
+.desk-reading-foot-label {
+  flex: 0 0 auto;
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+}
+.desk-continue-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+.desk-continue-icon { color: var(--color-accent-text); }
+.desk-continue-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.desk-continue-copy strong {
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desk-continue-copy span { font-size: 10.5px; color: var(--color-text-secondary); }
+.desk-continue-inline:hover .desk-continue-copy strong { color: var(--color-accent-text); }
+.desk-continue-arrow { color: var(--color-text-secondary); }
+.desk-continue-empty { font-size: 12.5px; color: var(--color-text-secondary); }
+.desk-shelf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.desk-shelf-label {
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.desk-shelf-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 0 1px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.desk-shelf-link:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); }
+.desk-shelf-link svg { width: 11px; height: 11px; }
+
+/* ── Daybook margin ───────────────────────────────────────── */
+.desk-practice-loading { padding: 20px 0; color: var(--color-text-secondary); font-size: 12px; }
+.desk-practice-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.desk-practice-list { display: flex; flex-direction: column; }
+.desk-practice-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.desk-practice-tick {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 13px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.desk-practice-tick:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-text);
+}
+.desk-practice-copy {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  grid-template-areas:
+    "time title"
+    "time status";
+  gap: 1px 10px;
+  padding: 12px 0 11px;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+.desk-practice-time {
+  grid-area: time;
+  padding-top: 2px;
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  line-height: 1.45;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+}
+.desk-practice-title {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.desk-practice-title [lang="ar"] {
+  font-family: var(--font-arabic);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--color-text-primary);
+}
+.desk-practice-title > span:not([lang]) {
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desk-practice-status {
+  grid-area: status;
+  margin-top: 2px;
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  letter-spacing: .05em;
+  color: var(--color-accent-text);
+}
+.desk-practice-copy:hover .desk-practice-title [lang="ar"] { color: var(--color-accent-text); }
+.desk-practice-clear {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 20px 0 16px;
+  color: var(--color-accent-text);
+}
+.desk-practice-clear p { display: flex; flex-direction: column; gap: 3px; margin: 0; }
+.desk-practice-clear strong { font-size: 12.5px; font-weight: 500; color: var(--color-text-secondary); }
+.desk-practice-clear span { font-size: 11.5px; color: var(--color-text-secondary); }
+.desk-practice-empty { padding: 17px 0 2px; }
+.desk-practice-empty p {
+  max-width: 34ch;
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+.desk-practice-empty p strong {
+  display: block;
+  margin-bottom: 3px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.desk-practice-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.desk-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--color-accent);
+  border-radius: 2px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .03em;
+  cursor: pointer;
+}
+.desk-primary:hover { background: var(--color-accent-secondary); border-color: var(--color-accent-secondary); }
+.desk-primary svg { transform: scaleX(-1); }
+.desk-text-action {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  cursor: pointer;
+}
+.desk-text-action:hover { color: var(--color-accent-text); border-color: var(--color-accent); }
+.desk-practice-finished-list { margin-top: 14px; padding-top: 5px; border-top: 1px solid var(--color-rule); }
+.desk-practice-finished {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.desk-practice-check {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-accent-border);
+  border-radius: 50%;
+  color: var(--color-accent-text);
+}
+.desk-practice-finished button:not(.desk-text-action) {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+.desk-practice-finished strong { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+.desk-practice-finished span { font-size: 10.5px; color: var(--color-text-secondary); }
+.desk-practice-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 13px;
+  border-top: 1px solid var(--color-rule);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.desk-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.desk-foot span:first-child { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-secondary); }
+.desk-foot svg { color: var(--color-accent-text); }
+
+/* ── Focus ────────────────────────────────────────────────── */
+.desk-home button:focus-visible,
+.desk-home a:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+/* ── Quiet utility topbar ─────────────────────────────────── */
+.topbar {
+  min-height: 48px;
+  height: 48px;
+  padding: 5px var(--page-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  background: var(--color-background);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 0;
+}
+.topbar-center,
+.topbar-logo { display: none; }
+.topbar .header-left { margin-inline-start: 0; }
+.topbar .header-left,
+.topbar .header-right { justify-self: auto; }
+
+/* ── Print keeps the reading and daybook, drops chrome ────── */
+@media print {
+  .topbar,
+  .app-sidebar,
+  .desk-masthead-side,
+  .desk-reading-foot,
+  .desk-foot { display: none !important; }
+  .desk-home { max-width: none; padding: 0; }
+  .desk-board { grid-template-columns: 1.4fr 1fr; }
+  .desk-now .pw-foot { display: none; }
+}
+
+/* ==========================================================================
+   DAILY DESK — post-critique refinements
+   Full-width base band, one practice figure, bilingual prayer rail, warm accent.
+   ========================================================================== */
+.pw-time-ar { display: none; }
+.desk-day-line { display: none; }
+.desk-day-number { color: var(--color-accent); }
+.desk-day-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 9px;
+  margin: 5px 0 8px;
+  direction: ltr;
+}
+.desk-day-count strong {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-text-primary);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.desk-day-count span {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+.desk-day-count[data-empty="true"] strong { font-size: 26px; color: var(--color-text-secondary); }
+
+/* Prayer band: one live statement, one chronological rail */
+.desk-now .prayer-widget {
+  grid-template-areas:
+    "head foot"
+    "main main"
+    "times times";
+}
+.desk-now .pw-head { padding-bottom: 3px; }
+.desk-now .pw-foot {
+  grid-area: foot;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+  gap: 2px;
+  font-size: 10.5px;
+}
+.desk-now .pw-main {
+  justify-content: space-between;
+  width: 100%;
+  gap: 24px;
+  padding-top: 3px;
+}
+.desk-now .pw-main-name {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.desk-now .pw-main-time { display: none; }
+.desk-now .pw-progress { display: none; }
+.desk-now .pw-times { margin-top: 10px; }
+.desk-now .pw-time-cell { min-height: 70px; gap: 2px; }
+.desk-now .pw-time-ar {
+  display: block;
+  font-family: var(--font-arabic);
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+}
+.desk-now .pw-time-cell.sunrise strong { font-size: 14px; color: var(--color-text-secondary); }
+.desk-now .pw-time-cell.next {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.desk-now .pw-time-cell.next strong { color: var(--color-text-primary); }
+
+/* Daybook rows: trailing, labelled completion */
+.desk-practice-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+.desk-practice-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.desk-practice-done:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-text);
+}
+
+/* Full-width page base */
+.desk-base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 28px;
+  padding: 14px 0 0;
+}
+.desk-base-continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  min-width: 0;
+}
+.desk-base-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  text-align: end;
+}
+.desk-base-note svg { color: var(--color-accent-text); }
+
+/* Wide-screen reading: text with a true marginal note */
+@media(min-width:1600px){
+  .desk-reading .quote-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(200px, .7fr);
+    grid-template-areas:
+      "head head"
+      "text ref"
+      "text preview"
+      "teaser teaser";
+    column-gap: clamp(32px, 3vw, 52px);
+    align-content: start;
+  }
+  .desk-reading .quote-header { grid-area: head; }
+  .desk-reading .quote-text {
+    grid-area: text;
+    align-self: start;
+    max-width: 26ch;
+    margin: 20px 0 0;
+    font-size: clamp(30px, 2.35vw, 38px);
+  }
+  .desk-reading .quote-ref {
+    grid-area: ref;
+    align-self: start;
+    margin-top: 28px;
+    line-height: 1.6;
+    text-align: right;
+  }
+  .desk-reading .home-reading-preview {
+    grid-area: preview;
+    max-width: none;
+    margin-top: 20px;
+    padding-top: 12px;
+    font-size: 12.5px;
+  }
+  .desk-reading .quote-teaser { grid-area: teaser; margin-top: 22px; }
+  .desk-reading .quote-tafsir-wrap,
+  .desk-reading .quote-lang-toggle { grid-column: 1 / -1; }
+}
+
+/* Anchored utility rail */
+.topbar {
+  padding-inline: calc(var(--page-gutter) + max(0px, (100% - var(--content-max-width)) / 2));
+}
+.topbar .icon-btn { color: var(--color-text-secondary); }
+.topbar .icon-btn:hover { color: var(--color-accent-text); }
+.topbar-search-btn { display: none; }
+
+/* ==========================================================================
+   DAILY ALMANAC — Home composition (2026-10-21)
+   Prayer-led, flat, one focal point. Replaces the desk-home layout.
+   ========================================================================== */
+.almanac-desk {
+  direction: ltr;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding: 20px var(--page-gutter) 56px;
+  display: flex;
+  flex-direction: column;
+}
+
+.desk-mast {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 10px 24px; padding-bottom: 14px; border-bottom: 1px solid var(--color-rule);
+}
+.desk-mast-date { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; min-width: 0; }
+.desk-mast-weekday { font-family: var(--font-label); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--color-accent-text); }
+.desk-mast-greg { font-family: var(--font-ui); font-size: 13px; color: var(--color-text-secondary); }
+.desk-mast-hijri { font-family: var(--font-arabic); font-size: 16px; color: var(--color-text-primary); }
+.desk-mast-side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.desk-mast-greeting { font-family: var(--font-ui); font-size: 12px; color: var(--color-text-secondary); }
+.desk-mast-greeting [lang="ar"] { font-family: var(--font-arabic); font-size: 14px; color: var(--color-text-primary); }
+.desk-mast .home-chip { min-height: 28px; padding: 5px 8px; border-radius: 2px; background: transparent; border: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 11px; }
+.desk-mast .home-chip:hover { background: var(--color-hover); }
+.desk-mast .home-event-chip { border-color: var(--color-accent-border); color: var(--color-accent-text); font-family: var(--font-arabic); font-size: 13px; }
+.desk-mast .home-chip--quiet { border-color: transparent; color: var(--color-text-secondary); }
+
+/* Prayer band */
+.desk-prayer { border-bottom: 1px solid var(--color-rule); }
+.almanac-desk .desk-prayer .prayer-widget {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "head foot" "main main" "times times";
+  gap: 4px clamp(24px, 4vw, 56px);
+  padding: 22px 0 24px;
+  border: 0; border-radius: 0; background: transparent; box-shadow: none;
+}
+.almanac-desk .desk-prayer .prayer-widget::before { display: none; }
+.almanac-desk .desk-prayer .pw-head { grid-area: head; display: flex; align-items: center; gap: 12px; padding: 0; }
+.almanac-desk .desk-prayer .pw-head-info { display: flex; align-items: center; gap: 10px; }
+.almanac-desk .desk-prayer .pw-label { font-family: var(--font-label); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-text-secondary); }
+.almanac-desk .desk-prayer .pw-status { display: none; }
+.almanac-desk .desk-prayer .pw-main { grid-area: main; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 2px 0 0; }
+.almanac-desk .desk-prayer .pw-main-name { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.almanac-desk .desk-prayer .pw-prayer-ar { font-family: var(--font-display); font-size: clamp(46px, 4.4vw, 68px); line-height: 1.02; color: var(--color-text-primary); }
+.almanac-desk .desk-prayer .pw-prayer-name { font-family: var(--font-label); font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--color-accent-text); }
+.almanac-desk .desk-prayer .pw-prayer-time { display: none; }
+.almanac-desk .desk-prayer .pw-countdown-block { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.almanac-desk .desk-prayer .pw-countdown { display: flex; align-items: baseline; direction: ltr; }
+.almanac-desk .desk-prayer .pw-countdown-unit { font-family: var(--font-mono); font-size: clamp(32px, 3vw, 44px); font-weight: 500; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+.almanac-desk .desk-prayer .pw-countdown-sep { font-size: 22px; color: var(--color-text-muted); padding: 0 1px; }
+.almanac-desk .desk-prayer .pw-countdown-label { font-family: var(--font-label); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-secondary); }
+.almanac-desk .desk-prayer .pw-period { display: none; }
+.almanac-desk .desk-prayer .pw-progress { display: none; }
+.almanac-desk .desk-prayer .pw-foot { grid-area: foot; align-self: center; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 11px; color: var(--color-text-secondary); text-align: end; }
+.almanac-desk .desk-prayer .pw-foot button, .almanac-desk .desk-prayer .pw-foot a { color: var(--color-accent-text); font-family: var(--font-label); font-size: 10px; letter-spacing: .04em; }
+.almanac-desk .desk-prayer .pw-times {
+  grid-area: times; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0;
+  margin-top: 14px; padding: 0; border: 0;
+  border-top: 1px solid var(--color-border-subtle); border-bottom: 1px solid var(--color-border-subtle);
+}
+.almanac-desk .desk-prayer .pw-time-cell {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 3px; min-height: 62px; padding: 10px 12px;
+  border: 0; border-inline-end: 1px solid var(--color-border-subtle); border-radius: 0;
+  background: transparent; color: var(--color-text-secondary);
+}
+.almanac-desk .desk-prayer .pw-time-cell:last-child { border-inline-end: 0; }
+.almanac-desk .desk-prayer .pw-time-cell span { font-family: var(--font-label); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.almanac-desk .desk-prayer .pw-time-cell strong { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.almanac-desk .desk-prayer .pw-time-cell.next { background: var(--color-accent-subtle); box-shadow: inset 0 -2px 0 var(--color-accent); }
+.almanac-desk .desk-prayer .pw-time-cell.next strong { color: var(--color-text-primary); }
+
+/* Empty location: compact strip, not a card */
+.almanac-desk .desk-prayer .pw-empty {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+  gap: 14px 24px; padding: 18px 0 8px; text-align: start;
+}
+.almanac-desk .desk-prayer .pw-empty-icon { display: none; }
+.almanac-desk .desk-prayer .pw-empty-title { font-family: var(--font-ui); font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
+.almanac-desk .desk-prayer .pw-empty-text { margin-top: 3px; max-width: 54ch; font-size: 12.5px; line-height: 1.6; color: var(--color-text-secondary); }
+.almanac-desk .desk-prayer .pw-empty-actions { margin: 0; justify-content: flex-end; flex-wrap: wrap; }
+.almanac-desk .desk-prayer .pw-empty-times {
+  grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin: 10px 0 0; border-block: 1px solid var(--color-border-subtle);
+}
+.almanac-desk .desk-prayer .pw-empty-times > div { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 8px 12px; border-inline-end: 1px solid var(--color-border-subtle); }
+.almanac-desk .desk-prayer .pw-empty-times > div:last-child { border-inline-end: 0; }
+.almanac-desk .desk-prayer .pw-empty-times span { font-family: var(--font-label); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-text-muted); }
+.almanac-desk .desk-prayer .pw-empty-times strong { font-family: var(--font-mono); font-size: 14px; font-weight: 400; color: var(--color-text-disabled); }
+
+/* Lower page */
+.desk-lower {
+  display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
+  gap: clamp(28px, 3.4vw, 56px); padding: 26px 0 8px;
+  border-bottom: 1px solid var(--color-rule); align-items: start;
+}
+.desk-lower-main { min-width: 0; }
+.desk-lower-side { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+.desk-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--color-rule); }
+.desk-section-title { margin: 0; font-family: var(--font-ui); font-size: 15px; font-weight: 600; letter-spacing: -.005em; color: var(--color-text-primary); }
+.desk-link { display: inline-flex; align-items: center; gap: 4px; padding: 0 0 1px; border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0; background: transparent; color: var(--color-text-secondary); font-family: var(--font-label); font-size: 10.5px; letter-spacing: .03em; cursor: pointer; }
+.desk-link:hover { color: var(--color-accent-text); border-color: var(--color-accent); }
+.desk-link svg { width: 11px; height: 11px; }
+.almanac-desk .desk-link svg,
+.almanac-desk .desk-continue-arrow svg,
+.almanac-desk .desk-primary svg,
+.almanac-desk .quote-teaser svg { transform: scaleX(-1); }
+
+/* Reading */
+.desk-lower-main .quote-card { display: flex; flex-direction: column; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; cursor: pointer; }
+.desk-lower-main .quote-card:hover { transform: none; }
+.desk-lower-main .quote-header { padding-top: 4px; }
+.desk-lower-main .quote-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-label); font-size: 10.5px; letter-spacing: .1em; color: var(--color-text-secondary); }
+.desk-lower-main .quote-badge-icon { color: var(--color-accent-text); }
+.desk-lower-main .quote-text { max-width: 34ch; margin: 16px 0 12px; font-family: var(--font-arabic); font-size: clamp(28px, 2.6vw, 40px); line-height: 1.72; color: var(--color-text-primary); }
+.desk-lower-main .quote-ref { font-family: var(--font-label); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; text-align: right; color: var(--color-accent-text); }
+.desk-lower-main .home-reading-preview { max-width: 60ch; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle); font-family: var(--font-ui); font-size: 13.5px; line-height: 1.75; color: var(--color-text-secondary); }
+.desk-lower-main .home-reading-preview > span { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-secondary); }
+.desk-lower-main .home-reading-preview.ar { font-family: var(--font-arabic); font-size: 18px; line-height: 1.8; text-align: right; }
+.desk-lower-main .quote-teaser { display: flex; align-items: center; gap: 6px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--color-border-subtle); font-family: var(--font-label); font-size: 10.5px; letter-spacing: .03em; color: var(--color-text-secondary); }
+.desk-lower-main .quote-teaser:hover { color: var(--color-accent-text); }
+.desk-lower-main .quote-tafsir-body { max-width: 64ch; font-size: 13.5px; line-height: 1.78; }
+
+/* Side ledger */
+.desk-side-block { min-width: 0; }
+.desk-side-empty { margin: 0 0 10px; max-width: 40ch; font-size: 12.5px; line-height: 1.65; color: var(--color-text-secondary); }
+.desk-side-note { margin: 8px 0 0; font-size: 11px; color: var(--color-text-muted); }
+.desk-primary { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 11px; border: 1px solid var(--color-accent); border-radius: 2px; background: var(--color-accent); color: var(--color-on-accent); font-family: var(--font-label); font-size: 10.5px; letter-spacing: .03em; cursor: pointer; }
+.desk-primary:hover { background: var(--color-accent-secondary); border-color: var(--color-accent-secondary); }
+.desk-primary--inline { margin-top: 2px; }
+.desk-text-action { padding: 0; border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0; background: transparent; color: var(--color-text-secondary); font-family: var(--font-ui); font-size: 12px; cursor: pointer; }
+.desk-text-action:hover { color: var(--color-accent-text); border-color: var(--color-accent); }
+.desk-practice-list { display: flex; flex-direction: column; }
+.desk-practice-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--color-border-subtle); }
+.desk-practice-row:last-child { border-bottom: 0; }
+.desk-practice-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 0; border: 0; background: transparent; text-align: start; cursor: pointer; }
+.desk-practice-title { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.desk-practice-title [lang="ar"] { font-family: var(--font-arabic); font-size: 18px; line-height: 1.35; color: var(--color-text-primary); }
+.desk-practice-title > span:not([lang]) { overflow: hidden; font-family: var(--font-ui); font-size: 12px; line-height: 1.35; color: var(--color-text-secondary); text-overflow: ellipsis; white-space: nowrap; }
+.desk-practice-time { font-family: var(--font-label); font-size: 10px; letter-spacing: .03em; text-transform: uppercase; color: var(--color-accent-text); }
+.desk-practice-copy:hover .desk-practice-title [lang="ar"] { color: var(--color-accent-text); }
+.desk-practice-done { display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 1px solid var(--color-border-strong); border-radius: 50%; background: transparent; color: var(--color-text-muted); cursor: pointer; }
+.desk-practice-done:hover { border-color: var(--color-accent); background: var(--color-accent-subtle); color: var(--color-accent-text); }
+
+/* Continue */
+.desk-continue { display: flex; align-items: center; gap: 10px; width: 100%; padding: 2px 0; border: 0; background: transparent; text-align: start; cursor: pointer; }
+.desk-continue-icon { color: var(--color-accent-text); }
+.desk-continue-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.desk-continue-copy strong { overflow: hidden; font-family: var(--font-ui); font-size: 12.5px; font-weight: 500; color: var(--color-text-primary); text-overflow: ellipsis; white-space: nowrap; }
+.desk-continue-copy span { font-size: 10.5px; color: var(--color-text-secondary); }
+.desk-continue:hover strong { color: var(--color-accent-text); }
+.desk-continue-arrow { margin-inline-start: auto; color: var(--color-text-secondary); }
+
+/* Footer */
+.desk-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; padding: 14px 0 0; }
+.desk-foot-note { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+.desk-foot-note svg { color: var(--color-accent-text); }
+.desk-foot-nav { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.desk-foot-link { padding: 0; border: 0; background: transparent; color: var(--color-text-secondary); font-family: var(--font-label); font-size: 10.5px; letter-spacing: .04em; cursor: pointer; }
+.desk-foot-link:hover { color: var(--color-accent-text); }
+
+.almanac-desk button:focus-visible, .almanac-desk a:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 3px; }

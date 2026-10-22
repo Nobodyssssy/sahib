@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl" data-theme="catppuccin" data-mode="dark" data-accent="gold" data-font="tajawal" data-sidebar-position="right" data-sidebar-collapsed="false">
+<html lang="en" dir="rtl" data-theme="sahib" data-mode="light" data-accent="gold" data-font="tajawal" data-sidebar-position="right" data-sidebar-collapsed="false">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="css/views/tasbih.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/design.css">
+<link rel="stylesheet" href="css/folio.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -36,13 +37,13 @@
   <!-- DESKTOP SIDEBAR -->
   <aside class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
     <div class="sidebar-head">
-      <div class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
-        <div class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></div>
-        <div class="sidebar-brand-text">
-          <div class="sidebar-brand-name">صاحب</div>
-          <div class="sidebar-brand-sub">Sahib Companion</div>
-        </div>
-      </div>
+      <button type="button" class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
+        <span class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></span>
+        <span class="sidebar-brand-text">
+          <span class="sidebar-brand-name">صاحب</span>
+          <span class="sidebar-brand-sub">Sahib Companion</span>
+        </span>
+      </button>
       <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn"
               onclick="toggleSidebarCollapse()" aria-controls="app-sidebar" aria-expanded="true"
               aria-label="Collapse sidebar" title="Collapse sidebar">
@@ -128,14 +129,15 @@
   </div>
 
   <div class="topbar-center">
+    <span class="topbar-imprint" lang="ar" dir="rtl" aria-hidden="true">صاحب</span>
     <div class="topbar-title" id="topbar-title">Home</div>
     <div class="topbar-sub" id="topbar-sub">Your daily companion</div>
   </div>
 
   <div class="header-right">
-    <div class="logo topbar-logo" onclick="goHomeView()" title="Home">
-      <div class="logo-icon"><img src="icons/icon.svg" alt="صاحب"></div>
-    </div>
+    <button type="button" class="logo topbar-logo" onclick="goHomeView()" title="Home" aria-label="Home">
+      <span class="logo-icon"><img src="icons/icon.svg" alt="صاحب"></span>
+    </button>
     <button class="icon-btn topbar-search-btn" onclick="focusGlobalSearch()" title="Search" aria-label="Search"><span class="btn-icon" data-icon="search"></span></button>
     <button class="icon-btn" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle theme"></button>
   </div>
@@ -210,7 +212,7 @@
 
 <!-- VIEW: HOME / DASHBOARD -->
 <div class="view active" id="view-home">
-  <div class="home-container" id="home-body"></div>
+  <div id="home-body"></div>
 </div>
 
 <!-- VIEW: DAILY PRACTICE -->

@@ -169,6 +169,13 @@
   .cats-grid{max-width:1100px;margin:0 auto;}
   .adkar-grid,.search-results{max-width:1100px;margin:0 auto;}
 }
+@media (max-width: 1080px) {
+  .desk-lower { grid-template-columns: 1fr; }
+  .desk-lower-side { flex-direction: row; flex-wrap: wrap; gap: 24px 40px; }
+  .desk-lower-side > .desk-side-block { flex: 1 1 280px; }
+  .almanac-desk .desk-prayer .pw-empty { grid-template-columns: 1fr; }
+  .almanac-desk .desk-prayer .pw-empty-actions { justify-content: flex-start; }
+}
 /* ══════════════════════════════════════════
    DESKTOP (≥ 1200) — a bit more air
    ══════════════════════════════════════════ */
@@ -390,4 +397,212 @@
   .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   .pw-empty-times > div:nth-child(3n){ border-inline-end:0; }
   .pw-empty-times > div:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
+}
+
+/* ==========================================================================
+   DAILY DESK fallback — two-axis Home composition, 2026-10-20
+   ========================================================================== */
+@media(max-width:1180px){
+  .desk-masthead{ gap:32px; }
+  .desk-masthead-right{ max-width:440px; }
+  .desk-reading{ padding-inline-end:28px; }
+  .desk-practice{ padding-inline-start:26px; }
+  .desk-now .prayer-widget{ column-gap:32px; }
+}
+
+@media(max-width:960px){
+  .desk-masthead{
+    grid-template-columns:minmax(0,1fr);
+    gap:18px;
+    align-items:start;
+  }
+  .desk-masthead-right{
+    justify-self:start;
+    align-items:flex-start;
+    max-width:none;
+    padding-bottom:0;
+    text-align:start;
+  }
+  .desk-masthead-side{ justify-content:flex-start; }
+  .desk-now .prayer-widget{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"head" "main" "progress" "times" "foot";
+    column-gap:0;
+  }
+  .desk-now .pw-foot{
+    align-items:flex-start;
+    margin-top:10px;
+    padding-bottom:0;
+    text-align:start;
+  }
+  .desk-now .pw-times{ margin-top:2px; }
+  .desk-board{ grid-template-columns:minmax(0,1fr); }
+  .desk-practice{
+    order:1;
+    padding:24px 0 28px;
+  }
+  .desk-reading{
+    order:2;
+    padding:24px 0 30px;
+    border-inline-end:0;
+    border-top:1px solid var(--color-border-subtle);
+  }
+}
+
+@media(max-width:720px){
+  .desk-home{ padding-inline:16px; }
+  .desk-day-number{ font-size:58px; }
+  .desk-hijri{ white-space:normal; }
+  .desk-now .pw-main{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .desk-now .pw-countdown-block{ align-items:flex-start; }
+  .desk-now .pw-times{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .desk-now .pw-time-cell:nth-child(3n){ border-inline-end:0; }
+  .desk-now .pw-time-cell:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
+  .desk-reading .quote-text{ font-size:clamp(25px,6vw,34px); }
+  .desk-panel-title{ white-space:normal; }
+  .desk-practice-copy{ grid-template-columns:68px minmax(0,1fr); }
+  .desk-practice-foot{ flex-direction:column; align-items:flex-start; }
+  .desk-shelf{ gap:8px 14px; }
+  .desk-foot{ flex-direction:column; gap:6px; }
+}
+
+/* Quiet topbar returns to the compact app bar on touch layouts. */
+@media(max-width:960px){
+  .topbar{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    justify-content:normal;
+    min-height:var(--topbar-height);
+    height:auto;
+    padding:8px 16px;
+    background:color-mix(in oklch, var(--color-background) 88%, transparent);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--color-border-subtle);
+  }
+  .topbar .header-left{ justify-self:start; }
+  .topbar .header-right{ grid-column:3; justify-self:end; }
+}
+
+@media(max-width:1320px){
+  .desk-practice-foot{ flex-direction:column; align-items:flex-start; gap:4px; }
+}
+
+/* ==========================================================================
+   FOLIO HOME — the only place that adapts the new reading composition.
+   ========================================================================== */
+@media(max-width:1100px){
+  .desk-lower{
+    grid-template-columns:minmax(0,1fr);
+    gap:28px;
+  }
+  .desk-lower-side{
+    border-top:1px solid var(--color-rule);
+    padding-top:22px;
+  }
+  .quote-page{
+    grid-template-columns:minmax(0,1fr);
+    gap:4px;
+  }
+  .quote-margin{
+    border-inline-end:0;
+    border-top:1px solid var(--color-rule);
+    padding-inline-end:0;
+    padding-top:12px;
+  }
+  .quote-margin .quote-ref{
+    margin:10px 0 8px;
+    text-align:start;
+  }
+}
+
+@media(max-width:760px){
+  .almanac-desk{
+    padding-top:12px;
+    padding-bottom:40px;
+  }
+  .desk-mast{
+    gap:10px;
+    padding-bottom:12px;
+  }
+  .desk-mast-date{ gap:2px 10px; }
+  .desk-mast-hijri{ font-size:15px; }
+  .desk-mast-side{ justify-content:flex-start; }
+  .almanac-desk .desk-prayer .prayer-widget{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"head" "main" "times" "foot";
+    row-gap:10px;
+  }
+  .almanac-desk .desk-prayer .pw-main{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .almanac-desk .desk-prayer .pw-countdown-block{ align-items:flex-start; }
+  .almanac-desk .desk-prayer .pw-foot{
+    direction:rtl;
+    align-items:flex-start;
+    text-align:right;
+  }
+  .almanac-desk .desk-prayer .pw-times{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .almanac-desk .desk-prayer .pw-time-cell:nth-child(3n){ border-inline-end:0; }
+  .almanac-desk .desk-prayer .pw-time-cell:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
+  .desk-mast-greeting{ display:none; }
+  .desk-lower-main .quote-text{ font-size:clamp(25px,6vw,32px); }
+}
+
+@media(max-width:480px){
+  .topbar-sub{ display:none; }
+  .topbar-imprint{ font-size:14px; }
+  .desk-mast .home-chip{ font-size:9.5px; }
+}
+
+/* Wide desktop: the folio gains presence rather than merely stretching. */
+@media(min-width:1600px){
+  .almanac-desk{
+    padding-top:26px;
+    padding-bottom:64px;
+  }
+  .desk-mast{ padding-bottom:20px; }
+  .desk-mast-weekday{ font-size:12px; }
+  .desk-mast-greg{ font-size:16px; }
+  .desk-mast-hijri{ font-size:22px; }
+  .desk-mast-greeting{ font-size:13px; }
+  .desk-mast-greeting [lang="ar"]{ font-size:15px; }
+  .almanac-desk .desk-prayer .prayer-widget{
+    padding-top:26px;
+    padding-bottom:28px;
+  }
+  .almanac-desk .desk-prayer .pw-prayer-ar{ font-size:76px; }
+  .almanac-desk .desk-prayer .pw-countdown-unit{ font-size:48px; }
+  .almanac-desk .desk-prayer .pw-main::after{ opacity:1; }
+  .almanac-desk .desk-prayer .pw-time-cell{ min-height:78px; }
+  .almanac-desk .desk-prayer .pw-time-cell strong{ font-size:16px; }
+  .almanac-desk .desk-prayer .pw-time-cell span{ font-size:10.5px; }
+  .almanac-desk .desk-prayer .pw-time-ar{ font-size:13px; }
+  .almanac-desk .desk-prayer .pw-times{ margin-top:18px; }
+  .desk-lower{
+    padding-top:34px;
+    padding-bottom:20px;
+  }
+  .desk-section-title{ font-size:24px; }
+  .desk-lower-side .desk-section-title{ font-size:20px; }
+  .side-label-ar{ font-size:17px; }
+  .side-label{ font-size:9.5px; }
+  .side-nav-section{ font-size:9.5px; }
+  .sidebar-status{ font-size:10px; }
+  .desk-lower-main .quote-text{ font-size:54px; }
+  .quote-page{
+    grid-template-columns:minmax(0,1fr) 300px;
+    gap:40px;
+  }
+  .quote-margin .quote-ref{ font-size:16px; }
+  .quote-margin .home-reading-preview{ font-size:13.5px; }
+  .desk-foot{ font-size:10.5px; }
 }

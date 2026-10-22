@@ -7,6 +7,7 @@
    ========================================================================== */
 (function () {
   const THEMES = [
+    { id: 'sahib',      label: 'Sahib',      hint: 'Ink & paper' },
     { id: 'catppuccin', label: 'Catppuccin', hint: 'Mocha / Latte' },
     { id: 'aura',       label: 'Aura',       hint: 'Soft neon' },
     { id: 'dracula',    label: 'Dracula',    hint: 'Classic' },
@@ -30,6 +31,10 @@
     { id: 'sky', label: 'Sky' }
   ];
   const ACCENT_SETS = {
+    sahib: {
+      gold: 'Ochre', peach: 'Clay', red: 'Madder', mauve: 'Plum',
+      blue: 'Indigo', teal: 'Verdigris', green: 'Olive', pink: 'Rosewood', sky: 'Faience'
+    },
     catppuccin: {
       gold: 'Brass', peach: 'Peach', red: 'Rosewater', mauve: 'Mauve',
       blue: 'Sapphire', teal: 'Aqua', green: 'Sage', pink: 'Pink', sky: 'Sky'
@@ -65,8 +70,8 @@
   const SIDEBAR_POSITIONS = ['left', 'right'];
 
   const state = {
-    theme: 'catppuccin',
-    mode: 'dark',
+    theme: 'sahib',
+    mode: 'light',
     accent: 'gold',
     font: 'tajawal',
     sidebarPosition: 'right',
@@ -77,11 +82,12 @@
     if (value === 'mocha' || value === 'latte') return 'catppuccin';
     if (value === 'tokyo') return 'tokyo-night';
     if (value === 'rosepine') return 'rose-pine';
-    return THEME_IDS.includes(value) ? value : 'catppuccin';
+    return THEME_IDS.includes(value) ? value : 'sahib';
   }
   function normalizeMode(value) {
     if (value === 'light' || value === 'latte') return 'light';
-    return 'dark';
+    if (value === 'dark' || value === 'mocha') return 'dark';
+    return 'light';
   }
   function normalizeAccent(value) {
     const legacy = { yellow: 'gold', orange: 'peach', lavender: 'mauve' };
@@ -164,8 +170,8 @@
   }
 
   async function init() {
-    let theme = 'catppuccin';
-    let mode = 'dark';
+    let theme = 'sahib';
+    let mode = 'light';
     let accent = 'gold';
     let font = 'tajawal';
     let sidebarPosition = 'right';
@@ -179,8 +185,8 @@
         store.getMeta('sidebarPosition'),
         store.getMeta('sidebarCollapsed')
       ]);
-      theme = normalizeTheme(family || 'catppuccin');
-      mode = normalizeMode(savedTheme || 'dark');
+      theme = normalizeTheme(family || 'sahib');
+      mode = normalizeMode(savedTheme || 'light');
       accent = normalizeAccent(savedAccent || 'gold');
       font = normalizeFont(savedFont || 'tajawal');
       sidebarPosition = normalizeSidebarPosition(savedPosition || 'right');

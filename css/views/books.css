@@ -23,7 +23,7 @@
 .books-title {
   font-family: 'Amiri', serif;
   font-size: 22px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.2;
 }
 .books-subtitle {
@@ -352,7 +352,7 @@
   font-family: 'Amiri', serif;
   font-size: 26px;
   line-height: 1.3;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -463,7 +463,7 @@
 .continue-progress-text {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   text-align: right;
 }
 
@@ -497,12 +497,12 @@
 }
 .books-back-btn:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .books-list-title {
   font-family: 'Amiri', serif;
   font-size: 20px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
   line-height: 1.2;
   overflow: hidden;
@@ -605,14 +605,14 @@
   width:42px;height:42px;
   border-radius:12px;
   background:color-mix(in srgb, var(--accent) 30%, transparent);
-  color:var(--accent);
+  color: var(--color-accent-text);
   flex-shrink:0;
 }
 .books-beginner-text{ flex:1; min-width:0; }
 .books-beginner-title{
   font-family:'Amiri',serif;
   font-size:17px;
-  color:var(--accent);
+  color: var(--color-accent-text);
   margin-bottom:2px;
 }
 .books-beginner-sub{
@@ -621,7 +621,7 @@
   line-height:1.4;
 }
 .books-beginner-arrow{
-  color:var(--accent);
+  color: var(--color-accent-text);
   display:inline-flex;
   flex-shrink:0;
 }
@@ -755,7 +755,7 @@
 }
 .local-icon-btn:hover{
   border-color:var(--accent);
-  color:var(--accent);
+  color: var(--color-accent-text);
 }
 .local-delete-btn{
   display:block;
@@ -782,7 +782,7 @@
 /* --- offline download button in library header --- */
 .books-title-block--has-dl{display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0}
 .books-title-block--has-dl .books-title-block-inner{flex:1;min-width:0}
-.books-offline-btn{width:38px;height:38px;flex:0 0 auto;border:1.5px solid var(--accent);border-radius:12px;background:color-mix(in srgb, var(--accent) 14%, var(--surface));color:var(--accent);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s, box-shadow .15s, transform .12s}
+.books-offline-btn{width:38px;height:38px;flex:0 0 auto;border:1.5px solid var(--accent);border-radius:12px;background:color-mix(in srgb, var(--accent) 14%, var(--surface));color: var(--color-accent-text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s, box-shadow .15s, transform .12s}
 .books-offline-btn:hover{background:color-mix(in srgb, var(--accent) 28%, var(--surface));box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)}
 .books-offline-btn:active{transform:scale(0.94)}
 

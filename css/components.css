@@ -17,12 +17,12 @@
 }
 .icon-btn:hover {
   background: var(--surface3);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .icon-btn.active {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 .btn-add {
@@ -59,7 +59,7 @@
 }
 .btn-back:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 .btn-session {
@@ -134,7 +134,7 @@
 .session-title {
   font-family: 'Amiri', serif;
   font-size: 18px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.2;
 }
 .session-progress-text {
@@ -191,7 +191,7 @@
 
 .session-situation {
   font-size: 13px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
   text-align: center;
   text-transform: uppercase;
@@ -308,7 +308,7 @@
 .session-done-title {
   font-family: 'Amiri', serif;
   font-size: 22px;
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .session-done-sub {
   font-size: 14px;
@@ -525,7 +525,7 @@
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--color-accent-text);
   background: var(--glow);
   border: 1px solid var(--accent);
   border-radius: 50px;
@@ -600,7 +600,7 @@
   border-radius: 50%;
   border: 2px solid var(--accent);
   background: transparent;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-size: 22px;
   cursor: pointer;
   transition: all var(--tr);
@@ -615,7 +615,7 @@
 .cval {
   font-size: 32px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--color-accent-text);
   min-width: 64px;
   text-align: center;
 }
@@ -939,7 +939,7 @@
   border-radius: var(--rs);
   background: var(--glow);
   border: 1px dashed var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-size: 13px;
   cursor: pointer;
   width: 100%;
@@ -1026,7 +1026,7 @@ label.io-btn {
 .io-btn:hover,
 label.io-btn:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 /* ── TOAST ── */
@@ -1117,12 +1117,12 @@ body.modal-open {
 }
 .filter-chip:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .filter-chip.on {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
 }
 .filter-chip.tag {
@@ -1229,7 +1229,7 @@ body.modal-open {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
 }
 .quote-badge-icon { font-size: 13px; }
@@ -1251,7 +1251,7 @@ body.modal-open {
 .quote-ref {
   font-family: 'Amiri', serif;
   font-size: 13px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   text-align: center;
   margin-top: 10px;
   direction: rtl;
@@ -1308,7 +1308,7 @@ body.modal-open {
   background: var(--accent);
   color: #1a1200;
 }
-.quote-lang-btn:hover:not(.on) { color: var(--accent); }
+.quote-lang-btn:hover:not(.on) { color: var(--color-accent-text); }
 .quote-tafsir-body {
   font-size: 14px;
   line-height: 1.8;
@@ -1330,14 +1330,14 @@ body.modal-open {
   gap: 5px;
   margin-top: 16px;
   font-size: 12px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   text-decoration: none;
   border-bottom: 1px dashed rgba(201, 168, 76, .4);
   padding-bottom: 2px;
   transition: all var(--tr);
 }
 .quote-link:hover {
-  color: var(--accent2);
+  color: var(--color-accent-text);
   border-bottom-color: var(--accent2);
 }
 .quote-dateline {
@@ -1445,12 +1445,12 @@ body.modal-open {
 /*  Pinned state — gold bookmark in reader topbar  */
 .reader-icon-btn.pinned,
 .reader-icon-btn.pinned:hover{
-color: var(--accent2) !important;
+color: var(--color-accent-text) !important;
 border-color: var(--accent2) !important;
 background: color-mix(in srgb, var(--accent2) 15%, transparent) !important;
 }
 .reader-icon-btn.pinned svg{
-color: var(--accent2) !important;
+color: var(--color-accent-text) !important;
 }
 .reader-icon-btn::before {
   content: '';
@@ -1461,7 +1461,7 @@ color: var(--accent2) !important;
 .reader-icon-btn:hover {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .reader-body {
   flex: 1;
@@ -1558,7 +1558,7 @@ background: var(--bg);
 .reader-page-info {
   font-family: 'DM Mono', monospace;
   font-size: 13px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
   padding: 0 14px;
 }
@@ -1637,13 +1637,13 @@ background: var(--bg);
 }
 .reader-setting-btn:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .reader-setting-btn.active,
 .reader-setting-btn.on {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .reader-setting-btn.wide {
   width: 100%;
@@ -1780,7 +1780,7 @@ background: var(--bg);
 }
 .reader-toc-item:hover {
   background: var(--glow);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 @media (max-width: 600px) {
@@ -1949,7 +1949,7 @@ background: var(--bg);
   color: var(--on-accent);
 }
 .detail-lang-btn:hover:not(.on) {
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 
 .detail-fold {
@@ -1983,7 +1983,7 @@ background: var(--bg);
 }
 .detail-fold-icon {
   display: inline-flex;
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .detail-fold-label {
   flex: 1;
@@ -2130,7 +2130,7 @@ background: var(--bg);
 .scroll-top-btn:hover {
   background: var(--glow);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .scroll-top-btn svg {
   width: 20px;

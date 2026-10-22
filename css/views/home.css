@@ -26,7 +26,7 @@
 .home-today-date-ar {
   font-family: 'Amiri', serif;
   font-size: 18px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.3;
 }
 .home-today-date-en {
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .home-prayer-icon svg {
   width: 16px;
@@ -61,7 +61,7 @@
 }
 .home-prayer-label {
   font-weight: 700;
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .home-prayer-time {
   font-family: 'DM Mono', monospace;
@@ -93,12 +93,12 @@
   flex: 1;
   font-family: 'Amiri', serif;
   font-size: 14px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   text-align: right;
   direction: rtl;
 }
 .home-event-arrow {
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-size: 18px;
   line-height: 1;
 }
@@ -153,7 +153,7 @@
 .home-feature-label-ar {
   font-family: 'Amiri', serif;
   font-size: 18px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-weight: 700;
   line-height: 1.2;
 }
@@ -225,7 +225,7 @@
   padding: 0;
   transition: all .2s;
 }
-.home-tab-arrow:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.home-tab-arrow:hover:not(:disabled) { border-color: var(--accent); color: var(--color-accent-text); }
 .home-tab-arrow:disabled { opacity: .3; cursor: default; }
 
 /* Stack tabs; only the active one takes flow space */

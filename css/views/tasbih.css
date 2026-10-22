@@ -295,7 +295,7 @@
 }
 .tasbih-chip:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .tasbih-chip.on {
   background: var(--accent);
@@ -339,7 +339,7 @@
   border-color: var(--text);
   box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor;
 }
-.tasbih-color-theme { background: var(--accent); color: var(--accent); }
+.tasbih-color-theme { background: var(--accent); color: var(--color-accent-text); }
 .tasbih-color-peach { background: var(--ctp-peach); color: var(--ctp-peach); }
 .tasbih-color-green { background: var(--ctp-green); color: var(--ctp-green); }
 .tasbih-color-mauve { background: var(--ctp-mauve); color: var(--ctp-mauve); }

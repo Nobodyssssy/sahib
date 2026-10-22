@@ -69,3 +69,51 @@ tools/embedpdf-build/*.tgz*.pre-v3
 # --- Local IDE / working notes (not shipped) ---
 .vs/
 sahib-context.txt
+
+# Dependencies / Build
+node_modules/
+/dist/
+tools/embedpdf-build/node_modules/
+tools/embedpdf-build/dist-*/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OpenCode / Testing junk
+.qa/
+.vs/
+.vscode/
+.idea/
+*.swp
+
+# Local scripts & backups
+start.py
+backup-to-e.js
+check-pdf-quality.py
+recompress-books.py
+pdf-quality-report.json
+auto-icons.ps1
+build-icons.ps1
+_pdf_backup/
+_pdf_check_output/
+
+# Downloads / Temp
+qpdf-*/
+magick/
+gs/
+*.zip
+*.tar.gz
+ocrmypdf-windows*/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Keep specific JSONs
+*.json
+!package.json
+!assets/asma-audio/index.json

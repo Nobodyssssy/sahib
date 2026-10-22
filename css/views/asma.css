@@ -23,7 +23,7 @@
 .asma-title {
   font-family: 'Amiri', serif;
   font-size: 22px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.2;
 }
 .asma-subtitle {
@@ -58,7 +58,7 @@
   font-family: 'DM Mono', monospace;
   font-size: 22px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--color-accent-text);
 }
 .asma-progress-label {
   font-size: 13px;
@@ -141,7 +141,7 @@
 .asma-card-ar {
   font-family: 'Amiri', serif;
   font-size: 20px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.3;
   margin-top: 6px;
 }
@@ -168,7 +168,7 @@
 .asma-detail-ar {
   font-family: 'Amiri', serif;
   font-size: 38px;
-  color: var(--accent);
+  color: var(--color-accent-text);
   line-height: 1.3;
   margin-bottom: 8px;
 }
@@ -241,13 +241,13 @@
   text-align: center;
 }
 .asma-detail-video a {
-  color: var(--accent);
+  color: var(--color-accent-text);
   font-size: 13px;
   text-decoration: none;
   border-bottom: 1px dashed rgba(201, 168, 76, .4);
   padding-bottom: 2px;
 }
-.asma-detail-video a:hover { color: var(--accent2); }
+.asma-detail-video a:hover { color: var(--color-accent-text); }
 /* ── Asma detail audio play button ── */
 .asma-audio-btn{
   display:inline-flex;
@@ -267,7 +267,7 @@
 }
 .asma-audio-btn:hover{
   border-color:var(--accent);
-  color:var(--accent);
+  color: var(--color-accent-text);
 }
 .asma-audio-btn.playing{
   background:var(--accent);
@@ -307,7 +307,7 @@
   font-weight:700;
   letter-spacing:.06em;
   text-transform:uppercase;
-  color:var(--accent);
+  color: var(--color-accent-text);
   margin-bottom:8px;
 }
 .asma-detail-about{
@@ -343,7 +343,7 @@
 .asma-quran-ref{
   font-size:11px;
   font-weight:700;
-  color:var(--accent);
+  color: var(--color-accent-text);
 }
 /* ── English blocks: force LTR left-aligned even inside RTL parents ── */
 .asma-detail-translit,
@@ -369,7 +369,7 @@
   border:1px solid var(--border);
   border-radius:10px;
   background:transparent;
-  color:var(--accent);
+  color: var(--color-accent-text);
   font:inherit;
   font-size:13px;
   font-weight:600;

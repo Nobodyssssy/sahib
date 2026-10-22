@@ -44,6 +44,43 @@
   --accent-sky: #0369a1;
 }
 
+/* SAHIB — the signature folio palette. Warm paper by day, warm ink by night.
+   This is the default family; the other five remain complete and selectable. */
+[data-theme="sahib"][data-mode="light"] {
+  --raw-bg: #f3ecdf; --raw-bg-alt: #ece3d3;
+  --raw-surface: #faf4e8; --raw-surface-raised: #fffaf0; --raw-surface-sunken: #e7dcc9;
+  --raw-border: #d4c6ae; --raw-border-subtle: #e3d8c5; --raw-border-strong: #b6a487;
+  --raw-text-primary: #241f18; --raw-text-secondary: #51483a;
+  --raw-text-muted: #6b6050; --raw-text-disabled: #9a8d79;
+  --raw-success: #356b4e; --raw-warning: #8a5a14; --raw-danger: #9b2f3c; --raw-info: #2f5d78;
+  --raw-on-accent: #ffffff;
+  --raw-shadow-sm: 0 1px 1px rgba(60,45,25,0.06);
+  --raw-shadow-md: 0 4px 14px rgba(60,45,25,0.08);
+  --raw-shadow-lg: 0 14px 34px rgba(60,45,25,0.12);
+  --accent-gold: #8a641f;  --accent-peach: #a24f1f;
+  --accent-red: #9b2f3c;   --accent-mauve: #6f4a7d;
+  --accent-blue: #2f5d78;  --accent-teal: #2c625c;
+  --accent-green: #356b4e; --accent-pink: #8a3d5b;
+  --accent-sky: #2b6378;
+}
+[data-theme="sahib"][data-mode="dark"] {
+  --raw-bg: #171512; --raw-bg-alt: #1d1a15;
+  --raw-surface: #211e18; --raw-surface-raised: #2a251e; --raw-surface-sunken: #110f0c;
+  --raw-border: #3a342a; --raw-border-subtle: #2a251e; --raw-border-strong: #564c3d;
+  --raw-text-primary: #ece4d2; --raw-text-secondary: #c8bca7;
+  --raw-text-muted: #9c8f7b; --raw-text-disabled: #6b6152;
+  --raw-success: #94bf9c; --raw-warning: #e0b56e; --raw-danger: #e09393; --raw-info: #96b9cd;
+  --raw-on-accent: #171512;
+  --raw-shadow-sm: 0 1px 1px rgba(0,0,0,0.35);
+  --raw-shadow-md: 0 6px 18px rgba(0,0,0,0.35);
+  --raw-shadow-lg: 0 18px 40px rgba(0,0,0,0.45);
+  --accent-gold: #d8b46a;  --accent-peach: #d99a63;
+  --accent-red: #d98b8b;   --accent-mauve: #b99ccf;
+  --accent-blue: #8fb3c9;  --accent-teal: #85c0b8;
+  --accent-green: #9fbf8f; --accent-pink: #d9a0b4;
+  --accent-sky: #8cc6d6;
+}
+
 /* CATPPUCCIN (Mocha / Latte) */
 [data-theme="catppuccin"][data-mode="dark"] {
   --raw-bg: #1e1e2e; --raw-bg-alt: #181825;
@@ -213,6 +250,23 @@
   --color-surface-overlay: color-mix(in srgb, var(--raw-bg) 88%, transparent);
   --color-paper-edge:      color-mix(in oklch, var(--color-border) 62%, #b78a57);
   --color-rule:            color-mix(in oklch, var(--color-text-primary) 16%, transparent);
+  --color-rule-strong:     color-mix(in oklch, var(--color-text-primary) 30%, transparent);
+  --color-rule-accent:     color-mix(in oklch, var(--color-accent) 62%, transparent);
+  --color-page:            var(--color-background);
+  --color-insert:          color-mix(in oklch, var(--color-surface) 76%, var(--color-accent) 4%);
+  --color-insert-rule:     color-mix(in oklch, var(--color-accent) 30%, var(--color-border));
+
+  /* Prayer, practice and reminder states. Components name the condition; CSS
+     decides how it is drawn. */
+  --color-current:         var(--color-accent-text);
+  --color-current-surface: color-mix(in oklch, var(--color-accent) 10%, var(--color-surface));
+  --color-current-rule:    var(--color-accent);
+  --color-approaching:     var(--color-warning);
+  --color-overdue:         var(--color-danger);
+  --color-complete:        var(--color-success);
+  --color-complete-surface: color-mix(in oklch, var(--color-success) 10%, var(--color-surface));
+  --color-overdue-surface:  color-mix(in oklch, var(--color-danger) 10%, var(--color-surface));
+  --color-approaching-surface: color-mix(in oklch, var(--color-warning) 10%, var(--color-surface));
 
   /* Text */
   --color-text-primary:    var(--raw-text-primary);
@@ -224,10 +278,17 @@
   --color-border:          var(--raw-border);
   --color-border-subtle:   var(--raw-border-subtle);
   --color-border-strong:   var(--raw-border-strong);
+  /* Control outlines (rings, checkboxes, toggles) are non-text UI and need
+     >=3:1 against the surface. The decorative border scale is deliberately
+     lighter, so interactive edges use their own token. The sRGB mix keeps the
+     ratio predictable across every palette; text-secondary is the fallback. */
+  --color-border-control:  var(--color-text-secondary);
+  --color-border-control:  color-mix(in srgb, var(--color-text-secondary) 80%, var(--color-background));
 
   /* Accent */
   --color-accent:           var(--raw-accent);
   --color-accent-secondary: color-mix(in oklch, var(--raw-accent) 78%, var(--color-text-primary) 22%);
+  --color-accent-text:      color-mix(in oklch, var(--color-accent) 40%, var(--color-text-primary) 60%);
   --color-on-accent:        var(--raw-on-accent);
   --color-accent-subtle:    color-mix(in oklch, var(--raw-accent) 14%, var(--color-surface));
   --color-accent-border:    color-mix(in oklch, var(--raw-accent) 44%, var(--color-border));
@@ -243,7 +304,7 @@
   --color-hover:    color-mix(in srgb, var(--color-text-primary)  6%, transparent);
   --color-active:   color-mix(in srgb, var(--color-text-primary) 10%, transparent);
   --color-selected: color-mix(in oklch, var(--raw-accent) 18%, transparent);
-  --color-focus-ring: var(--color-accent);
+  --color-focus-ring: var(--color-accent-text);
 
   /* Shadows — printed-paper lift, not floating glass. */
   --shadow-sm: var(--raw-shadow-sm);
@@ -265,6 +326,7 @@
   --font-ui:        'Tajawal', -apple-system, BlinkMacSystemFont,
                     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-label:     'Inter', 'Segoe UI', var(--font-ui);
+  --font-editorial: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
   --font-developer: var(--font-ui);
   --font-mono:      ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
 
@@ -272,6 +334,15 @@
   --font-size-body:    15px;  --font-size-md:      16px;
   --font-size-lg:      18px;  --font-size-heading: 22px;
   --font-size-display: 28px;
+
+  /* Editorial scale — used by the folio mastheads and page leaves. */
+  --type-mast:      clamp(34px, 3.4vw, 52px);
+  --type-page:      clamp(28px, 2.7vw, 42px);
+  --type-section:   20px;
+  --type-kicker:    10px;
+  --tracking-label: .16em;
+  --measure:        64ch;
+  --measure-tight:  46ch;
 
   --line-height-tight:   1.25;
   --line-height-body:    1.55;
@@ -284,7 +355,7 @@
   --duration-slow:   320ms;
 
   /* Layout */
-  --content-max-width: 1240px;
+  --content-max-width: 1480px;
   --header-height:     60px;
   --sidebar-width:     244px;
   --sidebar-collapsed-width: 68px;
@@ -328,7 +399,7 @@
    is nudged toward the primary ink in both modes so 12–13px metadata stays
    legible without losing the hierarchy. */
 :root {
-  --color-text-muted: color-mix(in oklch, var(--raw-text-muted) 58%, var(--color-text-primary) 42%);
+  --color-text-muted: color-mix(in oklch, var(--raw-text-muted) 35%, var(--color-text-primary) 65%);
 }
 [data-mode="light"] {
   --color-on-accent: #ffffff;

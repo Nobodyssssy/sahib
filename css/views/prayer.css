@@ -26,7 +26,7 @@ color: var(--text);
 .prayer-hijri {
 font-family: 'Amiri', serif;
 font-size: 14px;
-color: var(--accent);
+color: var(--color-accent-text);
 margin-top: 4px;
 }
 .prayer-loc {
@@ -54,7 +54,7 @@ height: 40px;
 border-radius: 10px;
 border: 1px solid var(--border);
 background: var(--surface2);
-color: var(--accent);
+color: var(--color-accent-text);
 cursor: pointer;
 transition: all var(--tr);
 display: flex;
@@ -94,7 +94,7 @@ margin-bottom: 6px;
 .prayer-countdown-name {
 font-family: 'Amiri', serif;
 font-size: 24px;
-color: var(--accent);
+color: var(--color-accent-text);
 line-height: 1.2;
 }
 .prayer-countdown-time {
@@ -106,7 +106,7 @@ direction: ltr;
 }
 .prayer-countdown-remaining {
 font-size: 13px;
-color: var(--accent2);
+color: var(--color-accent-text);
 margin-top: 8px;
 }
 
@@ -127,7 +127,7 @@ border-bottom: 1px solid var(--border);
 font-size: 15px;
 }
 .prayer-row:last-child { border-bottom: none; }
-.prayer-row.sunrise { opacity: .75; }
+.prayer-row.sunrise { opacity: 1; }
 .prayer-row.next {
 background: var(--glow);
 border-left: 3px solid var(--accent);
@@ -139,7 +139,7 @@ font-size: 12px;
 text-align: center;
 }
 .prayer-row.next .prayer-icon {
-color: var(--accent);
+color: var(--color-accent-text);
 font-size: 14px;
 }
 .prayer-name {
@@ -147,7 +147,7 @@ color: var(--text);
 font-weight: 500;
 }
 .prayer-row.next .prayer-name {
-color: var(--accent);
+color: var(--color-accent-text);
 font-weight: 700;
 }
 .prayer-arabic {
@@ -156,7 +156,7 @@ font-size: 16px;
 color: var(--text2);
 direction: rtl;
 }
-.prayer-row.next .prayer-arabic { color: var(--accent); }
+.prayer-row.next .prayer-arabic { color: var(--color-accent-text); }
 .prayer-time {
 font-family: 'DM Mono', monospace;
 font-size: 15px;
@@ -164,7 +164,7 @@ color: var(--text);
 direction: ltr;
 }
 .prayer-row.next .prayer-time {
-color: var(--accent);
+color: var(--color-accent-text);
 font-weight: 700;
 }
 
@@ -216,12 +216,12 @@ font-weight: 700;
 .prayer-forbidden-sub {
 font-family: 'Amiri', serif;
 font-size: 13px;
-color: var(--accent);
+color: var(--color-accent-text);
 flex: 1;
 }
 .prayer-forbidden-toggle {
 font-size: 18px;
-color: var(--accent);
+color: var(--color-accent-text);
 font-weight: 700;
 width: 20px;
 text-align: center;
@@ -252,7 +252,7 @@ grid-column: 2;
 grid-row: 1 / span 2;
 font-family: 'DM Mono', monospace;
 font-size: 12px;
-color: var(--accent);
+color: var(--color-accent-text);
 align-self: center;
 direction: ltr;
 }
@@ -317,7 +317,7 @@ text-align: center;
 background: var(--accent);
 color: #1a1200;
 }
-.forbidden-lang-btn:not(.on):hover { color: var(--accent); }
+.forbidden-lang-btn:not(.on):hover { color: var(--color-accent-text); }
 .forbidden-sources-list {
 display: flex;
 flex-direction: row;
@@ -327,7 +327,7 @@ margin-top: 6px;
 }
 .forbidden-sources-list a {
 font-size: 12px;
-color: var(--accent);
+color: var(--color-accent-text);
 text-decoration: none;
 display: inline-flex;
 align-items: center;
@@ -339,7 +339,7 @@ transition: border-color var(--tr), color var(--tr);
 }
 .forbidden-sources-list a:hover {
 border-color: var(--accent);
-color: var(--accent2);
+color: var(--color-accent-text);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -370,7 +370,7 @@ font-weight: 700;
 .prayer-night-sub {
 font-family: 'Amiri', serif;
 font-size: 13px;
-color: var(--accent);
+color: var(--color-accent-text);
 }
 .night-third-row {
 display: grid;
@@ -384,7 +384,7 @@ border-bottom: 1px dashed rgba(201, 168, 76, .12);
 }
 .night-third-row:last-child { border-bottom: none; }
 .night-third-row.active {
-color: var(--accent);
+color: var(--color-accent-text);
 font-weight: 700;
 }
 .night-third-dot {
@@ -411,11 +411,11 @@ font-size: 13px;
 color: var(--text3);
 direction: rtl;
 }
-.night-third-row.active .night-third-ar { color: var(--accent); }
+.night-third-row.active .night-third-ar { color: var(--color-accent-text); }
 .night-third-time {
 font-family: 'DM Mono', monospace;
 font-size: 13px;
-color: var(--accent);
+color: var(--color-accent-text);
 direction: ltr;
 }
 
@@ -447,9 +447,9 @@ padding: 16px 18px 14px;
 }
 
 /* Head, title, help button, language toggle */
-.prayer-daily-cycle-card .cycle-title { color: var(--accent); }
-.prayer-daily-cycle-card .cycle-help-btn { color: var(--accent); }
-.prayer-daily-cycle-card .cycle-marker-label { color: var(--accent); }
+.prayer-daily-cycle-card .cycle-title { color: var(--color-accent-text); }
+.prayer-daily-cycle-card .cycle-help-btn { color: var(--color-accent-text); }
+.prayer-daily-cycle-card .cycle-marker-label { color: var(--color-accent-text); }
 .prayer-daily-cycle-card .cycle-hijri-dates { color: var(--c-day); }
 .cycle-marker-label:first-child {
 transform: none;
@@ -478,7 +478,7 @@ display: block;
 .cycle-title-ar {
 font-family: 'Amiri', serif;
 font-size: 13px;
-color: var(--accent);
+color: var(--color-accent-text);
 }
 .cycle-help-btn {
 width: 22px;
@@ -486,7 +486,7 @@ height: 22px;
 border-radius: 50%;
 border: 1px solid var(--border);
 background: var(--surface2);
-color: var(--accent);
+color: var(--color-accent-text);
 font-size: 12px;
 font-weight: 700;
 cursor: pointer;
@@ -536,7 +536,7 @@ text-align: center;
 background: var(--accent);
 color: #1a1200;
 }
-.cycle-lang-btn:not(.on):hover { color: var(--accent); }
+.cycle-lang-btn:not(.on):hover { color: var(--color-accent-text); }
 
 /* NIGHT / DAY captions — same colors as their segments */
 .cycle-captions {
@@ -605,7 +605,7 @@ font-size: 9px;
 font-weight: 700;
 letter-spacing: 0.04em;
 text-transform: uppercase;
-color: var(--accent);
+color: var(--color-accent-text);
 white-space: nowrap;
 pointer-events: none;
 }
@@ -917,13 +917,13 @@ color: var(--text);
 .cycle-panel-ar {
 font-family: 'Amiri', serif;
 font-size: 15px;
-color: var(--accent);
+color: var(--color-accent-text);
 }
 .cycle-panel-dur {
 margin-left: auto;
 font-family: 'DM Mono', monospace;
 font-size: 11px;
-color: var(--accent);
+color: var(--color-accent-text);
 padding: 2px 8px;
 background: var(--glow);
 border-radius: 50px;
@@ -959,7 +959,7 @@ min-width: 60px;
 }
 .cycle-panel-inline-time {
 font-family: 'DM Mono', monospace;
-color: var(--accent);
+color: var(--color-accent-text);
 direction: ltr;
 }
 .cycle-panel-source {
@@ -968,14 +968,14 @@ align-items: center;
 gap: 4px;
 margin-top: 6px;
 font-size: 11px;
-color: var(--accent);
+color: var(--color-accent-text);
 text-decoration: none;
 border-bottom: 1px dashed color-mix(in srgb, var(--accent) 40%, transparent);
 padding-bottom: 1px;
 align-self: flex-start;
 }
 .cycle-panel-source:hover {
-color: var(--accent2);
+color: var(--color-accent-text);
 border-bottom-color: var(--accent2);
 }
 
@@ -1039,7 +1039,7 @@ border-radius: var(--rs);
 font-size: 10px;
 text-transform: uppercase;
 letter-spacing: 0.1em;
-color: var(--accent);
+color: var(--color-accent-text);
 font-weight: 700;
 margin-bottom: 5px;
 }
@@ -1069,7 +1069,7 @@ margin-bottom: 0;
 }
 .cycle-help-sources a {
 font-size: 12px;
-color: var(--accent);
+color: var(--color-accent-text);
 text-decoration: none;
 padding: 4px 10px;
 background: var(--surface2);

@@ -25,47 +25,17 @@ async function renderHome(){
   const monthEn = date.toLocaleDateString('en-US', { month: 'long' });
   const greeting = greetingForNow(date);
   const greetingAr = greetingArForNow(date);
-
   const hijriLine = hijri
     ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year} هـ`
     : '';
-  const gregorianLine = `${weekdayEn} ${date.getDate()} ${monthEn} ${date.getFullYear()}`;
 
   let location = null;
-  let todayData = null;
-  let nextDay = null;
-  let cycleHTML = '';
-
   try{
     if(typeof getToday === 'function'){
       const result = await getToday();
-      if(result){
-        location = result.location;
-        todayData = result.today;
-      }
+      if(result && result.location) location = result.location;
     }
-    if(todayData && typeof getPrayerDay === 'function'){
-      const tomorrow = new Date(date);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(12, 0, 0, 0);
-      try{ nextDay = await getPrayerDay(tomorrow); }catch(err){ /* optional */ }
-    }
-    if(todayData && nextDay &&
-       typeof _computeDailyCycle === 'function' &&
-       typeof _renderDailyCycleHTML === 'function'){
-      const cycle = _computeDailyCycle(todayData, nextDay);
-      if(cycle){
-        window._homeCycleData = { today: todayData, nextDay };
-        cycleHTML = _renderDailyCycleHTML(cycle, todayData, nextDay);
-      }
-    }
-  }catch(err){
-    location = null;
-  }
-
-  if (typeof SahibPractice !== 'undefined' && SahibPractice.setTimings && todayData?.timings) {
-    SahibPractice.setTimings(todayData.timings);
-  }
+  }catch(err){ location = null; }
 
   let eventChip = '';
   try{
@@ -73,159 +43,224 @@ async function renderHome(){
       const events = getTodaysEvents();
       if(events && events.length){
         const ev = events[0];
-        eventChip = `<button type="button" class="home-chip home-event-chip" onclick="openHijriEvent('${ev.id}')">
-          ${icon(EVENT_ICONS[ev.type] || 'calendar', 14)} ${esc(ev.nameAr)}
-        </button>`;
+        eventChip = `<button type="button" class="home-chip home-event-chip" onclick="openHijriEvent('${ev.id}')">${icon(EVENT_ICONS[ev.type] || 'calendar', 13)} ${esc(ev.nameAr)}</button>`;
       }
     }
   }catch(err){ eventChip = ''; }
 
   const locationChip = location && location.lat != null
-    ? `<button type="button" class="home-chip" onclick="openLocationPicker()">
-        ${icon('map-pin', 14)} ${esc(location.label || `${Number(location.lat).toFixed(2)}, ${Number(location.lng).toFixed(2)}`)}
-      </button>`
-    : `<span class="home-chip home-chip--quiet">${icon('map-pin', 14)} Location not set</span>`;
+    ? `<button type="button" class="home-chip" onclick="openLocationPicker()">${icon('map-pin', 13)} ${esc(location.label || `${Number(location.lat).toFixed(2)}, ${Number(location.lng).toFixed(2)}`)}</button>`
+    : `<span class="home-chip home-chip--quiet">${icon('map-pin', 13)} Location not set</span>`;
+
+  let recentBooks = [];
+  try{
+    if(typeof loadReadingProgress === 'function' && typeof getRecentlyReadBooks === 'function'){
+      await loadReadingProgress();
+      recentBooks = getRecentlyReadBooks(1);
+    }
+  }catch(err){ recentBooks = []; }
+
+  let readingHTML = '';
+  try{ if(typeof renderHomeQuoteHTML === 'function') readingHTML = renderHomeQuoteHTML(); }catch(err){ readingHTML = ''; }
 
   host.innerHTML = `
-    <div class="home-container almanac-home">
-      <div class="home-hero">
-        <section class="home-hero-card">
-          <div class="home-hero-topline">
-            <span class="home-greeting"><span>${esc(greeting)}</span><span class="home-greeting-ar" lang="ar" dir="rtl">${esc(greetingAr)}</span></span>
-            <span class="home-local-mark">${icon('lock', 12)} Local only</span>
-          </div>
-          <div class="home-hero-copy">
-            <div class="home-date-ar" id="home-today-date-ar">${hijriLine || gregorianLine}</div>
-            <div class="home-date-en" id="home-today-date-en">${gregorianLine}</div>
-          </div>
-          <div class="home-hero-rule" aria-hidden="true"></div>
-          <div class="home-hero-meta">
-            ${locationChip}
-            ${eventChip}
-          </div>
-          <div class="home-hero-colophon">
-            <span>A companion for the ordinary day.</span>
-            <span>Sahib almanac · ${date.getFullYear()}</span>
-          </div>
-        </section>
-
-        <div id="home-prayer-widget" class="home-prayer-widget-host" aria-live="polite"></div>
-      </div>
-
-      <div class="home-daybook-grid">
-        ${renderHomePracticePanel()}
-
-        <section class="home-reading">
-          <div class="home-section-head">
-            <div>
-              <div class="home-section-kicker">From the Qur’an and Sunnah</div>
-              <div class="home-section-title">Today’s reading</div>
-            </div>
-            <button type="button" class="home-section-link" onclick="openBooksView()">Library ${icon('arrow-left', 13)}</button>
-          </div>
-          ${renderHomeQuoteHTML()}
-        </section>
-      </div>
-
-      <section class="home-index-section">
-        <div class="home-section-head">
-          <div>
-            <div class="home-section-kicker">The Sahib index</div>
-            <div class="home-section-title">Everything else, kept quiet</div>
-          </div>
-          <button type="button" class="home-section-link" onclick="focusGlobalSearch()">Search all adhkar ${icon('search', 13)}</button>
+    <main class="almanac-desk">
+      <header class="desk-mast">
+        <h1 class="desk-mast-date">
+          <span class="desk-mast-weekday">${esc(weekdayEn)}</span>
+          <span class="desk-mast-greg">${date.getDate()} ${esc(monthEn)} ${date.getFullYear()}</span>
+          <span class="desk-mast-hijri" lang="ar" dir="rtl">${esc(hijriLine)}</span>
+        </h1>
+        <div class="desk-mast-side">
+          <span class="desk-mast-greeting" dir="rtl"><span lang="ar">${esc(greetingAr)}</span> · <span lang="en" dir="ltr">${esc(greeting)}</span></span>
+          ${locationChip}
+          ${eventChip}
         </div>
-        ${renderHomeFeaturesHTML()}
+      </header>
+
+      <section class="desk-prayer" aria-label="Next prayer and today’s prayer times">
+        <div id="home-prayer-widget" class="desk-prayer-host" aria-live="polite"></div>
       </section>
 
-      ${cycleHTML ? `
-        <section class="home-cycle-section home-cycle-wide">
-          <div class="home-section-head">
-            <div>
-              <div class="home-section-kicker">The shape of the day</div>
-              <div class="home-section-title">Daily prayer cycle</div>
-            </div>
-            <button type="button" class="home-section-link" onclick="openPrayerView()">Prayer times ${icon('arrow-left', 13)}</button>
+      <section class="desk-lower" aria-label="Today’s reading and practice">
+        <div class="desk-lower-main">
+          <div class="desk-section-head">
+            <h2 class="desk-section-title">Today’s reading</h2>
+            <button type="button" class="desk-link" onclick="openBooksView()">Library ${icon('arrow-left', 12)}</button>
           </div>
-          ${cycleHTML}
-        </section>` : ''}
+          ${readingHTML || `<p class="desk-side-empty"><bdi dir="ltr" lang="en">No reading is set for today.</bdi></p>`}
+        </div>
+        <aside class="desk-lower-side">
+          ${renderHomePracticePanel()}
+          ${renderHomeContinue(recentBooks[0])}
+        </aside>
+      </section>
 
-      <footer class="home-colophon">
-        <span>${icon('check-circle', 14)} Local-first · no accounts · no tracking</span>
-        <span>Adhkar, favourite reading, prayer settings and practice history stay in this browser.</span>
+      <footer class="desk-foot">
+        <span class="desk-foot-note">${icon('lock', 12)} Local-first. Your reading and practice history stay in this browser.</span>
+        <nav class="desk-foot-nav" aria-label="Quick links">
+          <button type="button" class="desk-foot-link" onclick="goToAdkarCategories()">Adhkar</button>
+          <button type="button" class="desk-foot-link" onclick="openPrayerView()">Prayer</button>
+          <button type="button" class="desk-foot-link" onclick="openHijriView()">Hijri</button>
+          <button type="button" class="desk-foot-link" onclick="openAsmaView()">99 Names</button>
+          <button type="button" class="desk-foot-link" onclick="openTasbihView()">Tasbih</button>
+        </nav>
       </footer>
-    </div>
+    </main>
   `;
 
   if(typeof PrayerWidget !== 'undefined'){
     PrayerWidget.mount('home-prayer-widget', { variant: 'hero', showTimes: true });
   }
-
   if(typeof injectHeaderIcons === 'function'){
     setTimeout(() => injectHeaderIcons(), 0);
   }
 }
 
 function renderHomePracticePanel(){
-  if(typeof SahibPractice === 'undefined' || !SahibPractice.isReady()){
-    return `<section class="home-practice-panel"><div class="home-practice-loading">Opening the daybook…</div></section>`;
-  }
-  const snap = SahibPractice.getHomeSummary();
-  const due = snap.due.slice(0, 3);
-  const done = snap.completed.length;
-  const waiting = snap.due.length;
-  const next = snap.next;
-  const tracker = snap.trackers.find(item => ['soon','due','overdue'].includes(item.state));
+  const loading = `<section class="desk-side-block">
+    <div class="desk-section-head"><h2 class="desk-section-title">Daily practice</h2></div>
+    <p class="desk-side-empty"><bdi dir="ltr" lang="en">Opening the daybook…</bdi></p>
+  </section>`;
+  if(typeof SahibPractice === 'undefined' || !SahibPractice.isReady()) return loading;
+
+  let snap;
+  try{ snap = SahibPractice.getHomeSummary(); }catch(err){ return loading; }
+  if(!snap || !snap.enabled) return loading;
 
   if(!snap.enabled.length){
-    return `<section class="home-practice-panel home-practice-panel--empty">
-      <div class="home-practice-head">
-        <div><span class="home-section-kicker">Daily practice · الورد</span><h2>The daybook is yours to set.</h2></div>
-        <span class="home-practice-mark">${icon('practice', 20)}</span>
+    const hour = new Date().getHours();
+    const starter = hour >= 15 ? 'evening-adhkar' : hour < 12 ? 'morning-adhkar' : 'quran-reading';
+    const label = starter === 'evening-adhkar' ? 'evening adhkar' : starter === 'morning-adhkar' ? 'morning adhkar' : 'Qur’an reading';
+    return `<section class="desk-side-block" aria-labelledby="home-practice-title">
+      <div class="desk-section-head">
+        <h2 class="desk-section-title" id="home-practice-title">Daily practice</h2>
+        <button type="button" class="desk-link" onclick="openPracticeView('all')">Browse ${icon('arrow-left', 11)}</button>
       </div>
-      <p class="home-practice-intro">Choose a few routines you already intend to keep. Nothing is enabled for you, and nothing is turned into a score.</p>
-      <div class="home-practice-empty-actions">
-        <button class="home-practice-primary" onclick="openPracticeView('all')">Choose a few practices ${icon('arrow-left', 14)}</button>
-        <button class="home-text-action" onclick="openPracticeForm()">Make a personal reminder</button>
-      </div>
+      <p class="desk-side-empty"><bdi dir="ltr" lang="en">Nothing set for today. Begin with one small practice you already keep.</bdi></p>
+      <button type="button" class="desk-primary desk-primary--inline desk-primary--quiet" onclick="homeStartStarter('${starter}')">Add ${label} ${icon('arrow-left', 12)}</button>
     </section>`;
   }
 
-  const rows = due.length ? due.map(item => {
+  const due = snap.due.slice().sort((a, b) => _homePracticeRank(a) - _homePracticeRank(b) || a.practice.title.localeCompare(b.practice.title));
+  const completed = (snap.completed || []).map(item => ({ ...item, done: true }));
+  const items = [
+    ...due.map(item => ({ ...item, done: false })),
+    ...completed
+  ].sort((a, b) => _homePracticeRank(a) - _homePracticeRank(b) || a.practice.title.localeCompare(b.practice.title));
+
+  const rows = items.length ? items.map(item => {
     const p = item.practice;
-    const time = p.timeLabel || p.reminderTime || (p.relativeTo ? p.relativeTo : '');
-    return `<div class="home-practice-row">
-      <button class="home-practice-copy" onclick="openPracticeDetail('${esc(p.id)}')">
-        <span class="home-practice-row-top"><span class="home-practice-time">${esc(time)}</span><span class="home-practice-status">${esc(item.status === 'overdue' ? 'Past its rhythm' : item.status === 'approaching' ? 'Approaching' : 'Waiting')}</span></span>
-        <span class="home-practice-title"><span lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span>${esc(p.title)}</span></span>
-        <span class="home-practice-meta">${p.schedule?.type === 'interval' ? 'A private time limit' : esc(p.summary || '')}</span>
+    const time = p.timeLabel || p.reminderTime || '';
+    const done = item.done;
+    return `<div class="desk-practice-row${done ? ' is-done' : ''}" data-practice-id="${esc(p.id)}">
+      <button type="button" class="desk-practice-copy" onclick="openPracticeDetail('${esc(p.id)}')">
+        <span class="desk-practice-title"><span lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span>${esc(p.title)}</span></span>
+        <span class="desk-practice-time">${esc(time || 'Any time')}</span>
       </button>
-      <span class="home-practice-arrow">${icon('arrow-left', 14)}</span>
+      <span class="desk-practice-check">
+        ${done
+          ? `<span class="desk-practice-done is-done" aria-hidden="true">${icon('check', 12)}</span>
+             <button type="button" class="desk-practice-undo" onclick="homePracticeUndo('${esc(p.id)}')">Undo</button>`
+          : `<button type="button" class="desk-practice-done" onclick="homePracticeDone('${esc(p.id)}')" aria-pressed="false" aria-label="Mark ${esc(p.title)} done today" title="Mark done today">${icon('check', 12)}</button>`}
+      </span>
     </div>`;
-  }).join('') : `<div class="home-practice-quiet">${icon('check', 15)}<p><strong>Nothing else is due today.</strong><span>The rest of the day is yours.</span></p></div>`;
+  }).join('') : `<p class="desk-side-empty"><bdi dir="ltr" lang="en">Nothing else is due today.</bdi></p>`;
 
-  const completedRows = snap.completed.slice(0, 2).map(row => {
-    const p = row.practice;
-    return `<div class="home-practice-done-row">
-      <span class="home-practice-done-check">${icon('check', 12)}</span>
-      <button class="home-practice-done-copy" onclick="openPracticeDetail('${esc(p.id)}')">
-        <strong>${esc(p.title)}</strong><span>Completed today</span>
-      </button>
-      <button class="home-text-action" onclick="practiceUndo('${esc(p.id)}')">Undo</button>
-    </div>`;
-  }).join('');
+  return `<section class="desk-side-block" aria-labelledby="home-practice-title">
+    <div class="desk-section-head">
+      <h2 class="desk-section-title" id="home-practice-title">Daily practice</h2>
+      <button type="button" class="desk-link" onclick="openPracticeView('today')">Open ${icon('arrow-left', 11)}</button>
+    </div>
+    <div class="desk-practice-list">
+      ${items.length ? `<div class="desk-practice-colhead" aria-hidden="true"><span></span><span>Done</span></div>` : ''}
+      ${rows}
+    </div>
+  </section>`;
+}
 
-  return `<section class="home-practice-panel">
-    <div class="home-practice-head">
-      <div><span class="home-section-kicker">Daily practice · الورد</span><h2>Today’s few things</h2></div>
-      <button class="home-section-link" onclick="openPracticeView('today')">Open daybook ${icon('arrow-left', 13)}</button>
-    </div>
-    <div class="home-practice-summary"><span>${waiting ? `${waiting} waiting` : 'A clear day'}</span><span>${done ? `${done} completed` : 'Nothing completed yet'}</span><span class="home-practice-summary-local">${icon('lock', 11)} on this device</span></div>
-    <div class="home-practice-list">${rows}${completedRows}</div>
-    <div class="home-practice-foot">
-      <span>${tracker ? `${esc(tracker.practice.title)} · ${tracker.state === 'overdue' ? `${Math.abs(tracker.daysLeft)} days beyond your limit` : tracker.state === 'due' ? 'at your chosen limit' : `${tracker.daysLeft} days left`}` : next ? `Next · ${esc(_homeDate(next.key))} · ${esc(next.practice.title)}` : 'A quiet fortnight ahead.'}</span>
-      <button class="home-text-action" onclick="showPracticeAll()">All practices</button>
-    </div>
+/* The daybook is chronological: prayer-relative practices first, then clock
+   reminders, then "anytime" items. Keep this independent of the prayer
+   widget's cache, which may not be hydrated when Home renders. */
+function _homePracticeRank(item){
+  const p = item && item.practice ? item.practice : item;
+  if(!p) return 1440;
+  const due = Number(item.dueMinutes);
+  if(item.dueMinutes != null && Number.isFinite(due)) return due;
+  const rel = String(p.relativeTo || '').toLowerCase();
+  const prayer = { fajr: 310, sunrise: 360, dhuhr: 730, asr: 930, maghrib: 1085, isha: 1170 };
+  if(prayer[rel] != null) return prayer[rel] + Number(p.offsetMinutes || 0);
+  const clock = String(p.reminderTime || '').match(/^(\d{1,2}):(\d{2})/);
+  if(clock) return Number(clock[1]) * 60 + Number(clock[2]);
+  const label = String(p.timeLabel || '').toLowerCase();
+  if(/fajr|dawn|morning/.test(label)) return 310;
+  if(/dhuhr|noon/.test(label)) return 730;
+  if(/asr|afternoon/.test(label)) return 930;
+  if(/maghrib|sunset|evening/.test(label)) return 1085;
+  if(/isha|night/.test(label)) return 1170;
+  return 1440;
+}
+
+/* SahibPractice refreshes Home itself after saving. Wait for that render, then
+   put focus back on the row's new action so keyboard users are not dropped at
+   the top of the document. The extra render this used to schedule raced the
+   first one and reset focus. */
+function _focusHomePracticeWhenReady(id, done, tries = 0){
+  if(!document.getElementById('view-home')?.classList.contains('active')) return;
+  const row = Array.from(document.querySelectorAll('.desk-practice-row'))
+    .find(r => r.dataset.practiceId === id);
+  if(row && row.classList.contains('is-done') === done){
+    const target = row.querySelector(done ? '.desk-practice-undo' : '.desk-practice-done');
+    if(target){ target.focus({ preventScroll: true }); return; }
+  }
+  if(tries < 30){
+    requestAnimationFrame(() => _focusHomePracticeWhenReady(id, done, tries + 1));
+  }
+}
+
+async function homePracticeDone(id){
+  if(typeof SahibPractice === 'undefined') return;
+  await SahibPractice.complete(id);
+  _focusHomePracticeWhenReady(id, true);
+}
+
+async function homePracticeUndo(id){
+  if(typeof SahibPractice === 'undefined') return;
+  await SahibPractice.undo(id);
+  _focusHomePracticeWhenReady(id, false);
+}
+
+async function homeStartStarter(id){
+  if(typeof SahibPractice === 'undefined') return;
+  await SahibPractice.enableStarter(id);
+  if(document.getElementById('view-home')?.classList.contains('active')) renderHome();
+}
+
+function renderHomeContinue(book){
+  if(!book){
+    return `<section class="desk-side-block desk-side-block--quiet">
+      <h2 class="desk-micro-head">Continue</h2>
+      <p class="desk-side-empty desk-continue-none"><bdi dir="ltr" lang="en">No open book.</bdi> <button type="button" class="desk-text-action" onclick="openBooksView()">Browse the library</button></p>
+    </section>`;
+  }
+  let progress = null;
+  try{ progress = (typeof getBookProgress === 'function') ? getBookProgress(book.id) : null; }catch(err){ progress = null; }
+  const detail = progress
+    ? (progress.totalPages ? `Page ${progress.page} of ${progress.totalPages}` : `Stopped at page ${progress.page}`)
+    : 'Open book';
+  const title = book.titleEn || book.titleAr || 'Continue reading';
+  const titleLang = book.titleEn ? 'en' : 'ar';
+  const titleDir = book.titleEn ? 'ltr' : 'rtl';
+  return `<section class="desk-side-block">
+    <h2 class="desk-micro-head">Continue</h2>
+    <button type="button" class="desk-continue" onclick="openBookDetail('${esc(book.id)}')">
+      <span class="desk-continue-icon">${icon('book-open', 15)}</span>
+      <span class="desk-continue-copy">
+        <strong><bdi dir="${titleDir}" lang="${titleLang}">${esc(title)}</bdi></strong>
+        <span>${esc(detail)}</span>
+      </span>
+      <span class="desk-continue-arrow">${icon('arrow-left', 12)}</span>
+    </button>
   </section>`;
 }
 
@@ -322,6 +357,17 @@ function _attachHomeTabsSwipe(){
   body.dataset.swipeAttached = '1';
 }
 
+function renderHomeQuotePreviewHTML(){
+  if(typeof getTodayQuote !== 'function') return '';
+  const q = getTodayQuote();
+  if(!q) return '';
+  const lang = (typeof _quoteLang !== 'undefined' && _quoteLang) ? _quoteLang : 'ar';
+  const tafsirText = lang === 'ar' ? (q.tafsirAr || '') : (q.tafsirEn || '');
+  if(!tafsirText) return '';
+  const tafsirClass = lang === 'ar' ? 'ar' : 'en';
+  return `<div class="home-reading-preview ${tafsirClass}" lang="${lang}" ${lang === 'ar' ? 'dir="rtl"' : 'dir="ltr"'}><span>Reflection</span>${esc(tafsirText.length > 170 ? `${tafsirText.slice(0, 167).trim()}…` : tafsirText)}</div>`;
+}
+
 function renderHomeQuoteHTML(){
   if(typeof getTodayQuote !== 'function') return '';
 
@@ -334,32 +380,39 @@ function renderHomeQuoteHTML(){
   const badgeIconName = q.type === 'quran' ? 'book-open' : 'mosque';
   const badgeLabel = q.type === 'quran' ? 'Verse' : 'Hadith';
   const isExpanded = (typeof _quoteExpanded !== 'undefined') ? _quoteExpanded : false;
+  const slotLabel = (q.time && q.time !== 'any') ? ` · ${q.time}` : '';
 
   return `
-    <div class="quote-card home-quote-card ${isExpanded ? 'expanded' : ''}" id="quote-card" onclick="toggleHomeQuote(event)">
-      <div class="quote-header">
-        <div class="quote-badge">
-          <span class="quote-badge-icon">${icon(badgeIconName, 14)}</span>
-          <span>${badgeLabel} · ${q.time}</span>
-        </div>
-        <span class="quote-expand-hint">${icon(isExpanded ? 'chevron-up' : 'chevron-down', 14)}</span>
+    <div class="quote-card home-quote-card ${isExpanded ? 'expanded' : ''}" id="quote-card">
+      <button type="button" class="quote-header" aria-expanded="${isExpanded}" aria-controls="quote-tafsir" aria-label="${isExpanded ? 'Close tafsir' : 'Open tafsir'}" onclick="event.stopPropagation();toggleHomeQuote(event)">
+        <span class="quote-badge">
+          <span class="quote-badge-icon" aria-hidden="true">${icon(badgeIconName, 14)}</span>
+          <span>${badgeLabel}${slotLabel}</span>
+        </span>
+        <span class="quote-expand-hint" aria-hidden="true">${icon('chevron-down', 14)}</span>
+      </button>
+
+      <div class="quote-page">
+        <div class="quote-text" lang="ar" dir="rtl">${q.ar}</div>
+        <aside class="quote-margin" aria-label="Reference and reflection">
+          <div class="quote-ref" lang="ar" dir="rtl">${q.ref}</div>
+          ${isExpanded ? '' : renderHomeQuotePreviewHTML()}
+        </aside>
       </div>
 
-      <div class="quote-text">${q.ar}</div>
-      <div class="quote-ref">${q.ref}</div>
-      ${tafsirText ? `<div class="home-reading-preview ${tafsirClass}" ${lang === 'ar' ? 'dir="rtl"' : 'dir="ltr"'}><span>Reflection</span>${esc(tafsirText.length > 170 ? `${tafsirText.slice(0, 167).trim()}…` : tafsirText)}</div>` : ''}
+      <button type="button" class="quote-teaser" aria-expanded="${isExpanded}" aria-controls="quote-tafsir" onclick="event.stopPropagation();toggleHomeQuote(event)">
+        ${isExpanded ? 'Close tafsir' : 'Open today’s tafsir'} ${icon(isExpanded ? 'chevron-up' : 'arrow-left', 13)}
+      </button>
 
-      <div class="quote-teaser">Open today’s tafsir ${icon('arrow-left', 13)}</div>
-
-      <div class="quote-tafsir-wrap">
+      <div class="quote-tafsir-wrap" id="quote-tafsir">
         <div class="quote-tafsir-header">
           <span class="quote-tafsir-label">${icon('book-open', 14)} Tafsir</span>
           <div class="quote-lang-toggle">
-            <button class="quote-lang-btn ${lang==='ar'?'on':''}" onclick="event.stopPropagation();setQuoteLang('ar')">عربي</button>
-            <button class="quote-lang-btn ${lang==='en'?'on':''}" onclick="event.stopPropagation();setQuoteLang('en')">EN</button>
+            <button type="button" class="quote-lang-btn ${lang==='ar'?'on':''}" data-lang="ar" aria-pressed="${lang==='ar'}" onclick="event.stopPropagation();setQuoteLang('ar')">عربي</button>
+            <button type="button" class="quote-lang-btn ${lang==='en'?'on':''}" data-lang="en" aria-pressed="${lang==='en'}" onclick="event.stopPropagation();setQuoteLang('en')">EN</button>
           </div>
         </div>
-        <div class="quote-tafsir-body ${tafsirClass}">${tafsirText}</div>
+        <div class="quote-tafsir-body ${tafsirClass}" lang="${tafsirClass}" dir="${lang === 'ar' ? 'rtl' : 'ltr'}">${tafsirText}</div>
         ${q.link ? `<a class="quote-link" href="${q.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${icon('external-link', 12)} Read full source</a>` : ''}
       </div>
     </div>
@@ -373,7 +426,27 @@ function toggleHomeQuote(event){
   }
   if(typeof _quoteExpanded !== 'undefined'){
     _quoteExpanded = !_quoteExpanded;
-    renderHome();
+    const card = document.getElementById('quote-card');
+    if(!card){ renderHome(); return; }
+    card.classList.toggle('expanded', _quoteExpanded);
+    const margin = card.querySelector('.quote-margin');
+    if(margin){
+      const preview = margin.querySelector('.home-reading-preview');
+      if(_quoteExpanded && preview) preview.remove();
+      if(!_quoteExpanded && !preview && typeof renderHomeQuotePreviewHTML === 'function'){
+        margin.insertAdjacentHTML('beforeend', renderHomeQuotePreviewHTML());
+      }
+    }
+    const header = card.querySelector('.quote-header');
+    if(header){
+      header.setAttribute('aria-expanded', String(_quoteExpanded));
+      header.setAttribute('aria-label', _quoteExpanded ? 'Close tafsir' : 'Open tafsir');
+    }
+    const teaser = card.querySelector('.quote-teaser');
+    if(teaser){
+      teaser.setAttribute('aria-expanded', String(_quoteExpanded));
+      teaser.innerHTML = `${_quoteExpanded ? 'Close tafsir' : 'Open today’s tafsir'} ${icon(_quoteExpanded ? 'chevron-up' : 'arrow-left', 13)}`;
+    }
   }
 }
 
