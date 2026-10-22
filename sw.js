@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.13.7';
+const VERSION = 'v2.13.8';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
@@ -127,8 +127,8 @@ const APP_SHELL = [
   './js/views/tasbih.js?v=20261022-refine-4',
   './js/views/reader.js',
   './js/io.js',
-  './js/settings.js?v=20261022-pages-1',
-  './js/app.js?v=20261022-language-5',
+  './js/settings.js?v=20261022-pages-2',
+  './js/app.js?v=20261022-pages-2',
 
   './icons/icon.svg',
   './icons/icon-192.png',

@@ -102,10 +102,11 @@ if(process.env.PWA_CHECK === '1') {
   finally{if(installed){await cdp('PWA.uninstall',{manifestId});console.log('Disposable test installation removed');}}
  }
  // Exercise direct entry and refresh using the app's supported query-string shortcuts.
- await cdp('Page.navigate',{url:new URL('index.html?cat=sabah',url).href});await sleep(3000);
- const direct=await evaluate('document.querySelectorAll("#adkar-grid .adkar-card").length>0');
- await cdp('Page.reload');await sleep(3000);
- const refresh=await evaluate('document.querySelectorAll("#adkar-grid .adkar-card").length>0');
+ const shortcutReady=async()=>{for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector("#view-adkar.active #adkar-grid .adkar-card")'))return true;await sleep(200);}return false;};
+ await cdp('Page.navigate',{url:new URL('index.html?cat=sabah',url).href});
+ const direct=await shortcutReady();
+ await cdp('Page.reload');
+ const refresh=await shortcutReady();
  console.log('PWA direct entry and refresh',JSON.stringify({direct,refresh}));if(!direct||!refresh)failed=true;
  await evaluate('goHomeView()');
 }

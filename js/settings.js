@@ -1037,7 +1037,7 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.13.7 · service worker v2.13.7<br>
+        <strong>Version:</strong> v2.13.8 · service worker v2.13.8<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
         Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>

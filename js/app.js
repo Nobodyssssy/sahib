@@ -122,6 +122,12 @@
       window.navigator.standalone === true;
     if(isStandalone) document.documentElement.classList.add('pwa-standalone');
 
+    /* Apply installed shortcuts only after IndexedDB, language and shell are ready. */
+    const shortcut = new URLSearchParams(location.search);
+    if(shortcut.get('cat')) openCat(shortcut.get('cat'));
+    else if(shortcut.get('favs')) toggleFavsView();
+    window.dispatchEvent(new Event('sahib:ready'));
+
     /* 8. Log */
     console.log(
       '%cصاحب · Sahib' + (isStandalone ? ' (installed)' : ''),
