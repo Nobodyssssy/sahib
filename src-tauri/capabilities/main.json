@@ -1,0 +1,13 @@
+{
+  "identifier": "main-window",
+  "description": "Local Sahib main window and event channel; no filesystem or shell plugin access.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "notification:allow-request-permission",
+    "notification:allow-is-permission-granted",
+    "core:window:allow-close"
+  ]
+}

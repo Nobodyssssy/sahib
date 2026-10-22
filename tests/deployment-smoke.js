@@ -9,7 +9,7 @@
  check('Service-worker scope',registration.scope===base.href);
  check('Service-worker script',registration.active.scriptURL===new URL('sw.js',base).href);
  const names=await caches.keys(),shell=names.find(n=>/^sahib-v/.test(n));
- check('Versioned shell installed',shell==='sahib-v2.13.8');
+ check('Versioned shell installed',shell==='sahib-v2.14.0');
  const cache=await caches.open(shell),entries=await cache.keys();
  check('Complete app shell',entries.length>=116);
  check('Cached assets stay under app path',entries.every(r=>r.url.startsWith(base.href)));

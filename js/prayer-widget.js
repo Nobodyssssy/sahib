@@ -42,11 +42,21 @@ function _pwDateFormat(key){
   return new Date(parts[2], parts[1] - 1, parts[0], 12, 0, 0, 0);
 }
 
-function _pwEventDate(dateKey, time){
+function _pwEventDate(dateKey, time, timezone){
   const base = _pwDateFormat(dateKey);
   const mins = (typeof parseHM === 'function') ? parseHM(time) : null;
   if(!base || mins == null) return null;
-  return new Date(base.getFullYear(), base.getMonth(), base.getDate(), Math.floor(mins / 60), mins % 60, 0, 0);
+  if(!timezone) return new Date(base.getFullYear(), base.getMonth(), base.getDate(), Math.floor(mins / 60), mins % 60, 0, 0);
+  // Convert timetable wall time to one shared instant, including the date's DST offset.
+  const target=Date.UTC(base.getFullYear(),base.getMonth(),base.getDate(),Math.floor(mins/60),mins%60);
+  const formatter=new Intl.DateTimeFormat('en-GB',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+  let instant=target;
+  for(let i=0;i<3;i++){
+    const p=Object.fromEntries(formatter.formatToParts(new Date(instant)).map(p=>[p.type,p.value]));
+    const displayed=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+    const delta=target-displayed;instant+=delta;if(!delta)break;
+  }
+  return new Date(instant);
 }
 
 function _pwDayKey(date){
@@ -77,7 +87,7 @@ function _pwSchedule(today, nextDay, now){
   const todayKey = today.date;
   const events = [];
   ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(name => {
-    const date = _pwEventDate(todayKey, today.timings[name]);
+    const date = _pwEventDate(todayKey, today.timings[name], today.timezone);
     if(date) events.push({ name, date, dateKey: todayKey, tomorrow: false });
   });
 
@@ -96,7 +106,7 @@ function _pwSchedule(today, nextDay, now){
     }
   }
   if(tomorrowKey && tomorrowFajrTime){
-    const date = _pwEventDate(tomorrowKey, tomorrowFajrTime);
+    const date = _pwEventDate(tomorrowKey, tomorrowFajrTime, nextDay && nextDay.timezone || today.timezone);
     if(date) events.push({ name: 'Fajr', date, dateKey: tomorrowKey, tomorrow: true, estimated: nextDayEstimated });
   }
 
@@ -109,7 +119,7 @@ function _pwSchedule(today, nextDay, now){
   }
   if(!prev){
     /* Before today's Fajr: measure progress from yesterday's Isha. */
-    const isha = _pwEventDate(todayKey, today.timings.Isha);
+    const isha = _pwEventDate(todayKey, today.timings.Isha, today.timezone);
     if(isha){
       const yesterdayIsha = new Date(isha.getTime() - 86400000);
       prev = { name: 'Isha', date: yesterdayIsha, dateKey: todayKey, tomorrow: false, previousDay: true };
@@ -728,11 +738,11 @@ const PrayerAlerts = (() => {
     if(!state.today) return [];
     const events = [];
     ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(name => {
-      const date = _pwEventDate(state.today.date, state.today.timings[name]);
+      const date = _pwEventDate(state.today.date, state.today.timings[name], state.today.timezone);
       if(date) events.push({ name, date, dateKey: state.today.date, tomorrow: false });
     });
     if(state.nextDay){
-      const date = _pwEventDate(state.nextDay.date, state.nextDay.timings.Fajr);
+      const date = _pwEventDate(state.nextDay.date, state.nextDay.timings.Fajr, state.nextDay.timezone);
       if(date) events.push({ name: 'Fajr', date, dateKey: state.nextDay.date, tomorrow: true });
     }
     return events;
@@ -812,6 +822,7 @@ const PrayerAlerts = (() => {
   }
 
   function check(now = new Date()){
+    if(window.SahibDesktop?.available) return;
     const prefs = state.prefs;
     if(!prefs || !prefs.alerts.enabled || !state.today || !state.today.timings) return;
     const nowMs = now.getTime();

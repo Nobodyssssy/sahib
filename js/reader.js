@@ -37,10 +37,18 @@ async function loadPdfDocument(bookId, overrideUrl){
   if(!book) throw new Error('Book not found');
 
   const engine = await initPdfEngine();
-  const url = overrideUrl || resolveBookPath(book);
-  if(!url) throw new Error('No source URL for book');
-
-  const doc = await engine.openDocumentUrl({ id: bookId, url }).toPromise();
+  let doc;
+  if(book.isLocal){
+    // WebView2 custom HTTPS origins cannot reliably fetch their own blob URLs.
+    // Read the existing IndexedDB Blob directly, without a second URL transport.
+    const row = await db.localBooks.get(bookId);
+    if(!row || !row.blob) throw new Error('Local book not found');
+    doc = await engine.openDocumentBuffer({ id: bookId, content: await row.blob.arrayBuffer() }).toPromise();
+  }else{
+    const url = overrideUrl || resolveBookPath(book);
+    if(!url) throw new Error('No source URL for book');
+    doc = await engine.openDocumentUrl({ id: bookId, url }).toPromise();
+  }
 
   const wrapped = {
     numPages: doc.pages.length,
@@ -284,11 +292,11 @@ async function generateLocalBookCover(bookId){
     const book = getLocalBookById(bookId);
     if(!book) return null;
 
-    const url = await getLocalBookBlobUrl(bookId);
-    if(!url) return null;
+    const row = await db.localBooks.get(bookId);
+    if(!row || !row.blob) return null;
 
     const engine = await initPdfEngine();
-    const doc = await engine.openDocumentUrl({ id: 'cover-' + bookId, url }).toPromise();
+    const doc = await engine.openDocumentBuffer({ id: 'cover-' + bookId, content: await row.blob.arrayBuffer() }).toPromise();
     const page = doc.pages[0];
 
     const baseWidth = page.size.width;
@@ -310,8 +318,6 @@ async function generateLocalBookCover(bookId){
     if(typeof engine.closeDocument === 'function'){
       try{ await engine.closeDocument(doc).toPromise(); }catch(e){ /* ignore */ }
     }
-
-    try{ URL.revokeObjectURL(url); }catch(e){}
 
     _coverCacheLocal[bookId] = dataUrl;
     await saveCoverCacheLocal();

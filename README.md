@@ -47,7 +47,7 @@ Prayer calculations and the daily-cycle guide follow the chosen timetable. The c
 
 Browser/PWA reminders and audio depend on browser permissions, user interaction and lifecycle. Full adhan playback while the app is closed or suspended is not guaranteed.
 
-Windows 11 and Android native packaging are planned, with Tauri v2 under consideration. Native scheduling, tray/window controls, startup integration and Android home-screen widgets require platform work. They are not implemented by this browser release. No Tauri migration is included here.
+The Windows Tauri v2 preview adds native scheduling/audio, a system tray, optional startup and a floating prayer widget while sharing this interface. Build it with `npm ci` and `npm run desktop:build`; see [Windows setup and limitations](docs/WINDOWS.md). The unsigned preview is separate from the browser release. Signing and automatic updates are not configured. Android packaging and home-screen widgets remain planned.
 
 ## Verification
 

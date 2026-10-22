@@ -146,3 +146,9 @@ desktop.ini
 /docs/*-2026-10-22.md
 /smoke.png
 /audio.png
+
+# Tauri source configuration (the original app ignores JSON exports broadly)
+!/src-tauri/tauri.conf.json
+!/src-tauri/capabilities/*.json
+/src-tauri/gen/schemas/
+/src-tauri/.tauri/

@@ -477,6 +477,7 @@ async function fetchMonth(lat, lng, year, month, prefsOverride){
   if(!json || !json.data || !Array.isArray(json.data)) throw new Error('AlAdhan returned an unexpected response');
 
   const mapped = json.data.map(day => ({
+    timezone: day.meta && day.meta.timezone,
     date: day.date.gregorian.date,       /* DD-MM-YYYY */
     weekday: day.date.gregorian.weekday.en,
     hijri: {
@@ -552,6 +553,7 @@ function computeLocalMonth(lat, lng, year, month, prefs){
     const date = new Date(year, month - 1, d, 12, 0, 0, 0);
     const pt = new adhan.PrayerTimes(coordinates, date, params);
     out.push({
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       date: _dateKey(date),
       weekday: date.toLocaleDateString('en-US', { weekday: 'long' }),
       hijri: _hijriMeta(date),

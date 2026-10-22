@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.13.8';
+const VERSION = 'v2.14.0';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
@@ -78,8 +78,8 @@ const APP_SHELL = [
   './js/state.js',
   './js/search.js',
   './js/vendor/adhan.js',
-  './js/prayer.js?v=20261022-release-2',
-  './js/prayer-widget.js?v=20261022-release-2',
+  './js/prayer.js?v=20261022-desktop-1',
+  './js/prayer-widget.js?v=20261022-desktop-1',
   './js/qibla.js',
   './js/location.js',
   './js/quotes.js',
@@ -93,7 +93,7 @@ const APP_SHELL = [
   './js/books.js',
   './js/offline-books.js',
   './js/offline-ui.js',
-  './js/reader.js?v=20261022-refine-4',
+  './js/reader.js?v=20261022-desktop-1',
   './js/vendor/embedpdf/engines/dist/index.js',
   './js/vendor/embedpdf/engines/dist/lib/pdfium/index.js',
   './js/vendor/embedpdf/engines/dist/lib/converters/index.js',
@@ -108,7 +108,7 @@ const APP_SHELL = [
 
   './js/views/cats.js',
   './js/views/home.js?v=20261022-language-5',
-  './js/views/practice.js?v=20261022-language-5',
+  './js/views/practice.js?v=20261022-desktop-1',
   './js/views/adkar.js',
   './js/views/search.js',
   './js/views/favs.js',
@@ -127,7 +127,7 @@ const APP_SHELL = [
   './js/views/tasbih.js?v=20261022-refine-4',
   './js/views/reader.js',
   './js/io.js',
-  './js/settings.js?v=20261022-pages-2',
+  './js/settings.js?v=20261022-desktop-1',
   './js/app.js?v=20261022-pages-2',
 
   './icons/icon.svg',

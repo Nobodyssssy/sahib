@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Sahib",
+  "version": "0.1.0",
+  "identifier": "com.sahib.companion",
+  "build": {
+    "beforeBuildCommand": "npm run desktop:prepare",
+    "beforeDevCommand": "npm run desktop:prepare",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Sahib · صاحب",
+        "url": "index.html",
+        "width": 1440,
+        "height": 940,
+        "minWidth": 800,
+        "minHeight": 600,
+        "visible": false,
+        "dragDropEnabled": false,
+        "useHttpsScheme": true,
+        "create": false
+      },
+      {
+        "label": "widget",
+        "title": "Sahib · Next prayer",
+        "url": "desktop-widget.html",
+        "width": 348,
+        "height": 178,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "useHttpsScheme": true,
+        "create": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost https:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/icon.ico",
+      "icons/128x128.png"
+    ],
+    "shortDescription": "Your daily Islamic companion",
+    "category": "Lifestyle",
+    "copyright": "Sahib contributors. Third-party recordings retain their reserved rights.",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": true,
+        "languages": [
+          "English",
+          "Arabic"
+        ]
+      }
+    }
+  }
+}

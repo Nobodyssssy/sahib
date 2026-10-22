@@ -850,11 +850,8 @@ async function importAdhanFile(kind, input){
 
 async function clearLocalAdhan(kind){
   try{
-    if(typeof db !== 'undefined' && db.meta && db.meta.delete){
-      await db.meta.delete(ADHAN_LOCAL_KEYS[kind]);
-    } else {
-      await store.setMeta(ADHAN_LOCAL_KEYS[kind], null);
-    }
+    // Clear through the shared store so its in-memory cache drops the Blob too.
+    await store.setMeta(ADHAN_LOCAL_KEYS[kind], null);
     const fallback = kind === 'fajr' ? 'fajr-balakong' : 'azhar';
     await savePrayerPrefs({ alerts: { audio: { [kind]: fallback } } });
     if(typeof stopPrayerAdhan === 'function') stopPrayerAdhan();
@@ -1037,7 +1034,7 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.13.8 · service worker v2.13.8<br>
+        <strong>Version:</strong> v2.14.0 · service worker v2.14.0<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
         Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>

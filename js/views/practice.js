@@ -85,6 +85,7 @@ const SahibPractice = (() => {
     }
     try { await store.setMeta(KEY, runtime.data); }
     catch (err) { console.warn('[practice] could not save state', err); toast('Could not save practice data', 'alert'); }
+    window.dispatchEvent(new Event('sahib:practicechange'));
   }
 
   function _category(id) {
@@ -1433,6 +1434,7 @@ const SahibPractice = (() => {
   }
 
   async function checkReminders() {
+    if(window.SahibDesktop?.available) return [];
     if (!runtime.ready || !runtime.data) return [];
     const now = new Date();
     if (_inQuietHours(now)) return [];
@@ -1468,6 +1470,29 @@ const SahibPractice = (() => {
     if (runtime.timer) return;
     runtime.timer = setInterval(() => { checkReminders(); }, 60000);
     setTimeout(() => { checkReminders(); }, 15000);
+  }
+
+  // Reuse the daybook's occurrence/completion rules for the native scheduler.
+  function nativeSchedule(days) {
+    const alerts=[],ar=window.SAHIB_I18N?.language==='ar';
+    if(!runtime.ready) return alerts;
+    for(const day of days){
+      const date=_pwDateFormat(day.date),key=_dateKey(date);
+      for(const practice of _enabled()){
+        if(practice.schedule?.type==='interval'||!_occursOn(practice,date)||_entryFor(practice.id,key)||runtime.data.snoozes[practice.id]>=key)continue;
+        let minutes=practice.relativeTo?_parseClock(day.timings[practice.relativeTo]):_parseClock(practice.reminderTime);
+        if(minutes==null)continue;
+        if(practice.relativeTo)minutes+=Number(practice.offsetMinutes||0);
+        minutes-=Number(practice.advanceMinutes||0);
+        const clock=_fmtClock(minutes),anchor=_pwEventDate(day.date,clock,practice.relativeTo?day.timezone:null);
+        if(!anchor)continue;
+        const rollover=Math.floor(minutes/1440);anchor.setTime(anchor.getTime()+rollover*86400000);
+        if(_inQuietHours(anchor)||anchor.getTime()<=Date.now())continue;
+        const title=ar?(practice.titleAr||practice.title):practice.title;
+        alerts.push({id:`practice:${practice.id}:${key}`,at:anchor.getTime(),title:ar?'صاحب · الورد اليومي':'Sahib · Daily practice',body:title,sound:'off',volume:0,notify:!!runtime.data.settings.notify});
+      }
+    }
+    return alerts;
   }
 
   async function _exportPractice() {
@@ -1599,6 +1624,7 @@ const SahibPractice = (() => {
     getPractice: _get,
     setTimings,
     checkReminders,
+    nativeSchedule,
     refresh: _refreshSurfaces,
     complete: _complete,
     undo: _undo,
