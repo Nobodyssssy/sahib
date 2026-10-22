@@ -117,3 +117,32 @@ desktop.ini
 *.json
 !package.json
 !assets/asma-audio/index.json
+# Private audio imports — not licensed for public redistribution
+.local-audio/
+
+# Historical design work retained locally, excluded from release source
+/sahib-redesign-reference/
+/DESIGN_STRATEGY.md
+/IMPLEMENTATION_PLAN.md
+/PROJECT_AUDIT.md
+/RESPONSIVE_STRATEGY.md
+/SKILLS_REVIEW.md
+/docs/*review-2026-10-22.md
+/docs/desktop-redesign-checkpoint-2026-10-22.md
+/assets/home/daily-rhythm.webp
+# Preserve dependency lockfiles
+!**/package-lock.json
+!**/yarn.lock
+!**/pnpm-lock.yaml
+# Future native build output
+/src-tauri/target/
+/src-tauri/gen/android/.gradle/
+/src-tauri/gen/android/**/build/
+*.log
+.env
+.env.*
+!.env.example
+
+/docs/*-2026-10-22.md
+/smoke.png
+/audio.png

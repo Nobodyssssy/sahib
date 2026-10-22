@@ -1,0 +1,166 @@
+/* Sahib illustrated homepage. Shared shell lives in garden-system.css. */
+.sahib-home{max-width:1900px;margin:auto;padding:0 24px 20px 16px;font:14px/1.5 var(--font-label);color:var(--garden-text)}
+.sahib-home *{box-sizing:border-box}
+.sahib-home button{font:inherit;cursor:pointer}
+.sahib-home button:disabled{opacity:.55;cursor:default}
+.sahib-home :is(button,a):focus-visible{outline:3px solid #b7954b;outline-offset:4px}
+.garden-toolbar{height:86px;display:flex;align-items:center;gap:16px}
+.garden-date{display:flex;flex-direction:column;flex-shrink:0;gap:1px;min-width:230px}
+.garden-date strong{font-size:14px;font-weight:500;color:var(--garden-text)}
+.garden-date>span{font:15px/1.5 Amiri,serif;text-align:left;color:var(--garden-muted)}
+.garden-search{margin-left:auto;display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:44px;width:clamp(220px,32vw,470px);color:var(--garden-muted);background:var(--garden-card);border:1px solid var(--garden-line);border-radius:12px;box-shadow:var(--garden-shadow);text-align:left}
+.garden-search span{font-size:12px}
+.garden-search .garden-search-hint{margin-left:auto;background:var(--garden-bg);padding:2px 5px;font-size:10px;border-radius:4px}
+.garden-location{display:flex;align-items:center;gap:10px;padding:8px 0;min-height:44px;max-width:220px;border:0;background:none;color:var(--garden-ink);text-align:left}
+.garden-location span{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.garden-location svg{flex-shrink:0}
+.garden-icon{display:grid;place-items:center;flex-shrink:0;width:40px;height:44px;border:0;background:none;color:var(--garden-ink)}
+.garden-grid{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:18px;align-items:start}
+.garden-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.garden-welcome{position:relative;min-height:252px;border-radius:15px;overflow:hidden;background:#f3ead5 url('../../assets/home/courtyard.webp') center/cover no-repeat}
+.garden-welcome-copy{position:relative;z-index:1;padding:31px 28px;max-width:48%;color:#113e2b}
+.garden-welcome h1{margin:0;font:600 clamp(30px,2.7vw,44px)/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.7px}
+.garden-greeting-ar{font:32px/1.6 Amiri,serif;text-align:left;margin-top:2px}
+.garden-welcome p{font-size:13px;line-height:1.7;margin:12px 0 0;max-width:33ch;color:#26382e}
+.garden-flourish{display:flex;align-items:center;gap:9px;margin-top:18px;width:164px;color:#52785f}
+.garden-flourish span{width:63px;height:1px;background:linear-gradient(90deg,transparent,#658267)}
+.garden-flourish span:last-child{transform:scaleX(-1)}
+.garden-prayer{border-radius:13px;padding:21px 24px 10px;background:radial-gradient(ellipse at 90% 0,#37644a44,transparent 65%),var(--garden-panel);color:#fff;overflow:hidden;position:relative;min-height:186px}
+.garden-prayer::before{content:'';position:absolute;width:150px;height:150px;left:-80px;top:20px;border:1px solid #d0bc7b24;transform:rotate(45deg);outline:15px double #d0bc7b15;border-radius:20%}
+.sahib-home #home-prayer-widget{position:relative;display:grid;grid-template-columns:230px minmax(0,1fr);grid-template-areas:'head foot' 'main times' 'period times';gap:0 24px;border:0;background:none;box-shadow:none;padding:0;margin:0;min-height:133px;color:#fff;border-radius:0;direction:ltr}
+.sahib-home #home-prayer-widget::before{display:none}
+.sahib-home #home-prayer-widget .pw-head{grid-area:head;display:flex;align-items:center;padding:0;margin:0 0 4px;min-height:0}
+.sahib-home #home-prayer-widget .pw-label{color:#d4c48f;font:14px var(--font-label);letter-spacing:0;text-transform:none}
+.sahib-home #home-prayer-widget :is(.pw-status,.pw-prayer-time,.pw-progress){display:none}
+.sahib-home #home-prayer-widget .pw-main{grid-area:main;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:0;margin:0}
+.sahib-home #home-prayer-widget .pw-main-name{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:8px}
+.sahib-home #home-prayer-widget .pw-prayer-name{order:0;font:500 33px/1.1 Georgia,serif;text-transform:none;letter-spacing:0;color:#fff}
+.sahib-home #home-prayer-widget .pw-prayer-ar{order:1;font:22px/1.3 Amiri,serif;color:#d5e1d5}
+.sahib-home #home-prayer-widget .pw-main-time{display:none}
+.sahib-home #home-prayer-widget .pw-countdown-block{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.sahib-home #home-prayer-widget .pw-countdown-label{font:11px var(--font-label);letter-spacing:0;text-transform:none;color:#c8d9c8;order:2}
+.sahib-home #home-prayer-widget .pw-countdown{display:flex;align-items:center;gap:3px;direction:ltr}
+.sahib-home #home-prayer-widget :is(.pw-countdown-unit,.pw-countdown-sep){min-width:0;padding:0;border:0;background:none;box-shadow:none;font:400 29px/1.3 var(--font-label);font-variant-numeric:tabular-nums;color:#fff;letter-spacing:0}
+.sahib-home #home-prayer-widget .pw-period{grid-area:period;color:#c8d9c8;font:11px/1.4 var(--font-label);margin:4px 0 0}
+.sahib-home #home-prayer-widget .pw-foot{grid-area:foot;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:0;border:0;font:10px var(--font-label);letter-spacing:0;color:#c8d9c8}
+.sahib-home #home-prayer-widget .pw-foot button{margin-left:auto;color:var(--garden-panel-text);min-height:36px;padding:7px 12px;border:1px solid #bed2bf66;border-radius:9px;font-size:12px;background:#ffffff08}
+.sahib-home #home-prayer-widget .pw-times{grid-area:times;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;align-items:end;margin:0;padding:0;border:0;background:none}
+.sahib-home #home-prayer-widget .pw-time-cell{position:relative;padding:5px 0 10px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;border-radius:0;color:#d5e0d2;min-width:0}
+.sahib-home #home-prayer-widget .pw-time-cell::before{content:'☀';font:27px/1 Georgia,serif;color:#d5c48d;opacity:.65;margin-bottom:3px}
+.sahib-home #home-prayer-widget .pw-time-cell[data-pw-cell="Isha"]::before,.sahib-home #home-prayer-widget .pw-time-cell[data-pw-cell="Fajr"]::before{content:'☾'}
+.sahib-home #home-prayer-widget .pw-time-cell::after{content:'';position:absolute;inset:auto 0 0;border-bottom:1px solid #c0d0b754}
+.sahib-home #home-prayer-widget .pw-time-cell.next::after{border-color:#dec98f;border-width:2px}
+.sahib-home #home-prayer-widget .pw-time-cell.next::before{opacity:1;color:#e3cf91}
+.sahib-home #home-prayer-widget .pw-time-cell span{font:11px var(--font-label);color:inherit}
+.sahib-home #home-prayer-widget .pw-time-cell strong{font:12px var(--font-label);font-variant-numeric:tabular-nums;color:inherit}
+.sahib-home #home-prayer-widget .pw-time-ar{display:none}
+.garden-timezone{text-align:right;font-size:10px;color:#c0d1bd;margin-top:9px}
+.sahib-home #home-prayer-widget:is(.is-empty,.is-loading){display:block;min-height:132px}
+.sahib-home #home-prayer-widget .pw-empty{display:flex;align-items:flex-start;text-align:left;padding:0;gap:6px}
+.sahib-home #home-prayer-widget .pw-empty-icon,.sahib-home #home-prayer-widget .pw-empty-times{display:none}
+.sahib-home #home-prayer-widget .pw-empty-title{font:500 27px/1.2 Georgia,serif;color:#fff}
+.sahib-home #home-prayer-widget .pw-empty-text{font-size:13px;line-height:1.5;color:#d0dfd0;max-width:none}
+.sahib-home #home-prayer-widget .pw-empty-actions{justify-content:flex-start;gap:9px;margin-top:9px}
+.sahib-home #home-prayer-widget .pw-empty-actions button{min-height:40px;border:1px solid #c7d4bc77;border-radius:8px;background:none;color:#fff;font-size:12px;padding:8px 14px}
+.sahib-home #home-prayer-widget .pw-empty-actions .btn-save{background:#eee6cb;color:#18422e;border-color:#eee6cb}
+.garden-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.garden-action{background:var(--garden-card);border:1px solid #ffffff45;border-radius:14px;box-shadow:var(--garden-shadow);padding:18px 15px 15px;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.garden-action-icon{display:grid;place-items:center;width:45px;height:45px;border-radius:13px;color:var(--garden-ink);background:var(--garden-soft);margin-bottom:11px}
+.garden-action h2{font-size:14px;font-weight:600;line-height:1.3;margin:0 0 5px;color:var(--garden-text)}
+.garden-action p{font-size:11px;line-height:1.4;color:var(--garden-muted);margin:0 0 9px;min-height:30px}
+.garden-action p[lang="ar"]{font:16px/1.4 Amiri,serif}
+.garden-action>button{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-top:auto;width:100%;padding:9px 10px;min-height:39px;background:var(--garden-green);color:var(--garden-on);border:0;border-radius:10px;font-size:11px}
+.garden-action>button svg,.garden-name-link svg,.garden-round-arrow svg{transform:scaleX(-1);flex-shrink:0}
+.garden-progress{display:flex;align-items:center;gap:7px;width:100%;margin:0 0 13px}
+.garden-progress progress{appearance:none;border:0;width:100%;height:5px;border-radius:5px;overflow:hidden;background:var(--garden-soft)}
+.garden-progress progress::-webkit-progress-bar{background:var(--garden-soft)}
+.garden-progress progress::-webkit-progress-value{background:var(--garden-green);border-radius:5px}
+.garden-progress span{font-size:10px;white-space:nowrap;color:var(--garden-muted)}
+.garden-discover{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;align-items:stretch}
+.garden-discover>section,.garden-rail>section{min-width:0;border-radius:14px;background:var(--garden-card);box-shadow:var(--garden-shadow)}
+.garden-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 16px 9px}
+.garden-section-title h2{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;line-height:1.4;color:var(--garden-text);margin:0}
+.garden-section-title h2 svg{color:var(--garden-ink);flex-shrink:0}
+.garden-section-title>button{border:0;background:none;color:var(--garden-ink);padding:4px 0;min-height:32px;font-size:10px;white-space:nowrap}
+.garden-section-title>span{font:20px Amiri,serif;color:var(--garden-muted)}
+.garden-feature-body{display:flex;flex-direction:column;align-items:stretch;position:relative;text-align:left;min-height:217px;padding:16px 20px 46px;border:0;border-radius:0 0 14px 14px;background:linear-gradient(90deg,#faf7ee 52%,#faf7ee77),url('../../assets/home/courtyard.webp') 80% center/auto 100%;color:#153f2c;width:100%}
+.garden-feature-ar{font:25px/1.7 Amiri,serif;text-align:right}
+.garden-feature-source{font:13px/1.7 Amiri,serif;margin-top:9px;text-align:right;color:#5c6d5d}
+.garden-round-arrow{position:absolute;bottom:12px;right:15px;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#fff9;color:var(--garden-panel)}
+.garden-name-body{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-height:217px;padding:14px 18px 17px;border:0;background:linear-gradient(90deg,var(--garden-card) 48%,transparent),url('../../assets/home/courtyard.webp') 70% center/auto 100%;border-radius:0 0 14px 14px;color:var(--garden-text);width:100%}
+.garden-name-body>span[lang="ar"]{font:35px/1.8 Amiri,serif;color:var(--garden-ink)}
+.garden-name-body strong{font-size:13px;margin:5px 0}
+.garden-name-body small{font-size:11px;color:var(--garden-muted)}
+.garden-name-link{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:18px;font-size:10px;color:var(--garden-ink)}
+.garden-books{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:9px 14px 13px}
+.garden-book{display:flex;flex-direction:column;gap:8px;padding:0;border:0;background:none;text-align:left;color:var(--garden-text);min-width:0}
+.garden-book-cover{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:116px;padding:14px 7px 9px;border:1px solid #a08b5599;border-left:4px solid #173527;border-radius:2px 5px 5px 2px;background:#30583d;color:#ecddb3;box-shadow:3px 4px 6px #1d2b181a}
+.garden-book-cover::before{content:'';position:absolute;inset:5px;border:1px solid #c2af7188;pointer-events:none}
+.garden-book-cover>span{font:13px/1.45 Amiri,serif;text-align:center;position:relative}
+.garden-book-cover-1{background:#e5d9b9;color:#5a4a28;border-left-color:#b4a17a}
+.garden-book-cover-2{background:#183c30;border-left-color:#10251d}
+.garden-book strong{font:500 9px/1.5 var(--font-label);overflow-wrap:anywhere}
+.garden-continue{border-top:1px solid var(--garden-line);margin:0 14px;padding:10px 0}
+.garden-continue .desk-micro-head{display:none}
+.garden-continue .desk-side-empty{margin:0;color:var(--garden-muted);font-size:10px;line-height:1.6}
+.garden-continue .desk-text-action{padding:0;border:0;background:none;color:var(--garden-ink);font-size:10px;text-decoration:underline;min-height:24px}
+.garden-continue .desk-continue{min-height:42px;color:var(--garden-ink);font-size:11px}
+.garden-rail{display:flex;flex-direction:column;gap:14px;min-width:0}
+.garden-reading{padding:0 5px 16px}
+.garden-reading .garden-section-title{padding-bottom:5px}
+.garden-reading .home-quote-card{border:1px solid #c3b88f88;outline:1px solid #c3b88f33;outline-offset:5px;margin:14px 18px;padding:15px 14px;background:none;box-shadow:none;border-radius:9px;color:var(--garden-text);position:relative;cursor:default}
+.garden-reading .home-quote-card::before{content:'◇';position:absolute;top:-11px;left:calc(50% - 8px);width:16px;height:20px;display:grid;place-items:center;background:var(--garden-card);color:#82936f;font-size:16px}
+.garden-reading .quote-header{position:static;display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:none;min-height:30px;padding:0;color:var(--garden-muted)}
+.garden-reading .quote-badge{font:10px var(--font-label);letter-spacing:0;color:var(--garden-muted);text-transform:none}
+.garden-reading .quote-badge-icon{display:none}
+.garden-reading .quote-page{display:block}
+.garden-reading .quote-text{font:29px/1.95 Amiri,serif;letter-spacing:0;color:var(--garden-ink);margin:15px 0;text-align:center;overflow-wrap:break-word}
+.garden-reading .quote-margin{display:block;padding:0;border:0}
+.garden-reading .quote-margin .quote-ref{font:14px/1.6 Amiri,serif;color:var(--garden-muted);padding:0;border:0;text-align:center}
+.garden-reading .home-reading-preview{display:none}
+.garden-reading .quote-teaser{font:11px var(--font-label);display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:38px;margin:10px 0 0;padding:0;border:0;background:none;color:var(--garden-ink)}
+.garden-reading .quote-teaser svg{transform:scaleX(-1)}
+.garden-reading .quote-tafsir-wrap{border-color:var(--garden-line)}
+.garden-reading .quote-tafsir-body{font-size:14px;line-height:1.8;color:var(--garden-text)}
+.garden-reading .quote-lang-btn{min-width:38px;min-height:36px;color:var(--garden-ink);font-size:12px}
+.garden-reading .quote-lang-btn.on{background:var(--garden-green);color:var(--garden-bg)}
+.garden-reading .quote-link{font-size:11px;color:var(--garden-ink);min-height:36px}
+.garden-daybook{padding-bottom:14px}
+.garden-daybook .desk-section-head{display:none}
+.garden-daybook .desk-side-block{padding:0 16px;border:0;background:none}
+.garden-daybook .desk-side-empty{font-size:12px;line-height:1.7;color:var(--garden-muted);margin:5px 0 12px}
+.garden-daybook .desk-primary{min-height:40px;display:flex;align-items:center;gap:8px;background:var(--garden-soft);color:var(--garden-ink);border:0;border-radius:9px;padding:9px 11px;font-size:11px}
+.garden-daybook .desk-practice-row{display:flex;align-items:center;gap:10px;padding:13px 0;min-height:62px;border-color:var(--garden-line)}
+.garden-daybook .desk-practice-copy{display:flex;flex:1;flex-direction:column;align-items:flex-start;min-width:0;border:0;background:none;padding:0;text-align:left}
+.garden-daybook .desk-practice-title{display:flex;flex-direction:column;font:12px/1.5 var(--font-label);color:var(--garden-text)}
+.garden-daybook .desk-practice-title>span[lang="ar"]{font:16px Amiri,serif;order:1;color:var(--garden-muted)}
+.garden-daybook .desk-practice-title>span:last-child{font:inherit;color:inherit}
+.garden-daybook .desk-practice-time{font:10px var(--font-label);text-transform:none;letter-spacing:0;color:var(--garden-muted);margin-top:5px}
+.garden-daybook .desk-practice-colhead{display:none}
+.garden-daybook .desk-practice-check{display:flex;flex-direction:column;align-items:center;gap:4px}
+.garden-daybook .desk-practice-done{width:32px;height:32px;min-width:32px;border:1px solid #b9c3b6;border-radius:50%;display:grid;place-items:center;background:none;color:var(--garden-ink);padding:0}
+.garden-daybook .desk-practice-done.is-done{background:#285c43;color:#fff}
+.garden-daybook .desk-practice-undo{min-height:26px;border:0;background:none;font-size:10px;color:var(--garden-ink)}
+.garden-calendar-note{padding:18px;text-align:left}
+.garden-calendar-note>span{display:block;font-size:11px;color:var(--garden-muted);margin-bottom:8px}
+.garden-calendar-note button{padding:0;display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--garden-ink);min-height:36px;font:18px Amiri,serif}
+.garden-footer{display:flex;align-items:center;gap:7px;color:var(--garden-muted);font-size:10px;padding:5px 3px}
+.home-mobile-nav{display:none}
+@media(min-width:1700px){.garden-welcome{min-height:285px}.garden-action{padding:21px}.garden-action h2{font-size:16px}.garden-action p{font-size:12px}.garden-action>button{font-size:12px}.garden-grid{grid-template-columns:minmax(0,1fr) 310px}.garden-prayer{padding-top:25px;padding-bottom:15px}}
+@media(max-width:1350px){.garden-search{width:220px}.garden-date{min-width:200px}.garden-toolbar{gap:10px}.garden-grid{grid-template-columns:minmax(0,1fr) 260px;gap:14px}.garden-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.garden-discover{grid-template-columns:1fr 1fr}.garden-library{grid-column:1/-1}.garden-books{grid-template-columns:repeat(3,90px);justify-content:start}.garden-book-cover{min-height:125px}.garden-welcome-copy{max-width:60%}.sahib-home #home-prayer-widget{grid-template-columns:175px 1fr;gap:0 10px}.sahib-home #home-prayer-widget .pw-foot [data-pw="fresh"]{display:none}}
+@media(max-width:1100px){.sahib-home{padding-right:16px;padding-left:6px}.garden-grid{grid-template-columns:minmax(0,1fr)}.garden-rail{display:grid;grid-template-columns:1fr 1fr}.garden-search{width:auto;flex:1}.garden-search-hint{display:none}.garden-location{max-width:150px}.garden-date{min-width:180px}.garden-date strong{font-size:12px}.garden-discover{grid-template-columns:1.2fr 1fr 1fr}.garden-library{grid-column:auto}.garden-books{grid-template-columns:repeat(3,minmax(0,1fr))}.garden-welcome{min-height:245px}.garden-actions{grid-template-columns:repeat(5,minmax(0,1fr))}.garden-action{padding:15px 11px}.garden-action>button{font-size:10px}.garden-action h2{font-size:12px}}
+@media(max-width:820px){.sahib-home{padding:0 18px 90px}.garden-toolbar{height:auto;min-height:82px;flex-wrap:wrap;padding:14px 0;gap:8px}.garden-date{flex:1;min-width:170px}.garden-date strong{font-size:12px}.garden-location{max-width:145px}.garden-search{order:5;flex-basis:100%;width:100%;min-height:42px;padding:9px 12px}.garden-icon{width:30px;height:36px}.garden-grid{gap:16px}.garden-welcome-copy{max-width:58%;padding:25px 22px}.garden-welcome{min-height:230px}.garden-welcome h1{font-size:34px}.garden-welcome p{font-size:12px}.garden-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.garden-discover{grid-template-columns:1fr 1fr}.garden-library{grid-column:1/-1}.garden-books{grid-template-columns:repeat(3,90px)}.home-mobile-nav{position:fixed;inset:auto 0 0;z-index:110;display:grid;grid-template-columns:repeat(4,1fr);padding:6px 12px max(6px,env(safe-area-inset-bottom));border-top:1px solid var(--garden-line);background:var(--garden-card)}.home-mobile-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:50px;border:0;background:none;color:var(--garden-muted);font-size:11px}.home-mobile-nav button[aria-current]{color:var(--garden-ink);font-weight:600}body:has(#view-home.active) .scroll-top-btn{bottom:83px;background:var(--garden-card);color:var(--garden-ink)}}
+@media(max-width:540px){.sahib-home{padding:0 14px 88px}.garden-toolbar{gap:5px}.garden-date{min-width:175px}.garden-location{order:4;max-width:none;width:100%;min-height:32px;padding:0}.garden-search{display:none}.garden-welcome{min-height:220px;background-position:58% center}.garden-welcome-copy{padding:23px 18px;max-width:69%;background:linear-gradient(90deg,#faf4e5ee 60%,transparent)}.garden-welcome h1{font-size:31px}.garden-greeting-ar{font-size:27px}.garden-welcome p{font-size:12px;line-height:1.6}.garden-flourish{margin-top:14px;width:130px}.garden-prayer{padding:18px 17px 10px;min-height:0}.sahib-home #home-prayer-widget{grid-template-columns:1fr;grid-template-areas:'head' 'main' 'period' 'times' 'foot';gap:6px;min-height:0}.sahib-home #home-prayer-widget .pw-main{flex-direction:row;justify-content:space-between;align-items:center;gap:8px}.sahib-home #home-prayer-widget .pw-main-name{flex-direction:column;gap:0}.sahib-home #home-prayer-widget .pw-prayer-name{font-size:30px}.sahib-home #home-prayer-widget .pw-prayer-ar{font-size:19px}.sahib-home #home-prayer-widget .pw-countdown-block{align-items:flex-end}.sahib-home #home-prayer-widget :is(.pw-countdown-unit,.pw-countdown-sep){font-size:25px}.sahib-home #home-prayer-widget .pw-time-cell::before{font-size:22px}.sahib-home #home-prayer-widget .pw-times{margin-top:7px;gap:0}.sahib-home #home-prayer-widget .pw-time-cell span{font-size:10px}.sahib-home #home-prayer-widget .pw-time-cell strong{font-size:11px}.sahib-home #home-prayer-widget .pw-foot{margin:4px 0 0}.sahib-home #home-prayer-widget .pw-foot [data-pw="fresh"]{display:block;font-size:9px}.sahib-home #home-prayer-widget .pw-foot button{min-height:36px;font-size:11px}.garden-timezone{font-size:9px}.garden-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.garden-action{padding:15px}.garden-action h2{font-size:14px}.garden-action>button{font-size:11px;min-height:42px}.garden-action:last-child{grid-column:1/-1;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:0 12px}.garden-action:last-child .garden-action-icon{grid-row:1/3;width:40px;height:40px;margin:0}.garden-action:last-child h2{margin-bottom:3px}.garden-action:last-child p{grid-column:2;margin:0;min-height:0}.garden-action:last-child>button{grid-column:3;grid-row:1/3;margin:0;width:auto}.garden-discover{grid-template-columns:1fr}.garden-library{grid-column:auto}.garden-feature-body{min-height:190px}.garden-name-body{min-height:190px;background-position:85% center}.garden-books{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:10px 18px 18px}.garden-book-cover{min-height:150px;padding:18px 10px 12px}.garden-book-cover>span{font-size:16px}.garden-book strong{font-size:10px}.garden-rail{display:flex;flex-direction:column}.garden-reading .quote-text{font-size:30px}.garden-reading .home-quote-card{margin:16px 22px}.garden-daybook .desk-practice-done{width:44px;height:44px}.garden-section-title>button{min-height:44px}.garden-daybook .desk-practice-undo{min-height:36px}.garden-footer{font-size:10px;justify-content:center}.garden-date>span{font-size:14px}}
+@media(prefers-reduced-motion:reduce){body:has(#view-home.active) .view,.sahib-home *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Final legibility and touch sizing. */
+body:has(#view-home.active) .side-label{font-size:14px}
+.garden-action h2{font-size:15px}
+.garden-action>button{font-size:12px;min-height:42px}
+.garden-section-title h2{font-size:13px}
+.garden-section-title>button{font-size:11px}
+@media(max-width:540px){.garden-action>button{font-size:11px}.garden-date strong{font-size:12px}}
+/* Keep the daily overview within a comfortable desktop scan. */
+@media(min-width:1101px){.garden-welcome{min-height:230px}.garden-welcome-copy{padding-top:26px;padding-bottom:24px}.garden-prayer{padding-top:16px}.sahib-home #home-prayer-widget .pw-foot{margin-bottom:0}.garden-action{padding-top:15px;padding-bottom:14px}.garden-action p{min-height:24px}.garden-action-icon{margin-bottom:9px}}
+
+@media(max-width:820px){.garden-icon{width:44px;height:44px}.garden-location{min-height:44px}.garden-action>button{min-height:44px}.garden-reading .quote-header,.garden-reading .quote-link{min-height:44px}.garden-reading .quote-lang-btn{min-width:44px;min-height:44px}.garden-daybook .desk-practice-undo{min-height:44px}}

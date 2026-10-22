@@ -112,7 +112,7 @@ function renderAsmaGrid(){
 function asmaCardHTML(n){
   const isMemo = isMemorized(n.id);
   const display = _asmaLang === 'ar' ? n.ar : n.transliteration;
-  const sub = _asmaLang === 'ar' ? n.transliteration : n.meaningEn;
+  const sub = _asmaLang === 'ar' ? n.tafsirAr : n.meaningEn;
 
   return `<div class="asma-card ${isMemo?'memo':''}" onclick="openAsmaDetail(${n.id})">
     <div class="asma-card-num">${n.id}</div>
@@ -278,7 +278,7 @@ function renderAsmaDetail(n, lang){
     <div class="asma-detail-hero">
       <div class="asma-detail-ar">${n.ar}</div>
       <div class="asma-detail-translit" dir="ltr">${esc(n.transliteration)}</div>
-      <div class="asma-detail-meaning" dir="ltr">${esc(n.meaningEn)}</div>
+      <div class="asma-detail-meaning" dir="ltr">${esc((_asmaLang==='ar')?n.tafsirAr:n.meaningEn)}</div>
       <button type="button" id="asma-audio-btn" class="asma-audio-btn" data-asma-id="${n.id}" onclick="toggleAsmaAudio(${n.id})" aria-label="${ar ? 'استمع' : 'Play audio'}">
         ${icon('play', 16)} <span>${ar ? 'استمع' : 'Play'}</span>
       </button>
@@ -539,12 +539,12 @@ function renderFlashcard(){
   if(isM2N){
     front = `
       <div class="flash-front-label">${ar ? 'المعنى' : 'Meaning'}</div>
-      <div class="flash-front-meaning">${esc(n.meaningEn)}</div>
+      <div class="flash-front-meaning">${esc((_asmaLang==='ar')?n.tafsirAr:n.meaningEn)}</div>
     `;
   } else {
     front = `
       <div class="flash-front-ar">${n.ar}</div>
-      <div class="flash-front-translit">${esc(n.transliteration)}</div>
+      ${ar?'':`<div class="flash-front-translit">${esc(n.transliteration)}</div>`}
     `;
   }
 
@@ -554,12 +554,12 @@ function renderFlashcard(){
       back = `
         <div class="flash-back-divider"></div>
         <div class="flash-back-ar">${n.ar}</div>
-        <div class="flash-back-translit">${esc(n.transliteration)}</div>
+        ${ar?'':`<div class="flash-back-translit">${esc(n.transliteration)}</div>`}
       `;
     } else {
       back = `
         <div class="flash-back-divider"></div>
-        <div class="flash-back-meaning">${esc(n.meaningEn)}</div>
+        <div class="flash-back-meaning">${esc((_asmaLang==='ar')?n.tafsirAr:n.meaningEn)}</div>
         <div class="flash-back-tafsir ${ar?'ar':'en'}">
           ${ar ? n.tafsirAr : n.tafsirEn}
         </div>

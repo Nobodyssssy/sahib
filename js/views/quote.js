@@ -98,7 +98,9 @@ function checkQuoteSlotChange(){
   const slot = getCurrentTimeSlot();
   if(slot !== _lastSlot){
     _lastSlot = slot;
-    renderQuoteCard();
+    const homeCard = document.querySelector('#view-home.active .home-quote-card');
+    if(homeCard && typeof renderHomeQuoteHTML === 'function') homeCard.outerHTML = renderHomeQuoteHTML();
+    else renderQuoteCard();
   }
 }
 

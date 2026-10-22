@@ -110,11 +110,11 @@ function renderHijriCalendar(){
       dotHTML = `<span class="hijri-event-dot" style="background:${colorVar}"></span>`;
     }
 
-    return `<div class="${classes}" onclick="onHijriDayClick(${idx})">
+    return `<button type="button" class="${classes}" onclick="onHijriDayClick(${idx})" aria-label="${d.day} ${esc(monthName)} ${grid.year}">
       <div class="hijri-day-num">${d.day}</div>
       <div class="hijri-day-greg">${d.gregorianDay}</div>
       ${dotHTML}
-    </div>`;
+    </button>`;
   }).join('');
 
   const upcoming = _getUpcomingListForView(grid);

@@ -1,0 +1,32 @@
+/* Shared garden design tokens. Palette sources are recorded in docs/theme-palettes.md. */
+:root {
+  --color-background:var(--raw-bg); --color-surface:var(--raw-surface); --color-surface-raised:var(--raw-surface-raised); --color-surface-sunken:var(--raw-surface-sunken);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+  --tracking-label:.025em;--type-page:clamp(28px,3vw,40px);
+  --garden-bg:var(--color-background);--garden-card:var(--color-surface-raised);--garden-ink:var(--color-text-primary);--garden-text:var(--color-text-primary);--garden-muted:var(--color-text-secondary);--garden-line:var(--color-border);
+  --garden-green:var(--color-accent);--garden-on:var(--color-on-accent);--garden-soft:var(--color-accent-subtle);--garden-shadow:0 5px 24px color-mix(in srgb,var(--raw-text-primary) 5%,transparent);
+  --garden-panel:color-mix(in srgb,var(--raw-accent) 30%,#11251d);--garden-panel-text:#f7faf7;--garden-panel-muted:#d3dfd3;--garden-panel-accent:#e5d3a0;
+}
+[data-mode="light"] { --color-accent:color-mix(in srgb,var(--raw-accent) 68%,#15131d);--color-accent-text:color-mix(in srgb,var(--raw-accent) 55%,var(--raw-text-primary));--color-on-accent:#fff; }
+[data-mode="dark"] { --garden-panel:color-mix(in srgb,var(--raw-accent) 12%,var(--raw-bg));--garden-panel-text:var(--raw-text-primary);--garden-panel-muted:var(--color-text-secondary);--garden-panel-accent:var(--raw-accent); }
+[data-theme="sahib"][data-mode="light"] {
+ --raw-bg:#f5f3ed;--raw-bg-alt:#efece4;--raw-surface:#faf8f1;--raw-surface-raised:#fffdf8;--raw-surface-sunken:#eeeadf;
+ --raw-text-primary:#143c2e;--raw-text-secondary:#646d64;--raw-text-muted:#697366;
+ --raw-border:#e6e4db;--raw-border-subtle:#eeece4;--raw-border-strong:#bdc6b5;
+ --accent-green:#48745a;--accent-gold:#92722d;--accent-peach:#aa592f;--accent-red:#9b3f50;--accent-mauve:#78517e;--accent-blue:#376887;--accent-teal:#3d796f;--accent-pink:#a24f70;--accent-sky:#3c7a91;
+ --garden-panel:#174832;
+}
+[data-theme="sahib"][data-mode="light"][data-accent="green"] {--color-accent:#48745a;--color-accent-text:#28533c}
+[data-theme="sahib"][data-mode="dark"] {--raw-bg:#15201b;--raw-surface:#1a2820;--raw-surface-raised:#1e2c24;--raw-text-primary:#d8e7d8;--raw-text-secondary:#b0bdae;--raw-border:#36483b;--accent-green:#9ac2a4}
+[data-theme="catppuccin"][data-mode="light"] {--raw-surface:#e6e9ef;--raw-surface-raised:#eff1f5;--accent-gold:#df8e1d;--accent-peach:#fe640b;--accent-red:#d20f39;--accent-mauve:#8839ef;--accent-blue:#1e66f5;--accent-teal:#179299;--accent-green:#40a02b;--accent-pink:#ea76cb;--accent-sky:#04a5e5}
+[data-theme="catppuccin"][data-mode="dark"] {--raw-surface:#181825;--raw-surface-raised:#242436;--accent-sky:#89dceb}
+[data-theme="dracula"][data-mode="dark"] {--raw-surface:#303240;--raw-surface-raised:#343646;--accent-red:#ff5555;--raw-text-secondary:#c9c9d6}
+[data-theme="dracula"][data-mode="light"] {--raw-surface:#f5f0df;--raw-surface-raised:#fffbeb;--accent-red:#cb3a2a;--accent-green:#14710a;--accent-mauve:#644ac9;--accent-pink:#a3144d;--accent-teal:#036a96}
+[data-theme="rose-pine"][data-mode="dark"] {--raw-surface:#1f1d2e;--raw-surface-raised:#26233a;--accent-blue:#31748f;--raw-text-secondary:#c0bdd4;--raw-success:#9ccfd8}
+[data-theme="rose-pine"][data-mode="light"] {--raw-surface:#f2e9e1;--raw-surface-raised:#fffaf3;--accent-gold:#ea9d34;--accent-red:#b4637a;--accent-pink:#d7827e;--accent-blue:#286983;--accent-teal:#56949f;--accent-mauve:#907aa9}
+[data-theme="rose-pine"][data-mode="dark"][data-accent="blue"] {--color-on-accent:#fff}
+[data-theme="aura"][data-mode="dark"] {--raw-bg:#15141b;--raw-surface:#1c1b22;--raw-surface-raised:#23212b;--accent-mauve:#a277ff;--accent-teal:#61ffca;--accent-gold:#ffca85;--accent-red:#ff6767;--accent-pink:#f694ff;--accent-sky:#82e2ff}
+[data-theme="aura"][data-mode="light"] {--accent-mauve:#7b3ed4;--accent-teal:#0e7c6b;--accent-gold:#b07300;--accent-red:#c21f43;--accent-pink:#b81a6b;--accent-sky:#0369a1}
+[data-theme="tokyo-night"][data-mode="dark"] {--raw-surface:#1f2335;--raw-surface-raised:#24283b;--raw-text-secondary:#a9b1d6;--accent-blue:#7aa2f7;--accent-mauve:#bb9af7;--accent-sky:#7dcfff;--accent-teal:#73daca;--accent-green:#9ece6a;--accent-gold:#e0af68;--accent-peach:#ff9e64;--accent-red:#f7768e}
+[data-theme="tokyo-night"][data-mode="light"] {--raw-surface:#d5d6db;--raw-surface-raised:#e9e9ed;--accent-blue:#2e7de9;--accent-mauve:#9854f1;--accent-sky:#007197;--accent-teal:#118c74;--accent-green:#587539;--accent-gold:#8c6c3e;--accent-peach:#b15c00;--accent-red:#f52a65}
+[data-theme="rose-pine"][data-mode="light"][data-accent="gold"]{--color-accent:color-mix(in srgb,var(--raw-accent) 62%,#15131d)}

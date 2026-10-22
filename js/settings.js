@@ -72,14 +72,14 @@ function updateSettingsUI(){
   const state = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.state : null;
   if(!state) return;
 
-  document.querySelectorAll('[data-theme-option]').forEach(el =>
-    el.classList.toggle('active', el.getAttribute('data-theme-option') === state.theme));
-  document.querySelectorAll('[data-mode-option]').forEach(el =>
-    el.classList.toggle('active', el.getAttribute('data-mode-option') === state.mode));
-  document.querySelectorAll('[data-accent-option]').forEach(el =>
-    el.classList.toggle('active', el.getAttribute('data-accent-option') === state.accent));
-  document.querySelectorAll('[data-font-option]').forEach(el =>
-    el.classList.toggle('active', el.getAttribute('data-font-option') === state.font));
+  for(const [key, value] of Object.entries({theme:state.theme, mode:state.mode, accent:state.accent, font:state.font})){
+    document.querySelectorAll(`[data-${key}-option]`).forEach(el => {
+      const on = el.getAttribute(`data-${key}-option`) === value;
+      el.classList.toggle('active', on);
+      el.setAttribute('aria-pressed', String(on));
+    });
+  }
+  document.querySelectorAll('[data-theme-font]').forEach(el=>{const on=document.documentElement.dataset.fontSource==='theme';el.classList.toggle('active',on);el.setAttribute('aria-pressed',String(on));});
   document.querySelectorAll('[data-sidebar-position-option]').forEach(el => {
     const on = el.getAttribute('data-sidebar-position-option') === state.sidebarPosition;
     el.classList.toggle('active', on);
@@ -103,6 +103,7 @@ async function renderSettingsBody(){
     html = `<div class="settings-note">Something went wrong while loading these settings: ${esc(err.message)}</div>`;
   }
   body.innerHTML = html;
+  updateSettingsUI();
   body.removeAttribute('aria-busy');
   if(typeof injectHeaderIcons === 'function') setTimeout(() => injectHeaderIcons(), 0);
   if(_settingsTab === 'data') _hydrateStorageInfo();
@@ -131,6 +132,7 @@ function _appearanceHTML(){
   const fonts = (typeof SAHIB_THEME !== 'undefined') ? SAHIB_THEME.FONTS : [];
 
   return `
+    <div class="settings-section"><div class="settings-section-title">Interface language</div><div class="segmented"><button data-app-language="en" onclick="SAHIB_I18N.setLanguage('en')">English</button><button data-app-language="ar" onclick="SAHIB_I18N.setLanguage('ar')">العربية</button></div></div>
     <div class="settings-section">
       <div class="settings-section-title">Theme family</div>
       <div class="theme-grid">
@@ -164,7 +166,7 @@ function _appearanceHTML(){
             <span>${esc(a.label)}</span>
           </button>`).join('')}
       </div>
-      <div class="settings-section-desc">Nine accents tuned for this theme family. Switching family keeps the accent role and re-inks it from that family’s palette.</div>
+      <div class="settings-section-desc">Accents come from this theme’s own palette. Sahib remembers your choice for each theme.</div>
     </div>
 
     <div class="settings-section">
@@ -185,12 +187,12 @@ function _appearanceHTML(){
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">Typeface</div>
+      <div class="settings-section-title">Typeface</div><button class="btn-cancel" onclick="setFontOption('theme')" data-theme-font>Use theme font</button>
       <div class="font-grid">
         ${fonts.map(f => `
           <button type="button" class="font-option ${state.font === f.id ? 'active' : ''}" data-font-option="${f.id}" onclick="setFontOption('${f.id}')">
-            <span class="font-sample">صاحب Aa</span>
-            <span>${esc(f.label)}</span>
+            <span class="font-sample" style="font-family:'${esc(f.label)}',Tajawal,sans-serif">صاحب Aa</span>
+            <span>${esc(f.label)}</span><small>${esc(f.hint)}</small>
           </button>`).join('')}
       </div>
       <div class="settings-note">
@@ -203,7 +205,7 @@ function _appearanceHTML(){
       <div class="settings-row">
         <div class="settings-row-info">
           <div class="settings-row-title">Reset appearance</div>
-          <div class="settings-row-desc">Catppuccin · dark · gold · Tajawal</div>
+          <div class="settings-row-desc">Sahib · light · sage · Tajawal</div>
         </div>
         <div class="settings-row-actions">
           <button type="button" class="btn-cancel" onclick="resetAppearanceSettings()">Reset</button>
@@ -212,9 +214,9 @@ function _appearanceHTML(){
     </div>`;
 }
 
-function setThemeFamily(id){
+async function setThemeFamily(id){
   if(typeof SAHIB_THEME === 'undefined') return;
-  SAHIB_THEME.setTheme(id);
+  await SAHIB_THEME.setTheme(id);
   renderSettingsBody();
 }
 
@@ -250,11 +252,11 @@ async function toggleSidebarCollapseOption(){
 
 async function resetAppearanceSettings(){
   if(typeof SAHIB_THEME === 'undefined') return;
-  await SAHIB_THEME.setTheme('catppuccin');
-  await SAHIB_THEME.setMode('dark');
-  await SAHIB_THEME.setAccent('gold');
-  await SAHIB_THEME.setFont('tajawal');
-  await SAHIB_THEME.setSidebarPosition('right');
+  await SAHIB_THEME.setTheme('sahib');
+  await SAHIB_THEME.setMode('light');
+  await SAHIB_THEME.setAccent('green');
+  await SAHIB_THEME.setFont('theme');
+  await SAHIB_THEME.setSidebarPosition('left');
   await SAHIB_THEME.setSidebarCollapsed(false);
   updateSettingsUI();
   toast('Appearance reset', 'check');
@@ -685,7 +687,7 @@ async function _alertsHTML(){
             <select class="fse" id="adhan-standard-select" onchange="setAdhanSource('standard', this.value)">
               ${_adhanOptionsHTML('standard', standardSelected, localStandard)}
             </select>
-            <div class="adhan-file-meta">${localStandard ? `${esc(localStandard.name)} · ${_audioSize(localStandard.size)} · ${_audioDuration(localStandard.duration)}` : 'Bundled CC0 field recordings. No network needed.'}</div>
+            <div class="adhan-file-meta">${localStandard ? `${esc(localStandard.name)} · ${_audioSize(localStandard.size)} · ${_audioDuration(localStandard.duration)}` : 'Bundled recordings with individual rights notices. Available offline.'}</div>
             <div class="adhan-file-actions">
               <label class="io-btn adhan-file-label">
                 <span class="btn-icon" data-icon="upload"></span> Choose local file
@@ -864,7 +866,7 @@ async function clearLocalAdhan(kind){
 }
 
 async function setAdhanSource(kind, value){
-  const allowed = kind === 'fajr' ? ['fajr-balakong', 'local'] : ['azhar', 'quseir', 'local'];
+  const allowed = kind === 'fajr' ? ['fajr-balakong', 'qatami-fajr', 'local'] : ['azhar', 'quseir', 'qatami', 'local'];
   const next = allowed.includes(value) ? value : allowed[0];
   await savePrayerPrefs({ alerts: { audio: { [kind]: next } } });
   renderSettingsBody();
@@ -1035,7 +1037,7 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.10.70 · service worker v2.10.70<br>
+        <strong>Version:</strong> v2.13.6 · service worker v2.13.6<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
         Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>
@@ -1048,14 +1050,14 @@ function _aboutHTML(){
         <strong>Prayer times:</strong> <a href="https://aladhan.com" target="_blank" rel="noopener">AlAdhan API</a> by default; offline calculation uses
         <a href="https://github.com/batoulapps/adhan-js" target="_blank" rel="noopener">Adhan.js</a> (MIT, © Batoul Apps).<br>
         <strong>Prayer feature study:</strong> <a href="https://github.com/Khiro95/Awqat-Salaat" target="_blank" rel="noopener">Awqat Salaat</a> by Khiro95 (MIT, © 2023 Khiro) —
-        used as a behavioural reference for reminders, CSV import and per-prayer adjustments. No Awqat Salaat code or audio assets are bundled.<br>
+        used as a behavioural reference for reminders, CSV import and per-prayer adjustments. No Awqat Salaat application code is bundled. The two Nasser Al-Qatami recordings are sourced from its repository with separate audio notices.<br>
         <strong>Adhan recordings:</strong>
         <a href="https://freesound.org/people/AhmadAiuby/sounds/683120/" target="_blank" rel="noopener">Al-Azhar Park, Cairo</a> and
         <a href="https://freesound.org/people/AhmadAiuby/sounds/555065/" target="_blank" rel="noopener">Quseir by the sea</a> by Ahmad Aiuby;
         <a href="https://freesound.org/people/aridtrax/sounds/863861/" target="_blank" rel="noopener">Fajr, Balakong</a> by aridtrax.
-        All three are CC0 1.0 public-domain recordings; full provenance is in <code>assets/adhan/LICENSES.md</code>.<br>
+        These three field recordings are CC0 1.0. The additional Sheikh Nasser Al-Qatami recordings have reserved rights: upstream explicitly credits Sharjah Quran for Fajr. No CC0 or MIT audio rights are claimed. See <a href="assets/adhan/LICENSES.md" target="_blank" rel="noopener">audio provenance and rights notices</a>.<br>
         <strong>Themes:</strong> Catppuccin, Aura, Dracula, Tokyo Night, Rosé Pine (community palettes).<br>
-        <strong>Fonts:</strong> Amiri, Tajawal, Cairo, Inter — SIL Open Font License.<br>
+        <strong>Fonts:</strong> Amiri, Tajawal, Cairo, Inter, DM Sans, Manrope.<br>
         <strong>Icons:</strong> Lucide (ISC). <strong>PDF:</strong> EmbedPDF / PDFium.
       </div>
     </div>

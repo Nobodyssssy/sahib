@@ -7,7 +7,7 @@
    ========================================================================== */
 (function () {
   const THEMES = [
-    { id: 'sahib',      label: 'Sahib',      hint: 'Ink & paper' },
+    { id: 'sahib',      label: 'Sahib',      hint: 'Courtyard & sage' },
     { id: 'catppuccin', label: 'Catppuccin', hint: 'Mocha / Latte' },
     { id: 'aura',       label: 'Aura',       hint: 'Soft neon' },
     { id: 'dracula',    label: 'Dracula',    hint: 'Classic' },
@@ -31,38 +31,26 @@
     { id: 'sky', label: 'Sky' }
   ];
   const ACCENT_SETS = {
-    sahib: {
-      gold: 'Ochre', peach: 'Clay', red: 'Madder', mauve: 'Plum',
-      blue: 'Indigo', teal: 'Verdigris', green: 'Olive', pink: 'Rosewood', sky: 'Faience'
-    },
-    catppuccin: {
-      gold: 'Brass', peach: 'Peach', red: 'Rosewater', mauve: 'Mauve',
-      blue: 'Sapphire', teal: 'Aqua', green: 'Sage', pink: 'Pink', sky: 'Sky'
-    },
-    aura: {
-      gold: 'Honey', peach: 'Apricot', red: 'Ember', mauve: 'Amethyst',
-      blue: 'Azure', teal: 'Mint', green: 'Sprout', pink: 'Orchid', sky: 'Cyan'
-    },
-    dracula: {
-      gold: 'Candle', peach: 'Tangerine', red: 'Blood', mauve: 'Violet',
-      blue: 'Denim', teal: 'Ice', green: 'Poison', pink: 'Bubblegum', sky: 'Electric'
-    },
-    'tokyo-night': {
-      gold: 'Amber', peach: 'Coral', red: 'Crimson', mauve: 'Iris',
-      blue: 'Storm', teal: 'Lagoon', green: 'Matcha', pink: 'Sakura', sky: 'Ice'
-    },
-    'rose-pine': {
-      gold: 'Gold', peach: 'Ember', red: 'Love', mauve: 'Iris',
-      blue: 'Pine', teal: 'Foam', green: 'Leaf', pink: 'Rose', sky: 'Horizon'
-    }
+    sahib: { green:'Sage', gold:'Brass', peach:'Clay', red:'Madder', mauve:'Plum', blue:'Indigo', teal:'Verdigris', pink:'Rosewood', sky:'Faience' },
+    catppuccin: { gold:'Yellow', peach:'Peach', red:'Red', mauve:'Mauve', blue:'Blue', teal:'Teal', green:'Green', pink:'Pink', sky:'Sky' },
+    aura: { mauve:'Purple', teal:'Green', gold:'Orange', red:'Red', pink:'Pink', sky:'Blue' },
+    dracula: { mauve:'Purple', pink:'Pink', teal:'Cyan', green:'Green', gold:'Yellow', peach:'Orange', red:'Red' },
+    'tokyo-night': { blue:'Blue', mauve:'Magenta', sky:'Cyan', teal:'Teal', green:'Green', gold:'Yellow', peach:'Orange', red:'Red' },
+    'rose-pine': { pink:'Rose', mauve:'Iris', teal:'Foam', blue:'Pine', gold:'Gold', red:'Love' }
   };
+  const DEFAULT_ACCENTS = { sahib:'green', catppuccin:'mauve', aura:'mauve', dracula:'mauve', 'tokyo-night':'blue', 'rose-pine':'pink' };
+  let familyAccents = {};
 
+  const THEME_FONTS = {sahib:'tajawal',aura:'dm-sans',dracula:'inter',catppuccin:'manrope','rose-pine':'amiri','tokyo-night':'cairo'};
   const FONTS = [
-    { id: 'tajawal', label: 'Tajawal', hint: 'Sahib default' },
-    { id: 'cairo',   label: 'Cairo',   hint: 'Modern Arabic' },
-    { id: 'inter',   label: 'Inter',   hint: 'Compact Latin' },
-    { id: 'system',  label: 'System',  hint: 'Your device' }
+    {id:'tajawal',label:'Tajawal',hint:'Sahib'},
+    {id:'dm-sans',label:'DM Sans',hint:'Aura'},
+    {id:'inter',label:'Inter',hint:'Dracula'},
+    {id:'manrope',label:'Manrope',hint:'Catppuccin'},
+    {id:'amiri',label:'Amiri',hint:'Rosé Pine'},
+    {id:'cairo',label:'Cairo',hint:'Tokyo Night'}
   ];
+  let fontFollowsTheme = true;
 
   const THEME_IDS = THEMES.map(t => t.id);
   const ACCENT_IDS = ACCENTS.map(a => a.id);
@@ -72,9 +60,9 @@
   const state = {
     theme: 'sahib',
     mode: 'light',
-    accent: 'gold',
+    accent: 'green',
     font: 'tajawal',
-    sidebarPosition: 'right',
+    sidebarPosition: 'left',
     sidebarCollapsed: false
   };
 
@@ -104,10 +92,7 @@
   function accentsForTheme(theme) {
     const family = normalizeTheme(theme || state.theme);
     const labels = ACCENT_SETS[family] || {};
-    return ACCENTS.map(accent => ({
-      id: accent.id,
-      label: labels[accent.id] || accent.label
-    }));
+    return Object.entries(labels).map(([id,label]) => ({id,label}));
   }
 
   function _syncShellControls() {
@@ -130,6 +115,7 @@
     state.theme = normalizeTheme(next.theme || state.theme);
     state.mode = normalizeMode(next.mode || state.mode);
     state.accent = normalizeAccent(next.accent || state.accent);
+    if(!ACCENT_SETS[state.theme][state.accent]) state.accent = DEFAULT_ACCENTS[state.theme];
     state.font = normalizeFont(next.font || state.font);
     if (next.sidebarPosition) state.sidebarPosition = normalizeSidebarPosition(next.sidebarPosition);
     if (typeof next.sidebarCollapsed === 'boolean') state.sidebarCollapsed = next.sidebarCollapsed;
@@ -139,6 +125,7 @@
     root.dataset.mode = state.mode;
     root.dataset.accent = state.accent;
     root.dataset.font = state.font;
+    root.dataset.fontSource = fontFollowsTheme ? 'theme' : 'custom';
     root.dataset.sidebarPosition = state.sidebarPosition;
     root.dataset.sidebarCollapsed = state.sidebarCollapsed ? 'true' : 'false';
     root.classList.toggle('light', state.mode === 'light');
@@ -172,9 +159,9 @@
   async function init() {
     let theme = 'sahib';
     let mode = 'light';
-    let accent = 'gold';
+    let accent = 'green';
     let font = 'tajawal';
-    let sidebarPosition = 'right';
+    let sidebarPosition = 'left';
     let sidebarCollapsed = false;
     try {
       const [family, savedTheme, savedAccent, savedFont, savedPosition, savedCollapsed] = await Promise.all([
@@ -187,9 +174,12 @@
       ]);
       theme = normalizeTheme(family || 'sahib');
       mode = normalizeMode(savedTheme || 'light');
-      accent = normalizeAccent(savedAccent || 'gold');
-      font = normalizeFont(savedFont || 'tajawal');
-      sidebarPosition = normalizeSidebarPosition(savedPosition || 'right');
+      accent = normalizeAccent(savedAccent || DEFAULT_ACCENTS[theme]);
+      familyAccents = await store.getMeta('themeAccents') || {};
+      const follows = await store.getMeta('fontFollowsTheme');
+      fontFollowsTheme = follows == null ? !savedFont || savedFont==='tajawal' : follows !== false;
+      font = fontFollowsTheme ? THEME_FONTS[theme] : normalizeFont(savedFont);
+      sidebarPosition = normalizeSidebarPosition(savedPosition || 'left');
       sidebarCollapsed = savedCollapsed === true;
 
       /* One-time migration from the old five-accent names. */
@@ -204,9 +194,12 @@
   }
 
   async function setTheme(theme) {
+    familyAccents[state.theme] = state.accent;
     state.theme = normalizeTheme(theme);
+    if(fontFollowsTheme) state.font = THEME_FONTS[state.theme];
+    state.accent = familyAccents[state.theme] || DEFAULT_ACCENTS[state.theme];
     apply(state);
-    await store.setMeta('themeFamily', state.theme);
+    await Promise.all([store.setMeta('themeFamily', state.theme), store.setMeta('accent', state.accent), store.setMeta('themeAccents', {...familyAccents})]);
   }
   async function setMode(mode) {
     state.mode = normalizeMode(mode);
@@ -216,12 +209,14 @@
   async function setAccent(accent) {
     state.accent = normalizeAccent(accent);
     apply(state);
-    await store.setMeta('accent', state.accent);
+    familyAccents[state.theme] = state.accent;
+    await Promise.all([store.setMeta('accent', state.accent), store.setMeta('themeAccents', {...familyAccents})]);
   }
   async function setFont(font) {
-    state.font = normalizeFont(font);
+    fontFollowsTheme = font === 'theme';
+    state.font = fontFollowsTheme ? THEME_FONTS[state.theme] : normalizeFont(font);
     apply(state);
-    await store.setMeta('font', state.font);
+    await Promise.all([store.setMeta('font', state.font),store.setMeta('fontFollowsTheme',fontFollowsTheme)]);
   }
   async function setSidebarPosition(position) {
     state.sidebarPosition = normalizeSidebarPosition(position);
@@ -243,7 +238,7 @@
   }
 
   window.SAHIB_THEME = {
-    THEMES, MODES, ACCENTS, ACCENT_SETS, FONTS,
+    THEMES, MODES, ACCENTS, ACCENT_SETS, FONTS, THEME_FONTS,
     state, init, apply, accentsForTheme,
     setTheme, setMode, setAccent, setFont, setSidebarPosition, setSidebarCollapsed,
     toggleSidebarCollapsed, toggleMode,

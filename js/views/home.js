@@ -2,9 +2,8 @@
 /* Home dashboard tab state */
 window._homeTab = window._homeTab || 0;
 
-/* Home is an editorial daily page, not a feature directory:
-   date + next prayer, the daybook, today's reading, a quiet index, and the
-   prayer cycle. Daily Practice is the first thing after the prayer anchor. */
+/* Home: an illustrated daily companion with a live prayer panel,
+   collection-backed shortcuts, religious reading and the user's daybook. */
 
 async function renderHome(){
   const host = $('home-body');
@@ -21,21 +20,16 @@ async function renderHome(){
   const date = new Date();
   const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
   const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
-  const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
-  const monthEn = date.toLocaleDateString('en-US', { month: 'long' });
+  const uiLocale = window.SAHIB_I18N?.language==='ar'?'ar':'en-US';
+  const weekdayEn = date.toLocaleDateString(uiLocale, { weekday: 'long' });
+  const monthEn = date.toLocaleDateString(uiLocale, { month: 'long' });
   const greeting = greetingForNow(date);
   const greetingAr = greetingArForNow(date);
   const hijriLine = hijri
-    ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year} هـ`
+    ? (uiLocale==='ar'?`${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year} هـ`:new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(date))
     : '';
 
-  let location = null;
-  try{
-    if(typeof getToday === 'function'){
-      const result = await getToday();
-      if(result && result.location) location = result.location;
-    }
-  }catch(err){ location = null; }
+  const location = await store.getMeta('location');
 
   let eventChip = '';
   try{
@@ -43,14 +37,10 @@ async function renderHome(){
       const events = getTodaysEvents();
       if(events && events.length){
         const ev = events[0];
-        eventChip = `<button type="button" class="home-chip home-event-chip" onclick="openHijriEvent('${ev.id}')">${icon(EVENT_ICONS[ev.type] || 'calendar', 13)} ${esc(ev.nameAr)}</button>`;
+        eventChip = `<button type="button" class="home-chip home-event-chip" onclick="openHijriEvent('${ev.id}')">${icon(EVENT_ICONS[ev.type] || 'calendar', 13)} ${esc(window.SAHIB_I18N?.language==='ar'?ev.nameAr:ev.nameEn||ev.nameAr)}</button>`;
       }
     }
   }catch(err){ eventChip = ''; }
-
-  const locationChip = location && location.lat != null
-    ? `<button type="button" class="home-chip" onclick="openLocationPicker()">${icon('map-pin', 13)} ${esc(location.label || `${Number(location.lat).toFixed(2)}, ${Number(location.lng).toFixed(2)}`)}</button>`
-    : `<span class="home-chip home-chip--quiet">${icon('map-pin', 13)} Location not set</span>`;
 
   let recentBooks = [];
   try{
@@ -63,58 +53,116 @@ async function renderHome(){
   let readingHTML = '';
   try{ if(typeof renderHomeQuoteHTML === 'function') readingHTML = renderHomeQuoteHTML(); }catch(err){ readingHTML = ''; }
 
+  const featured = data.find(item => item.id === 115) || data.find(item => item.arabic && item.arabic.length < 200);
+  const name = typeof ASMA_NAMES !== 'undefined' ? ASMA_NAMES[0] : null;
+  const books = typeof BOOKS !== 'undefined' ? BOOKS.slice(0, 3) : [];
   host.innerHTML = `
-    <main class="almanac-desk">
-      <header class="desk-mast">
-        <h1 class="desk-mast-date">
-          <span class="desk-mast-weekday">${esc(weekdayEn)}</span>
-          <span class="desk-mast-greg">${date.getDate()} ${esc(monthEn)} ${date.getFullYear()}</span>
-          <span class="desk-mast-hijri" lang="ar" dir="rtl">${esc(hijriLine)}</span>
-        </h1>
-        <div class="desk-mast-side">
-          <span class="desk-mast-greeting" dir="rtl"><span lang="ar">${esc(greetingAr)}</span> · <span lang="en" dir="ltr">${esc(greeting)}</span></span>
-          ${locationChip}
-          ${eventChip}
-        </div>
-      </header>
-
-      <section class="desk-prayer" aria-label="Next prayer and today’s prayer times">
-        <div id="home-prayer-widget" class="desk-prayer-host" aria-live="polite"></div>
-      </section>
-
-      <section class="desk-lower" aria-label="Today’s reading and practice">
-        <div class="desk-lower-main">
-          <div class="desk-section-head">
-            <h2 class="desk-section-title">Today’s reading</h2>
-            <button type="button" class="desk-link" onclick="openBooksView()">Library ${icon('arrow-left', 12)}</button>
+    <main class="sahib-home garden-home" dir="ltr">
+      <div class="garden-toolbar">
+        <div class="garden-date"><strong>${esc(weekdayEn)}, ${date.getDate()} ${esc(monthEn)} ${date.getFullYear()}</strong><span lang="ar" dir="rtl">${esc(hijriLine)}</span></div>
+        <button class="garden-search" onclick="focusGlobalSearch()">${icon('search',18)}<span>Search the whole app…</span><span class="garden-search-hint">Search</span></button>
+        <button class="garden-location" onclick="openLocationPicker()">${icon('map-pin',19)}<span>${esc(location ? location.label || 'Saved coordinates' : 'Choose location')}</span>${icon('chevron-down',13)}</button>
+        <button class="garden-icon" onclick="toggleTheme()" aria-label="Toggle theme">${icon('sun',19)}</button>
+        <button class="garden-icon" onclick="openSettings('appearance')" aria-label="Settings">${icon('settings',19)}</button>
+      </div>
+      <div class="garden-grid">
+        <div class="garden-main">
+          <section class="garden-welcome" aria-labelledby="garden-greeting">
+            <div class="garden-welcome-copy"><h1 id="garden-greeting">${esc(greeting)}</h1><div class="garden-greeting-ar" lang="ar" dir="rtl">${esc(greetingAr)}</div><p>A little time for remembrance.<br>A little space for reflection.</p><div class="garden-flourish" aria-hidden="true"><span></span>◇<span></span></div></div>
+          </section>
+          <section class="garden-prayer-suite" aria-label="Prayer and day breakdown" data-prayer-face="${window._homePrayerFace || 0}"><div class="home-prayer-switch"><button onclick="turnHomePrayer(-1)" aria-label="Previous prayer card">${icon('chevron-left',17)}</button><div role="tablist" aria-label="Prayer card"><button role="tab" data-prayer-tab="0" onclick="turnHomePrayer(0,0)">Prayer times</button><button role="tab" data-prayer-tab="1" onclick="turnHomePrayer(0,1)">Day rhythm</button></div><button onclick="turnHomePrayer(1)" aria-label="Next prayer card">${icon('chevron-right',17)}</button></div><div class="garden-prayer" aria-label="Prayer times"><div id="home-prayer-widget"></div><div class="garden-timezone">Times use ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone || 'your device timezone')}</div></div><div id="home-day-cycle" class="home-tab-cycle"></div></section>
+          <section class="garden-actions" aria-label="Daily shortcuts">
+            ${gardenAdhkarCard('sabah', 'Morning adhkar', 'sunrise')}
+            ${gardenAdhkarCard('masaa', 'Evening adhkar', 'moon')}
+            ${gardenPracticeCard()}
+            <article class="garden-action"><span class="garden-action-icon">${icon('calendar',25)}</span><h2>Hijri calendar</h2><p lang="ar" dir="rtl">${hijri ? `${hijri.day} ${esc(window.SAHIB_I18N?.language==='ar'?hijri.monthNameAr:new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'long'}).format(date))}` : 'Calendar'}</p><button onclick="openHijriView()">View calendar ${icon('arrow-left',14)}</button></article>
+            <article class="garden-action"><span class="garden-action-icon">${icon('beads',25)}</span><h2>Tasbih</h2><p>A moment of dhikr</p><button onclick="openTasbihView()">Open counter ${icon('arrow-left',14)}</button></article>
+          </section>
+          <div class="garden-discover">
+            <section class="garden-feature"><div class="garden-section-title"><h2>${icon('book-open',17)}Words of remembrance</h2><button onclick="goToAdkarCategories()">View all</button></div>${featured ? `<button class="garden-feature-body" onclick="openDetail(${featured.id})"><span class="garden-feature-ar" lang="ar" dir="rtl">${esc(featured.arabic)}</span><span class="garden-feature-source" lang="ar" dir="rtl">${esc(featured.hadith || featured.situation || '')}</span><span class="garden-round-arrow" aria-label="Read dhikr">${icon('arrow-left',18)}</span></button>` : '<p>Your collection is empty. Add a dhikr to begin.</p>'}</section>
+            <section class="garden-name"><div class="garden-section-title"><h2>${icon('sparkles',17)}From the 99 Names</h2><button onclick="openAsmaView()">View all</button></div>${name ? `<button class="garden-name-body" onclick="openAsmaDetail(${name.id})"><span lang="ar" dir="rtl">${esc(name.ar)}</span><strong>${esc(window.SAHIB_I18N?.language==='ar'?name.ar:name.transliteration)}</strong><small>${esc(window.SAHIB_I18N?.language==='ar'?name.tafsirAr:name.meaningEn)}</small><span class="garden-name-link">Explore this name ${icon('arrow-left',14)}</span></button>` : ''}</section>
+            <section class="garden-library"><div class="garden-section-title"><h2>${icon('library',17)}Your library</h2><button onclick="openBooksView()">View all</button></div><div class="garden-books">${books.map((book,i)=>`<button class="garden-book" onclick="openBookDetail('${esc(book.id)}')"><span class="garden-book-cover" data-home-cover="${esc(book.id)}"><span class="home-cover-placeholder">${icon('book-open',23)}</span></span><strong>${esc(window.SAHIB_I18N?.language==='ar'?book.titleAr:book.titleEn || book.titleAr)}</strong></button>`).join('')}</div><div class="garden-continue">${renderHomeContinue(recentBooks[0])}</div></section>
           </div>
-          ${readingHTML || `<p class="desk-side-empty"><bdi dir="ltr" lang="en">No reading is set for today.</bdi></p>`}
+          <footer class="garden-footer">${icon('lock',13)} Your practice, your pace. Saved on this device.</footer>
         </div>
-        <aside class="desk-lower-side">
-          ${renderHomePracticePanel()}
-          ${renderHomeContinue(recentBooks[0])}
+        <aside class="garden-rail" aria-label="Reading and daily practice">
+          <section class="garden-reading"><div class="garden-section-title"><h2>${icon('book-open',18)}Today's reading</h2><span lang="ar" dir="rtl">تدبّر</span></div>${readingHTML || '<p>No reading available.</p>'}</section>
+          <section class="garden-daybook"><div class="garden-section-title"><h2>${icon('practice',18)}Your daily practice</h2><button onclick="openPracticeView('today')">View all</button></div>${renderHomePracticePanel()}</section>
+          ${eventChip ? `<section class="garden-calendar-note"><span>In your calendar</span>${eventChip}</section>` : ''}
         </aside>
-      </section>
-
-      <footer class="desk-foot">
-        <span class="desk-foot-note">${icon('lock', 12)} Local-first. Your reading and practice history stay in this browser.</span>
-        <nav class="desk-foot-nav" aria-label="Quick links">
-          <button type="button" class="desk-foot-link" onclick="goToAdkarCategories()">Adhkar</button>
-          <button type="button" class="desk-foot-link" onclick="openPrayerView()">Prayer</button>
-          <button type="button" class="desk-foot-link" onclick="openHijriView()">Hijri</button>
-          <button type="button" class="desk-foot-link" onclick="openAsmaView()">99 Names</button>
-          <button type="button" class="desk-foot-link" onclick="openTasbihView()">Tasbih</button>
-        </nav>
-      </footer>
-    </main>
-  `;
-
-  if(typeof PrayerWidget !== 'undefined'){
-    PrayerWidget.mount('home-prayer-widget', { variant: 'hero', showTimes: true });
-  }
+      </div>
+      <nav class="home-mobile-nav" aria-label="Home shortcuts"><button aria-current="page" onclick="goHomeView()">${icon('home',19)}Home</button><button onclick="goToAdkarCategories()">${icon('book-open',19)}Adhkar</button><button onclick="openPrayerView()">${icon('mosque',19)}Prayer</button><button onclick="toggleMainMenu(event)">${icon('menu',19)}More</button></nav>
+    </main>`;
+  syncHomePrayerFace();
+  renderHomeDayCycle();
+  host.querySelectorAll('[data-home-cover]').forEach(el => attachBookCover(el.dataset.homeCover,el));
+  if(typeof PrayerWidget !== 'undefined') PrayerWidget.mount('home-prayer-widget', { variant:'garden', showTimes:true });
   if(typeof injectHeaderIcons === 'function'){
     setTimeout(() => injectHeaderIcons(), 0);
   }
+}
+
+function gardenPracticeCard(){
+  let snapshot = null;
+  try{ if(typeof SahibPractice !== 'undefined' && SahibPractice.isReady()) snapshot = SahibPractice.getHomeSummary(); }catch(err){ /* setup action remains available */ }
+  const completed = snapshot && snapshot.completed ? snapshot.completed.length : 0;
+  const total = completed + (snapshot && snapshot.due ? snapshot.due.length : 0);
+  const selected = snapshot && snapshot.enabled ? snapshot.enabled.length : 0;
+  return `<article class="garden-action"><span class="garden-action-icon">${icon('practice',25)}</span><h2>Daily practice</h2><p>${selected ? `${total} ${total === 1 ? 'practice' : 'practices'} today` : 'Choose your routines'}</p>${selected ? `<div class="garden-progress"><progress value="${completed}" max="${total || 1}" aria-label="Daily practices completed"></progress><span>${completed} / ${total}</span></div>` : ''}<button onclick="openPracticeView('today')">${selected ? 'Open practice' : 'Get started'} ${icon('arrow-left',14)}</button></article>`;
+}
+
+function gardenAdhkarCard(key, label, glyph){
+  const items = data.filter(item => Array.isArray(item.categories) && item.categories.includes(key));
+  const done = items.filter(item => (counters[`c_${item.id}`] || 0) >= item.repeat).length;
+  return `<article class="garden-action"><span class="garden-action-icon">${icon(glyph,25)}</span><h2>${label}</h2><p>${items.length} adhkar in your collection</p><div class="garden-progress"><progress value="${done}" max="${items.length || 1}" aria-label="${label} completed"></progress><span>${done} / ${items.length}</span></div><button onclick="startSessionFromCategory('${key}',event)" ${items.length ? '' : 'disabled'}>Start session ${icon('arrow-left',14)}</button></article>`;
+}
+
+function renderHomePrayerTimes(today, prefs){
+  const timings = today && today.timings;
+  if(!timings){
+    return `<div class="sh-home-times-empty"><span>No local timetable yet. Set a location above to calculate today’s times.</span></div>`;
+  }
+
+  const order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+  let nextName = '';
+  try{
+    const next = typeof findNextPrayer === 'function' ? findNextPrayer(timings) : null;
+    if(next && !next.tomorrow) nextName = next.name;
+  }catch(err){ nextName = ''; }
+
+  return `<div class="sh-home-times" role="list" aria-label="Today's prayer and sunrise times">${order.map(name => {
+    const arabic = (typeof PRAYER_NAMES_AR !== 'undefined' && PRAYER_NAMES_AR[name]) || (name === 'Sunrise' ? 'الشروق' : '');
+    const formatted = typeof formatPrayerTime === 'function'
+      ? formatPrayerTime(timings[name], prefs && prefs.timeFormat)
+      : timings[name];
+    return `<div class="sh-home-time${name === nextName ? ' is-next' : ''}" role="listitem"${name === nextName ? ' aria-current="time"' : ''}>
+      <span class="sh-home-time-name">${esc(name)}</span>
+      <span class="sh-home-time-ar" lang="ar" dir="rtl">${esc(arabic)}</span>
+      <strong dir="ltr">${esc(formatted || '—')}</strong>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderHomeExploreHTML(){
+  const features = [
+    { id:'prayer', icon:'mosque', ar:'الصلاة', en:'Prayer', note:'Your local timetable', action:'openPrayerView()' },
+    { id:'adhkar', icon:'book-open', ar:'الأذكار', en:'Adhkar', note:'Words to return to', action:'goToAdkarCategories()' },
+    { id:'practice', icon:'practice', ar:'الورد اليومي', en:'Daily practice', note:'Routines you choose', action:"openPracticeView('today')" },
+    { id:'hijri', icon:'calendar', ar:'التقويم الهجري', en:'Hijri calendar', note:'Dates and observances', action:'openHijriView()' },
+    { id:'asma', icon:'sparkles', ar:'الأسماء الحسنى', en:'99 Names', note:'Meaning and reflection', action:'openAsmaView()' },
+    { id:'tasbih', icon:'beads', ar:'المسبحة', en:'Tasbih', note:'A quiet counter', action:'openTasbihView()' }
+  ];
+
+  return `<div class="sh-home-explore-grid">${features.map(item => `
+    <button type="button" class="sh-home-explore-item" onclick="${item.action}">
+      <span class="sh-home-explore-icon" aria-hidden="true">${icon(item.icon, 18)}</span>
+      <span class="sh-home-explore-copy">
+        <span class="sh-home-explore-ar" lang="ar" dir="rtl">${item.ar}</span>
+        <span class="sh-home-explore-en">${item.en}</span>
+        <span class="sh-home-explore-note">${item.note}</span>
+      </span>
+      <span class="sh-home-explore-arrow" aria-hidden="true">${icon('arrow-left', 14)}</span>
+    </button>`).join('')}</div>`;
 }
 
 function renderHomePracticePanel(){
@@ -132,7 +180,7 @@ function renderHomePracticePanel(){
     const hour = new Date().getHours();
     const starter = hour >= 15 ? 'evening-adhkar' : hour < 12 ? 'morning-adhkar' : 'quran-reading';
     const label = starter === 'evening-adhkar' ? 'evening adhkar' : starter === 'morning-adhkar' ? 'morning adhkar' : 'Qur’an reading';
-    return `<section class="desk-side-block" aria-labelledby="home-practice-title">
+    return `<section class="desk-side-block" aria-label="Chosen practices">
       <div class="desk-section-head">
         <h2 class="desk-section-title" id="home-practice-title">Daily practice</h2>
         <button type="button" class="desk-link" onclick="openPracticeView('all')">Browse ${icon('arrow-left', 11)}</button>
@@ -167,7 +215,7 @@ function renderHomePracticePanel(){
     </div>`;
   }).join('') : `<p class="desk-side-empty"><bdi dir="ltr" lang="en">Nothing else is due today.</bdi></p>`;
 
-  return `<section class="desk-side-block" aria-labelledby="home-practice-title">
+  return `<section class="desk-side-block" aria-label="Chosen practices">
     <div class="desk-section-head">
       <h2 class="desk-section-title" id="home-practice-title">Daily practice</h2>
       <button type="button" class="desk-link" onclick="openPracticeView('today')">Open ${icon('arrow-left', 11)}</button>
@@ -295,7 +343,8 @@ async function renderTodayCardHTML(){
   const date = new Date();
   const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
   const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
-  const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
+  const uiLocale = window.SAHIB_I18N?.language==='ar'?'ar':'en-US';
+  const weekdayEn = date.toLocaleDateString(uiLocale, { weekday: 'long' });
 
   let prayerLine = '';
   try{
@@ -488,4 +537,45 @@ function goHomeView(){
   showView('view-home');
   renderHome();
   window.scrollTo(0, 0);
+}
+
+let _homeCycleRequest = 0;
+async function renderHomeDayCycle(){
+  const host = document.getElementById('home-day-cycle');
+  if(!host) return;
+  const request = ++_homeCycleRequest;
+  try{
+    const result = await getToday();
+    const tomorrow = new Date();tomorrow.setDate(tomorrow.getDate()+1);
+    const nextDay = await getPrayerDay(tomorrow);
+    if(!host.isConnected || request!==_homeCycleRequest || !result.today || !nextDay) return;
+    window._homeCycleData = {today:result.today,nextDay};
+    host.innerHTML = _renderDailyCycleHTML(_computeDailyCycle(result.today,nextDay),result.today,nextDay);
+  }catch(err){
+    if(host.isConnected && request===_homeCycleRequest) host.innerHTML = '<div class="day-cycle-empty">Your day breakdown appears here once a location is set.</div>';
+  }
+}
+
+for(const event of ['sahib:prayerchange','sahib:prayerprefs']){
+  window.addEventListener(event,()=>{
+    if(document.getElementById('view-home')?.classList.contains('active')) renderHomeDayCycle();
+  });
+}
+
+function syncHomePrayerFace(){
+  const suite=document.querySelector('.garden-prayer-suite');if(!suite)return;
+  const face=window._homePrayerFace||0;suite.dataset.prayerFace=face;
+  suite.querySelectorAll('[data-prayer-tab]').forEach(b=>{const active=Number(b.dataset.prayerTab)===face;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;});
+  suite.querySelector('.garden-prayer').hidden=face!==0;
+  suite.querySelector('#home-day-cycle').hidden=face!==1;
+  if(!suite.dataset.swipeBound){
+    suite.dataset.swipeBound='1';let start=null;
+    suite.addEventListener('touchstart',e=>{start=[e.touches[0].clientX,e.touches[0].clientY]}, {passive:true});
+    suite.addEventListener('touchend',e=>{if(!start)return;const dx=e.changedTouches[0].clientX-start[0],dy=e.changedTouches[0].clientY-start[1];if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)turnHomePrayer(dx<0?1:-1);start=null;},{passive:true});
+    suite.querySelector('[role="tablist"]').addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();turnHomePrayer(e.key==='ArrowRight'?1:-1);suite.querySelector('[aria-selected="true"]').focus();}});
+  }
+}
+function turnHomePrayer(delta,target){
+  window._homePrayerFace=target==null?((window._homePrayerFace||0)+delta+2)%2:target;
+  syncHomePrayerFace();
 }

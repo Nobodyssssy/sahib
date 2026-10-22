@@ -1,9 +1,0 @@
-
-function notify(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
-function toggleMode(){const r=document.documentElement;r.dataset.mode=r.dataset.mode==='dark'?'light':'dark';localStorage.setItem('sahib-mode',r.dataset.mode)}
-function setMode(mode,el){document.documentElement.dataset.mode=mode;document.querySelectorAll('.segmented button').forEach(b=>b.classList.remove('selected'));if(el)el.classList.add('selected');localStorage.setItem('sahib-mode',mode)}
-function cycleTheme(){const names=['catppuccin','dracula','tokyo','rosepine','aura'];const r=document.documentElement;r.dataset.theme=names[(names.indexOf(r.dataset.theme)+1)%names.length];const sel=document.getElementById('theme');if(sel)sel.value=r.dataset.theme;localStorage.setItem('sahib-theme',r.dataset.theme);notify('Theme: '+r.dataset.theme)}
-function setAccent(a,el){document.documentElement.dataset.accent=a;document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed','false'));el.setAttribute('aria-pressed','true');localStorage.setItem('sahib-accent',a)}
-function increment(){const e=document.getElementById('count');if(e)e.textContent=String(Number(e.textContent)+1)}
-function resetCounter(){const e=document.getElementById('count');if(e)e.textContent='0'}
-document.addEventListener('DOMContentLoaded',()=>{const r=document.documentElement;r.dataset.mode=localStorage.getItem('sahib-mode')||'dark';r.dataset.theme=localStorage.getItem('sahib-theme')||'catppuccin';const s=document.getElementById('theme');if(s){s.value=r.dataset.theme;s.addEventListener('change',()=>{r.dataset.theme=s.value;localStorage.setItem('sahib-theme',s.value)})}const last=document.getElementById('lastDone');if(last)last.addEventListener('change',()=>notify('Date set in this prototype'))})

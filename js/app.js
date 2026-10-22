@@ -33,6 +33,8 @@
       updateThemeColorMeta();
     }
 
+    await SAHIB_I18N.init();
+
     /* 4.1 Prayer surfaces: shared countdown ticker + reminders */
     if (typeof PrayerWidget !== 'undefined') {
       try { PrayerWidget.init(); } catch (err) { console.warn('[prayer-widget]', err); }
@@ -273,6 +275,12 @@ function updateShellNav(viewId){
     else btn.removeAttribute('aria-current');
   });
 
+  document.querySelectorAll('[data-mobile-nav]').forEach(btn => {
+    const active = btn.dataset.mobileNav === navKey;
+    if(active) btn.setAttribute('aria-current','page');
+    else btn.removeAttribute('aria-current');
+  });
+
   const title = document.getElementById('topbar-title');
   const sub   = document.getElementById('topbar-sub');
   if(title) title.textContent = meta ? meta.title : 'Sahib';
@@ -283,16 +291,7 @@ function updateShellNav(viewId){
     : 'صاحب · Sahib';
 }
 
-function focusGlobalSearch(){
-  if(typeof goToAdkarCategories === 'function') goToAdkarCategories();
-  setTimeout(() => {
-    const input = document.getElementById('search-input');
-    if(input){
-      input.focus();
-      input.select();
-    }
-  }, 80);
-}
+function focusGlobalSearch(){ openAppSearch(); }
 
 function updateSidebarStatus(){
   const dot = document.getElementById('sidebar-status-dot');
@@ -304,6 +303,7 @@ function updateSidebarStatus(){
 }
 
 function initShell(){
+  initAccessibleActions();
   updateShellNav((document.querySelector('.view.active') || {}).id || 'view-home');
   updateSidebarStatus();
   window.addEventListener('online', updateSidebarStatus);
@@ -372,3 +372,56 @@ window.addEventListener('popstate', function(){
   else if(name === 'adkar' && typeof _closeCatFromHistory === 'function') _closeCatFromHistory();
   else if(name === 'favs' && typeof _closeFavsFromHistory === 'function') _closeFavsFromHistory();
 });
+/* Legacy clickable cards receive the same keyboard behavior as their buttons.
+   Keep religious content and click handlers intact. */
+function initAccessibleActions(){
+  if(window._sahibAccessibleActions) return;
+  window._sahibAccessibleActions = true;
+  function enhance(root){
+    const targets = [];
+    if(root.matches && root.matches('[onclick],.tasbih-count')) targets.push(root);
+    if(root.querySelectorAll) targets.push(...root.querySelectorAll('[onclick],.tasbih-count'));
+    targets.forEach(el => {
+      if(el.matches('button,a,input,textarea,select,label,svg,path,body,.ov,.menu-overlay,.session-overlay') || el.closest('button')) return;
+      if(/^event\.stopPropagation\(\);?$/.test((el.getAttribute('onclick')||'').trim())) return;
+      if(!el.hasAttribute('tabindex')) el.tabIndex = 0;
+      if(!el.hasAttribute('role')) el.setAttribute('role','button');
+      el.dataset.keyboardAction = 'true';
+    });
+  }
+  enhance(document.body);
+  const focusOrigins = new WeakMap();
+  function modalChanged(el){
+    if(!el.matches('.ov,.session-overlay,.reader-overlay,.flash-overlay')) return;
+    if(el.classList.contains('open')){
+      if(focusOrigins.has(el)) return;
+      const origin = document.activeElement;
+      focusOrigins.set(el,{node:origin,id:origin.id,action:origin.getAttribute('onclick')});
+      requestAnimationFrame(() => {
+        if(!el.classList.contains('open')) return;
+        const target = el.querySelector('[data-autofocus],[autofocus]') || [...el.querySelectorAll('button:not(:disabled),input:not(:disabled)')]
+          .find(node => node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
+        if(target) target.focus({preventScroll:true});
+      });
+    }else{
+      const saved = focusOrigins.get(el);
+      focusOrigins.delete(el);
+      if(!saved || !(el.contains(document.activeElement) || document.activeElement===document.body)) return;
+      const origin = saved.node.isConnected ? saved.node : saved.id ? document.getElementById(saved.id)
+        : [...document.querySelectorAll('[onclick]')].find(node => node.getAttribute('onclick')===saved.action);
+      if(origin) requestAnimationFrame(() => origin.isConnected && origin.focus({preventScroll:true}));
+    }
+  }
+  new MutationObserver(records => {
+    records.forEach(record => {
+      if(record.type==='attributes') modalChanged(record.target);
+      else record.addedNodes.forEach(node => {if(node.nodeType===1){enhance(node);modalChanged(node);}});
+    });
+  }).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  document.addEventListener('keydown',event=>{
+    const el=event.target;
+    if(el.dataset && el.dataset.keyboardAction==='true' && (event.key==='Enter'||event.key===' ')){
+      event.preventDefault();el.click();
+    }
+  });
+}

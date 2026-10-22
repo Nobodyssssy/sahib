@@ -1,0 +1,8 @@
+(async()=>{
+ const results=[],check=(name,pass)=>results.push({name,pass:!!pass});
+ await savePrayerPrefs({provider:'local',alerts:{audio:{standard:'qatami',fajr:'qatami-fajr'}}});await setManualLocation(47.3769,8.5417,'Zürich, Switzerland');
+ const prefs=await getPrayerPrefs();check('Standard selection persists',prefs.alerts.audio.standard==='qatami');check('Fajr selection persists',prefs.alerts.audio.fajr==='qatami-fajr');
+ for(const kind of ['standard','fajr']){const source=await resolveAdhanSource(kind,prefs);check(kind+' resolves bundled audio',source&&!source.local&&source.url.includes('nasser-al-qatami'));const response=await fetch(source.url);check(kind+' file available',response.ok&&(await response.arrayBuffer()).byteLength>2000000);const audio=new Audio();audio.preload='metadata';const duration=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Audio metadata timeout')),7000);audio.onloadedmetadata=()=>{clearTimeout(timer);resolve(audio.duration)};audio.onerror=()=>{clearTimeout(timer);reject(Error('Audio decode failed'))};audio.src=source.url});check(kind+' metadata decodes',duration>100&&duration<300);audio.removeAttribute('src');audio.load();}
+ openSettings('alerts');await new Promise(r=>setTimeout(r,250));check('Standard option visible',document.querySelector('#adhan-standard-select option[value=qatami]'));check('Fajr option visible',document.querySelector('#adhan-fajr-select option[value=qatami-fajr]'));closeSettings();
+ check('Alert enablement stays off',!prefs.alerts.enabled);check('No unsolicited playback',![...document.querySelectorAll('audio')].some(a=>!a.paused));await navigator.serviceWorker.ready;await new Promise(r=>setTimeout(r,1000));return results;
+})()

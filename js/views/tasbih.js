@@ -13,14 +13,10 @@ const TASBIH_PRESETS = [
   { label: 'اللَّهُ أَكْبَرُ',                           repeat: 33  }
 ];
 
-const TASBIH_COLORS = [
-  { key: 'theme', label: 'Theme', css: '' },
-  { key: 'peach', label: 'Peach', css: 'var(--ctp-peach)' },
-  { key: 'green', label: 'Green', css: 'var(--ctp-green)' },
-  { key: 'mauve', label: 'Mauve', css: 'var(--ctp-mauve)' },
-  { key: 'teal',  label: 'Teal',  css: 'var(--ctp-teal)'  },
-  { key: 'blue',  label: 'Blue',  css: 'var(--ctp-blue)'  }
-];
+function tasbihColors(){
+  const accents = typeof SAHIB_THEME !== 'undefined' ? SAHIB_THEME.accentsForTheme(SAHIB_THEME.state.theme) : [];
+  return [{key:'theme',label:'Theme',css:''}, ...accents.map(a => ({key:a.id,label:a.label,css:`var(--accent-${a.id})`}))];
+}
 
 let tasbihState = null;
 
@@ -83,12 +79,18 @@ function _getTargetCount() {
 function _applyColor() {
   const wrap = document.querySelector('.tasbih-wrap');
   if (!wrap) return;
-  const c = TASBIH_COLORS.find(x => x.key === tasbihState.color) || TASBIH_COLORS[0];
+  const choices = tasbihColors();
+  const c = choices.find(x => x.key === tasbihState.color) || choices[0];
   if (c.css) {
-    wrap.style.setProperty('--tb-accent', c.css);
+    const dark = document.documentElement.dataset.mode === 'dark';
+    const fill = dark ? c.css : `color-mix(in srgb,${c.css} 62%,#15131d)`;
+    wrap.style.setProperty('--tb-accent', fill);
+    const on = !dark || (SAHIB_THEME.state.theme === 'rose-pine' && c.key === 'blue') ? '#fff' : 'var(--raw-bg)';
+    wrap.style.setProperty('--tb-on', on);
     wrap.style.setProperty('--tb-glow', 'color-mix(in srgb, ' + c.css + ' 40%, transparent)');
   } else {
     wrap.style.removeProperty('--tb-accent');
+    wrap.style.removeProperty('--tb-on');
     wrap.style.removeProperty('--tb-glow');
   }
 }
@@ -545,11 +547,12 @@ function _buildColorSection() {
   const colors = document.createElement('div');
   colors.className = 'tasbih-colors';
 
-  TASBIH_COLORS.forEach(c => {
+  tasbihColors().forEach(c => {
     const chip = document.createElement('button');
     chip.type = 'button';
     chip.className = 'tasbih-color tasbih-color-' + c.key;
     chip.setAttribute('aria-label', c.label);
+    chip.style.background = c.css || 'var(--color-accent)';
     if (tasbihState.color === c.key) chip.classList.add('on');
     chip.onclick = async () => {
       tasbihState.color = c.key;
@@ -571,3 +574,6 @@ window.closeTasbihSettings = closeTasbihSettings;
 window.tasbihPlus = tasbihPlus;
 window.tasbihMinus = tasbihMinus;
 window.tasbihReset = tasbihReset;
+window.addEventListener('sahib:themechange', () => {
+  if(tasbihState) _applyColor();
+});

@@ -67,14 +67,16 @@ function clearPdfCache(bookId){
   }
 }
 
-const COVER_WIDTH = 140;
-const COVER_CACHE_KEY = 'book-covers';
+const COVER_WIDTH = 320;
+const COVER_CACHE_KEY = 'book-covers-v2';
 
 let _coverCache = null;
+let _legacyCoverCache = {};
 
 async function loadCoverCache(){
   if(_coverCache) return _coverCache;
   const stored = await store.getMeta(COVER_CACHE_KEY);
+  _legacyCoverCache = await store.getMeta('book-covers') || {};
   _coverCache = (stored && typeof stored === 'object') ? stored : {};
   return _coverCache;
 }
@@ -85,13 +87,20 @@ async function saveCoverCache(){
 
 function getCachedCover(bookId){
   if(!_coverCache) return null;
-  return _coverCache[bookId] || null;
+  return _coverCache[bookId] || _legacyCoverCache[bookId] || null;
 }
 
-async function generateBookCover(bookId){
+const _coverJobs = new Map();
+function generateBookCover(bookId){
+  if(_coverJobs.has(bookId)) return _coverJobs.get(bookId);
+  const job = _renderBookCover(bookId).finally(() => _coverJobs.delete(bookId));
+  _coverJobs.set(bookId,job);
+  return job;
+}
+async function _renderBookCover(bookId){
   await loadCoverCache();
 
-  const cached = getCachedCover(bookId);
+  const cached = _coverCache[bookId];
   if(cached) return cached;
 
   try{
@@ -143,14 +152,13 @@ async function attachBookCover(bookId, element){
   const cached = getCachedCover(bookId);
   if(cached){
     element.innerHTML = '<img src="' + cached + '" alt="">';
-    return;
+    if(_coverCache[bookId]) return;
   }
 
   generateBookCover(bookId).then(dataUrl => {
-    if(dataUrl){
-      if(document.body.contains(element)){
-        element.innerHTML = '<img src="' + dataUrl + '" alt="">';
-      }
+    if(document.body.contains(element)){
+      if(dataUrl) element.innerHTML = '<img src="' + dataUrl + '" alt="">';
+      else if(!cached) element.innerHTML = '<span class="book-cover-unavailable">' + icon('book-open',24) + '<small>Preview unavailable</small></span>';
     }
   });
 }
@@ -178,15 +186,17 @@ async function ensureAllCovers(){
 
 function getCoverCacheStats(){
   if(!_coverCache) return { count: 0, size: 0 };
-  const keys = Object.keys(_coverCache);
+  const all = {..._legacyCoverCache,..._coverCache};
+  const keys = Object.keys(all);
   let size = 0;
-  keys.forEach(k => { size += (_coverCache[k] || '').length; });
+  for(const cache of [_legacyCoverCache,_coverCache]) Object.values(cache).forEach(value => {size += (value || '').length;});
   return { count: keys.length, size };
 }
 
 async function clearCoverCache(){
   _coverCache = {};
-  await saveCoverCache();
+  _legacyCoverCache = {};
+  await Promise.all([saveCoverCache(),store.setMeta('book-covers',{})]);
 }
 
 async function renderPageToCanvas(pdf, pageNum, canvas, containerWidth, zoomFactor){

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl" data-theme="sahib" data-mode="light" data-accent="gold" data-font="tajawal" data-sidebar-position="right" data-sidebar-collapsed="false">
+<html lang="en" dir="rtl" data-theme="sahib" data-mode="light" data-accent="green" data-font="tajawal" data-sidebar-position="left" data-sidebar-collapsed="false">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -27,6 +27,12 @@
 <link rel="stylesheet" href="css/design.css">
 <link rel="stylesheet" href="css/folio.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/views/home-refresh.css?v=20261022-garden-app-4">
+<link rel="stylesheet" href="css/garden-tokens.css?v=20261022-garden-app-4">
+<link rel="stylesheet" href="css/garden-system.css?v=20261022-garden-app-4">
+<link rel="stylesheet" href="css/garden-refinements.css?v=20261022-refine-4">
+<link rel="stylesheet" href="css/app-language.css?v=20261022-language-5">
+<link rel="stylesheet" href="css/daily-rhythm.css?v=20261022-rhythm-5">
 </head>
 <body>
 
@@ -37,12 +43,13 @@
   <!-- DESKTOP SIDEBAR -->
   <aside class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
     <div class="sidebar-head">
-      <button type="button" class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib">
-        <span class="sidebar-logo"><img src="icons/icon.svg" alt="صاحب"></span>
-        <span class="sidebar-brand-text">
-          <span class="sidebar-brand-name">صاحب</span>
-          <span class="sidebar-brand-sub">Sahib Companion</span>
-        </span>
+      <button type="button" class="sidebar-brand" onclick="goHomeView()" title="صاحب · Sahib" aria-label="Sahib home">
+        <svg class="sahib-mark" viewBox="0 0 160 110" role="img" aria-label="صاحب" xmlns="http://www.w3.org/2000/svg">
+          <path class="sahib-mark-arch" d="M25 72V46C25 25 51 18 80 7c29 11 55 18 55 39v26M34 77h92" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <text x="80" y="75" text-anchor="middle" font-family="Amiri,serif" font-size="57" fill="currentColor">صاحب</text>
+          <path d="M55 94h17m16 0h17m-25-4 4 4-4 4-4-4z" fill="none" stroke="currentColor" stroke-width="1"/>
+        </svg>
+        <svg class="sahib-mark-compact" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 37V24c0-8 11-12 23-17 12 5 23 9 23 17v13" fill="none" stroke="currentColor" stroke-width="1" opacity=".4"/><text x="32" y="46" text-anchor="middle" font-family="Amiri,serif" font-size="43" fill="currentColor">ص</text><path d="m32 54 3 3-3 3-3-3z" fill="none" stroke="currentColor" stroke-width=".8"/></svg>
       </button>
       <button type="button" class="sidebar-collapse-btn" id="sidebar-collapse-btn"
               onclick="toggleSidebarCollapse()" aria-controls="app-sidebar" aria-expanded="true"
@@ -321,6 +328,7 @@
   <div id="tasbih-body"></div>
 </div>
 
+  <nav class="app-bottom-nav" aria-label="Main navigation"><button data-mobile-nav="home" onclick="goHomeView()"><span data-icon="home"></span>Home</button><button data-mobile-nav="cats" onclick="goToAdkarCategories()"><span data-icon="book-open"></span>Adhkar</button><button data-mobile-nav="prayer" onclick="openPrayerView()"><span data-icon="mosque"></span>Prayer</button><button onclick="toggleMainMenu(event)"><span data-icon="menu"></span>More</button></nav>
   </div><!-- /app-main -->
   </div><!-- /app-shell -->
 
@@ -513,18 +521,18 @@
 <script src="js/scroll-preserve.js"></script>
 <script src="js/dict.js"></script>
 <script src="js/vendor/fuse.min.js"></script>
-<!-- PDF.js removed — using EmbedPDF (PDFium WASM) via dynamic import in js/reader.js -->
+<!-- PDF.js removed — using EmbedPDF (PDFium WASM) via dynamic import in js/reader.js?v=20261022-refine-4 -->
 <script src="js/db.js"></script>
 <script src="js/store.js"></script>
-<script src="js/theme.js"></script>
+<script src="js/theme.js?v=20261022-language-5"></script>
 <script src="js/data-defaults.js"></script>
 <script src="js/hisn-data.js"></script>
 <script src="js/adhkar-taxonomy.js"></script>
 <script src="js/state.js"></script>
 <script src="js/search.js"></script>
 <script src="js/vendor/adhan.js"></script>
-<script src="js/prayer.js"></script>
-<script src="js/prayer-widget.js"></script>
+<script src="js/prayer.js?v=20261022-release-2"></script>
+<script src="js/prayer-widget.js?v=20261022-release-2"></script>
 <script src="js/qibla.js"></script>
 <script src="js/location.js"></script>
 <script src="js/quotes.js"></script>
@@ -538,11 +546,11 @@
 <script src="js/books.js"></script>
 <script src="js/offline-books.js"></script>
 <script src="js/offline-ui.js"></script>
-<script src="js/reader.js"></script>
+<script src="js/reader.js?v=20261022-refine-4"></script>
 <script src="js/views/cats.js"></script>
-<script src="js/views/home.js"></script>
-<script src="js/views/practice.js"></script>
-<script src="js/views/quote.js"></script>
+<script src="js/views/home.js?v=20261022-language-5"></script>
+<script src="js/views/practice.js?v=20261022-language-5"></script>
+<script src="js/views/quote.js?v=20261022-garden-app-4"></script>
 <script src="js/views/adkar.js"></script>
 <script src="js/views/search.js"></script>
 <script src="js/views/favs.js"></script>
@@ -552,16 +560,19 @@
 <script src="js/views/form.js"></script>
 <script src="js/views/catmgr.js"></script>
 <script src="js/views/confirm.js"></script>
-<script src="js/views/prayer.js"></script>
+<script src="js/views/prayer.js?v=20261022-rhythm-5"></script>
 <script src="js/views/menu.js"></script>
-<script src="js/views/hijri.js"></script>
-<script src="js/views/asma.js"></script>
+<script src="js/views/hijri.js?v=20261022-garden-app-4"></script>
+<script src="js/views/asma.js?v=20261022-language-5"></script>
 <script src="js/views/books.js"></script>
-<script src="js/views/tasbih.js"></script>
+<script src="js/views/tasbih.js?v=20261022-refine-4"></script>
 <script src="js/views/reader.js"></script>
 <script src="js/io.js"></script>
-<script src="js/settings.js"></script>
-<script src="js/app.js"></script>
+<script src="js/settings.js?v=20261022-release-2"></script>
+<script src="js/app-search.js?v=20261022-language-5"></script>
+<script src="js/i18n-ar.js?v=20261022-release-2"></script>
+<script src="js/i18n.js?v=20261022-language-5"></script>
+<script src="js/app.js?v=20261022-language-5"></script>
 <div class="ov center settings-ov" id="ov-settings" onclick="if(event.target === this) closeSettings()">
   <div class="modal-box settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="mh settings-head">

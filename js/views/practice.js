@@ -173,12 +173,12 @@ const SahibPractice = (() => {
   }
 
   function _fmtLong(date) {
-    return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    return date.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
   }
 
   function _fmtDate(key) {
     const d = _parseKey(key);
-    return d ? d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : key;
+    return d ? d.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : key;
   }
 
   function _parseClock(value) {
@@ -787,7 +787,7 @@ const SahibPractice = (() => {
     const html = groups.map(group => {
       const hijri = _hijri(group.date);
       return `<section class="practice-upcoming-group">
-        <div class="practice-upcoming-date"><span class="practice-upcoming-day">${group.date.getDate()}</span><span class="practice-upcoming-month">${group.date.toLocaleDateString('en-GB', { month: 'short' })} · ${esc(WEEKDAYS_SHORT[group.date.getDay()])}</span>${hijri ? `<span class="practice-upcoming-hijri">${hijri.day} ${esc(hijri.monthNameAr || '')}</span>` : ''}</div>
+        <div class="practice-upcoming-date"><span class="practice-upcoming-day">${group.date.getDate()}</span><span class="practice-upcoming-month">${group.date.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { month: 'short' })} · ${esc(WEEKDAYS_SHORT[group.date.getDay()])}</span>${hijri ? `<span class="practice-upcoming-hijri">${hijri.day} ${esc(hijri.monthNameAr || '')}</span>` : ''}</div>
         <div class="practice-upcoming-items">${group.items.map(item => `<button class="practice-upcoming-item" onclick="openPracticeDetail('${esc(item.practice.id)}')">
           <span class="practice-upcoming-copy"><strong>${esc(item.practice.title)}</strong><span>${esc(_scheduleText(item.practice))}</span></span>
           <span class="practice-upcoming-time">${esc(_timeText(item.practice, group.date))}${item.practice.relativeTo ? `<small>${esc(_timeSub(item.practice))}</small>` : ''}</span>
@@ -817,7 +817,7 @@ const SahibPractice = (() => {
     const start = _addDays(first, -first.getDay());
     const selectedKey = runtime.calendarSelected || _dateKey();
     const selectedDate = _parseKey(selectedKey) || new Date();
-    const monthLabel = first.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    const monthLabel = first.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { month: 'long', year: 'numeric' });
     const firstHijri = _hijri(first);
     const lastHijri = _hijri(new Date(year, month + 1, 0, 12));
     const hijriMonthLabel = firstHijri && lastHijri
@@ -834,7 +834,7 @@ const SahibPractice = (() => {
       const isToday = key === _dateKey();
       const isSelected = key === selectedKey;
       const hijri = _hijri(date);
-      cells.push(`<button class="practice-cal-cell ${inMonth ? '' : 'is-other-month'} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''} ${items.length ? 'has-due' : ''}" onclick="practiceSelectDate('${key}')" aria-pressed="${isSelected ? 'true' : 'false'}" aria-label="${esc(date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }))}${items.length ? `, ${items.length} practices` : ''}">
+      cells.push(`<button class="practice-cal-cell ${inMonth ? '' : 'is-other-month'} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''} ${items.length ? 'has-due' : ''}" onclick="practiceSelectDate('${key}')" aria-pressed="${isSelected ? 'true' : 'false'}" aria-label="${esc(date.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }))}${items.length ? `, ${items.length} practices` : ''}">
         <span class="practice-cal-greg">${date.getDate()}</span>
         ${hijri ? `<span class="practice-cal-hijri">${hijri.day}</span>` : ''}
         ${items.length ? `<span class="practice-cal-dots">${items.slice(0, 3).map(item => `<i class="${item.entry?.status === 'done' ? 'is-done' : ''}"></i>`).join('')}</span>` : ''}
@@ -1016,7 +1016,7 @@ const SahibPractice = (() => {
   function _nextDatesText(practice) {
     const next = _nextOccurrences(practice, 3);
     if (!next.length) return practice.schedule?.type === 'manual' ? 'No date has been chosen yet.' : 'No upcoming dates in the next year.';
-    return next.map(d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })).join(' · ');
+    return next.map(d => d.toLocaleDateString(window.SAHIB_I18N?.language==='ar'?'ar':'en-GB', { weekday: 'short', day: 'numeric', month: 'short' })).join(' · ');
   }
 
   function _renderDetail() {

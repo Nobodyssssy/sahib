@@ -17,14 +17,16 @@ const PRAYER_ICONS = {
 };
 
 /* Bundled adhan recordings. Each source is documented in
-   assets/adhan/LICENSES.md and must be CC0 / public-domain before it is added. */
+   assets/adhan/LICENSES.md, including recording-specific rights restrictions. */
 const ADHAN_BUNDLED = {
   standard: [
     { id: 'azhar', label: 'Al-Azhar Park, Cairo', src: 'assets/adhan/al-azhar-park.mp3', credit: 'Ahmad Aiuby · CC0' },
-    { id: 'quseir', label: 'Quseir by the sea, Egypt', src: 'assets/adhan/quseir-sea.mp3', credit: 'Ahmad Aiuby · CC0' }
+    { id: 'quseir', label: 'Quseir by the sea, Egypt', src: 'assets/adhan/quseir-sea.mp3', credit: 'Ahmad Aiuby · CC0' },
+    { id: 'qatami', label: 'Sheikh Nasser Al-Qatami', src: 'assets/adhan/nasser-al-qatami.mp3', credit: 'Reserved rights · see audio notices' }
   ],
   fajr: [
-    { id: 'fajr-balakong', label: 'Balakong, Kuala Lumpur', src: 'assets/adhan/fajr-balakong.mp3', credit: 'aridtrax · CC0' }
+    { id: 'fajr-balakong', label: 'Balakong, Kuala Lumpur', src: 'assets/adhan/fajr-balakong.mp3', credit: 'aridtrax · CC0' },
+    { id: 'qatami-fajr', label: 'Sheikh Nasser Al-Qatami · Fajr', src: 'assets/adhan/nasser-al-qatami-fajr.mp3', credit: 'Sharjah Quran · all rights reserved' }
   ]
 };
 const ADHAN_LOCAL_KEYS = {
@@ -142,6 +144,12 @@ const PrayerWidget = (() => {
     return typeof target === 'string' ? document.getElementById(target) : target;
   }
 
+  function _setRootState(root, variant, state){
+    root.classList.add('prayer-widget', `prayer-widget--${variant || 'hero'}`);
+    root.classList.remove('is-loading', 'is-empty');
+    if(state) root.classList.add(state);
+  }
+
   function _statusText(inst){
     if(inst.error) return 'Offline';
     if(!inst.today) return 'Waiting';
@@ -151,7 +159,7 @@ const PrayerWidget = (() => {
   }
 
   function _renderLoading(root, variant){
-    root.className = `prayer-widget prayer-widget--${variant || 'hero'} is-loading`;
+    _setRootState(root, variant, 'is-loading');
     root.setAttribute('aria-busy', 'true');
     root.innerHTML = `
       <div class="pw-head">
@@ -165,10 +173,21 @@ const PrayerWidget = (() => {
       <div class="pw-skeleton pw-skeleton-bar"></div>`;
   }
 
-  function _renderEmpty(root, variant, mode, message){
-    root.className = `prayer-widget prayer-widget--${variant || 'hero'} is-empty`;
+  function _renderEmpty(root, variant, mode, message, options = {}){
+    _setRootState(root, variant, 'is-empty');
     root.setAttribute('aria-busy', 'false');
     const noLoc = mode === 'location';
+    const emptyText = noLoc
+      ? 'Choose a city or enter coordinates to calculate your local prayer times.'
+      : message || 'Try again, or use offline calculation in settings.';
+    if(variant === 'compact'){
+      root.innerHTML = `<div class="pw-empty">
+        <div class="pw-empty-title">${noLoc ? 'Your next prayer, at a glance' : 'Prayer times unavailable'}</div>
+        <div class="pw-empty-text">${_pwEsc(noLoc ? 'Choose a city or coordinates to see your prayer times.' : emptyText)}</div>
+        <div class="pw-empty-actions"><button type="button" class="btn-save" data-pw-action="${noLoc ? 'location' : 'retry'}">${noLoc ? 'Set location' : 'Retry'}</button><button type="button" class="btn-cancel" data-pw-action="settings">Prayer settings</button></div>
+      </div>`;
+      return;
+    }
     root.innerHTML = `
       <div class="pw-head">
         <div>
@@ -179,8 +198,8 @@ const PrayerWidget = (() => {
       <div class="pw-empty">
         <div class="pw-empty-icon">${typeof icon === 'function' ? icon(noLoc ? 'map-pin' : 'mosque', 26) : ''}</div>
         <div class="pw-empty-title">${noLoc ? 'Set your location' : 'Could not load prayer times'}</div>
-        <div class="pw-empty-text">${_pwEsc(message || (noLoc ? 'Prayer times need a city or coordinates. Stored on this device only.' : 'Try again, or use offline calculation in settings.'))}</div>
-        ${noLoc ? `<div class="pw-empty-times" aria-hidden="true">
+        <div class="pw-empty-text">${_pwEsc(emptyText)}</div>
+        ${noLoc && options.showTimes !== false ? `<div class="pw-empty-times" aria-hidden="true">
           ${['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(name => `<div><span>${name}</span><strong>—</strong></div>`).join('')}
         </div>` : ''}
         <div class="pw-empty-actions">
@@ -195,7 +214,7 @@ const PrayerWidget = (() => {
   function _render(inst){
     const root = inst.root;
     if(!inst.today || !inst.today.timings){
-      _renderEmpty(root, inst.options.variant, 'error', 'No prayer times are available for today.');
+      _renderEmpty(root, inst.options.variant, 'error', 'No prayer times are available for today.', inst.options);
       return;
     }
     const prefs = inst.prefs;
@@ -209,7 +228,7 @@ const PrayerWidget = (() => {
         <strong>${_pwEsc(formatPrayerTime(inst.today.timings[name], prefs.timeFormat))}</strong>
       </div>`).join('');
 
-    root.className = `prayer-widget prayer-widget--${inst.options.variant || 'hero'}`;
+    _setRootState(root, inst.options.variant);
     root.setAttribute('aria-busy', 'false');
     root.innerHTML = `
       <div class="pw-head">
@@ -295,6 +314,12 @@ const PrayerWidget = (() => {
     _set(inst, 'period', next.tomorrow
       ? `${next.name} tomorrow${next.estimated ? ' (estimated)' : ''} · ${formatPrayerTime(inst.today.timings[next.name], prefs.timeFormat)}`
       : `Until ${next.name} · ${formatPrayerTime(inst.today.timings[next.name], prefs.timeFormat)}`);
+    if(inst.options.variant === 'compact'){
+      _set(inst, 'period', next.tomorrow ? `Tomorrow${next.estimated ? ' · estimated' : ''}` : '');
+    }
+    if(inst.options.variant === 'garden'){
+      _set(inst, 'period', `${next.tomorrow ? 'Tomorrow · ' : ''}${next.name} · ${nextTimeText}${next.estimated ? ' · estimated' : ''}`);
+    }
 
     const progress = inst.root.querySelector('[data-pw="progress"]');
     if(progress) progress.style.width = `${Math.round(schedule.progress * 100)}%`;
@@ -337,6 +362,9 @@ const PrayerWidget = (() => {
         ? `Offline snapshot · ${_pwAgo(inst.cachedAt)}`
         : `${provider} · updated ${_pwAgo(inst.cachedAt)}`;
       if(foot.textContent !== fresh) foot.textContent = fresh;
+      if(inst.options.variant === 'compact' || inst.options.variant === 'garden'){
+        foot.textContent = `${provider}${stale ? ' · cached snapshot' : ''}${navigator.onLine === false ? ' · offline' : ''}${next.estimated ? ' · tomorrow estimated' : ''}`;
+      }
     }
   }
 
@@ -372,7 +400,7 @@ const PrayerWidget = (() => {
       inst.loading = false;
       inst.error = err;
       const noLocation = err && (err.code === 'NO_LOCATION' || err.message === 'No location set');
-      _renderEmpty(inst.root, inst.options.variant, noLocation ? 'location' : 'error', err.message);
+      _renderEmpty(inst.root, inst.options.variant, noLocation ? 'location' : 'error', err.message, inst.options);
       console.warn('[prayer-widget]', err.message);
     }
   }

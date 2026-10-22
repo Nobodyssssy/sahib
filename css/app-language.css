@@ -1,0 +1,85 @@
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:100 1000;font-display:swap;src:url('../assets/fonts/Dm-sans-Variable.woff2') format('woff2')}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:swap;src:url('../assets/fonts/Manrope-Variable.woff2') format('woff2')}
+html[data-font='tajawal']{--font-ui:'Tajawal',sans-serif;--font-label:'Tajawal',sans-serif;--font-heading:Georgia,Amiri,serif}
+html[data-font='dm-sans']{--font-ui:'DM Sans',Tajawal,sans-serif;--font-label:var(--font-ui);--font-heading:'DM Sans',Amiri,sans-serif}
+html[data-font='inter']{--font-ui:Inter,Tajawal,sans-serif;--font-label:var(--font-ui);--font-heading:Inter,Amiri,sans-serif}
+html[data-font='manrope']{--font-ui:Manrope,Tajawal,sans-serif;--font-label:var(--font-ui);--font-heading:Manrope,Amiri,sans-serif}
+html[data-font='amiri']{--font-ui:Amiri,serif;--font-label:Amiri,serif;--font-heading:Amiri,serif}
+html[data-font='cairo']{--font-ui:Cairo,sans-serif;--font-label:Cairo,sans-serif;--font-heading:Cairo,serif}
+body :is(.garden-welcome h1,.practice-head h1,.page-title,.settings-head h2,.day-repartition h2,.garden-section-title h2){font-family:var(--font-heading)}
+.font-grid .font-option{display:flex;flex-direction:column;align-items:center;gap:6px}.font-option small{font:11px var(--font-label);color:var(--garden-muted)}
+.home-prayer-switch{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 20px;background:var(--garden-card);border-bottom:1px solid var(--garden-line)}
+.home-prayer-switch>button{display:grid;place-items:center;min-width:38px;min-height:36px;border:1px solid var(--garden-line);border-radius:50%;background:var(--garden-bg);color:var(--garden-ink)}
+.home-prayer-switch [role=tablist]{display:flex;align-items:center;gap:6px;background:var(--garden-bg);border-radius:9px;padding:3px}
+.home-prayer-switch [role=tab]{border:0;min-height:34px;padding:6px 18px;background:none;border-radius:7px;color:var(--garden-muted);font:13px var(--font-label)}
+.home-prayer-switch [role=tab][aria-selected=true]{background:var(--garden-green);color:var(--garden-on)}
+.garden-prayer-suite :is(.garden-prayer,#home-day-cycle)[hidden]{display:none!important}
+.garden-prayer-suite .garden-prayer{border-radius:0 0 16px 16px}
+.day-repartition-track{height:28px;gap:4px;margin:18px 0;border:0;background:var(--garden-bg);padding:3px;border-radius:9px}
+.day-repartition-track>span{border-radius:4px;position:relative;min-width:4px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--garden-ink) 15%,transparent)}
+.day-repartition-track .day-track-night{background:color-mix(in srgb,var(--garden-green) 65%,var(--garden-card))}
+.day-repartition-track .day-track-last-third{background:var(--garden-green)}
+.day-repartition-track .day-track-day{background:color-mix(in srgb,var(--raw-accent) 30%,var(--garden-card))}
+.day-repartition-track>span::after{content:attr(data-label);position:absolute;inset:0;display:grid;place-items:center;font:9px var(--font-label);color:var(--garden-ink);overflow:hidden;white-space:nowrap}
+.day-repartition-track .day-track-last-third::after{color:var(--garden-on)}
+.day-repartition-grid .day-period{border-top:3px solid color-mix(in srgb,var(--garden-green) 45%,var(--garden-card))}
+.day-repartition-grid .day-period-last-third{border-top-color:var(--garden-green);background:var(--garden-soft)}
+.app-search-modal{width:760px;max-width:calc(100vw - 24px);max-height:85dvh;display:flex;flex-direction:column;padding:20px;background:var(--garden-card)}
+.app-search-modal header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.app-search-modal h2{font:25px var(--font-heading);margin:0}
+.app-search-input{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--garden-line);border-radius:10px;background:var(--garden-bg)}
+.app-search-input input{width:100%;min-width:0;font:15px var(--font-ui);color:var(--garden-ink);background:none;border:0;outline:0}
+#app-search-results{overflow:auto;padding:10px 0;min-height:160px}.app-search-result{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:start;gap:16px;padding:12px;border:0;border-radius:9px;background:none;color:var(--garden-ink)}.app-search-result:hover{background:var(--garden-soft)}.app-search-result>span{min-width:0}.app-search-result strong{display:block;font:500 15px/1.6 var(--font-ui)}.app-search-result small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:12px/1.8 var(--font-ui);color:var(--garden-muted)}#app-search-results h3{font:12px var(--font-label);color:var(--garden-muted);margin:15px 12px 4px}.app-search-empty{padding:24px;color:var(--garden-muted)}
+@media(max-width:820px){.home-prayer-switch{padding:9px 12px;gap:6px}.home-prayer-switch [role=tab]{padding:8px 12px;font-size:12px}.home-prayer-switch>button{min-width:36px}.app-search-modal{padding:16px}.day-repartition-track>span::after{font-size:8px}.day-repartition-track{height:25px}}
+.global-language-button{flex-shrink:0;min-width:44px;min-height:38px;padding:6px 10px;border:1px solid var(--garden-line);border-radius:9px;background:var(--garden-card);color:var(--garden-ink);font:13px var(--font-ui)}
+html[data-language] :is(.side-label-ar,.garden-greeting-ar,.cat-en,.cat-card-lg-en){display:none}
+html[data-language=en] .garden-date>span{direction:ltr}
+html[data-language=ar] body{font-family:var(--font-ui),Tajawal,sans-serif}
+html[data-language=ar] :is(.garden-home,.view,.settings-modal,.app-search-modal){direction:rtl}
+html[data-language=ar] .garden-grid{direction:rtl}
+html[data-language=ar] .garden-toolbar{direction:rtl}
+html[data-language=ar] .garden-date,html[data-language=ar] :is(.garden-action,.garden-section-title,.garden-daybook .desk-practice-copy,.day-repartition-head h2){text-align:right}
+html[data-language=ar] .garden-search{direction:rtl}
+html[data-language=ar] .garden-location{direction:rtl}
+html[data-language=ar] .sidebar-brand,html[data-language=ar] .side-nav-item{direction:rtl;text-align:right}
+html[data-language=ar] :is(.settings-head-text,.settings-section-desc,.settings-tab){text-align:right}
+html[data-language=ar] .app-search-result{direction:rtl}
+html[data-language=ar] .app-search-result>svg{transform:scaleX(-1)}
+html[data-language=ar] :is(.garden-name-body,.garden-footer,.books-container,.asma-container){direction:rtl;text-align:right}
+html[data-language=ar] .garden-daybook .desk-practice-title{align-items:flex-start}
+html[data-language=ar] .garden-daybook .desk-practice-title>span:not([lang]){display:none}
+html[data-language=en] .garden-daybook .desk-practice-title>span[lang]{display:none}
+html[data-language=ar] .garden-daybook .desk-practice-title>span[lang]{font-size:20px;color:var(--garden-ink)}
+html[data-language=ar] .garden-reading .quote-tafsir-body{direction:rtl;text-align:right}
+html[data-language=ar] .garden-welcome-copy{direction:rtl;text-align:right}
+html[data-language=ar] .garden-welcome h1{font-family:var(--font-ui),Amiri,serif}
+html[data-language=ar] .garden-action p[lang=ar]{text-align:right}
+@media(max-width:820px){.garden-toolbar .global-language-button{margin-inline-start:4px}.garden-toolbar{flex-wrap:wrap}.garden-date{flex:1}.garden-icon{flex-shrink:0}.garden-toolbar .garden-location{order:5}.header-left .global-language-button{min-width:40px}.day-repartition-head{align-items:flex-start}}
+html[data-language] .pw-prayer-ar,html[data-language] .prayer-arabic{display:none!important}
+html[data-language=ar] .asma-card-sub{font-family:Amiri,serif;font-size:16px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:right}
+html[data-language=en] .garden-reading>.garden-section-title>span{display:none}
+html[data-language=ar] .garden-name-body>strong{display:none}
+html[data-language=ar] .garden-name-body>small{font-family:Amiri,serif;font-size:16px;line-height:1.7}
+#asma-detail-body[dir=rtl] :is(.asma-detail-translit,.asma-detail-meaning){display:none}
+#asma-detail-body[dir=rtl] .asma-detail-ar{margin-bottom:0}
+html[data-language=ar] .garden-calendar-note .home-chip{font-family:Amiri,serif}
+html[data-language=ar] .garden-welcome-copy{background:linear-gradient(270deg,color-mix(in srgb,var(--garden-card) 95%,transparent) 65%,transparent);max-width:62%;padding-inline:30px}
+.app-reading-modal{width:620px;padding:24px}.app-reading-modal header{display:flex;justify-content:space-between;gap:20px;align-items:center}.app-reading-modal h2{font:22px Amiri,serif;margin:0}.app-reading-modal .app-reading-source{font:30px/1.9 Amiri,serif;color:var(--garden-ink);margin:25px 0}.app-reading-modal h3{font:15px var(--font-label);color:var(--garden-muted)}.app-reading-modal p{font:16px/1.9 var(--font-ui)}.app-reading-modal a{font:13px var(--font-label);color:var(--garden-green)}
+@media(max-width:820px){html[data-language=ar] .garden-welcome-copy{max-width:75%;padding-inline:18px}.app-reading-modal{padding:20px}.app-reading-modal .app-reading-source{font-size:27px}}
+.day-repartition[dir=rtl]{direction:rtl}.day-repartition[dir=ltr]{direction:ltr}
+.day-repartition[dir=rtl] .day-repartition-track{direction:rtl}
+@media(max-width:820px){body .topbar-center{min-width:0;flex:1}body .topbar-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}body .topbar{gap:7px}.header-left{gap:3px!important}}
+#view-prayer .prayer-row{grid-template-columns:26px minmax(0,1fr) auto}
+#view-prayer :is(.prayer-container,.prayer-layout,.prayer-card,.prayer-month-card,.prayer-loc,.prayer-updated){min-width:0;max-width:100%;overflow-wrap:anywhere}
+.day-repartition{min-width:0}.day-cycle-notes button{max-width:100%;white-space:normal}
+html[data-language=ar] #view-prayer .prayer-row{direction:rtl}html[data-language=ar] #view-prayer .prayer-name{text-align:right}
+@media(max-width:360px){#view-prayer .prayer-loc{font-size:11px;line-height:1.8}#view-prayer .prayer-toolbar-group{flex-wrap:wrap;max-width:100%}#view-prayer .prayer-status-chip{white-space:normal;max-width:100%}}
+.day-repartition-track .day-track-night{background:color-mix(in srgb,var(--garden-green) 35%,var(--garden-card))}
+.day-repartition-track>span::after{font-weight:600}
+@media(max-width:540px){.garden-toolbar{height:auto!important;min-height:142px;padding:10px 0 12px;row-gap:6px}.garden-toolbar .garden-search{display:flex!important;order:6;flex:0 0 100%;width:100%;min-height:44px;margin:0}.garden-toolbar .garden-location{order:5;min-height:32px}.garden-date{min-width:0!important}.garden-date>strong{font-size:12px}.garden-date>span{font-size:13px}.garden-toolbar .garden-icon{width:34px;min-width:34px}.garden-toolbar .global-language-button{min-width:38px}.garden-search .garden-search-hint{display:none}}
+@keyframes homeCardFace{from{opacity:.45;transform:translateX(8px)}to{opacity:1;transform:none}}
+.garden-prayer-suite>div:not([hidden]):is(.garden-prayer,#home-day-cycle){animation:homeCardFace .18s ease-out}
+@media(max-width:540px){.day-repartition-track>span::after{content:attr(data-phase);font-size:10px}.day-repartition .day-period{position:relative!important}.day-repartition .day-period::after{content:attr(data-phase);position:absolute;inset:10px 10px auto auto;font:10px var(--font-label);color:var(--garden-muted)}.day-repartition[dir=rtl] .day-period::after{inset:10px auto auto 10px}}
+@media(prefers-reduced-motion:reduce){.garden-prayer-suite>div{animation:none!important}}
+
+html[data-language=ar] .garden-welcome-copy{background:none}
+html[data-language=ar] .garden-welcome::before{content:"";position:absolute;inset:0;background:linear-gradient(270deg,color-mix(in srgb,var(--garden-card) 96%,transparent) 15%,color-mix(in srgb,var(--garden-card) 88%,transparent) 38%,transparent 76%);pointer-events:none}

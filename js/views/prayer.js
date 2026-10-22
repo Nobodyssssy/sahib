@@ -141,8 +141,9 @@ function _formatGregorianDate(day){
 
 function _formatHijriDate(hijri){
   if(!hijri) return '';
-  const m = hijri.monthAr || hijri.month;
-  return `${hijri.day} ${m} ${hijri.year} هـ`;
+  const ar=window.SAHIB_I18N?.language==='ar';
+  const m=ar?(hijri.monthAr||hijri.month):(hijri.month||hijri.monthAr);
+  return `${hijri.day} ${m} ${hijri.year} ${ar?'هـ':'AH'}`;
 }
 
 function _parseHM(str){
@@ -203,26 +204,26 @@ function _computeForbiddenOnBar(cycle, day, nextDay){
       key:'dawn',
       left:  toPct(fajr),
       width: toPct(sunrise + 15) - toPct(fajr),
-      nameEn: 'After Fajr until sunrise',
-      nameAr: 'من الفجر حتى طلوع الشمس',
+      nameEn: 'Fajr to Ishraq (approx.)',
+      nameAr: 'من الفجر إلى الإشراق (تقريبي)',
       rangeEn: `${_formatHM(fajr)} - ${_formatHM(sunrise + 15)}`,
-      noteEn: 'Voluntary prayers are forbidden in this window. Fard and the 2 sunnah of Fajr are exempt.',
-      noteAr: 'Voluntary prayers are forbidden in this window. Fard and the 2 sunnah of Fajr are exempt.',
-      ref: 'Sahih Bukhari 5819',
-      refUrl: 'https://sunnah.com/bukhari:5819',
+      noteEn: 'General restriction on voluntary prayer after Fajr. The overlay ends 15 minutes after sunrise as a practical estimate; exceptions depend on the prayer and school.',
+      noteAr: 'نهي عام عن النوافل بعد الفجر. ينتهي التظليل بعد الشروق بـ١٥ دقيقة كتقدير عملي؛ وتختلف الاستثناءات بحسب الصلاة والمذهب.',
+      ref: 'Sahih Muslim 831 / 832',
+      refUrl: 'https://sunnah.com/muslim:832',
     },
     {
       key:'zenith',
       left:  toPct(dhuhr - 5),
       width: toPct(dhuhr) - toPct(dhuhr - 5),
       isZenith: true,
-      nameEn: 'Solar zenith (Istiwāʾ)',
-      nameAr: 'استواء الشمس',
+      nameEn: 'Around solar noon (approx.)',
+      nameAr: 'حول الاستواء (تقريبي)',
       rangeEn: `${_formatHM(dhuhr - 5)} - ${_formatHM(dhuhr)}`,
-      noteEn: 'Voluntary prayer is forbidden while the sun is at its peak (~5 minutes).',
-      noteAr: 'Voluntary prayer is forbidden while the sun is at its peak (~5 minutes).',
-      ref: 'Sahih Bukhari 5819',
-      refUrl: 'https://sunnah.com/bukhari:5819',
+      noteEn: 'A 5-minute buffer before the timetable’s Dhuhr, used as an approximate guide around solar noon. It is not an independently calculated solar transit.',
+      noteAr: 'هامش خمس دقائق قبل ظهر الجدول، دليل تقريبي حول الاستواء وليس حسابًا مستقلًا لعبور الشمس.',
+      ref: 'Sahih Muslim 831 / 832',
+      refUrl: 'https://sunnah.com/muslim:832',
     },
     {
       key:'asr',
@@ -231,10 +232,10 @@ function _computeForbiddenOnBar(cycle, day, nextDay){
       nameEn: 'After Asr until Maghrib',
       nameAr: 'من العصر حتى غروب الشمس',
       rangeEn: `${_formatHM(asr)} - ${_formatHM(maghrib)}`,
-      noteEn: 'Voluntary prayers are forbidden from Asr until sunset. The Asr prayer itself is valid.',
-      noteAr: 'Voluntary prayers are forbidden from Asr until sunset. The Asr prayer itself is valid.',
-      ref: 'Sahih Bukhari 5819',
-      refUrl: 'https://sunnah.com/bukhari:5819',
+      noteEn: 'General restriction on voluntary prayer after Asr until sunset, with exceptions differing by prayer and school. The Asr prayer itself is not the restricted voluntary prayer.',
+      noteAr: 'نهي عام عن النوافل بعد العصر حتى الغروب، مع استثناءات تختلف بحسب الصلاة والمذهب. وصلاة العصر نفسها ليست النافلة المنهي عنها.',
+      ref: 'Sahih Muslim 831 / 832',
+      refUrl: 'https://sunnah.com/muslim:832',
     },
   ];
 }
@@ -243,7 +244,8 @@ function _computeDailyCycle(day, nextDay){
   if(!day || !nextDay) return null;
 
   const mg  = _parseHM(day.timings.Maghrib);
-  const ish = _parseHM(day.timings.Isha);
+  const rawIsha = _parseHM(day.timings.Isha);
+  const ish = rawIsha < mg ? rawIsha + 1440 : rawIsha;
   const faj = _parseHM(nextDay.timings.Fajr) + 1440;
   const sr  = _parseHM(nextDay.timings.Sunrise) + 1440;
   const dh  = _parseHM(nextDay.timings.Dhuhr) + 1440;
@@ -281,8 +283,8 @@ function _computeDailyCycle(day, nextDay){
         { labelEn:'Maghrib', labelAr:'المغرب', time: mg },
         { labelEn:'Isha',    labelAr:'العشاء', time: ish },
       ],
-      noteEn: 'Awwabin is a voluntary prayer performed after Maghrib. Recommended between Maghrib and Isha.',
-      noteAr: 'Awwabin is a voluntary prayer performed after Maghrib. Recommended between Maghrib and Isha.',
+      noteEn: 'The night begins at Maghrib. Isha is marked within the night; its position does not change the equal night thirds.',
+      noteAr: 'يبدأ الليل من المغرب. وتظهر العشاء ضمن الليل، ولا يغيّر موضعها تقسيمه إلى أثلاث متساوية.',
       sourceLabel: 'IslamQA 2626',
       sourceUrl: 'https://islamqa.info/en/answers/2626/what-is-salat-al-awwabin',
     },
@@ -294,46 +296,48 @@ function _computeDailyCycle(day, nextDay){
         { labelEn:'Midnight', labelAr:'منتصف الليل', time: mid },
       ],
       noteEn: 'Islamic midnight is the midpoint between Maghrib and Fajr - the latest time for Isha per some scholars.',
-      noteAr: 'Islamic midnight is the midpoint between Maghrib and Fajr - the latest time for Isha per some scholars.',
+      noteAr: 'منتصف الليل هو النقطة الوسطى بين المغرب والفجر؛ وهو علامة زمنية وليس فترة.',
     },
     {
       start: t2_3, end: faj, kind:'last-third',
       shortEn:'Last ⅓', shortAr:'الثلث الأخير',
       label:'Last third - Tahajjud', labelAr:'الثلث الأخير - التهجد',
       noteEn: 'Best time for tahajjud and dua - our Lord descends to the lowest heaven and answers those who call upon Him.',
-      noteAr: 'Best time for tahajjud and dua - our Lord descends to the lowest heaven and answers those who call upon Him.',
-      sourceLabel: 'IslamQA 291824',
-      sourceUrl: 'https://islamqa.info/en/answers/291824',
+      noteAr: 'وقت للتهجد والدعاء والاستغفار في الثلث الأخير من الليل؛ انظر صحيح البخاري ١١٤٥.',
+      sourceLabel: 'Sahih al-Bukhari 1145',
+      sourceUrl: 'https://sunnah.com/bukhari:1145',
     },
     {
       start: faj, end: sr, kind:'day',
       shortEn:'Fajr', shortAr:'الفجر',
       label:'Fajr to Sunrise', labelAr:'الفجر إلى الشروق',
-      noteEn: 'Voluntary prayers are forbidden after Fajr until sunrise.',
-      noteAr: 'Voluntary prayers are forbidden after Fajr until sunrise.',
-      sourceLabel: 'Sahih Muslim 5819',
-      sourceUrl: 'https://sunnah.com/bukhari:5819',
+      noteEn: 'Dawn runs from Fajr to sunrise. The hatched guide extends 15 minutes beyond sunrise; voluntary-prayer exceptions depend on the prayer and school.',
+      noteAr: 'يمتد الفجر إلى الشروق. ويضيف دليل التظليل ١٥ دقيقة بعد الشروق؛ وتختلف استثناءات النوافل بحسب الصلاة والمذهب.',
+      sourceLabel: 'Sahih Muslim 832',
+      sourceUrl: 'https://sunnah.com/muslim:832',
     },
     {
       start: sr, end: dh, kind:'day',
       shortEn:'Forenoon', shortAr:'الضحى',
       label:'Forenoon - Duha', labelAr:'الضحى',
+      noteEn: 'The illustrated optional Duha window begins about 15 minutes after sunrise and ends 5 minutes before Dhuhr. These buffers are approximate.',
+      noteAr: 'تبدأ نافذة الضحى المرسومة بعد الشروق بنحو ١٥ دقيقة وتنتهي قبل الظهر بخمس دقائق. هذه الهوامش تقريبية.',
     },
     {
       start: dh, end: asr, kind:'day',
       shortEn:'Dhuhr', shortAr:'الظهر',
       label:'Afternoon', labelAr:'الظهيرة والعصر',
       noteEn: 'Voluntary prayer is forbidden for a few minutes just before Dhuhr, while the sun is at its zenith.',
-      noteAr: 'Voluntary prayer is forbidden for a few minutes just before Dhuhr, while the sun is at its zenith.',
+      noteAr: 'يمتد هذا الجزء من الظهر إلى العصر. ويظهر هامش الاستواء التقريبي قبل الظهر بشكل منفصل.',
     },
     {
       start: asr, end: mgN, kind:'day',
       shortEn:'Asr', shortAr:'العصر',
       label:'Asr to Maghrib', labelAr:'العصر إلى المغرب',
       noteEn: 'Voluntary prayers are forbidden after Asr until Maghrib.',
-      noteAr: 'Voluntary prayers are forbidden after Asr until Maghrib.',
-      sourceLabel: 'Sahih Muslim 5819',
-      sourceUrl: 'https://sunnah.com/bukhari:5819',
+      noteAr: 'نهي عام عن النوافل بعد العصر إلى المغرب، مع استثناءات تختلف بحسب الصلاة والمذهب.',
+      sourceLabel: 'Sahih Muslim 832',
+      sourceUrl: 'https://sunnah.com/muslim:832',
     },
   ];
 
@@ -354,7 +358,7 @@ function _computeDailyCycle(day, nextDay){
 
 async function _loadCycleLang(){
   const saved = await store.getMeta('cycleLang');
-  _cycleLang = (saved === 'ar' || saved === 'en') ? saved : 'ar';
+  _cycleLang = (saved === 'ar' || saved === 'en') ? saved : window.SAHIB_I18N?.language || 'en';
 }
 
 function setCycleLang(lang){
@@ -397,180 +401,71 @@ function _computeNightThirds(day, nextDay){
 }
 
 function _cycleIdlePanelHTML(){
-  const isAr = _cycleLang === 'ar';
-  const t = isAr ? 'اضغط على قسم للتفاصيل' : 'Tap a segment for details';
-  const chips = isAr
-    ? [
-        ['cycle-legend-night',      'الليل'],
-        ['cycle-legend-last-third', 'الثلث الأخير'],
-        ['cycle-legend-day',        'النهار'],
-        ['cycle-legend-forbidden',  'أوقات النهي'],
-      ]
-    : [
-        ['cycle-legend-night',      'Night'],
-        ['cycle-legend-last-third', 'Last ⅓'],
-        ['cycle-legend-day',        'Day'],
-        ['cycle-legend-forbidden',  'Forbidden'],
-      ];
-  return `
-    <div class="cycle-panel-inner cycle-panel-idle">
-      <div class="cycle-panel-idle-title">${t}</div>
-      <div class="cycle-panel-idle-chips">
-        ${chips.map(([cls, label]) =>
-          `<div class="cycle-panel-chip"><span class="cycle-panel-swatch ${cls}"></span>${label}</div>`
-        ).join('')}
+  return `<p class="day-cycle-hint">${_cycleLang==='ar'?'اختر فترة لعرض تفاصيلها ومراجعها.':'Choose a period to see its details and references.'}</p>`;
+}
+
+function _cycleDuration(minutes){
+  const n=Math.round(minutes),h=Math.floor(n/60),m=n%60;
+  return _cycleLang==='ar'?`${h?h+' س ':''}${m?m+' د':''}`.trim():`${h?h+'h ':''}${m?m+'m':''}`.trim();
+}
+
+function _renderRhythmTimeline(cycle,day,nextDay){
+  const ar=_cycleLang==='ar',t=(en,arabic)=>ar?arabic:en;
+  const pct=min=>Math.max(0,Math.min(100,(min-cycle.nightStart)/cycle.total*100));
+  const range=(start,end)=>`left:${pct(start)}%;width:${pct(end)-pct(start)}%`;
+  const night=pct(cycle.nightEnd),last=cycle.segments[2];
+  const sr=_parseHM(nextDay.timings.Sunrise)+1440,dh=_parseHM(nextDay.timings.Dhuhr)+1440;
+  const ish=_parseHM(day.timings.Isha)+( _parseHM(day.timings.Isha)<cycle.nightStart?1440:0);
+  const markers=cycle.boundaries.filter(b=>['maghrib','fajr','sunrise','dhuhr','asr','maghribN'].includes(b.key));
+  const asr=_parseHM(nextDay.timings.Asr)+1440;
+  const scenes=[['evening',cycle.nightStart,Math.min(ish,cycle.nightEnd)],['night',Math.min(ish,last.start),last.start],['last-night',last.start,cycle.nightEnd],['dawn',cycle.nightEnd,sr],['day',sr,asr],['sunset',asr,cycle.dayEnd]].filter(([,start,end])=>end>start);
+  return `<div class="rhythm-scroll-hint">${icon('arrow-left',12)} ${t('Explore the full day →','استعرض اليوم كاملًا ←')}</div>
+    <div class="rhythm-scroll" tabindex="0" role="region" aria-label="${t('Daily timeline. Scroll horizontally to explore.','خط اليوم الزمني. مرّر أفقيًا للاستعراض.')}"><div class="rhythm-chart" dir="ltr">
+      <div class="rhythm-events">${markers.map(m=>`<div class="rhythm-event rhythm-event-${m.key}" style="left:${pct(m.time)}%"><span>${icon(['maghrib','maghribN','sunrise'].includes(m.key)?'sunrise':m.key==='isha'?'moon':'sun',17)}</span><strong>${esc(ar?m.labelAr:m.key==='maghribN'?'Maghrib':m.label)}</strong><time>${_formatHM(m.time)}</time></div>`).join('')}</div>
+      <div class="rhythm-landscape" style="--night-edge:${night}%;--last-start:${pct(last.start)}%;--last-end:${night}%">
+        <div class="rhythm-scenes" aria-hidden="true">${scenes.map(([kind,start,end])=>`<div class="rhythm-scene rhythm-scene-${kind}" data-scene="${kind}" data-start="${start}" data-end="${end}" style="${range(start,end)}"></div>`).join('')}</div>
+        <span class="rhythm-moon" style="left:${pct((Math.min(ish,last.start)+last.start)/2)}%" aria-hidden="true">☾</span><span class="rhythm-sun" style="left:${pct(dh)}%" aria-hidden="true"></span>
+        ${cycle.segments.map((seg,i)=>`<button class="rhythm-zone rhythm-zone-${seg.kind}" style="${range(seg.start,seg.end)}" onclick="onCycleSegTap(${i})" aria-label="${esc(ar?seg.labelAr:seg.label)} ${_formatHM(seg.start)} – ${_formatHM(seg.end)}">${seg.kind==='last-third'?`<span>✧</span><strong>${t('Last third','الثلث الأخير')}</strong>`:''}</button>`).join('')}
+        <div class="rhythm-evening" style="${range(cycle.nightStart,Math.min(ish,cycle.nightEnd))}">${t('Evening','المساء')}</div>
+        ${_computeForbiddenOnBar(cycle,day,nextDay).map((f,i)=>`<button class="rhythm-restricted rhythm-restricted-${f.key}" style="left:${f.left}%;width:${f.width}%" onclick="onCycleForbiddenTap(${i})" aria-label="${esc(ar?f.nameAr:f.nameEn)} ${f.rangeEn}">${f.key!=='zenith'?'<span aria-hidden="true">⊘</span>':''}</button>`).join('')}
+        <button class="rhythm-sunrise-buffer" style="${range(sr,Math.min(sr+15,dh))}" onclick="onCycleForbiddenTap(0)" aria-label="${t('Sunrise to Ishraq · approximately 15 minutes','من الشروق إلى الإشراق · نحو ١٥ دقيقة')}"></button>
+        <button class="rhythm-midpoint" style="left:${pct(cycle.markers.midnight.time)}%" onclick="onCycleMarkerTap('midnight')" aria-label="${t('Islamic midnight','منتصف الليل الإسلامي')} ${_formatHM(cycle.markers.midnight.time)}"><time>${_formatHM(cycle.markers.midnight.time)}</time><span>◆</span></button>
       </div>
-    </div>`;
+      <div class="rhythm-lower-events"><div class="rhythm-isha-label" style="left:${pct(ish)}%"><span>${icon('moon',17)}</span><strong>${t('Isha','العشاء')}</strong><time>${_formatHM(ish)}</time></div></div>
+      <div class="rhythm-brackets"><span style="${range(cycle.nightStart,cycle.nightEnd)}">${t('Night · Maghrib to Fajr','الليل · من المغرب إلى الفجر')}</span><span style="${range(cycle.dayStart,cycle.dayEnd)}">${t('Day · Fajr to Maghrib','النهار · من الفجر إلى المغرب')}</span></div>
+      <div class="rhythm-third-labels">${cycle.segments.slice(0,3).map((seg,i)=>`<button class="${i===2?'rhythm-third-emphasis':''}" style="${range(seg.start,seg.end)}" onclick="onCycleSegTap(${i})">${esc(ar?seg.shortAr:seg.shortEn)}</button>`).join('')}<button class="rhythm-duha" style="${range(Math.min(sr+15,dh-5),dh-5)}" onclick="onCycleSegTap(4)">${t('Ishraq / Duha · optional worship','الإشراق / الضحى · نافلة')}</button></div>
+    </div></div>`;
 }
 
 function _renderDailyCycleHTML(cycle, day, nextDay){
   if(!cycle) return '';
-
-  const isAr = _cycleLang === 'ar';
-  const toMin = (v) => {
-    if(typeof v === 'number' && Number.isFinite(v)) return v;
-    if(typeof v === 'string') return _parseHM(v);
-    return 0;
-  };
-
-  const tomorrowHijri = nextDay && nextDay.hijri
-    ? (isAr
-        ? `${nextDay.hijri.day} ${nextDay.hijri.monthAr || nextDay.hijri.month} ${nextDay.hijri.year}`
-        : `${String(nextDay.hijri.day).padStart(2, '0')} ${nextDay.hijri.month} ${nextDay.hijri.year}`)
-    : '';
-
-  const titleText = isAr ? 'الدورة اليومية' : 'Daily Cycle';
-  const start = toMin(cycle.nightStart);
-  const total = toMin(cycle.total) || 1;
-  const pctOf = (v) => ((toMin(v) - start) / total) * 100;
-
-  const segsHTML = cycle.segments.map((s, i) => {
-    const left  = pctOf(s.start);
-    const width = pctOf(s.end) - pctOf(s.start);
-    const showLabel = width >= 5;
-    const name = isAr ? (s.shortAr || '') : (s.shortEn || '');
-
-    let innerHTML = '';
-    if(showLabel){
-      if(Array.isArray(s.inlineTimes) && s.inlineTimes.length){
-        innerHTML = `<span class="cycle-seg-label cycle-seg-label-multi">
-          <span class="cycle-seg-label-name">${name}</span>
-          ${s.inlineTimes.map(it => `
-            <span class="cycle-seg-inline-time">
-              <span class="cycle-seg-inline-name">${isAr ? it.labelAr : it.labelEn}</span>
-              <span class="cycle-seg-inline-value">${_formatHM(it.time)}</span>
-            </span>
-          `).join('')}
-        </span>`;
-      } else {
-        innerHTML = `<span class="cycle-seg-label">
-          <span class="cycle-seg-label-name">${name}</span>
-          <span class="cycle-seg-label-time">${_formatHM(s.start)}</span>
-        </span>`;
-      }
-    }
-    return `<div class="cycle-seg cycle-seg-${s.kind}"
-                 style="left:${left}%;width:${width}%"
-                 onclick="onCycleSegTap(${i})"
-                 data-idx="${i}">${innerHTML}</div>`;
-  }).join('');
-
-  const nightPct = 0;
-  const nightWidth = pctOf(cycle.nightEnd) - pctOf(cycle.nightStart);
-  const dayPct = pctOf(cycle.dayStart);
-  const dayWidth = pctOf(cycle.dayEnd) - pctOf(cycle.dayStart);
-
-  const markersHTML = `
-    <div class="cycle-marker cycle-marker-tap" style="left:${pctOf(cycle.markers.awwabin.time)}%"
-         onclick="onCycleMarkerTap('awwabin')" title="${isAr ? 'الأوّابين' : 'Awwabin'}">
-      <span class="cycle-marker-dot"></span>
+  const ar=_cycleLang==='ar',t=(en,arabic)=>ar?arabic:en,last=cycle.segments[2];
+  return `<section class="prayer-daily-cycle-card day-repartition rhythm-dashboard" dir="${ar?'rtl':'ltr'}">
+    <div class="day-repartition-head"><div><span class="day-repartition-eyebrow">${t('Maghrib to Maghrib','من المغرب إلى المغرب')}</span><h2>${t('The rhythm of your day','إيقاع يومك')}</h2></div><div class="day-cycle-controls"><button class="cycle-lang-btn ${!ar?'on':''}" onclick="setCycleLang('en')">EN</button><button class="cycle-lang-btn ${ar?'on':''}" onclick="setCycleLang('ar')">عربي</button><button class="cycle-help-btn" onclick="openDailyCycleHelp()" aria-label="${t('About the day breakdown','حول توزيع اليوم')}">?</button></div></div>
+    ${_renderRhythmTimeline(cycle,day,nextDay)}
+    <div class="rhythm-restriction-key"><span class="rhythm-hatch-key"></span>${t('Hatched areas: restricted voluntary-prayer windows','المناطق المخططة: أوقات النهي عن النوافل')} <span aria-hidden="true">⊘</span></div>
+    <div class="rhythm-insights">
+      <button class="rhythm-last-third" onclick="onCycleSegTap(2)"><span class="rhythm-last-symbol" aria-hidden="true">☾<i>✧</i></span><span class="rhythm-last-copy"><small>${t('A quiet time for prayer & dua','وقت للصلاة والدعاء')}</small><strong>${t('Last third of the night','الثلث الأخير من الليل')}</strong><span dir="ltr">${_formatHM(last.start)} <b>—</b> ${_formatHM(last.end)}</span></span><span class="rhythm-last-duration">${_cycleDuration(last.end-last.start)} ${icon('arrow-left',16)}</span></button>
+      <div class="rhythm-facts"><span>${icon('moon',16)} ${t('Night','الليل')}<strong>${_cycleDuration(cycle.nightEnd-cycle.nightStart)}</strong></span><span>${icon('sun',16)} ${t('Day','النهار')}<strong>${_cycleDuration(cycle.dayEnd-cycle.dayStart)}</strong></span><button onclick="onCycleMarkerTap('midnight')"><i>◆</i> ${t('Islamic midnight','منتصف الليل الإسلامي')}<strong dir="ltr">${_formatHM(cycle.markers.midnight.time)}</strong><small>${t('A midpoint, not a duration','نقطة منتصف، وليست مدة')}</small></button></div>
     </div>
-    <div class="cycle-marker cycle-marker-tap" style="left:${pctOf(cycle.markers.midnight.time)}%"
-         onclick="onCycleMarkerTap('midnight')" title="${isAr ? 'منتصف الليل' : 'Islamic midnight'}">
-      <span class="cycle-marker-dot"></span>
-    </div>
-  `;
-
-  const forbiddenList = _computeForbiddenOnBar(cycle, day, nextDay);
-  const forbiddenHTML = forbiddenList.map((f, i) => {
-    const extraClass = f.isZenith ? ' cycle-forbidden--zenith' : '';
-    if(f.isZenith){
-      return `
-        <div class="cycle-forbidden${extraClass}"
-             style="left:${f.left}%;width:${f.width}%"></div>
-        <div class="cycle-zenith-hit"
-             style="left:${f.left + f.width / 2}%"
-             onclick="onCycleForbiddenTap(${i})"
-             title="${isAr ? f.nameAr : f.nameEn}"></div>
-      `;
-    }
-    const isLastWindow = (f.key === 'asr');
-    const cornerClass = isLastWindow ? ' cycle-forbidden--right-edge' : '';
-    return `
-      <div class="cycle-forbidden${cornerClass}"
-           style="left:${f.left}%;width:${f.width}%"
-           data-forbidden-idx="${i}"></div>
-      <div class="cycle-forbidden-hit"
-           style="left:${f.left}%;width:${f.width}%;min-width:20px"
-           onclick="onCycleForbiddenTap(${i})"
-           title="${isAr ? f.nameAr : f.nameEn}"></div>
-    `;
-  }).join('');
-
-  return `
-    <div class="prayer-daily-cycle-card">
-      <div class="cycle-head">
-        <div class="cycle-head-left">
-          <span class="cycle-title">${titleText}</span>
-        </div>
-        <div class="cycle-lang-toggle">
-          <button class="cycle-lang-btn ${!isAr?'on':''}" onclick="event.stopPropagation();setCycleLang('en')">EN</button>
-          <button class="cycle-lang-btn ${isAr?'on':''}" onclick="event.stopPropagation();setCycleLang('ar')">عربي</button>
-        </div>
-        <button class="cycle-help-btn" onclick="openDailyCycleHelp()" aria-label="About the daily cycle">?</button>
-      </div>
-
-      <div class="cycle-captions" style="--night-left:${nightPct}%;--night-width:${nightWidth}%;--day-left:${dayPct}%;--day-width:${dayWidth}%">
-        <div class="cycle-caption cycle-caption-night">
-          <span class="cycle-caption-icon">${icon('moon', 14)}</span>
-          <span class="cycle-caption-en">${isAr ? 'الليل' : 'NIGHT'}</span>
-        </div>
-        <div class="cycle-caption cycle-caption-day">
-          <span class="cycle-caption-icon">${icon('sun', 14)}</span>
-          <span class="cycle-caption-en">${isAr ? 'النهار' : 'DAY'}</span>
-        </div>
-      </div>
-      <div class="cycle-hijri-dates">
-        <span class="cycle-hijri-date">${isAr ? 'غداً' : 'Tomorrow'} \u00B7 ${tomorrowHijri}</span>
-      </div>
-      <div class="cycle-bar-wrap">
-        <div class="cycle-bar">
-          ${segsHTML}
-          ${markersHTML}
-          ${forbiddenHTML}
-        </div>
-        <div class="cycle-marker-labels">
-          <div class="cycle-marker-label" style="left:${pctOf(cycle.markers.awwabin.time)}%">${isAr ? 'الأوّابين' : 'Awwabin'}</div>
-          <div class="cycle-marker-label" style="left:${pctOf(cycle.markers.midnight.time)}%">${isAr ? 'منتصف الليل' : 'Midnight'}</div>
-        </div>
-      </div>
-
-      <div class="cycle-panel" id="cycle-panel" aria-live="polite">
-        ${_cycleIdlePanelHTML()}
-      </div>
-    </div>`;
+    <div class="day-repartition-grid">${cycle.segments.map((seg,i)=>`<button class="cycle-seg day-period day-period-${seg.kind}" data-idx="${i}" onclick="onCycleSegTap(${i})"><span class="day-period-icon">${icon(seg.kind==='day'?'sun':'moon',16)}</span><strong>${esc(ar?seg.shortAr:seg.shortEn)}</strong><span class="day-period-range" dir="ltr">${_formatHM(seg.start)} – ${_formatHM(seg.end)}</span><small>${_cycleDuration(seg.end-seg.start)}</small></button>`).join('')}</div>
+    <details class="rhythm-guidance"><summary><span class="rhythm-hatch-key"></span>${t('Restricted voluntary-prayer windows · timing guide','أوقات النهي عن النوافل · دليل التوقيت')}</summary><p>${t('Hatching marks Fajr until 15 minutes after sunrise, the 5 minutes before Dhuhr, and Asr until Maghrib. These are approximate timing buffers, not a complete fiqh profile. Exceptions differ by prayer and school; your Asr setting changes its start time.','يشير التظليل إلى ما بعد الفجر حتى ١٥ دقيقة بعد الشروق، والخمس دقائق قبل الظهر، وما بعد العصر حتى المغرب. هذه هوامش توقيت تقريبية وليست ملف أحكام فقهيًا كاملًا. تختلف الاستثناءات باختلاف الصلاة والمذهب، ويغيّر إعداد العصر وقت بدايته.')}</p><div class="day-cycle-notes">${_computeForbiddenOnBar(cycle,day,nextDay).map((f,i)=>`<button class="cycle-forbidden" onclick="onCycleForbiddenTap(${i})">${esc(ar?f.nameAr:f.nameEn)} <span dir="ltr">${f.rangeEn}</span></button>`).join('')}</div></details>
+    <div class="cycle-panel" id="cycle-panel" aria-live="polite">${_cycleIdlePanelHTML()}</div>
+  </section>`;
 }
 
 function onCycleSegTap(idx){
   let day, nextDay;
-  if(_prayerData && _prayerData.selectedDay){
+  if(document.getElementById('view-home')?.classList.contains('active') && window._homeCycleData){
+    day=window._homeCycleData.today;nextDay=window._homeCycleData.nextDay;
+  } else if(_prayerData && _prayerData.selectedDay){
     day = _prayerData.selectedDay;
     const nd = new Date(_prayerData.selectedDate);
     nd.setDate(nd.getDate() + 1);
     nextDay = (nd.getFullYear() === _prayerData.monthYear &&
                (nd.getMonth() + 1) === _prayerData.monthMonth)
       ? _findDayInMonth(_prayerData.monthData, nd)
-      : null;
+      : _prayerData.nextDay;
   } else if(window._homeCycleData){
     day = window._homeCycleData.today;
     nextDay = window._homeCycleData.nextDay;
@@ -626,7 +521,7 @@ function onCycleSegTap(idx){
       <div class="cycle-panel-row-1">
         <span class="cycle-panel-swatch cycle-legend-${s.kind}"></span>
         <span class="cycle-panel-en">${name}</span>
-        <span class="cycle-panel-dur">${_formatDuration(s.end - s.start)}</span>
+        <span class="cycle-panel-dur">${_cycleDuration(s.end - s.start)}</span>
       </div>
       <div class="cycle-panel-row-2">
         ${_formatHM(s.start)} \u2192 ${_formatHM(s.end)}
@@ -643,7 +538,7 @@ function onCycleMarkerTap(key){
   const panel = activeView.querySelector('#cycle-panel');
   if(!panel) return;
 
-  const day = (_prayerData && _prayerData.selectedDay)
+  const day = document.getElementById('view-home')?.classList.contains('active') && window._homeCycleData ? window._homeCycleData.today : (_prayerData && _prayerData.selectedDay)
     ? _prayerData.selectedDay
     : (window._homeCycleData && window._homeCycleData.today);
   if(!day) return;
@@ -661,7 +556,7 @@ function onCycleMarkerTap(key){
       name: isAr ? 'منتصف الليل' : 'Islamic midnight',
       time: null,
       note: isAr
-        ? 'Islamic midnight is the midpoint between Maghrib and Fajr, not 12:00 AM.'
+        ? 'منتصف الليل الإسلامي هو النقطة الوسطى بين المغرب والفجر، وليس بالضرورة الساعة ١٢ ليلًا.'
         : 'The midpoint between Maghrib and Fajr - not 12:00 AM. Some scholars hold that it is the latest time to pray Isha.',
     },
   };
@@ -674,14 +569,16 @@ function onCycleMarkerTap(key){
 
 function onCycleForbiddenTap(idx){
   let day, nextDay;
-  if(_prayerData && _prayerData.selectedDay){
+  if(document.getElementById('view-home')?.classList.contains('active') && window._homeCycleData){
+    day=window._homeCycleData.today;nextDay=window._homeCycleData.nextDay;
+  } else if(_prayerData && _prayerData.selectedDay){
     day = _prayerData.selectedDay;
     const nd = new Date(_prayerData.selectedDate);
     nd.setDate(nd.getDate() + 1);
     nextDay = (nd.getFullYear() === _prayerData.monthYear &&
                (nd.getMonth() + 1) === _prayerData.monthMonth)
       ? _findDayInMonth(_prayerData.monthData, nd)
-      : null;
+      : _prayerData.nextDay;
   } else if(window._homeCycleData){
     day = window._homeCycleData.today;
     nextDay = window._homeCycleData.nextDay;
@@ -799,6 +696,7 @@ function closeForbiddenNote(){
 }
 
 function openDailyCycleHelp(){
+  _cycleHelpLang = _cycleLang;
   let modal = document.getElementById('ov-cycle-help');
   if(!modal){
     modal = document.createElement('div');
@@ -840,20 +738,20 @@ function _cycleHelpHTML(){
   const t = {
     introLabel: isAr ? 'ما هي الدورة اليومية؟' : 'What is the daily cycle?',
     intro: isAr
-      ? 'The Islamic day starts at Maghrib and ends at the next Maghrib. The bar shows the full cycle from Maghrib to Maghrib, split at each prayer time.'
+      ? 'يبدأ اليوم من المغرب وينتهي بالمغرب التالي. يوضح الخط الليل وأثلاثه والنهار ومواقيت الصلاة.'
       : 'The Islamic day starts at Maghrib and ends at the next Maghrib. The bar shows the full cycle from Maghrib to Maghrib, split at each prayer time.',
     lastLabel: isAr ? 'الثلث الأخير' : 'The last third',
     lastBody: isAr
-      ? 'The best time for tahajjud.'
+      ? 'الثلث الأخير من الليل وقت للتهجد والدعاء والاستغفار؛ انظر صحيح البخاري ١١٤٥.'
       : 'The best time for tahajjud. The Prophet said: "Our Lord descends to the lowest heaven in the last third of every night and says: Who is calling upon Me that I may answer him? Who is asking of Me that I may give him? Who is seeking My forgiveness that I may forgive him?" (Sahih al-Bukhari 1145, Sahih Muslim 758)',
     midnightLabel: isAr ? 'منتصف الليل الإسلامي' : 'Islamic midnight',
     midnightBody: isAr
-      ? 'Islamic midnight is the midpoint between Maghrib and Fajr, not 12:00 AM.'
+      ? 'منتصف الليل الإسلامي هو النقطة الوسطى بين المغرب والفجر، وليس بالضرورة الساعة ١٢ ليلًا.'
       : 'The midpoint between Maghrib and Fajr - not 12:00 AM. Some scholars hold that it is the latest time to pray Isha.',
-    awwabinLabel: isAr ? 'الأوّابين' : 'Awwabin',
+    awwabinLabel: isAr ? 'الإشراق والضحى' : 'Ishraq / Duha',
     awwabinBody: isAr
-      ? 'A voluntary prayer after Maghrib. Recommended between Maghrib and Isha.'
-      : 'A voluntary prayer after Maghrib. Recommended between Maghrib and Isha.',
+      ? 'نافلة بعد ارتفاع الشمس وقبل الاستواء. يستخدم الرسم هامش ١٥ دقيقة بعد الشروق وخمس دقائق قبل الظهر كتقدير عملي.'
+      : 'An optional prayer window after the sun has risen and before solar noon. The chart uses approximate buffers of 15 minutes after sunrise and 5 minutes before Dhuhr.',
     sourceLabel: isAr ? 'المصادر' : 'Sources',
   };
 
@@ -1040,7 +938,7 @@ function _renderTodayHTML(today, nextDay, cycleHTML){
       </div>
 
       <div class="prayer-layout-side">
-        <div id="prayer-view-widget" aria-live="polite"></div>
+        <div id="prayer-view-widget" aria-label="Live next prayer"></div>
 
         <div class="surface-card prayer-quick-card">
           <div class="settings-section-title">Timetable tools</div>
@@ -1163,7 +1061,7 @@ function renderPrayerView(){
 
 function _mountPrayerWidget(){
   if(_prayerTab !== 'today' || typeof PrayerWidget === 'undefined') return;
-  PrayerWidget.mount('prayer-view-widget', { variant: 'panel', showTimes: false, showLink: false });
+  PrayerWidget.mount('prayer-view-widget', { variant: 'garden', showTimes: false, showLink: false });
 }
 
 function startCountdown(){

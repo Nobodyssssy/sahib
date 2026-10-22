@@ -225,8 +225,8 @@ function _normalizePrayerPrefs(raw){
   if(alerts.audio && typeof alerts.audio === 'object'){
     const standard = alerts.audio.standard;
     const fajr = alerts.audio.fajr;
-    if(['azhar', 'quseir', 'local'].includes(standard)) out.alerts.audio.standard = standard;
-    if(['fajr-balakong', 'local'].includes(fajr)) out.alerts.audio.fajr = fajr;
+    if(['azhar', 'quseir', 'qatami', 'local'].includes(standard)) out.alerts.audio.standard = standard;
+    if(['fajr-balakong', 'qatami-fajr', 'local'].includes(fajr)) out.alerts.audio.fajr = fajr;
   }
 
   if(alerts.perPrayer && typeof alerts.perPrayer === 'object'){
