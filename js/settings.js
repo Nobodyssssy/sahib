@@ -1037,7 +1037,7 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.13.6 · service worker v2.13.6<br>
+        <strong>Version:</strong> v2.13.7 · service worker v2.13.7<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
         Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>
@@ -1069,7 +1069,7 @@ function _aboutHTML(){
           <div class="settings-row-desc">Sahib is developed in the open.</div>
         </div>
         <div class="settings-row-actions">
-          <a class="io-btn" href="https://github.com/Nobodyssssy/adkar/issues" target="_blank" rel="noopener">GitHub issues</a>
+          <a class="io-btn" href="https://github.com/Nobodyssssy/sahib/issues" target="_blank" rel="noopener">GitHub issues</a>
         </div>
       </div>
     </div>`;

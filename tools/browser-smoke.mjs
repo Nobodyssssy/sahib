@@ -78,6 +78,37 @@ if (process.env.WAIT_FOR) {
 }
 await sleep(SETTLE);
 for (let step of steps) { if(step.startsWith('@')) step = readFileSync(step.slice(1), 'utf8'); const value=await evaluate(step);if(typeof value==='string'&&value.startsWith('EXCEPTION')||Array.isArray(value)&&value.some(r=>r.pass===false))failed=true;console.log('step:',step.slice(0,80),'→',JSON.stringify(value)); await sleep(STEP_WAIT); }
+if(process.env.PWA_CHECK === '1') {
+ const manifest=await cdp('Page.getAppManifest');
+ const installability=await cdp('Page.getInstallabilityErrors');
+ console.log('PWA manifest',JSON.stringify({url:manifest.url,errors:manifest.errors}));
+ console.log('PWA installability',JSON.stringify(installability));
+ if(manifest.errors?.some(e=>e.critical)||installability.installabilityErrors?.length)failed=true;
+ // Inspect the running browser's protocol: installation automation is not available in every browser.
+ const protocol=await(await fetch(`http://127.0.0.1:${port}/json/protocol`)).json();
+ const commands=protocol.domains.find(d=>d.domain==='PWA')?.commands;
+ console.log('PWA installation automation',commands?.some(c=>c.name==='install')?'available':'unavailable');
+ if(process.env.PWA_INSTALL==='1'){
+  const manifestId=new URL('./',url).href;let installed=false;
+  try{
+   await cdp('PWA.install',{manifestId,installUrlOrBundleUrl:manifestId});installed=true;
+   const launched=await cdp('PWA.launch',{manifestId});
+   const attached=await send('Target.attachToTarget',{targetId:launched.targetId,flatten:true});
+   await sleep(2500);
+   const state=await send('Runtime.evaluate',{expression:'({url:location.href,standalone:matchMedia("(display-mode: standalone)").matches})',returnByValue:true},attached.sessionId);
+   console.log('PWA installed launch',JSON.stringify(state.result.value));
+   if(!state.result.value?.standalone||!state.result.value?.url.startsWith(manifestId))failed=true;
+  }catch(error){console.log('PWA installation failed',error.message);failed=true;}
+  finally{if(installed){await cdp('PWA.uninstall',{manifestId});console.log('Disposable test installation removed');}}
+ }
+ // Exercise direct entry and refresh using the app's supported query-string shortcuts.
+ await cdp('Page.navigate',{url:new URL('index.html?cat=sabah',url).href});await sleep(3000);
+ const direct=await evaluate('document.querySelectorAll("#adkar-grid .adkar-card").length>0');
+ await cdp('Page.reload');await sleep(3000);
+ const refresh=await evaluate('document.querySelectorAll("#adkar-grid .adkar-card").length>0');
+ console.log('PWA direct entry and refresh',JSON.stringify({direct,refresh}));if(!direct||!refresh)failed=true;
+ await evaluate('goHomeView()');
+}
 if(process.env.OFFLINE === '1') {
  console.log('service worker', await evaluate('(async()=>{await navigator.serviceWorker.ready; return !!navigator.serviceWorker.controller})()'));
  await cdp('Network.enable');
@@ -85,6 +116,12 @@ if(process.env.OFFLINE === '1') {
  await cdp('Page.reload'); await sleep(3000);
  console.log('offline reload',await evaluate('({home:!!document.querySelector(".sahib-home"),offline:!navigator.onLine,language:document.documentElement.lang,direction:document.documentElement.dir,font:document.documentElement.dataset.font,fontSource:document.documentElement.dataset.fontSource,prayer:document.querySelector("[data-pw=next-name]")?.textContent})'));
  console.log('offline bundled audio',await evaluate('(async()=>{const p=await getPrayerPrefs(),out={};for(const kind of ["standard","fajr"]){const source=await resolveAdhanSource(kind,p);const response=await fetch(source.url);out[kind]={selection:p.alerts.audio[kind],status:response.status,bytes:(await response.arrayBuffer()).byteLength}}return out})()'));
+ if(process.env.PWA_CHECK==='1'){
+  const storage=await evaluate('(async()=>({localStorage:localStorage.getItem("sahib-deployment-verification")==="preserved",indexedDB:await store.getMeta("deploymentVerification")==="preserved"}))()');
+  console.log('offline storage persistence',JSON.stringify(storage));if(!storage?.localStorage||!storage?.indexedDB)failed=true;
+  const reader=await evaluate('(async()=>{await openReader("jazariyyah");return {pages:_readerTotalPages,rendered:document.querySelectorAll("#reader-body canvas").length>0}})()');
+  console.log('offline PDF reader',JSON.stringify(reader));if(!reader?.rendered||!reader?.pages)failed=true;
+ }
 }
 const jpeg = /\.jpe?g$/i.test(out);
 const { data } = await cdp('Page.captureScreenshot', jpeg ? { format: 'jpeg', quality: 88 } : { format: 'png' });

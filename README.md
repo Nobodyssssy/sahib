@@ -2,6 +2,16 @@
 
 Sahib is a private, offline-first Islamic daily companion, built with vanilla HTML, CSS and JavaScript. It runs in a browser and can be installed as a Progressive Web App. No frontend build step is required.
 
+[Open Sahib](https://nobodyssssy.github.io/sahib/) · [Official repository](https://github.com/Nobodyssssy/sahib) · [Report an issue](https://github.com/Nobodyssssy/sahib/issues)
+
+## Install and deploy
+
+Open the official website online once. In Edge or Chrome, choose **Install Sahib** from the address bar or browser app menu. On a phone, use the browser's **Install app** or **Add to Home Screen** option. Allow the initial offline download to finish before disconnecting. Refresh and manifest shortcuts such as [`?cat=sabah`](https://nobodyssssy.github.io/sahib/?cat=sabah) work under the same `/sahib/` directory; the app does not require server-side route rewrites.
+
+GitHub Pages publishes the `main` branch, repository root, at `https://nobodyssssy.github.io/sahib/`. Manifest launch URLs, scope, icons, service-worker registration and cached assets resolve relative to that directory, so localhost hosting also works. The PDF asset proxy remains `https://sahib-proxy.sahib-app.workers.dev`; a repository path change does not change the Pages origin used for CORS.
+
+The repository rename preserves the `adkar-db` IndexedDB database, local-storage keys and dedicated PDF/audio caches. Browser data belongs to the origin (`https://nobodyssssy.github.io`), not the repository path. Existing installed shortcuts may still point to an old path: install from the official URL and keep browser site data when removing an old shortcut. Do not clear site data to update Sahib. Other browsers, profiles and localhost have separate storage.
+
 ## Features
 
 - Adhkar collections, focused sessions, progress and favorites.
@@ -51,3 +61,5 @@ node tools/browser-smoke.mjs http://127.0.0.1:8766 audio.png @tests/release-audi
 ```
 
 Each run creates a disposable browser profile. Set `MOBILE=1` for a phone viewport; `OFFLINE=1` checks an offline reload and bundled audio. Keep screenshot outputs outside the published source tree.
+
+For deployment checks, run `tests/deployment-smoke.js` against the official URL with `PWA_CHECK=1 OFFLINE=1` set in your shell. This checks resolved manifest/icon paths, service-worker scope, the versioned shell, PDF proxy/reader and storage across offline reload. Browser DevTools checks manifest installability; `PWA_INSTALL=1` additionally attempts installation and launch in the disposable profile where the browser supports that automation. An installability pass alone does not confirm an OS installation.

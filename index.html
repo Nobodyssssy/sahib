@@ -12,6 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="صاحب">
 <meta name="mobile-web-app-capable" content="yes">
 <title>صاحب · Sahib</title>
+<meta name="description" content="Sahib — your offline-first Islamic daily companion for prayer, adhkar and reading.">
+<link rel="canonical" href="https://nobodyssssy.github.io/sahib/">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -568,7 +570,7 @@
 <script src="js/views/tasbih.js?v=20261022-refine-4"></script>
 <script src="js/views/reader.js"></script>
 <script src="js/io.js"></script>
-<script src="js/settings.js?v=20261022-release-2"></script>
+<script src="js/settings.js?v=20261022-pages-1"></script>
 <script src="js/app-search.js?v=20261022-language-5"></script>
 <script src="js/i18n-ar.js?v=20261022-release-2"></script>
 <script src="js/i18n.js?v=20261022-language-5"></script>
@@ -603,7 +605,11 @@
   // ── Service worker registration ──
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js', { scope: './' })
+      const appBase = new URL('./', location.href);
+      navigator.serviceWorker.register(new URL('sw.js', appBase), {
+        scope: appBase.href,
+        updateViaCache: 'none'
+      })
         .then((reg) => {
           reg.addEventListener('updatefound', () => {
             const nw = reg.installing;

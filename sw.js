@@ -1,5 +1,5 @@
 /* =================================================================
-   Service Worker - adkar app
+   Service Worker - Sahib
    Strategy:
      - Precache app shell on install
      - Cache-first for same-origin assets
@@ -7,8 +7,9 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.13.6';
+const VERSION = 'v2.13.7';
 const CACHE = `sahib-${VERSION}`;
+const APP_BASE = new URL(self.registration.scope);
 
 const APP_SHELL = [
   './css/daily-rhythm.css?v=20261022-rhythm-5',
@@ -126,7 +127,7 @@ const APP_SHELL = [
   './js/views/tasbih.js?v=20261022-refine-4',
   './js/views/reader.js',
   './js/io.js',
-  './js/settings.js?v=20261022-release-2',
+  './js/settings.js?v=20261022-pages-1',
   './js/app.js?v=20261022-language-5',
 
   './icons/icon.svg',
@@ -138,7 +139,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE);
-      try { await cache.addAll(APP_SHELL); } catch (err) { console.warn('[sw] app shell precache failed', err); }
+      try { await cache.addAll(APP_SHELL.map(path => new URL(path, APP_BASE).href)); } catch (err) { console.warn('[sw] app shell precache failed', err); }
 
       /* Small beginner-path PDFs, cached on install. ~14 MB. */
       const smallBooks = [
@@ -215,7 +216,7 @@ self.addEventListener('fetch', (event) => {
      on every load. We fetch without Range, cache the full file, and let the
      browser slice it from the cached response.
      Use includes(), not startsWith(). On GitHub Pages the site is served under
-     a subpath like /adkar/, so pathname is /adkar/assets/asma-audio/x.mp3,
+     a subpath like /sahib/, so pathname is /sahib/assets/asma-audio/x.mp3,
      not /assets/asma-audio/x.mp3. startsWith() failed silently on prod and
      let the browser HTTP cache serve the mp3s instead. */
   if (url.pathname.includes('/assets/asma-audio/') && url.pathname.endsWith('.mp3')) {
@@ -283,7 +284,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(new URL('index.html', APP_BASE).href))
     );
     return;
   }
@@ -310,11 +311,13 @@ self.addEventListener('message', (event) => {
 /* Open or focus Sahib when a prayer reminder is tapped. */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const target = (event.notification.data && event.notification.data.url) || './index.html';
+  const requested = new URL((event.notification.data && event.notification.data.url) || './index.html', APP_BASE);
+  const target = requested.origin === APP_BASE.origin && requested.pathname.startsWith(APP_BASE.pathname)
+    ? requested.href : new URL('index.html', APP_BASE).href;
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     for (const client of windows) {
-      if ('focus' in client) {
+      if (client.url.startsWith(APP_BASE.href) && 'focus' in client) {
         await client.focus();
         if ('navigate' in client) {
           try { await client.navigate(target); } catch (err) { /* cross-origin or unavailable */ }
