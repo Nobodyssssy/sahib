@@ -55,8 +55,8 @@ async function start(){
   env:{...process.env,SAHIB_TEST_DATA_DIR:profile,SAHIB_TEST_CDP_PORT:String(port)}
  });
  app.on('error',error=>report.errors.push(String(error)));
- let targets,lastError;
- for(let i=0;i<450;i++){
+ let targets,lastError;const startupDeadline=Date.now()+90000;
+ while(Date.now()<startupDeadline){
   if(app.exitCode!==null)throw Error(`QA app exited during startup (${app.exitCode})`);
   try{targets=await(await fetch(`http://127.0.0.1:${port}/json/list`,{signal:AbortSignal.timeout(1000)})).json();if(targets.some(t=>t.url==='https://tauri.localhost/'||t.url==='https://tauri.localhost/index.html'))break;}catch(error){lastError=String(error);}
   await sleep(200);
