@@ -52,7 +52,7 @@ async function start(){
  const port=await freePort();log=fs.openSync(path.join(output,'app.log'),'a');
  app=spawn(path.join(root,'src-tauri','target','debug','sahib-desktop.exe'),[],{
   cwd:root,windowsHide:true,stdio:['ignore',log,log],
-  env:{...process.env,SAHIB_TEST_DATA_DIR:profile,WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --enable-logging=stderr`}
+  env:{...process.env,SAHIB_TEST_DATA_DIR:profile,SAHIB_TEST_CDP_PORT:String(port)}
  });
  app.on('error',error=>report.errors.push(String(error)));
  let targets,lastError;

@@ -497,7 +497,20 @@ pub fn run() {
                 let builder = tauri::WebviewWindowBuilder::from_config(app, config)?;
                 #[cfg(debug_assertions)]
                 let builder = if let Some(test_dir) = std::env::var_os("SAHIB_TEST_DATA_DIR") {
-                    builder.data_directory(PathBuf::from(test_dir).join("webview"))
+                    let builder = builder.data_directory(PathBuf::from(test_dir).join("webview"));
+                    // Elevated CI hosts ignore WebView2's environment overrides. Pass the
+                    // isolated QA port through the API; this code is absent in release builds.
+                    if let Some(port) = std::env::var("SAHIB_TEST_CDP_PORT")
+                        .ok()
+                        .and_then(|value| value.parse::<u16>().ok())
+                        .filter(|port| *port > 0)
+                    {
+                        builder.additional_browser_args(&format!(
+                            "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --remote-debugging-port={port} --enable-logging=stderr"
+                        ))
+                    } else {
+                        builder
+                    }
                 } else {
                     builder
                 };
