@@ -52,16 +52,21 @@ async function start(){
  const port=await freePort();log=fs.openSync(path.join(output,'app.log'),'a');
  app=spawn(path.join(root,'src-tauri','target','debug','sahib-desktop.exe'),[],{
   cwd:root,windowsHide:true,stdio:['ignore',log,log],
-  env:{...process.env,SAHIB_TEST_DATA_DIR:profile,WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port}`}
+  env:{...process.env,SAHIB_TEST_DATA_DIR:profile,WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --enable-logging=stderr`}
  });
  app.on('error',error=>report.errors.push(String(error)));
- let targets;
- for(let i=0;i<150;i++){
+ let targets,lastError;
+ for(let i=0;i<450;i++){
   if(app.exitCode!==null)throw Error(`QA app exited during startup (${app.exitCode})`);
-  try{targets=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();if(targets.some(t=>t.url==='https://tauri.localhost/'))break;}catch{}
+  try{targets=await(await fetch(`http://127.0.0.1:${port}/json/list`,{signal:AbortSignal.timeout(1000)})).json();if(targets.some(t=>t.url==='https://tauri.localhost/'||t.url==='https://tauri.localhost/index.html'))break;}catch(error){lastError=String(error);}
   await sleep(200);
  }
- const target=targets?.find(t=>t.url==='https://tauri.localhost/');if(!target)throw Error('QA WebView did not start');
+ const target=targets?.find(t=>t.url==='https://tauri.localhost/'||t.url==='https://tauri.localhost/index.html');
+ if(!target){
+  report.startupDiagnostics={targets:targets?.map(t=>({type:t.type,url:t.url})),lastError,
+   processes:spawnSync('powershell.exe',['-NoProfile','-Command',"Get-Process sahib-desktop,msedgewebview2 -ErrorAction SilentlyContinue | Select-Object ProcessName,Id,SessionId,Responding | ConvertTo-Json -Compress"],{encoding:'utf8',windowsHide:true}).stdout?.trim()};
+  console.error(JSON.stringify(report.startupDiagnostics));throw Error('QA WebView did not start within 90 seconds');
+ }
  session=await connect(target);
  for(let i=0;i<150;i++){
   if(await session.evaluate('!!window.SahibDesktop?.state'))return {port,targets};
