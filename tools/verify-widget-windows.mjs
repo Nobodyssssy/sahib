@@ -50,6 +50,9 @@ export async function verifyWidgetWindows({session,widget,port,connect,output,re
     record(label+' survives a real maximized window',(await state()).widgetWindows.find(w=>w.label===label)?.visible===true);
     await command({mode:'fullscreen',display:v.monitor});
     record(label+' yields to a real fullscreen window',(await state()).widgetWindows.find(w=>w.label===label)?.visible===false);
+    await command({mode:'borderless-maximized',display:v.monitor});
+    const borderless=JSON.parse(fs.readFileSync(commandFile+'.actual.json','utf8').replace(/^\uFEFF/,'')),covers=borderless.bounds.Bottom>=v.bar[3]&&borderless.bounds.Top<=v.work[1];
+    record(label+' respects borderless maximized client coverage',(await state()).widgetWindows.find(w=>w.label===label)?.visible===!covers,JSON.stringify(borderless));
     await command({mode:'normal',display:v.monitor});
     record(label+' returns after fullscreen without toggling',(await state()).widgetWindows.find(w=>w.label===label)?.visible===true);
    }

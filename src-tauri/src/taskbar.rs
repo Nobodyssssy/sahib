@@ -10,7 +10,8 @@ struct Rect {
 }
 #[link(name = "user32")]
 extern "system" {
-    fn IsZoomed(window: *mut c_void) -> i32;
+    fn GetClientRect(window: *mut c_void, rect: *mut Rect) -> i32;
+    fn ClientToScreen(window: *mut c_void, point: *mut Point) -> i32;
     fn GetCursorPos(point: *mut Point) -> i32;
     fn GetForegroundWindow() -> *mut c_void;
     fn GetClassNameW(window: *mut c_void, name: *mut u16, count: i32) -> i32;
@@ -39,7 +40,7 @@ pub fn cursor_x() -> i32 {
 pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
     unsafe {
         let window = GetForegroundWindow();
-        if window.is_null() || window as isize == widget || IsZoomed(window) != 0 {
+        if window.is_null() || window as isize == widget {
             return false;
         }
         let mut class = [0u16; 128];
@@ -55,12 +56,26 @@ pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
         {
             return false;
         }
+        // A maximized outer frame can extend beyond the work area. Test the
+        // actual client area instead, including maximized borderless games.
         let mut rect = Rect::default();
-        GetWindowRect(window, &mut rect) != 0
-            && rect.left <= monitor.0
-            && rect.top <= monitor.1
-            && rect.right >= monitor.2
-            && rect.bottom >= monitor.3
+        if GetClientRect(window, &mut rect) == 0 {
+            return false;
+        }
+        let mut first = Point {
+            x: rect.left,
+            y: rect.top,
+        };
+        let mut last = Point {
+            x: rect.right,
+            y: rect.bottom,
+        };
+        ClientToScreen(window, &mut first) != 0
+            && ClientToScreen(window, &mut last) != 0
+            && first.x <= monitor.0
+            && first.y <= monitor.1
+            && last.x >= monitor.2
+            && last.y >= monitor.3
     }
 }
 pub fn safe_edges(bar: (i32, i32, i32, i32), scale: f64) -> (i32, i32, bool) {

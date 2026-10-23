@@ -20,7 +20,7 @@ pub struct NativeAudio {
     pub error: Arc<Mutex<Option<String>>>,
 }
 impl NativeAudio {
-    pub fn start() -> Self {
+    pub fn start(on_state: impl Fn() + Send + 'static) -> Self {
         let (sender, receiver) = mpsc::channel();
         let active = Arc::new(AtomicBool::new(false));
         let worker_active = active.clone();
@@ -33,6 +33,7 @@ impl NativeAudio {
                     Ok(AudioJob::Stop) => {
                         playing = None;
                         worker_active.store(false, Ordering::Relaxed);
+                        on_state();
                     }
                     Ok(job) => {
                         playing = None;
@@ -41,6 +42,7 @@ impl NativeAudio {
                         let Ok(mut stream) = OutputStreamBuilder::open_default_stream() else {
                             *worker_error.lock().unwrap() =
                                 Some("Audio output device unavailable".into());
+                            on_state();
                             continue;
                         };
                         stream.log_on_drop(false);
@@ -50,6 +52,7 @@ impl NativeAudio {
                                 let Ok(decoder) = Decoder::try_from(Cursor::new(bytes)) else {
                                     *worker_error.lock().unwrap() =
                                         Some("Unsupported audio recording".into());
+                                    on_state();
                                     continue;
                                 };
                                 sink.set_volume(volume);
@@ -67,11 +70,13 @@ impl NativeAudio {
                         }
                         worker_active.store(true, Ordering::Relaxed);
                         playing = Some((stream, sink));
+                        on_state();
                     }
                     Err(mpsc::RecvTimeoutError::Timeout) => {
                         if playing.as_ref().is_some_and(|(_, s)| s.empty()) {
                             playing = None;
                             worker_active.store(false, Ordering::Relaxed);
+                            on_state();
                         }
                     }
                     Err(mpsc::RecvTimeoutError::Disconnected) => break,

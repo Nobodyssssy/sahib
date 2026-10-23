@@ -1,17 +1,35 @@
 <!doctype html>
 <html lang="en" dir="ltr" data-theme="sahib" data-mode="light" data-accent="green"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sahib · Prayer widget</title><link rel="stylesheet" href="css/tokens.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/garden-tokens.css"><link rel="stylesheet" href="css/app-language.css"><link rel="stylesheet" href="css/desktop-widget.css"></head>
 <body>
-<button id="widget-compact" class="widget-compact" aria-label="Open prayer timetable" aria-expanded="false"><span class="compact-prayer"><strong id="compact-name">Sahib</strong><span id="compact-clock">—</span></span><span class="compact-countdown"><span id="compact-label">Next prayer</span><strong id="compact-countdown">—</strong></span><span class="compact-reminder" id="compact-reminder"></span></button>
+<svg class="widget-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="wi-mosque" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M2 22V10h3v12H2Zm1.5-18 2 5h-4ZM19 22V7h3v15h-3Zm1.5-21 2 5h-4ZM7 13c0-4 5-4 5-8 0 4 5 4 5 8H7Zm0 1h10v8h-4v-4a1 1 0 0 0-2 0v4H7Z"/></symbol>
+<symbol id="wi-moon" viewBox="0 0 24 24"><path d="M20 15A8.5 8.5 0 0 1 9 4a8.5 8.5 0 1 0 11 11Z"/><path d="m17 3 .5 1.5L19 5l-1.5.5L17 7l-.5-1.5L15 5l1.5-.5Z"/></symbol>
+<symbol id="wi-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 1v2m0 18v2M1 12h2m18 0h2M4 4l1.5 1.5m13 13L20 20M4 20l1.5-1.5m13-13L20 4"/></symbol>
+<symbol id="wi-sunrise" viewBox="0 0 24 24"><path d="M3 17h18M2 21h20M6 17a6 6 0 0 1 12 0M12 2v4M3 8l2 2m14 0 2-2M12 2 9 5m3-3 3 3"/></symbol>
+<symbol id="wi-sunset" viewBox="0 0 24 24"><path d="M3 17h18M2 21h20M6 17a6 6 0 0 1 12 0M12 2v5M3 8l2 2m14 0 2-2M9 4l3 3 3-3"/></symbol>
+<symbol id="wi-cloud" viewBox="0 0 24 24"><path d="M6 20h12a4 4 0 0 0 0-8 6 6 0 0 0-11-2 5 5 0 0 0-1 10Z"/><path d="M14 2v2m6 0-1 2m4 3h-2"/></symbol>
+<symbol id="wi-pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 12-7 12S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
+<symbol id="wi-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 2v6m10-6v6M3 11h18m-14 4h2m4 0h2m-8 3h2"/></symbol>
+<symbol id="wi-book" viewBox="0 0 24 24"><path d="M12 5v16M12 5C9 2 5 3 2 3v16c4 0 7-1 10 2 3-3 6-2 10-2V3c-3 0-7-1-10 2Z"/></symbol>
+<symbol id="wi-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="wi-settings" viewBox="0 0 24 24"><path d="m9 3-1 3-3 1v4l2 2-1 3 3 3 3-1 3 1 3-3-1-3 2-2V7l-3-1-1-3Z"/><circle cx="12" cy="11" r="3"/></symbol>
+<symbol id="wi-open" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6L10 14M10 5H5v15h15v-6"/></symbol>
+<symbol id="wi-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="wi-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5 8a8 8 0 0 1 13-3l2 2M4 17l2 2a8 8 0 0 0 13-3"/></symbol>
+<symbol id="wi-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+</defs></svg>
+<button id="widget-compact" class="widget-compact" aria-label="Open prayer timetable" aria-expanded="false"><span class="compact-emblem"><svg class="wi"><use href="#wi-mosque"/></svg></span><span class="compact-prayer"><strong id="compact-name">Sahib</strong><span id="compact-clock">—</span></span><span class="compact-countdown"><span id="compact-label">Remaining</span><strong id="compact-countdown">—</strong></span><span class="compact-progress" aria-hidden="true"></span><span class="compact-reminder" id="compact-reminder"></span></button>
 <main class="prayer-widget" id="widget">
-<header><span id="widget-label">Next prayer</span><nav aria-label="Widget controls">
-<button id="widget-settings" title="Widget settings" aria-label="Widget settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 3-1 3-3 1v4l2 2-1 3 3 3 3-1 3 1 3-3-1-3 2-2V7l-3-1-1-3Z"/><circle cx="12" cy="11" r="3"/></svg></button>
-<button id="widget-open" title="Open Sahib" aria-label="Open Sahib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6m0-6L10 14M10 5H5v15h15v-6"/></svg></button>
-<button id="widget-stop" title="Stop audio" aria-label="Stop audio"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
-<button id="widget-close" title="Hide widget" aria-label="Hide widget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+<header><div class="widget-heading"><span id="widget-label">Next prayer</span><button id="widget-refresh" aria-label="Refresh prayer times"><svg class="wi"><use href="#wi-refresh"/></svg></button></div><nav aria-label="Widget controls">
+<button id="widget-settings" title="Widget settings"><svg class="wi"><use href="#wi-settings"/></svg></button>
+<button id="widget-open-top" title="Open Sahib"><svg class="wi"><use href="#wi-open"/></svg></button>
+<button id="widget-stop" title="Stop audio" data-playing="false"><svg class="wi" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+<button id="widget-close" title="Hide widget"><svg class="wi"><use href="#wi-close"/></svg></button>
 </nav></header>
-<section class="widget-hero"><div><h1 id="widget-name">Sahib</h1><p id="widget-location">Choose your location in Sahib</p></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section>
+<section class="widget-hero"><svg class="widget-landmark" viewBox="0 0 280 130" aria-hidden="true"><path opacity=".4" d="M0 120Q40 70 80 105Q140 30 185 67Q225 40 280 103v27H0Z"/><path d="M100 130V92h6V54l3-9 3 9v38h18V79h4c0-16 28-22 28-33 0 11 28 17 28 33h4v13h20V33l4-11 4 11v59h8v38h-46v-24a10 10 0 0 0-20 0v24Z"/></svg><div><h1 id="widget-name">Sahib</h1><p><svg class="wi"><use href="#wi-pin"/></svg><span id="widget-location">Choose your location in Sahib</span></p></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section>
 <div class="widget-date"><span id="widget-date"></span><span id="widget-hijri"></span></div>
 <section class="widget-timetable" id="widget-timetable" aria-label="Prayer timetable"></section>
 <section class="widget-reminders" id="widget-reminders"></section>
-<footer><button id="widget-details">Today’s timetable</button><span id="widget-status"></span><button id="widget-refresh" aria-label="Refresh prayer times">↻</button></footer>
+<div id="widget-status" class="widget-status" role="status"></div>
+<footer><button id="widget-open"><svg class="wi"><use href="#wi-book"/></svg><span id="widget-open-label">Open Sahib</span></button><button id="widget-details"><svg class="wi"><use href="#wi-clock"/></svg><span id="widget-details-label">Full timetable</span></button><button id="widget-settings-footer"><svg class="wi"><use href="#wi-settings"/></svg><span id="widget-settings-label">Settings</span></button></footer>
 </main><script src="js/desktop-widget.js"></script></body></html>

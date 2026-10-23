@@ -51,6 +51,7 @@ $timer.Add_Tick({
   $form.Size=New-Object Drawing.Size(720,480)
   if($command.mode -eq 'maximized'){$form.WindowState='Maximized'}
   if($command.mode -eq 'fullscreen'){$form.FormBorderStyle='None';$form.Bounds=$screen.Bounds}
+  if($command.mode -eq 'borderless-maximized'){$form.FormBorderStyle='None';$form.WindowState='Maximized'}
   $form.TopMost=$true;$form.Show();$form.Activate()
   [void][SahibWindowFixture]::SetCursorPos(($form.Bounds.Left+100),($form.Bounds.Top+110))
   [SahibWindowFixture]::mouse_event(2,0,0,0,[UIntPtr]::Zero);[SahibWindowFixture]::mouse_event(4,0,0,0,[UIntPtr]::Zero)

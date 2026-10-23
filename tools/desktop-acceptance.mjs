@@ -8,6 +8,7 @@ import {fileURLToPath} from 'node:url';
 import {setTimeout as sleep} from 'node:timers/promises';
 import {measureDesktop} from './measure-desktop.mjs';
 import {verifyWidgetWindows} from './verify-widget-windows.mjs';
+import {soakWidget} from './widget-soak.mjs';
 
 if(process.platform!=='win32')throw Error('Desktop acceptance requires Windows and WebView2.');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -51,6 +52,7 @@ async function connect(target){
  };
 }
 async function start(){
+ const startupAt=Date.now();
  const port=await freePort();log=fs.openSync(path.join(output,'app.log'),'a');
  app=spawn(path.join(root,'src-tauri','target','debug','sahib-desktop.exe'),[],{
   cwd:root,windowsHide:true,stdio:['ignore',log,log],
@@ -71,7 +73,7 @@ async function start(){
  }
  session=await connect(target);
  for(let i=0;i<150;i++){
-  if(await session.evaluate('!!window.SahibDesktop?.state'))return {port,targets};
+  if(await session.evaluate('!!window.SahibDesktop?.state')){(report.startupSamplesMs??=[]).push(Date.now()-startupAt);return {port,targets};}
   await sleep(200);
  }
  throw Error('Desktop adapter did not become ready');
@@ -128,6 +130,14 @@ try{
    record('Widget stop button stops native adhan',await session.evaluate('SahibDesktop.invoke("desktop_state").then(s=>!s.audioPlaying)'));
   }
   const savedPresentation=await session.evaluate('window.__TAURI__.core.invoke("desktop_state")');
+  if(process.argv.includes('--baseline-probe')||process.argv.includes('--reliability')){
+   await session.evaluate('SahibDesktop.preferences("widgetMode","taskbar")');await sleep(800);
+   const s=await session.evaluate('SahibDesktop.invoke("desktop_state")'),[x,y,width,height]=s.widgetViews.widget.bounds;
+   const probe=(cover,file)=>{const r=spawnSync('powershell.exe',['-NoProfile','-File',path.join(root,'tools/widget-zorder-probe.ps1'),'-TargetProcess',String(app.pid),'-X',String(x),'-Y',String(y),'-Width',String(width),'-Height',String(height),...(cover?['-Cover']:[]),'-Capture',path.join(output,file)],{encoding:'utf8',windowsHide:true});if(r.status)throw Error(r.stderr);return JSON.parse(r.stdout.replace(/^\uFEFF/,''));};
+   report.zorderProbe=[probe(false,'zorder-before.png'),probe(true,'zorder-covered.png')];await sleep(6500);report.zorderProbe.push(probe(false,'zorder-after-watchdog.png'));console.log(JSON.stringify(report.zorderProbe));
+   if(process.argv.includes('--baseline-probe'))record('Baseline reproduces visible-but-covered widget',report.zorderProbe.at(-1).coveredByTaskbar);else {record('Taskbar z-order recovery without a visibility toggle',!report.zorderProbe.at(-1).coveredByTaskbar&&report.zorderProbe.at(-1).visible&&report.zorderProbe.at(-1).handle===report.zorderProbe[0].handle);report.widgetDiagnostics=await session.evaluate('SahibDesktop.invoke("desktop_state").then(s=>s.widgetDiagnostics)');}
+   await session.evaluate('SahibDesktop.preferences("widgetMode",'+JSON.stringify(savedPresentation.prefs.widgetMode)+')');await sleep(400);
+  }
   for(const theme of ['sahib','aura','dracula','catppuccin','rose-pine','tokyo-night','windows']){
    for(const mode of ['light','dark']){
    await session.evaluate(`(async()=>{const s=await SahibDesktop.invoke('desktop_state');s.schedule.theme.mode=${JSON.stringify(mode)};await SahibDesktop.invoke('desktop_sync_schedule',{schedule:s.schedule})})()`);
@@ -160,6 +170,8 @@ try{
   await session.evaluate('closeSettings()');
   if(process.argv.includes('--windows')){manualPreferences=await verifyWidgetWindows({session,widget,port,connect,output,record,report});Object.assign(savedPresentation.prefs,manualPreferences);}
   await session.evaluate(`(async()=>{await SahibDesktop.invoke('desktop_set_preferences',{prefs:${JSON.stringify(savedPresentation.prefs)},autostart:null});await SahibDesktop.invoke('desktop_sync_schedule',{schedule:${JSON.stringify(savedPresentation.schedule)}});await SahibDesktop.invoke('desktop_widget_action',{action:'collapse'})})()`);
+  const soakMinutes=Number(process.argv.find(a=>a.startsWith('--soak-minutes='))?.split('=')[1]||0);
+  if(soakMinutes>0)await soakWidget({pid:app.pid,session,output,minutes:soakMinutes,record,report});
  }finally{widget.close();}
  const eventId=`acceptance:hidden:${Date.now()}`;
  record('Main window closes to tray',await session.evaluate(`(async()=>{const invoke=window.__TAURI__.core.invoke,state=await invoke('desktop_state');await invoke('desktop_set_preferences',{prefs:{...state.prefs,closeToTray:true,startMinimized:true,widgetOpacity:0.8},autostart:null});await invoke('desktop_sync_schedule',{schedule:{...state.schedule,alerts:[{id:${JSON.stringify(eventId)},at:Date.now()+1500,title:'Silent acceptance test',body:'',sound:'off',volume:0,notify:false}]}});await window.__TAURI__.window.getCurrentWindow().close();return !await window.__TAURI__.window.getCurrentWindow().isVisible()})()`));

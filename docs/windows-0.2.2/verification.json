@@ -1,0 +1,3175 @@
+{
+  "version": "0.2.2",
+  "verifiedAt": "2026-10-23T10:42:03.384Z",
+  "sourceBaseCommit": "dc1d127b6c18aa76c08e076c011a52156600bc91",
+  "sourceWasDirty": true,
+  "tests": [
+    {
+      "name": "Separate QA identity",
+      "pass": true
+    },
+    {
+      "name": "Packaged app ready",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click practice",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click cats",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click hijri",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click asma",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click books",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click tasbih",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click home",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings click opens dialog",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click alerts",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click data",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click about",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click appearance",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Theme button click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings close button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Search button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Adhkar page reopens",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Generated category click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "No blocked event handlers",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Desktop adapter loaded",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich summer offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich winter offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Tokyo offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition before rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition after rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Offline cache refreshes after a device timezone change",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native schedule extends beyond a month",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Widget has future prayers",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Browser SW disabled",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native settings present",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native PDF reader",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Arbitrary audio paths rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "External non-web schemes rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Settings changed during schedule preparation",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Old schedule cannot re-enable disabled prayer alerts",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Chime reminders work without unused imported recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Widget timetable survives missing unused recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "No missing-recording error for chime-only reminders",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Sunday previews the Monday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Wednesday previews the Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Ordinary Friday does not preview a Monday or Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Hijri day 12 previews the white days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Excluded Tashriq day is not suggested for fasting",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget has six daily prayer markers including sunrise",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget calendar boundaries include DST days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Imported audio plays natively",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Local audio removed from IndexedDB",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF renders",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF cover preview",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Fajr schedule selects the Fajr adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Other prayers select the standard adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "practice fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Widget uses the shared next prayer",
+      "pass": true
+    },
+    {
+      "name": "Widget receives a small presentation packet",
+      "pass": true,
+      "detail": "{\"full\":36178,\"widget\":2644}"
+    },
+    {
+      "name": "Countdown ticks retain prayer and reminder elements",
+      "pass": true
+    },
+    {
+      "name": "Expired timetable asks to refresh instead of showing stale prayers",
+      "pass": true
+    },
+    {
+      "name": "Native clock-change event rebuilds the shared timetable",
+      "pass": true
+    },
+    {
+      "name": "Widget cannot invoke main-only commands",
+      "pass": true
+    },
+    {
+      "name": "Widget stop button stops native adhan",
+      "pass": true
+    },
+    {
+      "name": "Taskbar z-order recovery without a visibility toggle",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Taskbar compact view",
+      "pass": true
+    },
+    {
+      "name": "Native widget sits inside the primary taskbar",
+      "pass": true,
+      "detail": "{\"taskbar\":[0,1380,2560,1440],\"widget\":[263,1380,300,60]}"
+    },
+    {
+      "name": "Taskbar reminder fits without clipping",
+      "pass": true
+    },
+    {
+      "name": "Click opens full taskbar timetable",
+      "pass": true
+    },
+    {
+      "name": "Taskbar close collapses without hiding",
+      "pass": true
+    },
+    {
+      "name": "Arabic taskbar panel uses RTL",
+      "pass": true
+    },
+    {
+      "name": "Widget settings button opens native controls",
+      "pass": true
+    },
+    {
+      "name": "One widget window for each requested display",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[-1920,1032,0,1080],\"bounds\":[-1710,499,380,525],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":525,\"monitor\":\"\\\\\\\\.\\\\DISPLAY2\",\"safeBounds\":[-1864,-408],\"scale\":1,\"work\":[-1920,0,0,1032]}"
+    },
+    {
+      "name": "widget-1 panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget-1 background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[0,1380,2560,1440],\"bounds\":[263,715,475,655],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":524,\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"safeBounds\":[70,2129],\"scale\":1.25,\"work\":[0,0,2560,1380]}"
+    },
+    {
+      "name": "widget panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[1829,1380,300,60],\"safe\":[70,2129]}"
+    },
+    {
+      "name": "widget-1 right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-648,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[263,1380,300,60],\"safe\":[70,2129]}"
+    },
+    {
+      "name": "widget-1 left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-1710,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget respects borderless maximized client coverage",
+      "pass": true,
+      "detail": "{\"mode\":\"borderless-maximized\",\"bounds\":{\"Location\":{\"IsEmpty\":true,\"X\":0,\"Y\":0},\"Size\":{\"IsEmpty\":false,\"Width\":2560,\"Height\":1440},\"X\":0,\"Y\":0,\"Width\":2560,\"Height\":1440,\"Left\":0,\"Top\":0,\"Right\":2560,\"Bottom\":1440,\"IsEmpty\":false},\"maximized\":true,\"foreground\":true,\"handle\":592782}"
+    },
+    {
+      "name": "widget returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "widget-1 survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 respects borderless maximized client coverage",
+      "pass": true,
+      "detail": "{\"mode\":\"borderless-maximized\",\"bounds\":{\"Location\":{\"IsEmpty\":false,\"X\":-1920,\"Y\":0},\"Size\":{\"IsEmpty\":false,\"Width\":1920,\"Height\":1080},\"X\":-1920,\"Y\":0,\"Width\":1920,\"Height\":1080,\"Left\":-1920,\"Top\":0,\"Right\":0,\"Bottom\":1080,\"IsEmpty\":false},\"maximized\":true,\"foreground\":true,\"handle\":592782}"
+    },
+    {
+      "name": "widget-1 returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "Manual taskbar position is saved per display",
+      "pass": true,
+      "detail": "{\"\\\\\\\\.\\\\DISPLAY1\":246.4,\"\\\\\\\\.\\\\DISPLAY2\":210}"
+    },
+    {
+      "name": "Compact widget hides with the auto-hidden taskbar",
+      "pass": true
+    },
+    {
+      "name": "Compact widget returns with taskbar hover",
+      "pass": true
+    },
+    {
+      "name": "Extended physical taskbar visibility and non-activating recovery",
+      "pass": true
+    },
+    {
+      "name": "Main window closes to tray",
+      "pass": true
+    },
+    {
+      "name": "Native event fires while the main window is hidden",
+      "pass": true
+    },
+    {
+      "name": "Start minimized survives restart",
+      "pass": true
+    },
+    {
+      "name": "Widget preferences survive restart",
+      "pass": true
+    },
+    {
+      "name": "Both displays and manual positions survive restart",
+      "pass": true
+    },
+    {
+      "name": "Fired-event ledger survives restart",
+      "pass": true
+    },
+    {
+      "name": "Idle countdown does not rewrite native settings or schedules",
+      "pass": true
+    }
+  ],
+  "soak": {
+    "durationSeconds": 600.003,
+    "cycles": 37,
+    "initialDiagnostics": {
+      "audits": 209,
+      "latest": {
+        "widget": {
+          "action": "observe",
+          "context": {
+            "bar": [
+              0,
+              1380,
+              2560,
+              1440
+            ],
+            "bounds": [
+              308,
+              1380,
+              300,
+              60
+            ],
+            "effectiveMode": "taskbar",
+            "expanded": false,
+            "fallback": false,
+            "height": 566,
+            "monitor": "\\\\.\\DISPLAY1",
+            "safeBounds": [
+              70,
+              2129
+            ],
+            "scale": 1.25,
+            "work": [
+              0,
+              0,
+              2560,
+              1380
+            ]
+          },
+          "observation": {
+            "bounds": {
+              "bottom": 1440,
+              "left": 308,
+              "right": 608,
+              "top": 1380
+            },
+            "cloaked": 0,
+            "coveredByTaskbar": false,
+            "coveringClass": "Tauri Window",
+            "foreground": 1117068,
+            "foregroundClass": "Tauri Window",
+            "minimized": false,
+            "taskbarRank": -1,
+            "topmost": true,
+            "valid": true,
+            "visible": true,
+            "widgetRank": 14
+          },
+          "reason": "normal"
+        },
+        "widget-1": {
+          "action": "observe",
+          "context": {
+            "bar": [
+              -1920,
+              1032,
+              0,
+              1080
+            ],
+            "bounds": [
+              -1710,
+              1032,
+              240,
+              48
+            ],
+            "effectiveMode": "taskbar",
+            "expanded": false,
+            "fallback": false,
+            "height": 420,
+            "monitor": "\\\\.\\DISPLAY2",
+            "safeBounds": [
+              -1864,
+              -408
+            ],
+            "scale": 1,
+            "work": [
+              -1920,
+              0,
+              0,
+              1032
+            ]
+          },
+          "observation": {
+            "bounds": {
+              "bottom": 1080,
+              "left": -1710,
+              "right": -1470,
+              "top": 1032
+            },
+            "cloaked": 0,
+            "coveredByTaskbar": false,
+            "coveringClass": "Tauri Window",
+            "foreground": 1117068,
+            "foregroundClass": "Tauri Window",
+            "minimized": false,
+            "taskbarRank": -1,
+            "topmost": true,
+            "valid": true,
+            "visible": true,
+            "widgetRank": 11
+          },
+          "reason": "normal"
+        }
+      },
+      "operations": {
+        "hide": 5,
+        "move": 34,
+        "raise": 4,
+        "resize": 30,
+        "show": 9
+      }
+    },
+    "finalDiagnostics": {
+      "audits": 705,
+      "latest": {
+        "widget": {
+          "action": "observe",
+          "context": {
+            "bar": [
+              0,
+              1380,
+              2560,
+              1440
+            ],
+            "bounds": [
+              308,
+              1380,
+              300,
+              60
+            ],
+            "effectiveMode": "taskbar",
+            "expanded": false,
+            "fallback": false,
+            "height": 566,
+            "monitor": "\\\\.\\DISPLAY1",
+            "safeBounds": [
+              70,
+              2129
+            ],
+            "scale": 1.25,
+            "work": [
+              0,
+              0,
+              2560,
+              1380
+            ]
+          },
+          "observation": {
+            "bounds": {
+              "bottom": 1440,
+              "left": 308,
+              "right": 608,
+              "top": 1380
+            },
+            "cloaked": 0,
+            "coveredByTaskbar": false,
+            "coveringClass": "Tauri Window",
+            "foreground": 198116,
+            "foregroundClass": "Chrome_WidgetWin_1",
+            "minimized": false,
+            "taskbarRank": -1,
+            "topmost": true,
+            "valid": true,
+            "visible": true,
+            "widgetRank": 7
+          },
+          "reason": "normal"
+        },
+        "widget-1": {
+          "action": "observe",
+          "context": {
+            "bar": [
+              -1920,
+              1032,
+              0,
+              1080
+            ],
+            "bounds": [
+              -1710,
+              1032,
+              240,
+              48
+            ],
+            "effectiveMode": "taskbar",
+            "expanded": false,
+            "fallback": false,
+            "height": 420,
+            "monitor": "\\\\.\\DISPLAY2",
+            "safeBounds": [
+              -1864,
+              -408
+            ],
+            "scale": 1,
+            "work": [
+              -1920,
+              0,
+              0,
+              1032
+            ]
+          },
+          "observation": {
+            "bounds": {
+              "bottom": 1080,
+              "left": -1710,
+              "right": -1470,
+              "top": 1032
+            },
+            "cloaked": 0,
+            "coveredByTaskbar": false,
+            "coveringClass": "Tauri Window",
+            "foreground": 198116,
+            "foregroundClass": "Chrome_WidgetWin_1",
+            "minimized": false,
+            "taskbarRank": -1,
+            "topmost": true,
+            "valid": true,
+            "visible": true,
+            "widgetRank": 15
+          },
+          "reason": "normal"
+        }
+      },
+      "operations": {
+        "hide": 7,
+        "move": 34,
+        "raise": 48,
+        "resize": 30,
+        "show": 11
+      }
+    },
+    "samples": [
+      {
+        "cycle": 1,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751479342,
+          "observedAt": 1792751479389,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 15,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751480185,
+          "observedAt": 1792751480229,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 130,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 5,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 2,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751495688,
+          "observedAt": 1792751495736,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 14,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751496523,
+          "observedAt": 1792751496568,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 131,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 6,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 3,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751512045,
+          "observedAt": 1792751512069,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751512872,
+          "observedAt": 1792751512891,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 130,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 7,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 4,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751528343,
+          "observedAt": 1792751528366,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751529143,
+          "observedAt": 1792751529161,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 133,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 8,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 5,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751544780,
+          "observedAt": 1792751544806,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751545583,
+          "observedAt": 1792751545602,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 113,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 9,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 6,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751561046,
+          "observedAt": 1792751561073,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751561860,
+          "observedAt": 1792751561881,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 133,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 10,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 7,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751577332,
+          "observedAt": 1792751577355,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751578118,
+          "observedAt": 1792751578136,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 130,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 11,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 8,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751593583,
+          "observedAt": 1792751593606,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751594391,
+          "observedAt": 1792751594413,
+          "foreground": 1117068,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 131,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 12,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 9,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751609873,
+          "observedAt": 1792751609897,
+          "foreground": 65906,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 8,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Shell_TrayWnd",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751610668,
+          "observedAt": 1792751610686,
+          "foreground": 65906,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Shell_TrayWnd",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 16,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 10,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751626160,
+          "observedAt": 1792751626187,
+          "foreground": 1181986,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 17,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "TaskManagerWindow",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751626981,
+          "observedAt": 1792751627001,
+          "foreground": 1181986,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "TaskManagerWindow",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 5,
+          "move": 34,
+          "raise": 18,
+          "resize": 30,
+          "show": 9
+        }
+      },
+      {
+        "cycle": 11,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751642462,
+          "observedAt": 1792751642485,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 13,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751643270,
+          "observedAt": 1792751643288,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 133,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 19,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 12,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751658758,
+          "observedAt": 1792751658784,
+          "foreground": 1181986,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 15,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "TaskManagerWindow",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751659587,
+          "observedAt": 1792751659607,
+          "foreground": 1181986,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "TaskManagerWindow",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 63,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 20,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 13,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751675094,
+          "observedAt": 1792751675120,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751675893,
+          "observedAt": 1792751675912,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 21,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 14,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751691442,
+          "observedAt": 1792751691480,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 16,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751692305,
+          "observedAt": 1792751692321,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 137,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 23,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 15,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751707848,
+          "observedAt": 1792751707873,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751708677,
+          "observedAt": 1792751708698,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 24,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 16,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751724149,
+          "observedAt": 1792751724174,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751724966,
+          "observedAt": 1792751724982,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 135,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 25,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 17,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751740424,
+          "observedAt": 1792751740446,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751741224,
+          "observedAt": 1792751741244,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 130,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 26,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 18,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751756697,
+          "observedAt": 1792751756718,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751757481,
+          "observedAt": 1792751757499,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 131,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 27,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 19,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751772928,
+          "observedAt": 1792751772951,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751773732,
+          "observedAt": 1792751773751,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 28,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 20,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751789197,
+          "observedAt": 1792751789220,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751790045,
+          "observedAt": 1792751790061,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 29,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 21,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751805518,
+          "observedAt": 1792751805542,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751806330,
+          "observedAt": 1792751806348,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 131,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 30,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 22,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751821799,
+          "observedAt": 1792751821822,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751822623,
+          "observedAt": 1792751822646,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 133,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 31,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 23,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751838089,
+          "observedAt": 1792751838112,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751838879,
+          "observedAt": 1792751838899,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 37,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 32,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 24,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751854392,
+          "observedAt": 1792751854420,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 17,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751855209,
+          "observedAt": 1792751855229,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 135,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 34,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 25,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751870702,
+          "observedAt": 1792751870727,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751871529,
+          "observedAt": 1792751871546,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 65,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 35,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 26,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751887104,
+          "observedAt": 1792751887131,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751887914,
+          "observedAt": 1792751887935,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 135,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 36,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 27,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751903390,
+          "observedAt": 1792751903417,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751904201,
+          "observedAt": 1792751904221,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 37,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 28,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751919696,
+          "observedAt": 1792751919721,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751920530,
+          "observedAt": 1792751920549,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 38,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 29,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751936017,
+          "observedAt": 1792751936045,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751936842,
+          "observedAt": 1792751936862,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 39,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 30,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751952334,
+          "observedAt": 1792751952360,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751953178,
+          "observedAt": 1792751953197,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 40,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 31,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792751968676,
+          "observedAt": 1792751968700,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792751969493,
+          "observedAt": 1792751969513,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 131,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 41,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 32,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792751984964,
+          "observedAt": 1792751984986,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792751985764,
+          "observedAt": 1792751985785,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 42,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 33,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792752001280,
+          "observedAt": 1792752001305,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792752002092,
+          "observedAt": 1792752002112,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 132,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 43,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 34,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792752017586,
+          "observedAt": 1792752017611,
+          "foreground": 67398,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "MozillaWindowClass",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792752018421,
+          "observedAt": 1792752018446,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 44,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 35,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792752033906,
+          "observedAt": 1792752033929,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792752034702,
+          "observedAt": 1792752034723,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 133,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 45,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 36,
+        "label": "widget-1",
+        "promoted": {
+          "actionAt": 1792752050170,
+          "observedAt": 1792752050194,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recovered": {
+          "actionAt": 1792752050978,
+          "observedAt": 1792752051000,
+          "foreground": 1182390,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Qt5156QWindowIcon",
+          "handle": 1117068
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 46,
+          "resize": 30,
+          "show": 11
+        }
+      },
+      {
+        "cycle": 37,
+        "label": "widget",
+        "promoted": {
+          "actionAt": 1792752066457,
+          "observedAt": 1792752066483,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 9,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "coveredByTaskbar": true,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recovered": {
+          "actionAt": 1792752067271,
+          "observedAt": 1792752067288,
+          "foreground": 198116,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "coveredByTaskbar": false,
+          "foregroundClass": "Chrome_WidgetWin_1",
+          "handle": 592866
+        },
+        "recoveryLatencyMs": 134,
+        "operations": {
+          "hide": 7,
+          "move": 34,
+          "raise": 48,
+          "resize": 30,
+          "show": 11
+        }
+      }
+    ]
+  },
+  "zorderProbe": [
+    {
+      "actionAt": 1792751403415,
+      "observedAt": 1792751403454,
+      "foreground": 592866,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 11,
+      "taskbarRank": 18,
+      "hitClass": "Tauri Window",
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 592866
+    },
+    {
+      "actionAt": 1792751403880,
+      "observedAt": 1792751403922,
+      "foreground": 592866,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 12,
+      "taskbarRank": 7,
+      "hitClass": "Shell_TrayWnd",
+      "coveredByTaskbar": true,
+      "foregroundClass": "Tauri Window",
+      "handle": 592866
+    },
+    {
+      "actionAt": 1792751410839,
+      "observedAt": 1792751410882,
+      "foreground": 592866,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 7,
+      "taskbarRank": 8,
+      "hitClass": "Tauri Window",
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 592866
+    }
+  ],
+  "baselineProbe": [
+    {
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 11,
+      "taskbarRank": 18,
+      "hitClass": "Tauri Window",
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 787970
+    },
+    {
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 12,
+      "taskbarRank": 7,
+      "hitClass": "Shell_TrayWnd",
+      "coveredByTaskbar": true,
+      "foregroundClass": "Tauri Window",
+      "handle": 787970
+    },
+    {
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 12,
+      "taskbarRank": 7,
+      "hitClass": "Shell_TrayWnd",
+      "coveredByTaskbar": true,
+      "foregroundClass": "Tauri Window",
+      "handle": 787970
+    }
+  ],
+  "startupSamplesMs": [
+    1760,
+    669
+  ],
+  "idle": {
+    "durationSeconds": 32.961,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.2340597600194169,
+    "cpuOneCorePercent": 3.7449561603106702,
+    "meanWorkingSetMiB": 555.8498883928571,
+    "meanPrivateCommitMiB": 442.39229910714283,
+    "note": "Sahib host plus descendant WebView2 processes; summed working sets can count shared pages twice. Private commit is committed memory, not resident RAM.",
+    "samples": [
+      {
+        "at": 1792752234245,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 40108032,
+            "privateCommit": 9080832
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 124833792,
+            "privateCommit": 43044864
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0,
+            "workingSet": 10440704,
+            "privateCommit": 2592768
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 0.671875,
+            "workingSet": 113266688,
+            "privateCommit": 344911872
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42663936,
+            "privateCommit": 12926976
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 0.65625,
+            "workingSet": 170827776,
+            "privateCommit": 116244480
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.15625,
+            "workingSet": 72343552,
+            "privateCommit": 32763904
+          }
+        ]
+      },
+      {
+        "at": 1792752239745,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 40112128,
+            "privateCommit": 9080832
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 124870656,
+            "privateCommit": 43061248
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0,
+            "workingSet": 10440704,
+            "privateCommit": 2592768
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 0.71875,
+            "workingSet": 106487808,
+            "privateCommit": 311603200
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42713088,
+            "privateCommit": 12926976
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 0.78125,
+            "workingSet": 170233856,
+            "privateCommit": 114700288
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 70520832,
+            "privateCommit": 30502912
+          }
+        ]
+      },
+      {
+        "at": 1792752245233,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 40112128,
+            "privateCommit": 9080832
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 124899328,
+            "privateCommit": 43065344
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0,
+            "workingSet": 10440704,
+            "privateCommit": 2592768
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 0.78125,
+            "workingSet": 105439232,
+            "privateCommit": 301346816
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42721280,
+            "privateCommit": 12926976
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 0.890625,
+            "workingSet": 169336832,
+            "privateCommit": 113500160
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 70594560,
+            "privateCommit": 30511104
+          }
+        ]
+      },
+      {
+        "at": 1792752250723,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 40112128,
+            "privateCommit": 9080832
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 125329408,
+            "privateCommit": 43089920
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0,
+            "workingSet": 10440704,
+            "privateCommit": 2592768
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 0.875,
+            "workingSet": 106479616,
+            "privateCommit": 228438016
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42721280,
+            "privateCommit": 12926976
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 0.984375,
+            "workingSet": 174612480,
+            "privateCommit": 118853632
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 70733824,
+            "privateCommit": 30650368
+          }
+        ]
+      },
+      {
+        "at": 1792752256203,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 40112128,
+            "privateCommit": 9080832
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 125329408,
+            "privateCommit": 43089920
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0,
+            "workingSet": 10440704,
+            "privateCommit": 2592768
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 0.96875,
+            "workingSet": 106377216,
+            "privateCommit": 193302528
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42721280,
+            "privateCommit": 12926976
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 1.078125,
+            "workingSet": 178208768,
+            "privateCommit": 122159104
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 70819840,
+            "privateCommit": 30666752
+          }
+        ]
+      },
+      {
+        "at": 1792752261686,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.46875,
+            "workingSet": 39956480,
+            "privateCommit": 8851456
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.984375,
+            "workingSet": 125177856,
+            "privateCommit": 42708992
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0.03125,
+            "workingSet": 19472384,
+            "privateCommit": 3518464
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 1.125,
+            "workingSet": 105320448,
+            "privateCommit": 186474496
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42627072,
+            "privateCommit": 12832768
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 1.203125,
+            "workingSet": 138428416,
+            "privateCommit": 79958016
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 73302016,
+            "privateCommit": 32342016
+          }
+        ]
+      },
+      {
+        "at": 1792752267206,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 9180,
+            "name": "sahib-desktop",
+            "cpu": 0.515625,
+            "workingSet": 39968768,
+            "privateCommit": 8855552
+          },
+          {
+            "id": 25676,
+            "name": "msedgewebview2",
+            "cpu": 0.984375,
+            "workingSet": 125177856,
+            "privateCommit": 42663936
+          },
+          {
+            "id": 24100,
+            "name": "msedgewebview2",
+            "cpu": 0.03125,
+            "workingSet": 19472384,
+            "privateCommit": 3518464
+          },
+          {
+            "id": 23680,
+            "name": "msedgewebview2",
+            "cpu": 1.171875,
+            "workingSet": 105082880,
+            "privateCommit": 186486784
+          },
+          {
+            "id": 26540,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 42733568,
+            "privateCommit": 12832768
+          },
+          {
+            "id": 26472,
+            "name": "msedgewebview2",
+            "cpu": 0.0625,
+            "workingSet": 20332544,
+            "privateCommit": 7725056
+          },
+          {
+            "id": 18768,
+            "name": "msedgewebview2",
+            "cpu": 1.28125,
+            "workingSet": 139743232,
+            "privateCommit": 81195008
+          },
+          {
+            "id": 18720,
+            "name": "msedgewebview2",
+            "cpu": 0.171875,
+            "workingSet": 73318400,
+            "privateCommit": 32350208
+          }
+        ]
+      }
+    ]
+  },
+  "idleStartupSamplesMs": [
+    817,
+    840
+  ],
+  "pass": true,
+  "installer": {
+    "bytes": 23297673,
+    "sha256": "ef87c32d833471f47886580b22c716a46ba6a6cbdb9f59b3aae7f4960efc3073"
+  },
+  "displays": [
+    {
+      "monitor": "\\\\.\\DISPLAY1",
+      "scale": 1.25,
+      "work": [
+        0,
+        0,
+        2560,
+        1380
+      ],
+      "bar": [
+        0,
+        1380,
+        2560,
+        1440
+      ]
+    },
+    {
+      "monitor": "\\\\.\\DISPLAY2",
+      "scale": 1,
+      "work": [
+        -1920,
+        0,
+        0,
+        1032
+      ],
+      "bar": [
+        -1920,
+        1032,
+        0,
+        1080
+      ]
+    }
+  ],
+  "windowFixtures": [
+    {
+      "mode": "maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -9,
+          "Y": -9
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2578,
+          "Height": 1398
+        },
+        "X": -9,
+        "Y": -9,
+        "Width": 2578,
+        "Height": 1398,
+        "Left": -9,
+        "Top": -9,
+        "Right": 2569,
+        "Bottom": 1389,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "fullscreen",
+      "bounds": {
+        "Location": {
+          "IsEmpty": true,
+          "X": 0,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2560,
+          "Height": 1440
+        },
+        "X": 0,
+        "Y": 0,
+        "Width": 2560,
+        "Height": 1440,
+        "Left": 0,
+        "Top": 0,
+        "Right": 2560,
+        "Bottom": 1440,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "borderless-maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": true,
+          "X": 0,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2560,
+          "Height": 1440
+        },
+        "X": 0,
+        "Y": 0,
+        "Width": 2560,
+        "Height": 1440,
+        "Left": 0,
+        "Top": 0,
+        "Right": 2560,
+        "Bottom": 1440,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 80,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": 80,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": 80,
+        "Top": 60,
+        "Right": 800,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1928,
+          "Y": -8
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1936,
+          "Height": 1048
+        },
+        "X": -1928,
+        "Y": -8,
+        "Width": 1936,
+        "Height": 1048,
+        "Left": -1928,
+        "Top": -8,
+        "Right": 8,
+        "Bottom": 1040,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "fullscreen",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1920,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1920,
+          "Height": 1080
+        },
+        "X": -1920,
+        "Y": 0,
+        "Width": 1920,
+        "Height": 1080,
+        "Left": -1920,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 1080,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "borderless-maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1920,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1920,
+          "Height": 1080
+        },
+        "X": -1920,
+        "Y": 0,
+        "Width": 1920,
+        "Height": 1080,
+        "Left": -1920,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 1080,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1840,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": -1840,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": -1840,
+        "Top": 60,
+        "Right": -1120,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 592782
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 80,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": 80,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": 80,
+        "Top": 60,
+        "Right": 800,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 592782
+    }
+  ]
+}

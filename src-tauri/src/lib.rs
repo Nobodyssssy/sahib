@@ -1,6 +1,7 @@
 mod audio;
 mod scheduler;
 mod taskbar;
+mod widget_watch;
 use audio::{AudioJob, NativeAudio};
 use scheduler::Schedule;
 use serde::{Deserialize, Serialize};
@@ -86,6 +87,7 @@ struct DesktopState {
     widget_expanded: AtomicBool,
     widget_views: Mutex<HashMap<String, WidgetView>>,
     creating_widgets: AtomicBool,
+    widget_diagnostics: Mutex<widget_watch::Diagnostics>,
 }
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -183,18 +185,32 @@ fn build_extra_widget(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> 
 }
 // WebView2 creation must run outside synchronous commands / window callbacks.
 fn ensure_widget_windows(app: &tauri::AppHandle, p: &DesktopPrefs) {
-    if !p.widget_visible || p.widget_mode != "taskbar" || p.widget_monitor != "all" {
+    if !p.widget_visible {
         return;
     }
     let state = app.state::<DesktopState>();
     if state.creating_widgets.swap(true, Ordering::AcqRel) {
         return;
     }
+    if app.get_webview_window("widget").is_none() {
+        if build_extra_widget(app, "widget").is_ok() {
+            state
+                .widget_diagnostics
+                .lock()
+                .unwrap()
+                .operation("recreate-primary");
+        }
+    }
     let count = app
         .get_webview_window("widget")
         .and_then(|w| w.available_monitors().ok())
         .map(|m| m.len())
         .unwrap_or(1);
+    let count = if p.widget_mode == "taskbar" && p.widget_monitor == "all" {
+        count
+    } else {
+        1
+    };
     for i in 1..count {
         let label = format!("widget-{i}");
         if app.get_webview_window(&label).is_none() {
@@ -291,6 +307,23 @@ fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
             pos.y + size.height as i32,
         );
         let bar = taskbar::bounds(monitor);
+        if p.widget_mode == "taskbar" && bar.is_none() && view.bar.is_some() {
+            if w.is_visible().unwrap_or(false) {
+                let _ = w.hide();
+                state.widget_diagnostics.lock().unwrap().operation("hide");
+            }
+            if let Ok(handle) = w.hwnd() {
+                state.widget_diagnostics.lock().unwrap().record(
+                    &state.file,
+                    label,
+                    "taskbar-rebuilding",
+                    widget_watch::observe(handle.0 as isize),
+                    &view,
+                    "wait-for-shell",
+                );
+            }
+            continue;
+        }
         let width = (240.0 * scale).round() as i32;
         let safe = bar.map(|b| taskbar::safe_edges(b, scale));
         let docked = p.widget_mode == "taskbar"
@@ -385,21 +418,81 @@ fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 .map(|b| b.3.min(monitor.3) - b.1.max(monitor.1) < (8.0 * scale) as i32)
                 .unwrap_or(false);
         if !p.widget_visible || fullscreen || auto_hidden {
+            let reason = if !p.widget_visible {
+                "user-hidden"
+            } else if fullscreen {
+                "fullscreen"
+            } else {
+                "taskbar-auto-hide"
+            };
             if w.is_visible().unwrap_or(false) {
                 let _ = w.hide();
+                state.widget_diagnostics.lock().unwrap().operation("hide");
+            }
+            if let Ok(handle) = w.hwnd() {
+                state.widget_diagnostics.lock().unwrap().record(
+                    &state.file,
+                    label,
+                    reason,
+                    widget_watch::observe(handle.0 as isize),
+                    &view,
+                    "suppressed",
+                );
             }
             continue;
         }
         let size = tauri::PhysicalSize::new(target.2, target.3);
         if w.inner_size().ok() != Some(size) {
             let _ = w.set_size(size);
+            state.widget_diagnostics.lock().unwrap().operation("resize");
         }
         let pos = tauri::PhysicalPosition::new(target.0, target.1);
         if w.outer_position().ok() != Some(pos) {
             let _ = w.set_position(pos);
+            state.widget_diagnostics.lock().unwrap().operation("move");
         }
         if !w.is_visible().unwrap_or(false) {
             let _ = w.show();
+            state.widget_diagnostics.lock().unwrap().operation("show");
+        }
+        if let Ok(handle) = w.hwnd() {
+            let handle = handle.0 as isize;
+            let observation = widget_watch::observe(handle);
+            let reason = if observation.cloaked != 0 {
+                "virtual-desktop-cloaked"
+            } else if observation.covered_by_taskbar {
+                "taskbar-covered"
+            } else if flags.0 && !observation.topmost {
+                "topmost-lost"
+            } else {
+                "normal"
+            };
+            let repair = flags.0
+                && observation.valid
+                && observation.visible
+                && observation.cloaked == 0
+                && (observation.covered_by_taskbar || !observation.topmost);
+            state.widget_diagnostics.lock().unwrap().record(
+                &state.file,
+                label,
+                reason,
+                observation,
+                &view,
+                if repair { "repair-order" } else { "observe" },
+            );
+            if repair {
+                let success = widget_watch::recover_order(handle);
+                let mut diagnostics = state.widget_diagnostics.lock().unwrap();
+                diagnostics.operation(if success { "raise" } else { "raise-failed" });
+                diagnostics.record(
+                    &state.file,
+                    label,
+                    "after-repair",
+                    widget_watch::observe(handle),
+                    &view,
+                    if success { "no-activate" } else { "failed" },
+                );
+            }
         }
     }
 }
@@ -509,9 +602,12 @@ fn desktop_state(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
         Some((pos.x, pos.y, size.width, size.height))
     });
     let taskbar_bounds = taskbar::bounds((i32::MIN, i32::MIN, i32::MAX, i32::MAX));
+    let diagnostic_snapshot =
+        serde_json::to_value(&*state.widget_diagnostics.lock().unwrap()).unwrap();
+    let view_snapshot = state.widget_views.lock().unwrap().clone();
     let widget_windows:Vec<_>=app.webview_windows().into_iter().filter(|(label,_)|is_widget(label)).map(|(label,w)|serde_json::json!({"label":label,"visible":w.is_visible().unwrap_or(false),"position":w.outer_position().ok(),"size":w.inner_size().ok(),"scale":w.scale_factor().ok()})).collect();
     Ok(
-        serde_json::json!({"widgetWindows":widget_windows,"widgetViews":*state.widget_views.lock().unwrap(),"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.get_webview_window("widget").and_then(|w| w.available_monitors().ok()).unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
+        serde_json::json!({"widgetDiagnostics":diagnostic_snapshot,"widgetLogPath":state.file.parent().unwrap().join("widget-diagnostics.jsonl"),"widgetWindows":widget_windows,"widgetViews":view_snapshot,"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.get_webview_window("widget").and_then(|w| w.available_monitors().ok()).unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
     )
 }
 #[tauri::command]
@@ -1021,14 +1117,16 @@ pub fn run() {
                 .unwrap_or_default();
             let prefs = disk.prefs.clone();
             let ar = disk.schedule.language == "ar";
+            let audio_app=app.handle().clone();
             app.manage(DesktopState {
                 disk: Mutex::new(disk),
                 file,
-                audio: NativeAudio::start(),
+                audio: NativeAudio::start(move || emit_state(&audio_app)),
                 position_dirty: AtomicBool::new(false),
                 widget_expanded: AtomicBool::new(false),
                 widget_views: Mutex::new(HashMap::new()),
                 creating_widgets: AtomicBool::new(false),
+                widget_diagnostics: Mutex::new(widget_watch::Diagnostics::default()),
             });
             for config in &app.config().app.windows {
                 let h = app.handle().clone();
@@ -1110,15 +1208,18 @@ pub fn run() {
             }
             start_scheduler(app.handle().clone());
             let handle=app.handle().clone();
+            let widget_events=widget_watch::start();
             std::thread::spawn(move || loop {
-                std::thread::sleep(Duration::from_secs(2));
+                let _=widget_events.recv_timeout(Duration::from_secs(10));
+                std::thread::sleep(Duration::from_millis(120));
+                while widget_events.try_recv().is_ok() {}
                 let prefs=handle.state::<DesktopState>().disk.lock().unwrap().prefs.clone();
                 ensure_widget_windows(&handle,&prefs);
                 let h=handle.clone();
                 let _=handle.run_on_main_thread(move || {
                     let state=h.state::<DesktopState>();
                     let prefs=state.disk.lock().unwrap().prefs.clone();
-                    if prefs.widget_mode=="taskbar" && prefs.widget_visible {apply_widget(&h,&prefs);}
+                    if prefs.widget_visible {apply_widget(&h,&prefs);}
                 });
             });
             Ok(())
