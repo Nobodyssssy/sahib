@@ -1,6 +1,29 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+#[repr(C)]
+struct WindowsZone {
+    bias: i32,
+    standard: [u16; 32],
+    standard_date: [u16; 8],
+    standard_bias: i32,
+    daylight: [u16; 32],
+    daylight_date: [u16; 8],
+    daylight_bias: i32,
+}
+#[link(name = "kernel32")]
+extern "system" {
+    fn GetTimeZoneInformation(info: *mut WindowsZone) -> u32;
+}
+pub fn zone_signature() -> String {
+    let mut info: WindowsZone = unsafe { std::mem::zeroed() };
+    let status = unsafe { GetTimeZoneInformation(&mut info) };
+    format!(
+        "{status}:{}:{}:{}:{:?}:{:?}",
+        info.bias, info.standard_bias, info.daylight_bias, info.standard, info.daylight
+    )
+}
+
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Alert {
@@ -140,6 +163,36 @@ pub fn validate(schedule: &Schedule, now: i64) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn clock_rollback_does_not_repeat_fired_alerts() {
+        let s = Schedule {
+            alerts: vec![event("once", 1000)],
+            ..Default::default()
+        };
+        let mut fired = HashMap::new();
+        assert_eq!(take_due(&s, &mut fired, 1000).len(), 1);
+        assert!(take_due(&s, &mut fired, 500).is_empty());
+        assert!(take_due(&s, &mut fired, 1000).is_empty());
+    }
+    #[test]
+    fn large_clock_jump_discards_old_sounds() {
+        let s = Schedule {
+            alerts: vec![event("old", 1000), event("next", 500000)],
+            ..Default::default()
+        };
+        let mut fired = HashMap::new();
+        assert!(take_due(&s, &mut fired, 250000).is_empty());
+        assert_eq!(take_due(&s, &mut fired, 500000).len(), 1);
+    }
+    #[test]
+    fn notifications_keep_their_suppression_flag() {
+        let s = Schedule {
+            alerts: vec![event("suppressed", 1000)],
+            ..Default::default()
+        };
+        let due = take_due(&s, &mut HashMap::new(), 1000);
+        assert!(!due[0].notify);
+    }
     #[test]
     fn silent_practice_does_not_suppress_adhan() {
         let mut prayer = event("prayer", 1000);

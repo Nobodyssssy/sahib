@@ -6,6 +6,8 @@ import net from 'node:net';
 import {spawn,spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {setTimeout as sleep} from 'node:timers/promises';
+import {measureDesktop} from './measure-desktop.mjs';
+import {verifyWidgetWindows} from './verify-widget-windows.mjs';
 
 if(process.platform!=='win32')throw Error('Desktop acceptance requires Windows and WebView2.');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -15,7 +17,7 @@ fs.mkdirSync(profile,{recursive:true});
 const config=path.join(output,'tauri-qa.json');
 fs.writeFileSync(config,JSON.stringify({identifier:'com.sahib.companion.qa',productName:'Sahib QA'}));
 const report={started:new Date().toISOString(),commit:spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8',windowsHide:true}).stdout?.trim(),dirty:!!spawnSync('git',['status','--porcelain'],{encoding:'utf8',windowsHide:true}).stdout?.trim(),tests:[],errors:[],audioHardware:process.argv.includes('--media')};
-let app,session,log;
+let app,session,log,manualPreferences;
 function run(binary,args){return new Promise((resolve,reject)=>{
  const child=spawn(binary,args,{cwd:root,stdio:'inherit',windowsHide:true});
  child.once('error',reject);child.once('exit',code=>code===0?resolve():reject(Error(`Build exited ${code}`)));
@@ -92,7 +94,7 @@ async function expressionTest(file){
 }
 try{
  const cli=path.join(root,'node_modules','@tauri-apps','cli','tauri.js');
- await run(process.execPath,[cli,'build','--debug','--no-bundle','--config',config,'--','--locked']);
+ if(!process.argv.includes('--skip-build'))await run(process.execPath,[cli,'build','--debug','--no-bundle','--config',config,'--','--locked']);
  const {port}=await start();
  record('Separate QA identity',await session.evaluate('window.__TAURI__.app.getIdentifier()')==='com.sahib.companion.qa');
  await session.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich acceptance fixture");await SahibDesktop.sync();return true})()');
@@ -109,6 +111,15 @@ try{
    if(widgetReady)break;await sleep(100);
   }
   record('Widget uses the shared next prayer',widgetReady);
+  const payload=await widget.evaluate('(async()=>{const i=window.__TAURI__.core.invoke;return {full:JSON.stringify(await i("desktop_state")).length,widget:JSON.stringify(await i("desktop_widget_state")).length}})()');
+  record('Widget receives a small presentation packet',payload.widget<payload.full,JSON.stringify(payload));
+  await widget.evaluate('window.qaReminderNode=document.getElementById("widget-reminders").firstChild;window.qaPrayerNode=document.getElementById("widget-timetable").firstChild');await sleep(2200);
+  record('Countdown ticks retain prayer and reminder elements',await widget.evaluate('qaReminderNode===document.getElementById("widget-reminders").firstChild&&qaPrayerNode===document.getElementById("widget-timetable").firstChild'));
+  await session.evaluate('(async()=>{const s=await SahibDesktop.invoke("desktop_state");await SahibDesktop.invoke("desktop_sync_schedule",{schedule:{...s.schedule,alerts:[],prayers:[],widgetDays:[],validUntil:Date.now()-1}})})()');await sleep(300);
+  record('Expired timetable asks to refresh instead of showing stale prayers',await widget.evaluate('document.getElementById("widget-status").textContent==="Open Sahib to refresh"&&document.getElementById("widget-countdown").textContent==="—"'));
+  await session.evaluate('window.__TAURI__.event.emitTo("main","sahib:clock-changed")');
+  let rebuilt=false;for(let i=0;i<100;i++){rebuilt=await session.evaluate('SahibDesktop.invoke("desktop_state").then(s=>s.schedule.validUntil>Date.now()+30*86400000)');if(rebuilt)break;await sleep(100);}
+  record('Native clock-change event rebuilds the shared timetable',rebuilt);await sleep(300);
   record('Widget cannot invoke main-only commands',await widget.evaluate('window.__TAURI__.core.invoke("desktop_preview_audio",{id:"qatami",volume:0}).then(()=>false,()=>true)'));
   await widget.screenshot('widget.png');
   if(report.audioHardware){
@@ -146,6 +157,7 @@ try{
   await widget.evaluate('document.getElementById("widget-settings").click()');await sleep(350);
   record('Widget settings button opens native controls',await session.evaluate('!!document.querySelector("#settings-body [data-desktop-pref=widgetMode]")'));
   await session.evaluate('closeSettings()');
+  if(process.argv.includes('--windows')){manualPreferences=await verifyWidgetWindows({session,widget,port,connect,output,record,report});Object.assign(savedPresentation.prefs,manualPreferences);}
   await session.evaluate(`(async()=>{await SahibDesktop.invoke('desktop_set_preferences',{prefs:${JSON.stringify(savedPresentation.prefs)},autostart:null});await SahibDesktop.invoke('desktop_sync_schedule',{schedule:${JSON.stringify(savedPresentation.schedule)}});await SahibDesktop.invoke('desktop_widget_action',{action:'collapse'})})()`);
  }finally{widget.close();}
  const eventId=`acceptance:hidden:${Date.now()}`;
@@ -160,8 +172,16 @@ try{
  const restarted=await session.evaluate('(async()=>{const state=await window.__TAURI__.core.invoke("desktop_state");return {hidden:!await window.__TAURI__.window.getCurrentWindow().isVisible(),prefs:state.prefs}})()');
  record('Start minimized survives restart',restarted.hidden&&restarted.prefs.startMinimized);
  record('Widget preferences survive restart',restarted.prefs.widgetVisible&&restarted.prefs.widgetOpacity===0.8);
+ if(manualPreferences){await sleep(2500);record('Both displays and manual positions survive restart',restarted.prefs.widgetMonitor==='all'&&restarted.prefs.widgetEdge==='manual'&&Object.keys(restarted.prefs.widgetPositions).length===Object.keys(manualPreferences.widgetPositions).length&&Object.entries(manualPreferences.widgetPositions).every(([name,x])=>restarted.prefs.widgetPositions[name]===x)&&await session.evaluate('SahibDesktop.invoke("desktop_state").then(s=>s.widgetWindows.length===s.monitors.length)'));}
  const persisted=JSON.parse(fs.readFileSync(path.join(profile,'desktop-state.json'),'utf8'));
  record('Fired-event ledger survives restart',Object.hasOwn(persisted.fired,eventId));
+ if(process.argv.includes('--measure')){
+  await session.evaluate(`(async()=>{await SahibDesktop.preferences('widgetMode','taskbar');await SahibDesktop.preferences('widgetTheme','sahib');await SahibDesktop.preferences('widgetMonitor','primary')})()`);
+  await sleep(5000);console.log('Measuring isolated app idle usage with the main window hidden…');
+  const savedAt=fs.statSync(path.join(profile,'desktop-state.json')).mtimeMs;
+  report.idle=await measureDesktop(app.pid);console.log(JSON.stringify({...report.idle,samples:undefined}));
+  record('Idle countdown does not rewrite native settings or schedules',fs.statSync(path.join(profile,'desktop-state.json')).mtimeMs===savedAt);
+ }
 }catch(error){report.errors.push(error.stack||String(error));process.exitCode=1;
  try{await session?.screenshot('failure.png');}catch{}
 }finally{

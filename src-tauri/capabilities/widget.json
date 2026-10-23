@@ -1,1 +1,1 @@
-{"identifier":"widget-window","description":"Local prayer widget event channel and window dragging.","windows":["widget"],"permissions":["core:event:default","core:window:allow-start-dragging"]}
+{"identifier":"widget-window","description":"Local prayer widget event channel and window dragging.","windows":["widget","widget-*"],"permissions":["core:event:default","core:window:allow-start-dragging"]}

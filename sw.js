@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.14.1';
+const VERSION = 'v2.14.2';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
@@ -78,7 +78,7 @@ const APP_SHELL = [
   './js/state.js',
   './js/search.js',
   './js/vendor/adhan.js',
-  './js/prayer.js?v=20261022-desktop-1',
+  './js/prayer.js?v=20261023-timezone-1',
   './js/prayer-widget.js?v=20261022-desktop-1',
   './js/qibla.js',
   './js/location.js',

@@ -1,0 +1,592 @@
+{
+  "version": "0.2.1",
+  "checkedAt": "2026-10-23T09:44:33.901Z",
+  "baseCommit": "53d961bab1f377488c6a33ed284322b907fec0cf",
+  "workingTreeTested": true,
+  "nativeUnitTests": 13,
+  "packagedChecks": 115,
+  "pass": true,
+  "tests": [
+    {
+      "name": "Separate QA identity",
+      "pass": true
+    },
+    {
+      "name": "Packaged app ready",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click practice",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click cats",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click hijri",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click asma",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click books",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click tasbih",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click home",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings click opens dialog",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click alerts",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click data",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click about",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click appearance",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Theme button click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings close button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Search button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Adhkar page reopens",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Generated category click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "No blocked event handlers",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Desktop adapter loaded",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich summer offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich winter offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Tokyo offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition before rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition after rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Offline cache refreshes after a device timezone change",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native schedule extends beyond a month",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Widget has future prayers",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Browser SW disabled",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native settings present",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native PDF reader",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Arbitrary audio paths rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "External non-web schemes rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Settings changed during schedule preparation",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Old schedule cannot re-enable disabled prayer alerts",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Chime reminders work without unused imported recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Widget timetable survives missing unused recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "No missing-recording error for chime-only reminders",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Sunday previews the Monday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Wednesday previews the Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Ordinary Friday does not preview a Monday or Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Hijri day 12 previews the white days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Excluded Tashriq day is not suggested for fasting",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget has six daily prayer markers including sunrise",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget calendar boundaries include DST days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Imported audio plays natively",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Local audio removed from IndexedDB",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF renders",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF cover preview",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Fajr schedule selects the Fajr adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Other prayers select the standard adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "practice fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Widget uses the shared next prayer",
+      "pass": true
+    },
+    {
+      "name": "Widget receives a small presentation packet",
+      "pass": true,
+      "detail": "{\"full\":35394,\"widget\":2644}"
+    },
+    {
+      "name": "Countdown ticks retain prayer and reminder elements",
+      "pass": true
+    },
+    {
+      "name": "Expired timetable asks to refresh instead of showing stale prayers",
+      "pass": true
+    },
+    {
+      "name": "Native clock-change event rebuilds the shared timetable",
+      "pass": true
+    },
+    {
+      "name": "Widget cannot invoke main-only commands",
+      "pass": true
+    },
+    {
+      "name": "Widget stop button stops native adhan",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Taskbar compact view",
+      "pass": true
+    },
+    {
+      "name": "Native widget sits inside the primary taskbar",
+      "pass": true,
+      "detail": "{\"taskbar\":[0,1380,2560,1440],\"widget\":[263,1380,300,60]}"
+    },
+    {
+      "name": "Taskbar reminder fits without clipping",
+      "pass": true
+    },
+    {
+      "name": "Click opens full taskbar timetable",
+      "pass": true
+    },
+    {
+      "name": "Taskbar close collapses without hiding",
+      "pass": true
+    },
+    {
+      "name": "Arabic taskbar panel uses RTL",
+      "pass": true
+    },
+    {
+      "name": "Widget settings button opens native controls",
+      "pass": true
+    },
+    {
+      "name": "One widget window for each requested display",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[-1920,1032,0,1080],\"bounds\":[-1710,559,380,465],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":465,\"monitor\":\"\\\\\\\\.\\\\DISPLAY2\",\"safeBounds\":[-1864,-408],\"scale\":1,\"work\":[-1920,0,0,1032]}"
+    },
+    {
+      "name": "widget-1 panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget-1 background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[0,1380,2560,1440],\"bounds\":[263,791,475,579],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":463,\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"safeBounds\":[70,2129],\"scale\":1.25,\"work\":[0,0,2560,1380]}"
+    },
+    {
+      "name": "widget panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[1829,1380,300,60],\"safe\":[70,2129]}"
+    },
+    {
+      "name": "widget-1 right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-648,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[263,1380,300,60],\"safe\":[70,2129]}"
+    },
+    {
+      "name": "widget-1 left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-1710,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "widget-1 survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "Manual taskbar position is saved per display",
+      "pass": true,
+      "detail": "{\"\\\\\\\\.\\\\DISPLAY1\":246.4,\"\\\\\\\\.\\\\DISPLAY2\":210}"
+    },
+    {
+      "name": "Compact widget hides with the auto-hidden taskbar",
+      "pass": true
+    },
+    {
+      "name": "Compact widget returns with taskbar hover",
+      "pass": true
+    },
+    {
+      "name": "Main window closes to tray",
+      "pass": true
+    },
+    {
+      "name": "Native event fires while the main window is hidden",
+      "pass": true
+    },
+    {
+      "name": "Start minimized survives restart",
+      "pass": true
+    },
+    {
+      "name": "Widget preferences survive restart",
+      "pass": true
+    },
+    {
+      "name": "Both displays and manual positions survive restart",
+      "pass": true
+    },
+    {
+      "name": "Fired-event ledger survives restart",
+      "pass": true
+    }
+  ],
+  "displays": [
+    {
+      "monitor": "\\\\.\\DISPLAY1",
+      "scale": 1.25,
+      "work": [
+        0,
+        0,
+        2560,
+        1380
+      ],
+      "bar": [
+        0,
+        1380,
+        2560,
+        1440
+      ]
+    },
+    {
+      "monitor": "\\\\.\\DISPLAY2",
+      "scale": 1,
+      "work": [
+        -1920,
+        0,
+        0,
+        1032
+      ],
+      "bar": [
+        -1920,
+        1032,
+        0,
+        1080
+      ]
+    }
+  ],
+  "idle": {
+    "baseline": {
+      "durationSeconds": 32.518,
+      "logicalProcessors": 16,
+      "cpuSystemPercent": 0.2732861415216188,
+      "cpuOneCorePercent": 4.372578264345901,
+      "meanWorkingSetMiB": 553.4464285714286,
+      "meanPrivateCommitMiB": 431.6640625,
+      "note": "Sahib host plus descendant WebView2 processes; summed working sets can count shared pages twice. Private commit is committed memory, not resident RAM."
+    },
+    "refined": {
+      "durationSeconds": 32.732,
+      "logicalProcessors": 16,
+      "cpuSystemPercent": 0.23271378162043263,
+      "cpuOneCorePercent": 3.723420505926922,
+      "meanWorkingSetMiB": 552.8091517857143,
+      "meanPrivateCommitMiB": 421.25558035714283,
+      "note": "Sahib host plus descendant WebView2 processes; summed working sets can count shared pages twice. Private commit is committed memory, not resident RAM."
+    }
+  }
+}

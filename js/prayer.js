@@ -574,7 +574,7 @@ async function _localMonth(loc, year, month, prefs, force = false){
   const key = monthKey(loc.lat, loc.lng, year, month, prefs);
   if(!force){
     const cached = await store.getMeta(key);
-    if(cached && Array.isArray(cached.data) && cached.data.length){
+    if(cached && Array.isArray(cached.data) && cached.data.length && cached.data[0].timezone===Intl.DateTimeFormat().resolvedOptions().timeZone){
       return { data: cached.data, ts: cached.ts || Date.now(), stale: false, source: 'local-cache' };
     }
   }

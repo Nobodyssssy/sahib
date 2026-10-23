@@ -49,7 +49,7 @@ Browser/PWA reminders and audio depend on browser permissions, user interaction 
 
 The Windows Tauri v2 preview adds native scheduling/audio, a system tray, optional startup and a floating prayer widget while sharing this interface. Build it with `npm ci` and `npm run desktop:build`; see [Windows setup, acceptance checks and limitations](docs/WINDOWS.md). The Windows preview workflow tests and packages an unsigned installer with a SHA-256 checksum as a GitHub Actions artifact. The preview is separate from the browser release. Signing and automatic updates are not configured. Android packaging and home-screen widgets remain planned.
 
-Preview 0.2.0 also offers a compact taskbar widget with a timetable popover, Windows-style or six Sahib appearances, clearer controls, display/position settings, and daily practice plus tomorrow's fasting prompts. Enable it under Settings → Windows → Prayer widget. This overlay does not reserve space in the Windows taskbar; adjust its edge/offset to avoid covering icons.
+Preview 0.2.1 offers a compact taskbar widget with a timetable popover, Windows-style or six Sahib appearances, clearer controls, display/position settings, and daily practice plus tomorrow's fasting prompts. Enable it under Settings → Windows → Widget visibility & placement. It supports one or all taskbar displays, saved manual placement, notification-area avoidance, and a content-sized expanded panel. This overlay does not reserve taskbar space; drag it to avoid taskbar icons. See the [Windows verification report](docs/WINDOWS-0.2.1-VERIFICATION.md) for tested behavior and limits.
 
 ## Verification
 
