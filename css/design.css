@@ -2696,6 +2696,14 @@ html[data-sidebar-collapsed="true"] .sidebar-logo { width: 38px; height: 38px; }
 }
 .switch.on { background: var(--color-accent-subtle); border-color: var(--color-accent); }
 .switch.on::after { transform: translateX(17px); background: var(--color-accent); }
+html[data-theme="sahib"][data-mode="dark"] .switch.on {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+html[data-theme="sahib"][data-mode="dark"] .switch.on::after {
+  background: var(--color-on-accent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / .3);
+}
 [dir="rtl"] .switch.on::after { transform: translateX(-17px); }
 
 .btn-save, .btn-session, .btn-add {

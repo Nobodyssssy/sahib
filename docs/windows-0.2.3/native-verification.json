@@ -1,0 +1,1024 @@
+{
+  "started": "2026-10-23T14:45:42.836Z",
+  "tests": [
+    {
+      "name": "No rich WebViews in native background",
+      "pass": true
+    },
+    {
+      "name": "Native compact on both physical monitors",
+      "pass": true
+    },
+    {
+      "name": "native-widget physically visible at 125%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792766767819,
+        "observedAt": 1792766767859,
+        "foreground": 329314,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 10,
+        "taskbarRank": 21,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1050274,
+        "coveredByTaskbar": false,
+        "foregroundClass": "WindowsForms10.Window.8.app.0.3bfb418_r8_ad1",
+        "handle": 1050274
+      }
+    },
+    {
+      "name": "native-widget-1 physically visible at 100%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792766768334,
+        "observedAt": 1792766768370,
+        "foreground": 329314,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 9,
+        "taskbarRank": 27,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1640082,
+        "coveredByTaskbar": false,
+        "foregroundClass": "WindowsForms10.Window.8.app.0.3bfb418_r8_ad1",
+        "handle": 1640082
+      }
+    },
+    {
+      "name": "Windows key keeps compact visible",
+      "pass": true
+    },
+    {
+      "name": "native-widget maximized",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "maximized",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": -9,
+              "Y": -9
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 2578,
+              "Height": 1398
+            },
+            "X": -9,
+            "Y": -9,
+            "Width": 2578,
+            "Height": 1398,
+            "Left": -9,
+            "Top": -9,
+            "Right": 2569,
+            "Bottom": 1389,
+            "IsEmpty": false
+          },
+          "maximized": true,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            1789,
+            1380,
+            300,
+            60
+          ],
+          "handle": 1050274,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "normal",
+          "scale": 1.25,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget fullscreen",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "fullscreen",
+          "bounds": {
+            "Location": {
+              "IsEmpty": true,
+              "X": 0,
+              "Y": 0
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 2560,
+              "Height": 1440
+            },
+            "X": 0,
+            "Y": 0,
+            "Width": 2560,
+            "Height": 1440,
+            "Left": 0,
+            "Top": 0,
+            "Right": 2560,
+            "Bottom": 1440,
+            "IsEmpty": false
+          },
+          "maximized": false,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            1754,
+            1380,
+            300,
+            60
+          ],
+          "handle": 1050274,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "fullscreen",
+          "scale": 1.25,
+          "shellLifted": false,
+          "visible": false,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget borderless-maximized",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "borderless-maximized",
+          "bounds": {
+            "Location": {
+              "IsEmpty": true,
+              "X": 0,
+              "Y": 0
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 2560,
+              "Height": 1440
+            },
+            "X": 0,
+            "Y": 0,
+            "Width": 2560,
+            "Height": 1440,
+            "Left": 0,
+            "Top": 0,
+            "Right": 2560,
+            "Bottom": 1440,
+            "IsEmpty": false
+          },
+          "maximized": true,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            1754,
+            1380,
+            300,
+            60
+          ],
+          "handle": 1050274,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "fullscreen",
+          "scale": 1.25,
+          "shellLifted": false,
+          "visible": false,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget normal",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "normal",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": 80,
+              "Y": 60
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 720,
+              "Height": 480
+            },
+            "X": 80,
+            "Y": 60,
+            "Width": 720,
+            "Height": 480,
+            "Left": 80,
+            "Top": 60,
+            "Right": 800,
+            "Bottom": 540,
+            "IsEmpty": false
+          },
+          "maximized": false,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            1789,
+            1380,
+            300,
+            60
+          ],
+          "handle": 1050274,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "normal",
+          "scale": 1.25,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget repairs actual taskbar coverage",
+      "pass": true,
+      "detail": {
+        "before": {
+          "actionAt": 1792766780825,
+          "observedAt": 1792766780849,
+          "foreground": 263354,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 14,
+          "taskbarRank": 7,
+          "hitClass": "Shell_TrayWnd",
+          "hitHandle": 262568,
+          "coveredByTaskbar": true,
+          "foregroundClass": "Tauri Window",
+          "handle": 1050274
+        },
+        "after": {
+          "actionAt": 1792766781842,
+          "observedAt": 1792766781883,
+          "foreground": 263354,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 8,
+          "taskbarRank": 9,
+          "hitClass": "Tauri Window",
+          "hitHandle": 263354,
+          "coveredByTaskbar": false,
+          "foregroundClass": "Tauri Window",
+          "handle": 1050274
+        }
+      }
+    },
+    {
+      "name": "native-widget-1 maximized",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "maximized",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": -1928,
+              "Y": -8
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 1936,
+              "Height": 1048
+            },
+            "X": -1928,
+            "Y": -8,
+            "Width": 1936,
+            "Height": 1048,
+            "Left": -1928,
+            "Top": -8,
+            "Right": 8,
+            "Bottom": 1040,
+            "IsEmpty": false
+          },
+          "maximized": true,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            -1920,
+            1032,
+            0,
+            1080
+          ],
+          "bounds": [
+            -648,
+            1032,
+            240,
+            48
+          ],
+          "handle": 1640082,
+          "monitor": "\\\\.\\DISPLAY2",
+          "reason": "normal",
+          "scale": 1,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            -1920,
+            0,
+            0,
+            1032
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget-1 fullscreen",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "fullscreen",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": -1920,
+              "Y": 0
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 1920,
+              "Height": 1080
+            },
+            "X": -1920,
+            "Y": 0,
+            "Width": 1920,
+            "Height": 1080,
+            "Left": -1920,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 1080,
+            "IsEmpty": false
+          },
+          "maximized": false,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            -1920,
+            1032,
+            0,
+            1080
+          ],
+          "bounds": [
+            -648,
+            1032,
+            240,
+            48
+          ],
+          "handle": 1640082,
+          "monitor": "\\\\.\\DISPLAY2",
+          "reason": "fullscreen",
+          "scale": 1,
+          "shellLifted": false,
+          "visible": false,
+          "work": [
+            -1920,
+            0,
+            0,
+            1032
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget-1 borderless-maximized",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "borderless-maximized",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": -1920,
+              "Y": 0
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 1920,
+              "Height": 1080
+            },
+            "X": -1920,
+            "Y": 0,
+            "Width": 1920,
+            "Height": 1080,
+            "Left": -1920,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 1080,
+            "IsEmpty": false
+          },
+          "maximized": true,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            -1920,
+            1032,
+            0,
+            1080
+          ],
+          "bounds": [
+            -648,
+            1032,
+            240,
+            48
+          ],
+          "handle": 1640082,
+          "monitor": "\\\\.\\DISPLAY2",
+          "reason": "fullscreen",
+          "scale": 1,
+          "shellLifted": false,
+          "visible": false,
+          "work": [
+            -1920,
+            0,
+            0,
+            1032
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget-1 normal",
+      "pass": true,
+      "detail": {
+        "actual": {
+          "mode": "normal",
+          "bounds": {
+            "Location": {
+              "IsEmpty": false,
+              "X": -1840,
+              "Y": 60
+            },
+            "Size": {
+              "IsEmpty": false,
+              "Width": 720,
+              "Height": 480
+            },
+            "X": -1840,
+            "Y": 60,
+            "Width": 720,
+            "Height": 480,
+            "Left": -1840,
+            "Top": 60,
+            "Right": -1120,
+            "Bottom": 540,
+            "IsEmpty": false
+          },
+          "maximized": false,
+          "foreground": true,
+          "handle": 329314
+        },
+        "current": {
+          "bar": [
+            -1920,
+            1032,
+            0,
+            1080
+          ],
+          "bounds": [
+            -648,
+            1032,
+            240,
+            48
+          ],
+          "handle": 1640082,
+          "monitor": "\\\\.\\DISPLAY2",
+          "reason": "normal",
+          "scale": 1,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            -1920,
+            0,
+            0,
+            1032
+          ]
+        }
+      }
+    },
+    {
+      "name": "native-widget-1 repairs actual taskbar coverage",
+      "pass": true,
+      "detail": {
+        "before": {
+          "actionAt": 1792766788386,
+          "observedAt": 1792766788413,
+          "foreground": 329314,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 10,
+          "taskbarRank": 7,
+          "hitClass": "Shell_SecondaryTrayWnd",
+          "hitHandle": 263548,
+          "coveredByTaskbar": true,
+          "foregroundClass": "WindowsForms10.Window.8.app.0.3bfb418_r8_ad1",
+          "handle": 1640082
+        },
+        "after": {
+          "actionAt": 1792766789408,
+          "observedAt": 1792766789453,
+          "foreground": 329314,
+          "visible": true,
+          "iconic": false,
+          "cloaked": 0,
+          "topmost": true,
+          "widgetRank": 7,
+          "taskbarRank": 8,
+          "hitClass": "Tauri Window",
+          "hitHandle": 1640082,
+          "coveredByTaskbar": false,
+          "foregroundClass": "WindowsForms10.Window.8.app.0.3bfb418_r8_ad1",
+          "handle": 1640082
+        }
+      }
+    },
+    {
+      "name": "Native compact follows taskbar auto-hide",
+      "pass": true
+    },
+    {
+      "name": "Native compact returns on taskbar hover",
+      "pass": true
+    },
+    {
+      "name": "Tray icon remains registered and opens main",
+      "pass": true
+    },
+    {
+      "name": "Tray reopen can return to native-only background",
+      "pass": true
+    },
+    {
+      "name": "Existing Tauri panel opens on demand",
+      "pass": true
+    },
+    {
+      "name": "Closing panel releases its WebView",
+      "pass": true
+    },
+    {
+      "name": "qatami native deadline without main",
+      "pass": true
+    },
+    {
+      "name": "qatami stop closes native stream",
+      "pass": true
+    },
+    {
+      "name": "qatami-fajr native deadline without main",
+      "pass": true
+    },
+    {
+      "name": "qatami-fajr stop closes native stream",
+      "pass": true
+    },
+    {
+      "name": "off native deadline without main",
+      "pass": true
+    },
+    {
+      "name": "off stop closes native stream",
+      "pass": true
+    },
+    {
+      "name": "Shared JS timetable refresh retires rich UI",
+      "pass": true
+    },
+    {
+      "name": "Queued Settings action survives main recreation",
+      "pass": true
+    },
+    {
+      "name": "Restart starts compact without WebView2",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "initial": {
+    "audioError": null,
+    "audioPlaying": false,
+    "fired": {},
+    "mainExists": false,
+    "mainVisible": false,
+    "mode": "native",
+    "native": {
+      "native-widget": {
+        "bar": [
+          0,
+          1380,
+          2560,
+          1440
+        ],
+        "bounds": [
+          1789,
+          1380,
+          300,
+          60
+        ],
+        "handle": 1050274,
+        "monitor": "\\\\.\\DISPLAY1",
+        "reason": "normal",
+        "scale": 1.25,
+        "shellLifted": false,
+        "visible": true,
+        "work": [
+          0,
+          0,
+          2560,
+          1380
+        ]
+      },
+      "native-widget-1": {
+        "bar": [
+          -1920,
+          1032,
+          0,
+          1080
+        ],
+        "bounds": [
+          -648,
+          1032,
+          240,
+          48
+        ],
+        "handle": 1640082,
+        "monitor": "\\\\.\\DISPLAY2",
+        "reason": "normal",
+        "scale": 1,
+        "shellLifted": false,
+        "visible": true,
+        "work": [
+          -1920,
+          0,
+          0,
+          1032
+        ]
+      }
+    },
+    "prefs": {
+      "closeToTray": true,
+      "startMinimized": false,
+      "widgetAlwaysOnTop": true,
+      "widgetClickThrough": false,
+      "widgetEdge": "right",
+      "widgetMode": "taskbar",
+      "widgetMonitor": "all",
+      "widgetOffset": 210,
+      "widgetOpacity": 0.96,
+      "widgetPosition": null,
+      "widgetPositions": {},
+      "widgetReminders": true,
+      "widgetRightOffset": 0,
+      "widgetTheme": "windows",
+      "widgetVisible": true,
+      "widgetWarningMinutes": 10
+    },
+    "validUntil": 1795713780000,
+    "webviews": []
+  },
+  "startMenu": {
+    "foreground": {
+      "handle": 329080,
+      "class": "Windows.UI.Core.CoreWindow",
+      "process": "SearchHost",
+      "bounds": {
+        "left": 594,
+        "top": 214,
+        "right": 1452,
+        "bottom": 1104
+      }
+    },
+    "state": {
+      "audioError": null,
+      "audioPlaying": false,
+      "fired": {},
+      "mainExists": false,
+      "mainVisible": false,
+      "mode": "native",
+      "native": {
+        "native-widget": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            1789,
+            1310,
+            300,
+            60
+          ],
+          "handle": 1050274,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "normal",
+          "scale": 1.25,
+          "shellLifted": true,
+          "visible": true,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        },
+        "native-widget-1": {
+          "bar": [
+            -1920,
+            1032,
+            0,
+            1080
+          ],
+          "bounds": [
+            -648,
+            1032,
+            240,
+            48
+          ],
+          "handle": 1640082,
+          "monitor": "\\\\.\\DISPLAY2",
+          "reason": "normal",
+          "scale": 1,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            -1920,
+            0,
+            0,
+            1032
+          ]
+        }
+      },
+      "prefs": {
+        "closeToTray": true,
+        "startMinimized": false,
+        "widgetAlwaysOnTop": true,
+        "widgetClickThrough": false,
+        "widgetEdge": "right",
+        "widgetMode": "taskbar",
+        "widgetMonitor": "all",
+        "widgetOffset": 210,
+        "widgetOpacity": 0.96,
+        "widgetPosition": null,
+        "widgetPositions": {},
+        "widgetReminders": true,
+        "widgetRightOffset": 0,
+        "widgetTheme": "windows",
+        "widgetVisible": true,
+        "widgetWarningMinutes": 10
+      },
+      "validUntil": 1795713780000,
+      "webviews": []
+    },
+    "pixels": {
+      "native-widget": {
+        "actionAt": 1792766770826,
+        "observedAt": 1792766770873,
+        "foreground": 329080,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 8,
+        "taskbarRank": -1,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1050274,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Windows.UI.Core.CoreWindow",
+        "handle": 1050274
+      },
+      "native-widget-1": {
+        "actionAt": 1792766771351,
+        "observedAt": 1792766771389,
+        "foreground": 329080,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 11,
+        "taskbarRank": 20,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1640082,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Windows.UI.Core.CoreWindow",
+        "handle": 1640082
+      }
+    }
+  },
+  "panelReadyMs": 1417,
+  "background": {
+    "durationSeconds": 35.878,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.02177518256313061,
+    "cpuOneCorePercent": 0.34840292101008974,
+    "meanWorkingSetMiB": 63.47935267857143,
+    "meanPrivateWorkingSetMiB": 13.473772321428571,
+    "meanPrivateCommitMiB": 19.993861607142858,
+    "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Debug QA is not a release benchmark.",
+    "samples": [
+      {
+        "at": 1792766848491,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.046875,
+            "workingSet": 66588672,
+            "privateWorkingSet": 14143488,
+            "privateCommit": 20992000
+          }
+        ]
+      },
+      {
+        "at": 1792766854507,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.09375,
+            "workingSet": 66576384,
+            "privateWorkingSet": 14143488,
+            "privateCommit": 20992000,
+            "intervalCpuSeconds": 0.046875,
+            "cpuOneCorePercent": 0.7791722074468086
+          }
+        ]
+      },
+      {
+        "at": 1792766860451,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.109375,
+            "workingSet": 66576384,
+            "privateWorkingSet": 14143488,
+            "privateCommit": 20992000,
+            "intervalCpuSeconds": 0.015625,
+            "cpuOneCorePercent": 0.2628701211305518
+          }
+        ]
+      },
+      {
+        "at": 1792766866403,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.109375,
+            "workingSet": 66576384,
+            "privateWorkingSet": 14143488,
+            "privateCommit": 20992000,
+            "intervalCpuSeconds": 0,
+            "cpuOneCorePercent": 0
+          }
+        ]
+      },
+      {
+        "at": 1792766872387,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.140625,
+            "workingSet": 66555904,
+            "privateWorkingSet": 14123008,
+            "privateCommit": 20959232,
+            "intervalCpuSeconds": 0.03125,
+            "cpuOneCorePercent": 0.522225935828877
+          }
+        ]
+      },
+      {
+        "at": 1792766878426,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.140625,
+            "workingSet": 66555904,
+            "privateWorkingSet": 14123008,
+            "privateCommit": 20959232,
+            "intervalCpuSeconds": 0,
+            "cpuOneCorePercent": 0
+          }
+        ]
+      },
+      {
+        "at": 1792766884369,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 10628,
+            "parentId": 19048,
+            "created": "639283635632400543",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.171875,
+            "workingSet": 66510848,
+            "privateWorkingSet": 14077952,
+            "privateCommit": 20869120,
+            "intervalCpuSeconds": 0.03125,
+            "cpuOneCorePercent": 0.5258287060407202
+          }
+        ]
+      }
+    ]
+  },
+  "backgroundStartupMs": 550,
+  "finished": "2026-10-23T14:48:09.593Z",
+  "pass": true
+}

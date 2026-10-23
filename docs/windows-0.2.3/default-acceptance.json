@@ -1,0 +1,1073 @@
+{
+  "started": "2026-10-23T14:49:14.653Z",
+  "commit": "d111ffb4ae4eb261483849db7c5bea66e27a70c4",
+  "dirty": true,
+  "tests": [
+    {
+      "name": "Separate QA identity",
+      "pass": true
+    },
+    {
+      "name": "Packaged app ready",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click practice",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click cats",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click hijri",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click asma",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click books",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click tasbih",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click home",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings click opens dialog",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click alerts",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click data",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click about",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click appearance",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Theme button click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings close button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Search button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Adhkar page reopens",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Generated category click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "No blocked event handlers",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Desktop adapter loaded",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich summer offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich winter offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Tokyo offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition before rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition after rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Offline cache refreshes after a device timezone change",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native schedule extends beyond a month",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Widget has future prayers",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Browser SW disabled",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native settings present",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native PDF reader",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Arbitrary audio paths rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "External non-web schemes rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Settings changed during schedule preparation",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Old schedule cannot re-enable disabled prayer alerts",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Chime reminders work without unused imported recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Widget timetable survives missing unused recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "No missing-recording error for chime-only reminders",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Sunday previews the Monday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Wednesday previews the Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Ordinary Friday does not preview a Monday or Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Hijri day 12 previews the white days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Excluded Tashriq day is not suggested for fasting",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget has six daily prayer markers including sunrise",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget calendar boundaries include DST days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Disabled prayer alerts are explicit",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Timing controls cannot imply active alerts",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Explicit Adhan setup is available",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup enables master and at-time playback",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup keeps volume and recordings",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Notifications remain an explicit choice",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup reaches the native schedule",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Sahib dark enabled switch has contrasting thumb",
+      "pass": true
+    },
+    {
+      "name": "Imported audio plays natively",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Local audio removed from IndexedDB",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF renders",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Imported PDF cover preview",
+      "pass": true,
+      "suite": "tests/desktop-media.js"
+    },
+    {
+      "name": "Fajr schedule selects the Fajr adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Other prayers select the standard adhan",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "standard starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "fajr starts the native audio stream",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "practice fires once at its native deadline",
+      "pass": true,
+      "suite": "tests/desktop-scheduled-audio.js"
+    },
+    {
+      "name": "Widget uses the shared next prayer",
+      "pass": true
+    },
+    {
+      "name": "Widget receives a small presentation packet",
+      "pass": true,
+      "detail": "{\"full\":36081,\"widget\":2669}"
+    },
+    {
+      "name": "Countdown ticks retain prayer and reminder elements",
+      "pass": true
+    },
+    {
+      "name": "Expired timetable asks to refresh instead of showing stale prayers",
+      "pass": true
+    },
+    {
+      "name": "Native clock-change event rebuilds the shared timetable",
+      "pass": true
+    },
+    {
+      "name": "Widget cannot invoke main-only commands",
+      "pass": true
+    },
+    {
+      "name": "Widget stop button stops native adhan",
+      "pass": true
+    },
+    {
+      "name": "Taskbar z-order recovery without a visibility toggle",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Taskbar compact view",
+      "pass": true
+    },
+    {
+      "name": "Native widget sits inside the primary taskbar",
+      "pass": true,
+      "detail": "{\"taskbar\":[0,1380,2560,1440],\"widget\":[263,1380,300,60]}"
+    },
+    {
+      "name": "Taskbar reminder fits without clipping",
+      "pass": true
+    },
+    {
+      "name": "Click opens full taskbar timetable",
+      "pass": true
+    },
+    {
+      "name": "Taskbar close collapses without hiding",
+      "pass": true
+    },
+    {
+      "name": "Arabic taskbar panel uses RTL",
+      "pass": true
+    },
+    {
+      "name": "Widget settings button opens native controls",
+      "pass": true
+    },
+    {
+      "name": "One widget window for each requested display",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[-1920,1032,0,1080],\"bounds\":[-1710,499,380,525],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":525,\"monitor\":\"\\\\\\\\.\\\\DISPLAY2\",\"safeBounds\":[-1864,-408],\"scale\":1,\"shellLifted\":false,\"work\":[-1920,0,0,1032]}"
+    },
+    {
+      "name": "widget-1 panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget-1 panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget-1 background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget panel stays inside selected monitor work area",
+      "pass": true,
+      "detail": "{\"bar\":[0,1380,2560,1440],\"bounds\":[263,715,475,655],\"effectiveMode\":\"taskbar\",\"expanded\":true,\"fallback\":false,\"height\":524,\"monitor\":\"\\\\\\\\.\\\\DISPLAY1\",\"safeBounds\":[70,2089],\"scale\":1.25,\"shellLifted\":false,\"work\":[0,0,2560,1380]}"
+    },
+    {
+      "name": "widget panel shows full reminder card",
+      "pass": true
+    },
+    {
+      "name": "widget panel has no oversized empty region",
+      "pass": true
+    },
+    {
+      "name": "widget background is opaque",
+      "pass": true
+    },
+    {
+      "name": "widget right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[1789,1380,300,60],\"safe\":[70,2089]}"
+    },
+    {
+      "name": "widget-1 right placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-648,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[263,1380,300,60],\"safe\":[70,2089]}"
+    },
+    {
+      "name": "widget-1 left placement avoids notification area",
+      "pass": true,
+      "detail": "{\"bounds\":[-1710,1032,240,48],\"safe\":[-1864,-408]}"
+    },
+    {
+      "name": "widget survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget respects borderless maximized client coverage",
+      "pass": true,
+      "detail": "{\"mode\":\"borderless-maximized\",\"bounds\":{\"Location\":{\"IsEmpty\":true,\"X\":0,\"Y\":0},\"Size\":{\"IsEmpty\":false,\"Width\":2560,\"Height\":1440},\"X\":0,\"Y\":0,\"Width\":2560,\"Height\":1440,\"Left\":0,\"Top\":0,\"Right\":2560,\"Bottom\":1440,\"IsEmpty\":false},\"maximized\":true,\"foreground\":true,\"handle\":1902364}"
+    },
+    {
+      "name": "widget returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "widget-1 survives a real maximized window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 yields to a real fullscreen window",
+      "pass": true
+    },
+    {
+      "name": "widget-1 respects borderless maximized client coverage",
+      "pass": true,
+      "detail": "{\"mode\":\"borderless-maximized\",\"bounds\":{\"Location\":{\"IsEmpty\":false,\"X\":-1920,\"Y\":0},\"Size\":{\"IsEmpty\":false,\"Width\":1920,\"Height\":1080},\"X\":-1920,\"Y\":0,\"Width\":1920,\"Height\":1080,\"Left\":-1920,\"Top\":0,\"Right\":0,\"Bottom\":1080,\"IsEmpty\":false},\"maximized\":true,\"foreground\":true,\"handle\":1902364}"
+    },
+    {
+      "name": "widget-1 returns after fullscreen without toggling",
+      "pass": true
+    },
+    {
+      "name": "Manual taskbar position is saved per display",
+      "pass": true,
+      "detail": "{\"\\\\\\\\.\\\\DISPLAY1\":246.4,\"\\\\\\\\.\\\\DISPLAY2\":210}"
+    },
+    {
+      "name": "Compact widget hides with the auto-hidden taskbar",
+      "pass": true
+    },
+    {
+      "name": "Compact widget returns with taskbar hover",
+      "pass": true
+    },
+    {
+      "name": "widget stays visible with Windows Start/Search",
+      "pass": true,
+      "detail": "{\"start\":{\"handle\":329080,\"class\":\"Windows.UI.Core.CoreWindow\",\"process\":\"SearchHost\",\"bounds\":{\"left\":594,\"top\":214,\"right\":1452,\"bottom\":1104}},\"p\":{\"actionAt\":1792767097565,\"observedAt\":1792767097612,\"foreground\":329080,\"visible\":true,\"iconic\":false,\"cloaked\":0,\"topmost\":true,\"widgetRank\":8,\"taskbarRank\":-1,\"hitClass\":\"Tauri Window\",\"hitHandle\":918018,\"coveredByTaskbar\":false,\"foregroundClass\":\"Windows.UI.Core.CoreWindow\",\"handle\":918018},\"lifted\":true}"
+    },
+    {
+      "name": "widget-1 stays visible with Windows Start/Search",
+      "pass": true,
+      "detail": "{\"start\":{\"handle\":329080,\"class\":\"Windows.UI.Core.CoreWindow\",\"process\":\"SearchHost\",\"bounds\":{\"left\":594,\"top\":214,\"right\":1452,\"bottom\":1104}},\"p\":{\"actionAt\":1792767098066,\"observedAt\":1792767098108,\"foreground\":329080,\"visible\":true,\"iconic\":false,\"cloaked\":0,\"topmost\":true,\"widgetRank\":9,\"taskbarRank\":11,\"hitClass\":\"Tauri Window\",\"hitHandle\":2033462,\"coveredByTaskbar\":false,\"foregroundClass\":\"Windows.UI.Core.CoreWindow\",\"handle\":2033462},\"lifted\":false}"
+    },
+    {
+      "name": "Main window closes to tray",
+      "pass": true
+    },
+    {
+      "name": "Native event fires while the main window is hidden",
+      "pass": true
+    },
+    {
+      "name": "Start minimized survives restart",
+      "pass": true
+    },
+    {
+      "name": "Widget preferences survive restart",
+      "pass": true
+    },
+    {
+      "name": "Both displays and manual positions survive restart",
+      "pass": true
+    },
+    {
+      "name": "Fired-event ledger survives restart",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "audioHardware": true,
+  "startupSamplesMs": [
+    1710,
+    884
+  ],
+  "zorderProbe": [
+    {
+      "actionAt": 1792767018089,
+      "observedAt": 1792767018133,
+      "foreground": 918018,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 11,
+      "taskbarRank": 22,
+      "hitClass": "Tauri Window",
+      "hitHandle": 918018,
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 918018
+    },
+    {
+      "actionAt": 1792767018606,
+      "observedAt": 1792767018662,
+      "foreground": 918018,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 12,
+      "taskbarRank": 7,
+      "hitClass": "Shell_TrayWnd",
+      "hitHandle": 262568,
+      "coveredByTaskbar": true,
+      "foregroundClass": "Tauri Window",
+      "handle": 918018
+    },
+    {
+      "actionAt": 1792767025627,
+      "observedAt": 1792767025667,
+      "foreground": 918018,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 8,
+      "taskbarRank": 9,
+      "hitClass": "Tauri Window",
+      "hitHandle": 918018,
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 918018
+    }
+  ],
+  "widgetDiagnostics": {
+    "audits": 20,
+    "latest": {
+      "widget": {
+        "action": "observe",
+        "context": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            263,
+            1380,
+            300,
+            60
+          ],
+          "effectiveMode": "taskbar",
+          "expanded": false,
+          "fallback": false,
+          "height": 584,
+          "monitor": "\\\\.\\DISPLAY1",
+          "safeBounds": [
+            70,
+            2089
+          ],
+          "scale": 1.25,
+          "shellLifted": false,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        },
+        "observation": {
+          "bounds": {
+            "bottom": 1440,
+            "left": 263,
+            "right": 563,
+            "top": 1380
+          },
+          "cloaked": 0,
+          "coveredByTaskbar": false,
+          "coveringClass": "Tauri Window",
+          "foreground": 918018,
+          "foregroundClass": "Tauri Window",
+          "minimized": false,
+          "taskbarRank": -1,
+          "topmost": true,
+          "valid": true,
+          "visible": true,
+          "widgetRank": 8
+        },
+        "reason": "normal"
+      }
+    },
+    "operations": {
+      "move": 2,
+      "raise": 1,
+      "resize": 5,
+      "show": 1
+    }
+  },
+  "displays": [
+    {
+      "monitor": "\\\\.\\DISPLAY1",
+      "scale": 1.25,
+      "work": [
+        0,
+        0,
+        2560,
+        1380
+      ],
+      "bar": [
+        0,
+        1380,
+        2560,
+        1440
+      ]
+    },
+    {
+      "monitor": "\\\\.\\DISPLAY2",
+      "scale": 1,
+      "work": [
+        -1920,
+        0,
+        0,
+        1032
+      ],
+      "bar": [
+        -1920,
+        1032,
+        0,
+        1080
+      ]
+    }
+  ],
+  "windowFixtures": [
+    {
+      "mode": "maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -9,
+          "Y": -9
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2578,
+          "Height": 1398
+        },
+        "X": -9,
+        "Y": -9,
+        "Width": 2578,
+        "Height": 1398,
+        "Left": -9,
+        "Top": -9,
+        "Right": 2569,
+        "Bottom": 1389,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "fullscreen",
+      "bounds": {
+        "Location": {
+          "IsEmpty": true,
+          "X": 0,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2560,
+          "Height": 1440
+        },
+        "X": 0,
+        "Y": 0,
+        "Width": 2560,
+        "Height": 1440,
+        "Left": 0,
+        "Top": 0,
+        "Right": 2560,
+        "Bottom": 1440,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "borderless-maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": true,
+          "X": 0,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 2560,
+          "Height": 1440
+        },
+        "X": 0,
+        "Y": 0,
+        "Width": 2560,
+        "Height": 1440,
+        "Left": 0,
+        "Top": 0,
+        "Right": 2560,
+        "Bottom": 1440,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 80,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": 80,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": 80,
+        "Top": 60,
+        "Right": 800,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1928,
+          "Y": -8
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1936,
+          "Height": 1048
+        },
+        "X": -1928,
+        "Y": -8,
+        "Width": 1936,
+        "Height": 1048,
+        "Left": -1928,
+        "Top": -8,
+        "Right": 8,
+        "Bottom": 1040,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "fullscreen",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1920,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1920,
+          "Height": 1080
+        },
+        "X": -1920,
+        "Y": 0,
+        "Width": 1920,
+        "Height": 1080,
+        "Left": -1920,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 1080,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "borderless-maximized",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1920,
+          "Y": 0
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 1920,
+          "Height": 1080
+        },
+        "X": -1920,
+        "Y": 0,
+        "Width": 1920,
+        "Height": 1080,
+        "Left": -1920,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 1080,
+        "IsEmpty": false
+      },
+      "maximized": true,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": -1840,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": -1840,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": -1840,
+        "Top": 60,
+        "Right": -1120,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 80,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": 80,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": 80,
+        "Top": 60,
+        "Right": 800,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    },
+    {
+      "mode": "normal",
+      "bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 80,
+          "Y": 60
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 720,
+          "Height": 480
+        },
+        "X": 80,
+        "Y": 60,
+        "Width": 720,
+        "Height": 480,
+        "Left": 80,
+        "Top": 60,
+        "Right": 800,
+        "Bottom": 540,
+        "IsEmpty": false
+      },
+      "maximized": false,
+      "foreground": true,
+      "handle": 1902364
+    }
+  ],
+  "shellStart": {
+    "start": {
+      "handle": 329080,
+      "class": "Windows.UI.Core.CoreWindow",
+      "process": "SearchHost",
+      "bounds": {
+        "left": 594,
+        "top": 214,
+        "right": 1452,
+        "bottom": 1104
+      }
+    },
+    "pixels": [
+      {
+        "actionAt": 1792767097565,
+        "observedAt": 1792767097612,
+        "foreground": 329080,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 8,
+        "taskbarRank": -1,
+        "hitClass": "Tauri Window",
+        "hitHandle": 918018,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Windows.UI.Core.CoreWindow",
+        "handle": 918018
+      },
+      {
+        "actionAt": 1792767098066,
+        "observedAt": 1792767098108,
+        "foreground": 329080,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 9,
+        "taskbarRank": 11,
+        "hitClass": "Tauri Window",
+        "hitHandle": 2033462,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Windows.UI.Core.CoreWindow",
+        "handle": 2033462
+      }
+    ]
+  },
+  "finished": "2026-10-23T14:51:48.051Z",
+  "pass": true
+}

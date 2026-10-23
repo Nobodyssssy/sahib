@@ -94,6 +94,8 @@ jobs:
         run: npm run desktop:test
       - name: Test packaged UI and native lifecycle
         run: npm run desktop:acceptance
+      - name: Compile optional native widget experiment
+        run: cargo check --locked --manifest-path src-tauri/Cargo.toml --features native-widget-experiment
       - name: Build unsigned Windows installer
         run: npm run desktop:build
       - name: Generate installer checksum

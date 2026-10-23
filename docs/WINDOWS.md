@@ -54,6 +54,10 @@ The Windows preview workflow repeats the resource, Rust, and packaged acceptance
 
 The browser expressions in `tests/desktop-*.js` must only run against disposable profiles. Debug builds accept `SAHIB_TEST_DATA_DIR` to isolate both the host state and WebView profile; release builds ignore that override. With that test profile set, debug builds also accept `SAHIB_TEST_CDP_PORT` and pass it directly to WebView2, including on elevated CI runners where WebView2 ignores environment overrides. Release builds contain no test-port override. The acceptance runner uses a temporary local port only for its own QA process and closes that process afterward. Do not enable remote debugging for ordinary use.
 
-## Preview 0.2.2 verification
+## Preview 0.2.3 verification
+
+See [the 0.2.3 memory and verification report](WINDOWS-0.2.3-VERIFICATION.md) for the three-configuration comparison, actual native captures and remaining hardware/accessibility limits. The ordinary installer keeps the web widget. Native compact mode and main-window unloading require an intentional [experimental feature build](WINDOWS-MEMORY-ARCHITECTURE.md); they are not the default.
+
+Settings → Alerts now explicitly states when prayer alerts are off. **Enable Adhan for all five prayers** enables at-time playback while preserving volume and recordings. Enable notifications separately if wanted. Selecting a timing option alone does not enable alerts. Personal settings are never silently enabled by this update.
 
 See [the verification report](WINDOWS-0.2.2-VERIFICATION.md) for real monitor checks, screenshots, idle measurements, and unexecuted hardware scenarios. `npm run desktop:acceptance -- --media --windows --reliability --soak-minutes=10` adds local audio checks, controlled WinForms obstruction windows, and actual Explorer taskbar promotions to reproduce and test stacking recovery. It temporarily tests taskbar auto-hide and restores its original state and cursor position in a finally block. Use an interactive Windows session; CI runs the ordinary packaged suite without these display experiments. `-- --measure` records a short isolated process-tree idle sample; `--skip-build` reuses the QA executable and still verifies its separate identity. The historical [0.2.1 report](WINDOWS-0.2.1-VERIFICATION.md) remains available.

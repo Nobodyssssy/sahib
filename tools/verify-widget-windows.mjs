@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawn,spawnSync} from 'node:child_process';
 import {setTimeout as sleep} from 'node:timers/promises';
+import {verifyShellWidget} from './verify-shell-widget.mjs';
 export async function verifyWidgetWindows({session,widget,port,connect,output,record,report}){
  const state=()=>session.evaluate('SahibDesktop.invoke("desktop_state")');
  const set=async(key,value)=>{await session.evaluate('SahibDesktop.preferences('+JSON.stringify(key)+','+JSON.stringify(value)+')');await sleep(400);};
@@ -73,6 +74,7 @@ export async function verifyWidgetWindows({session,widget,port,connect,output,re
    record('Compact widget hides with the auto-hidden taskbar',(await state()).widgetWindows.find(w=>w.label==='widget')?.visible===false);
    await command({cursorX:Math.round((v.bar[0]+v.bar[2])/2),cursorY:v.bar[3]-1});await sleep(1500);
    record('Compact widget returns with taskbar hover',(await state()).widgetWindows.find(w=>w.label==='widget')?.visible===true);
+   await set('widgetEdge','right');await command({autoHide:false});await command({mode:'normal'});await verifyShellWidget({pid:Number(process.env.SAHIB_QA_PID),state,output,record,report});
   }finally{
    fs.writeFileSync(commandFile,JSON.stringify({mode:'close'}));await Promise.race([new Promise(r=>fixture.once('exit',r)),sleep(5000)]);
    if(fixture.exitCode===null){if(original)spawnSync('powershell.exe',['-NoProfile','-File',path.resolve('tools/windows-window-fixture.ps1'),'-CommandFile',commandFile,'-RestoreState',String(original.originalTaskbarState)],{windowsHide:true});fixture.kill();}

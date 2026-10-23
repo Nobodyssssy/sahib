@@ -1,0 +1,52 @@
+{
+  "started": "2026-10-23T11:58:36.292Z",
+  "finished": "2026-10-23T12:02:30.244Z",
+  "explorerRestart": {
+    "oldShell": 4988,
+    "newShell": 12696,
+    "elapsedMs": 240
+  },
+  "tests": [
+    {
+      "name": "native-widget survives actual Explorer restart",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792756754872,
+        "observedAt": 1792756754910,
+        "foreground": 3409546,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 10,
+        "taskbarRank": 15,
+        "hitClass": "Tauri Window",
+        "hitHandle": 4720658,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Progman",
+        "handle": 4720658
+      }
+    },
+    {
+      "name": "native-widget-1 survives actual Explorer restart",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792756755324,
+        "observedAt": 1792756755359,
+        "foreground": 3409546,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 6,
+        "taskbarRank": 8,
+        "hitClass": "Tauri Window",
+        "hitHandle": 853428,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Progman",
+        "handle": 853428
+      }
+    }
+  ],
+  "note": "Earlier run: actual Explorer restart passed. Later tray/main rapid-close failures were fixed and rerun in native-verification.json."
+}

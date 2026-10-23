@@ -10,6 +10,7 @@ struct Rect {
 }
 #[link(name = "user32")]
 extern "system" {
+    fn GetWindowThreadProcessId(window: *mut c_void, process: *mut u32) -> u32;
     fn GetClientRect(window: *mut c_void, rect: *mut Rect) -> i32;
     fn ClientToScreen(window: *mut c_void, point: *mut Point) -> i32;
     fn GetCursorPos(point: *mut Point) -> i32;
@@ -23,6 +24,61 @@ extern "system" {
         title: *const u16,
     ) -> *mut c_void;
     fn GetWindowRect(window: *mut c_void, rect: *mut Rect) -> i32;
+}
+#[link(name = "kernel32")]
+extern "system" {
+    fn OpenProcess(access: u32, inherit: i32, process: u32) -> *mut c_void;
+    fn QueryFullProcessImageNameW(
+        process: *mut c_void,
+        flags: u32,
+        name: *mut u16,
+        length: *mut u32,
+    ) -> i32;
+    fn CloseHandle(handle: *mut c_void) -> i32;
+}
+// Start/Search can raise Explorer's taskbar above ordinary topmost windows.
+// Match the actual shell executable, not every UWP/CoreWindow application.
+pub fn shell_interaction() -> bool {
+    unsafe {
+        let window = GetForegroundWindow();
+        let mut name = [0u16; 128];
+        let n = GetClassNameW(window, name.as_mut_ptr(), 128);
+        let name = String::from_utf16_lossy(&name[..n.max(0) as usize]);
+        if matches!(name.as_str(), "Shell_TrayWnd" | "Shell_SecondaryTrayWnd") {
+            return true;
+        }
+        if !matches!(
+            name.as_str(),
+            "Windows.UI.Core.CoreWindow"
+                | "XamlExplorerHostIslandWindow"
+                | "Microsoft.UI.Content.DesktopChildSiteBridge"
+        ) {
+            return false;
+        }
+        let mut pid = 0;
+        GetWindowThreadProcessId(window, &mut pid);
+        let process = OpenProcess(0x1000, 0, pid);
+        if process.is_null() {
+            return false;
+        }
+        let mut path = [0u16; 2048];
+        let mut length = path.len() as u32;
+        let success = QueryFullProcessImageNameW(process, 0, path.as_mut_ptr(), &mut length);
+        CloseHandle(process);
+        if success == 0 {
+            return false;
+        }
+        let path = String::from_utf16_lossy(&path[..length as usize]).to_ascii_lowercase();
+        path.contains("\\windows\\systemapps\\")
+            && [
+                "startmenuexperiencehost.exe",
+                "searchhost.exe",
+                "searchapp.exe",
+                "shellexperiencehost.exe",
+            ]
+            .iter()
+            .any(|name| path.ends_with(name))
+    }
 }
 #[repr(C)]
 #[derive(Default)]
@@ -38,6 +94,9 @@ pub fn cursor_x() -> i32 {
     point.x
 }
 pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
+    if shell_interaction() {
+        return false;
+    }
     unsafe {
         let window = GetForegroundWindow();
         if window.is_null() || window as isize == widget {

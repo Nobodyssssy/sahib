@@ -1,0 +1,67 @@
+[
+  {
+    "name": "native-light-en.png",
+    "probe": {
+      "actionAt": 1792766922055,
+      "observedAt": 1792766922099,
+      "foreground": 3345736,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 9,
+      "taskbarRank": 20,
+      "hitClass": "Tauri Window",
+      "hitHandle": 3345736,
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 3345736
+    }
+  },
+  {
+    "name": "native-dark-en.png",
+    "probe": {
+      "actionAt": 1792766924175,
+      "observedAt": 1792766924217,
+      "foreground": 3345736,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 9,
+      "taskbarRank": 20,
+      "hitClass": "Tauri Window",
+      "hitHandle": 3345736,
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 3345736
+    }
+  },
+  {
+    "name": "native-dark-ar.png",
+    "probe": {
+      "actionAt": 1792766926072,
+      "observedAt": 1792766926115,
+      "foreground": 3345736,
+      "visible": true,
+      "iconic": false,
+      "cloaked": 0,
+      "topmost": true,
+      "widgetRank": 9,
+      "taskbarRank": 20,
+      "hitClass": "Tauri Window",
+      "hitHandle": 3345736,
+      "coveredByTaskbar": false,
+      "foregroundClass": "Tauri Window",
+      "handle": 3345736
+    }
+  },
+  {
+    "name": "Unfinished editor keeps main loaded",
+    "pass": true
+  },
+  {
+    "name": "Finished editor permits retirement",
+    "pass": true
+  }
+]

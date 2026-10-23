@@ -2,7 +2,7 @@
 /* Platform adapter. This file is injected only into the packaged desktop entry. */
 window.SahibDesktop=(()=>{
  const available=!!window.__TAURI__,invoke=(name,args)=>window.__TAURI__.core.invoke(name,args);
- let started=false,busy=false,again=false,revision=0,timer,state=null,lastError='',audioPlaying=false;
+ let started=false,busy=false,again=false,revision=0,timer,state=null,lastError='',audioPlaying=false,retiring=false;
  const imported=new Map(),ar=()=>window.SAHIB_I18N?.language==='ar',text=(en,arabic)=>ar()?arabic:en;
  const nameAR={Fajr:'الفجر',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'};
  function error(err){lastError=String(err?.message||err);console.warn('[desktop]',lastError);if(typeof toast==='function')toast(text('Windows: ','ويندوز: ')+lastError,'alert');}
@@ -54,10 +54,14 @@ window.SahibDesktop=(()=>{
    lastError='';await refresh();
   }catch(err){error(err);}finally{busy=false;if(again){again=false;queueSync();}}
  }
- function queueSync(){revision++;clearTimeout(timer);timer=setTimeout(sync,450);}
+ function queueSync(){if(retiring)return;revision++;clearTimeout(timer);timer=setTimeout(sync,450);}
  async function invalidateAlerts(){revision++;try{await refresh();await invoke('desktop_sync_schedule',{schedule:{...state.schedule,alerts:[],prayers:state.schedule.prayers.filter(p=>p.at>Date.now())}});}catch(err){error(err);}queueSync();}
  async function preview(kind,volume,prefs){try{prefs=prefs||await getPrayerPrefs();await invoke('desktop_preview_audio',{id:await sound(kind,prefs),volume:Number(volume??prefs.alerts.volume)});audioPlaying=true;return true;}catch(err){error(err);return false;}}
  async function preferences(key,value){try{await refresh();const args={prefs:{...state.prefs},autostart:null};if(key==='autostart')args.autostart=value;else args.prefs[key]=value;if(key==='widgetMode'&&value==='taskbar')args.prefs.widgetVisible=true;if(key==='widgetOffset'&&args.prefs.widgetEdge==='right'){args.prefs.widgetRightOffset=value;args.prefs.widgetOffset=state.prefs.widgetOffset;}if(key==='widgetOffset'&&args.prefs.widgetEdge==='manual'){const name=state.widgetViews?.widget?.monitor;args.prefs.widgetPositions={...args.prefs.widgetPositions,[name]:value};}await invoke('desktop_set_preferences',args);await refresh();if(_settingsTab==='desktop')await settings();}catch(err){error(err);}}
+ async function enableAdhan(){
+  const perPrayer=Object.fromEntries(Object.keys(nameAR).map(name=>[name,{mode:'adhan',alert:true,sound:true}]));
+  await savePrayerPrefs({alerts:{enabled:true,atTime:true,perPrayer}});await sync();if(_settingsTab==='alerts')await renderSettingsBody();
+ }
  async function settings(){
   await refresh();const p=state.prefs;
   const check=(key,en,arabic,value=p[key])=>'<label class="desktop-option"><span>'+text(en,arabic)+'</span><input type="checkbox" data-desktop-pref="'+key+'" '+(value?'checked':'')+'></label>';
@@ -100,10 +104,25 @@ window.SahibDesktop=(()=>{
    SETTINGS_TABS.push('desktop');const button=document.createElement('button');button.type='button';button.className='settings-tab';button.dataset.settingsTab='desktop';button.setAttribute('role','tab');button.textContent=text('Windows','ويندوز');button.onclick=()=>setSettingsTab('desktop');document.getElementById('settings-tabs').append(button);
    const render=renderSettingsBody;renderSettingsBody=async()=>_settingsTab==='desktop'?settings():render();
    const removeAudio=clearLocalAdhan;clearLocalAdhan=async kind=>{await removeAudio(kind);if(!await store.getMeta(ADHAN_LOCAL_KEYS[kind])){await invoke('desktop_remove_audio',{kind});imported.delete(kind);}};
-   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.2.2','صاحب لويندوز · نسخة تجريبية 0.2.2')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
+   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.2.3','صاحب لويندوز · نسخة تجريبية 0.2.3')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
    const alertsHTML=_alertsHTML;_alertsHTML=async()=>{
-    const html=await alertsHTML();return html.replace(/<div class="settings-note">\s*<strong>Browser limits:<\/strong>[\s\S]*?<\/div>/,`<div class="settings-note">${text('Windows reminders and audio continue while Sahib stays in the tray. Quit stops them. Sahib does not wake a sleeping PC.','تستمر تنبيهات ويندوز والأذان ما دام صاحب في علبة النظام. الإنهاء يوقفها، ولا يوقظ التطبيق الحاسوب النائم.')}</div>`);
+    const html=await alertsHTML(),prefs=await getPrayerPrefs(),a=prefs.alerts,template=document.createElement('template');template.innerHTML=html;
+    const timing=template.content.querySelector('.alert-setting-grid');timing?.querySelectorAll('button,select,input').forEach(control=>control.disabled=!a.enabled);
+    const atTime=template.content.querySelector('[data-alert-switch=atTime]')?.closest('.settings-row');
+    if(atTime){atTime.querySelector('.settings-row-title').textContent=text('At prayer time','عند دخول وقت الصلاة');atTime.querySelector('.settings-row-desc').textContent=text('Timing only. Prayer alerts must be enabled above.','هذا خيار للتوقيت فقط. يجب تشغيل تنبيهات الصلاة أعلاه.');}
+    const scheduled=(state?.schedule.alerts||[]).filter(alert=>alert.id.startsWith('prayer:')&&alert.at>Date.now()).length;
+    const notice=document.createElement('section');notice.className='settings-section';notice.id='desktop-alert-status';notice.setAttribute('role','status');
+    const title=document.createElement('h3');title.textContent=a.enabled?text('Prayer alerts are on','تنبيهات الصلاة مفعّلة'):text('Prayer alerts are off','تنبيهات الصلاة متوقفة');
+    const detail=document.createElement('p');detail.textContent=!a.enabled?text('No prayer sound or notification will run. Checking a time option does not enable alerts.','لن يعمل صوت الصلاة أو إشعارها. اختيار التوقيت لا يُفعّل التنبيهات.'):scheduled?text(`${scheduled} upcoming prayer alerts saved in Windows.`,`${scheduled} تنبيهاً قادماً محفوظاً في ويندوز.`):text('No upcoming prayer alerts are saved. Check your location and per-prayer choices.','لا توجد تنبيهات صلاة قادمة محفوظة. تحقّق من الموقع وخيارات كل صلاة.');
+    const actions=document.createElement('div');actions.className='adhan-play-row';
+    const enable=document.createElement('button');enable.type='button';enable.className='io-btn';enable.setAttribute('onclick','SahibDesktop.enableAdhan()');enable.textContent=text('Enable Adhan for all five prayers','تفعيل الأذان للصلوات الخمس');
+    const notify=document.createElement('button');notify.type='button';notify.className='io-btn';notify.setAttribute('onclick','enablePrayerNotifications()');notify.textContent=text('Enable notifications','تفعيل الإشعارات');
+    const explanation=document.createElement('small');explanation.textContent=text('Adhan setup enables prayer alerts and playback at prayer time. Your recordings and volume are kept. Notifications are separate.','يُفعّل إعداد الأذان التنبيهات والتشغيل عند دخول الوقت. تُحفظ تسجيلاتك ومستوى الصوت. الإشعارات خيار مستقل.');
+    actions.append(enable,notify);notice.append(title,detail,actions,explanation);template.content.querySelector('.alerts-panel')?.prepend(notice);
+    const limit=[...template.content.querySelectorAll('.settings-note')].find(n=>n.textContent.includes('Browser limits:'));if(limit)limit.textContent=text('Windows reminders and audio continue while Sahib stays in the tray. Quit stops them. Sahib does not wake a sleeping PC.','تستمر تنبيهات ويندوز والأذان ما دام صاحب في علبة النظام. الإنهاء يوقفها، ولا يوقظ التطبيق الحاسوب النائم.');
+    return template.innerHTML;
    };
+   const toggleAlert=togglePrayerAlertSetting;togglePrayerAlertSetting=async field=>{await toggleAlert(field);if(_settingsTab==='alerts')await renderSettingsBody();};
    playPrayerAdhan=preview;stopPrayerAdhan=()=>{invoke('desktop_stop_audio').catch(error);audioPlaying=false;};adhanPreviewPlaying=()=>audioPlaying;
    PrayerAlerts.previewAdhan=preview;PrayerAlerts.stopAdhan=stopPrayerAdhan;PrayerAlerts.adhanPreviewPlaying=adhanPreviewPlaying;
    PrayerAlerts.previewChime=volume=>invoke('desktop_preview_audio',{id:'chime',volume:volume??0.55});
@@ -116,11 +135,43 @@ window.SahibDesktop=(()=>{
    await window.__TAURI__.event.listen('sahib:desktop-error',event=>error(event.payload));
    await window.__TAURI__.event.listen('sahib:desktop-alert',event=>toast(event.payload.body,'bell'));
    await window.__TAURI__.event.listen('sahib:widget-open',event=>event.payload==='settings'?openSettings('desktop'):event.payload==='timetable'?document.querySelector('[data-nav=prayer]').click():openPracticeView('today'));
+   const experiment=await invoke('desktop_experiment',{action:'ready',snapshot:null});
+   if(experiment.enabled){
+    const route=action=>action==='settings'?openSettings('desktop'):action==='timetable'?document.querySelector('[data-nav=prayer]').click():action==='practice'?openPracticeView('today'):null;
+    if(!experiment.refreshing){
+     const saved=experiment.snapshot;
+     if(saved?.cat&&cats.some(c=>c.key===saved.cat))openCat(saved.cat);
+     else if(saved?.view&&document.getElementById(saved.view)?.classList.contains('view'))showView(saved.view);
+     if(saved?.session&&saved.cat&&!experiment.action)await startSession();
+     if(saved?.book&&!experiment.action)await openReader(saved.book);
+     if(saved?.scroll)requestAnimationFrame(()=>scrollTo(0,saved.scroll));
+     if(experiment.action)route(experiment.action);
+    }
+    await window.__TAURI__.event.listen('sahib:prepare-unload',async()=>{
+     if(retiring)return;retiring=true;clearTimeout(timer);
+     try{
+      // Keep an unfinished editor alive rather than silently discarding its draft.
+      if(document.querySelector('#ov-form.open,#ov-editcat.open')){retiring=false;return;}
+      const deadline=Date.now()+30000;while(busy&&Date.now()<deadline)await new Promise(r=>setTimeout(r,50));
+      if(busy)throw Error('Schedule preparation still running; main view kept loaded');
+      await sync();clearTimeout(timer);
+      if(await window.__TAURI__.window.getCurrentWindow().isVisible()){retiring=false;queueSync();return;}
+      const snapshot={view:document.querySelector('.view.active')?.id||'view-home',cat:currentCat,scroll:scrollY,session:document.getElementById('session-overlay')?.classList.contains('open'),book:document.getElementById('reader-overlay')?.classList.contains('open')?_readerBookId:null};
+      if(snapshot.book)await saveBookProgress(_readerBookId,_readerCurrentPage,_readerTotalPages);
+      await store.saveCounters(counters);
+      // Await an IndexedDB transaction before tearing down its renderer.
+      await store.setMeta('desktopWindowCheckpoint',Date.now());
+      if(!await invoke('desktop_experiment',{action:'retire',snapshot})){retiring=false;queueSync();}
+     }catch(err){retiring=false;error(err);}
+    });
+    await invoke('desktop_experiment',{action:'attached',snapshot:null});
+    if(experiment.refreshing){await sync();if(await invoke('desktop_experiment',{action:'refresh-done',snapshot:null}))return;}
+   }
    for(const event of ['sahib:prayerprefs','sahib:prayerchange','sahib:prayercsv','sahib:practicechange','sahib:themechange','sahib:languagechange'])window.addEventListener(event,()=>{button.textContent=text('Windows','ويندوز');if(event==='sahib:languagechange'&&_settingsTab==='desktop')settings();if(['sahib:prayerprefs','sahib:practicechange'].includes(event))invalidateAlerts();else queueSync();});
    document.addEventListener('click',event=>{const link=event.target.closest('a[href]');if(link&&/^https?:/.test(link.href)&&new URL(link.href).origin!==location.origin){event.preventDefault();invoke('desktop_open_url',{url:link.href}).catch(error);}});
    setInterval(()=>{if(document.visibilityState==='visible'&&(_settingsTab==='desktop'||audioPlaying))refresh().catch(error)},30000);setInterval(queueSync,6*3600000);queueSync();
   }catch(err){error(err);}
  }
  window.addEventListener('sahib:ready',init,{once:true});
- return {available,invoke,init,sync,queueSync,settings,preferences,preview,get state(){return state;},get error(){return lastError;}};
+ return {available,invoke,init,sync,queueSync,settings,preferences,preview,enableAdhan,get state(){return state;},get error(){return lastError;}};
 })();

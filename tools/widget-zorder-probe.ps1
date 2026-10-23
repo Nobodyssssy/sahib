@@ -1,4 +1,4 @@
-param([int]$TargetProcess,[int]$X,[int]$Y,[int]$Width,[int]$Height,[switch]$Cover,[string]$Capture)
+param([int]$TargetProcess,[int]$X,[int]$Y,[int]$Width,[int]$Height,[switch]$Cover,[string]$Capture,[long]$TargetHandle=0)
 Add-Type -AssemblyName System.Drawing
 Add-Type @'
 using System;using System.Runtime.InteropServices;using System.Text;
@@ -29,6 +29,13 @@ public static class SahibZProbe{
 '@
 [void][SahibZProbe]::SetThreadDpiAwarenessContext([IntPtr](-4))
 $handle=[SahibZProbe]::Find($TargetProcess,$X,$Y)
+if($TargetHandle -ne 0){
+ $handle=[IntPtr]$TargetHandle
+ [uint32]$ownerId=0;[void][SahibZProbe]::GetWindowThreadProcessId($handle,[ref]$ownerId)
+ if($ownerId -ne $TargetProcess){throw 'Native handle is not owned by this QA process'}
+ $actual=New-Object SahibZProbe+Rect;[void][SahibZProbe]::GetWindowRect($handle,[ref]$actual)
+ $X=$actual.l;$Y=$actual.t;$Width=$actual.r-$actual.l;$Height=$actual.b-$actual.t
+}
 if($handle -eq [IntPtr]::Zero){throw 'QA widget not found'}
 $bar=[SahibZProbe]::Bar(($X+$Width/2),($Y+$Height/2))
 $actionAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
@@ -37,4 +44,4 @@ $point=New-Object SahibZProbe+Point;$point.x=$X+[int]($Width/2);$point.y=$Y+[int
 $hit=[SahibZProbe]::GetAncestor([SahibZProbe]::WindowFromPoint($point),2)
 $cloaked=0;[void][SahibZProbe]::DwmGetWindowAttribute($handle,14,[ref]$cloaked,4)
 if($Capture){$bitmap=New-Object Drawing.Bitmap($Width,$Height);$graphics=[Drawing.Graphics]::FromImage($bitmap);try{$graphics.CopyFromScreen($X,$Y,0,0,$bitmap.Size);$bitmap.Save($Capture,[Drawing.Imaging.ImageFormat]::Png)}finally{$graphics.Dispose();$bitmap.Dispose()}}
-[pscustomobject]@{actionAt=$actionAt;observedAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds();foreground=[SahibZProbe]::GetForegroundWindow().ToInt64();visible=[SahibZProbe]::IsWindowVisible($handle);iconic=[SahibZProbe]::IsIconic($handle);cloaked=$cloaked;topmost=(([SahibZProbe]::GetWindowLongPtr($handle,-20).ToInt64()-band 8)-ne 0);widgetRank=[SahibZProbe]::Rank($handle);taskbarRank=[SahibZProbe]::Rank($bar);hitClass=[SahibZProbe]::Class($hit);coveredByTaskbar=($hit -eq $bar);foregroundClass=[SahibZProbe]::Class([SahibZProbe]::GetForegroundWindow());handle=$handle.ToInt64()}|ConvertTo-Json -Compress
+[pscustomobject]@{actionAt=$actionAt;observedAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds();foreground=[SahibZProbe]::GetForegroundWindow().ToInt64();visible=[SahibZProbe]::IsWindowVisible($handle);iconic=[SahibZProbe]::IsIconic($handle);cloaked=$cloaked;topmost=(([SahibZProbe]::GetWindowLongPtr($handle,-20).ToInt64()-band 8)-ne 0);widgetRank=[SahibZProbe]::Rank($handle);taskbarRank=[SahibZProbe]::Rank($bar);hitClass=[SahibZProbe]::Class($hit);hitHandle=$hit.ToInt64();coveredByTaskbar=([SahibZProbe]::Class($hit) -in @("Shell_TrayWnd","Shell_SecondaryTrayWnd"));foregroundClass=[SahibZProbe]::Class([SahibZProbe]::GetForegroundWindow());handle=$handle.ToInt64()}|ConvertTo-Json -Compress

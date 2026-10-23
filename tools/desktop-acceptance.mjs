@@ -58,6 +58,7 @@ async function start(){
   cwd:root,windowsHide:true,stdio:['ignore',log,log],
   env:{...process.env,SAHIB_TEST_DATA_DIR:profile,SAHIB_TEST_CDP_PORT:String(port)}
  });
+ process.env.SAHIB_QA_PID=String(app.pid);
  app.on('error',error=>report.errors.push(String(error)));
  let targets,lastError;const startupDeadline=Date.now()+90000;
  while(Date.now()<startupDeadline){
@@ -100,7 +101,12 @@ try{
  const {port}=await start();
  record('Separate QA identity',await session.evaluate('window.__TAURI__.app.getIdentifier()')==='com.sahib.companion.qa');
  await session.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich acceptance fixture");await SahibDesktop.sync();return true})()');
- for(const file of ['tests/desktop-navigation.js','tests/desktop-smoke.js','tests/desktop-cancellation.js','tests/desktop-chime-schedule.js','tests/desktop-widget-reminders.js'])await expressionTest(file);
+ for(const file of ['tests/desktop-navigation.js','tests/desktop-smoke.js','tests/desktop-cancellation.js','tests/desktop-chime-schedule.js','tests/desktop-widget-reminders.js','tests/desktop-alert-setup.js'])await expressionTest(file);
+ await session.evaluate('(async()=>{await SAHIB_THEME.setTheme("sahib");await SAHIB_THEME.setMode("dark");openSettings("alerts")})()');await sleep(400);await session.screenshot('alerts-disabled-dark.png');
+ await session.evaluate('(async()=>{await savePrayerPrefs({alerts:{enabled:true,atTime:true}});openSettings("alerts")})()');await sleep(250);
+ record('Sahib dark enabled switch has contrasting thumb',await session.evaluate(`(()=>{const el=document.querySelector('.switch.on');if(!el)return false;const rgb=s=>s.match(/[\\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}),lum=s=>rgb(s).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0),a=lum(getComputedStyle(el).backgroundColor),b=lum(getComputedStyle(el,'::after').backgroundColor);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=3})()`));
+ await session.screenshot('alerts-enabled-dark.png');
+ await session.evaluate('(async()=>{await savePrayerPrefs({alerts:{enabled:false}});closeSettings();await SAHIB_THEME.setMode("light");await SahibDesktop.sync()})()');
  if(report.audioHardware){await expressionTest('tests/desktop-media.js');await expressionTest('tests/desktop-scheduled-audio.js');}
  await session.evaluate('(async()=>{document.querySelector("[data-nav=home]").click();await SahibDesktop.preferences("widgetVisible",true);return true})()');
  await sleep(500);await session.screenshot('main.png');

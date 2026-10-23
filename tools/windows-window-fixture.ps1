@@ -9,6 +9,8 @@ public static class SahibWindowFixture {
  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y);
  [DllImport("user32.dll")] public static extern void mouse_event(uint flags,uint x,uint y,uint data,UIntPtr extra);
  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+ [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr window,int command);
+ [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr window);
  [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr window);
  [StructLayout(LayoutKind.Sequential)] public struct Rect{public int left,top,right,bottom;}
  [StructLayout(LayoutKind.Sequential)] public struct Appbar{public uint size;public IntPtr window;public uint callback,edge;public Rect bounds;public IntPtr state;}
@@ -39,6 +41,7 @@ $timer=New-Object Windows.Forms.Timer
 $timer.Interval=100
 $timer.Add_Tick({
  try {
+  if(!(Test-Path -LiteralPath $CommandFile)){return}
   $raw=Get-Content -LiteralPath $CommandFile -Raw -ErrorAction Stop
   if($raw -eq $script:last){return};$script:last=$raw;$command=$raw|ConvertFrom-Json
   if($command.mode -eq 'close'){$form.Close();return}
@@ -53,6 +56,8 @@ $timer.Add_Tick({
   if($command.mode -eq 'fullscreen'){$form.FormBorderStyle='None';$form.Bounds=$screen.Bounds}
   if($command.mode -eq 'borderless-maximized'){$form.FormBorderStyle='None';$form.WindowState='Maximized'}
   $form.TopMost=$true;$form.Show();$form.Activate()
+  [void][SahibWindowFixture]::ShowWindow($form.Handle,5)
+  [void][SahibWindowFixture]::SetForegroundWindow($form.Handle)
   [void][SahibWindowFixture]::SetCursorPos(($form.Bounds.Left+100),($form.Bounds.Top+110))
   [SahibWindowFixture]::mouse_event(2,0,0,0,[UIntPtr]::Zero);[SahibWindowFixture]::mouse_event(4,0,0,0,[UIntPtr]::Zero)
   $form.TopMost=$false;$form.Activate()
