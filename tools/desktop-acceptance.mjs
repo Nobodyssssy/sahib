@@ -137,8 +137,9 @@ try{
    }
   }
   await session.evaluate(`(async()=>{await SahibDesktop.preferences('widgetMode','taskbar');await SahibDesktop.preferences('widgetTheme','windows')})()`);await sleep(350);
-  record('Taskbar compact view',await widget.evaluate('getComputedStyle(document.getElementById("widget-compact")).display==="grid"'));
   const geometry=await session.evaluate('SahibDesktop.invoke("desktop_state")');
+  const fallback=geometry.widgetViews?.widget?.fallback;
+  record(fallback?'Floating fallback when Explorer has no usable taskbar':'Taskbar compact view',await widget.evaluate(fallback?'getComputedStyle(document.getElementById("widget")).display==="flex"':'getComputedStyle(document.getElementById("widget-compact")).display==="grid"'));
   if(geometry.taskbarBounds){const [left,top,right,bottom]=geometry.taskbarBounds,[x,y,width,height]=geometry.widgetBounds;record('Native widget sits inside the primary taskbar',x>=left&&x+width<=right&&y===top&&height===bottom-top,JSON.stringify({taskbar:geometry.taskbarBounds,widget:geometry.widgetBounds}));}
   else report.tests.push({name:'Native taskbar geometry',pass:true,skipped:true,detail:'No Explorer taskbar on this test host; compact and panel UI still tested.'});
   record('Taskbar reminder fits without clipping',await widget.evaluate('document.getElementById("widget-compact").scrollHeight<=innerHeight'));
