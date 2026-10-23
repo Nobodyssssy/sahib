@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Sahib",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "identifier": "com.sahib.companion",
   "build": {
     "beforeBuildCommand": "npm run desktop:prepare",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Sahib · صاحب",
+        "title": "Sahib \u00b7 \u0635\u0627\u062d\u0628",
         "url": "index.html",
         "width": 1440,
         "height": 940,
@@ -26,7 +26,7 @@
       },
       {
         "label": "widget",
-        "title": "Sahib · Next prayer",
+        "title": "Sahib \u00b7 Next prayer",
         "url": "desktop-widget.html",
         "width": 348,
         "height": 178,
@@ -42,7 +42,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost https:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'"
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost https:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'"
     }
   },
   "bundle": {

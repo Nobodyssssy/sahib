@@ -28,6 +28,8 @@ Native host settings, schedules and its fired-event ledger live under the app's 
 
 Only local application windows can use the bridge. Main-only commands reject calls from the widget. Audio selections use fixed identifiers and private slots; paths from the UI cannot read arbitrary files. External HTTP(S) links open through the OS. Remote top-level navigation inside the privileged WebView is blocked. No general filesystem or shell API is exposed to the UI.
 
+The shared interface currently uses inline event attributes for navigation and generated controls. The desktop CSP explicitly permits these with `script-src-attr`; script elements still use Tauri's generated hashes/nonces. Without the separate attribute directive, those hashes cause browsers to ignore `unsafe-inline` in `script-src`, blocking button clicks. `tests/desktop-navigation.js` exercises actual button handlers to catch this regression.
+
 ## Verification limits
 
 Rust tests cover schedule validation, restart deduplication, missed-event suppression, cancellation, and decoding without opening an audio device. Real WebView checks must additionally cover startup, language/theme, prayer settings, PDFs, native playback/stop, hiding/reopening, widget preferences and restart persistence. OS notification visibility depends on Windows notification settings and Focus Assist. Autostart changes the current user's Windows startup registration only when explicitly enabled in Settings.

@@ -1,1 +1,16 @@
-{"name":"sahib","version":"0.1.0","private":true,"description":"Sahib shared web application and Windows desktop host","scripts":{"verify":"node tools/verify-release.mjs","desktop:prepare":"node tools/prepare-desktop.mjs","desktop:dev":"tauri dev","desktop:build":"tauri build --bundles nsis","desktop:test":"cargo test --manifest-path src-tauri/Cargo.toml"},"devDependencies":{"@tauri-apps/cli":"^2.0.0"}}
+{
+  "name": "sahib",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Sahib shared web application and Windows desktop host",
+  "scripts": {
+    "verify": "node tools/verify-release.mjs",
+    "desktop:prepare": "node tools/prepare-desktop.mjs",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build --bundles nsis",
+    "desktop:test": "cargo test --manifest-path src-tauri/Cargo.toml"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
