@@ -96,8 +96,8 @@ try{
  const {port}=await start();
  record('Separate QA identity',await session.evaluate('window.__TAURI__.app.getIdentifier()')==='com.sahib.companion.qa');
  await session.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich acceptance fixture");await SahibDesktop.sync();return true})()');
- for(const file of ['tests/desktop-navigation.js','tests/desktop-smoke.js','tests/desktop-cancellation.js','tests/desktop-chime-schedule.js'])await expressionTest(file);
- if(report.audioHardware)await expressionTest('tests/desktop-media.js');
+ for(const file of ['tests/desktop-navigation.js','tests/desktop-smoke.js','tests/desktop-cancellation.js','tests/desktop-chime-schedule.js','tests/desktop-widget-reminders.js'])await expressionTest(file);
+ if(report.audioHardware){await expressionTest('tests/desktop-media.js');await expressionTest('tests/desktop-scheduled-audio.js');}
  await session.evaluate('(async()=>{document.querySelector("[data-nav=home]").click();await SahibDesktop.preferences("widgetVisible",true);return true})()');
  await sleep(500);await session.screenshot('main.png');
  const current=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();
@@ -111,6 +111,42 @@ try{
   record('Widget uses the shared next prayer',widgetReady);
   record('Widget cannot invoke main-only commands',await widget.evaluate('window.__TAURI__.core.invoke("desktop_preview_audio",{id:"qatami",volume:0}).then(()=>false,()=>true)'));
   await widget.screenshot('widget.png');
+  if(report.audioHardware){
+   await session.evaluate('SahibDesktop.invoke("desktop_preview_audio",{id:"qatami",volume:0})');await sleep(350);
+   await widget.evaluate('document.getElementById("widget-stop").click()');await sleep(350);
+   record('Widget stop button stops native adhan',await session.evaluate('SahibDesktop.invoke("desktop_state").then(s=>!s.audioPlaying)'));
+  }
+  const savedPresentation=await session.evaluate('window.__TAURI__.core.invoke("desktop_state")');
+  for(const theme of ['sahib','aura','dracula','catppuccin','rose-pine','tokyo-night','windows']){
+   for(const mode of ['light','dark']){
+   await session.evaluate(`(async()=>{const s=await SahibDesktop.invoke('desktop_state');s.schedule.theme.mode=${JSON.stringify(mode)};await SahibDesktop.invoke('desktop_sync_schedule',{schedule:s.schedule})})()`);
+   await session.evaluate(`SahibDesktop.preferences('widgetTheme',${JSON.stringify(theme)})`);await sleep(350);
+   record(`Widget ${theme} ${mode} appearance`,await widget.evaluate(`document.documentElement.dataset.theme===${JSON.stringify(theme==='windows'?'sahib':theme)}&&getComputedStyle(document.getElementById('widget-stop')).color!==getComputedStyle(document.getElementById('widget-stop')).backgroundColor`));
+   await widget.screenshot(`widget-${theme}-${mode}.png`);
+   }
+  }
+  await session.evaluate(`(async()=>{await SahibDesktop.preferences('widgetMode','taskbar');await SahibDesktop.preferences('widgetTheme','windows')})()`);await sleep(350);
+  record('Taskbar compact view',await widget.evaluate('getComputedStyle(document.getElementById("widget-compact")).display==="grid"'));
+  const geometry=await session.evaluate('SahibDesktop.invoke("desktop_state")');
+  if(geometry.taskbarBounds){const [left,top,right,bottom]=geometry.taskbarBounds,[x,y,width,height]=geometry.widgetBounds;record('Native widget sits inside the primary taskbar',x>=left&&x+width<=right&&y===top&&height===bottom-top,JSON.stringify({taskbar:geometry.taskbarBounds,widget:geometry.widgetBounds}));}
+  else report.tests.push({name:'Native taskbar geometry',pass:true,skipped:true,detail:'No Explorer taskbar on this test host; compact and panel UI still tested.'});
+  record('Taskbar reminder fits without clipping',await widget.evaluate('document.getElementById("widget-compact").scrollHeight<=innerHeight'));
+  await widget.screenshot('taskbar-compact.png');
+  await widget.evaluate('document.getElementById("widget-compact").click()');await sleep(350);
+  record('Click opens full taskbar timetable',await widget.evaluate('document.body.dataset.expanded==="true"&&document.querySelectorAll(".prayer-row").length===6'));
+  await widget.screenshot('taskbar-panel.png');
+  await widget.evaluate('document.getElementById("widget-close").click()');await sleep(250);
+  record('Taskbar close collapses without hiding',await widget.evaluate('(async()=>{const s=await window.__TAURI__.core.invoke("desktop_state");return !s.widgetExpanded&&s.prefs.widgetVisible})()'));
+  // Staged reminder previews use the actual calendar helper with a Sunday fixture.
+  await session.evaluate(`(async()=>{const s=await SahibDesktop.invoke('desktop_state'),d=s.schedule.widgetDays.find(d=>d.start<=Date.now()&&d.end>Date.now());d.reminders=SahibPractice.widgetReminders(new Date(2026,9,25,12));d.label='Sunday · reminder preview';await SahibDesktop.invoke('desktop_sync_schedule',{schedule:s.schedule});await SahibDesktop.preferences('widgetTheme','sahib');await SahibDesktop.invoke('desktop_widget_action',{action:'toggle'})})()`);await sleep(350);await widget.screenshot('taskbar-sunday-preview.png');
+  await session.evaluate(`(async()=>{const s=await SahibDesktop.invoke('desktop_state');s.schedule.language='ar';const d=s.schedule.widgetDays.find(d=>d.start<=Date.now()&&d.end>Date.now());d.reminders=[{id:'preview',title:'غداً الاثنين · صيام الاثنين والخميس',detail:'صيام تطوع · حسب التقويم الهجري المختار',kind:'tomorrow'}];d.label='الأحد · معاينة التذكير';d.hijri=new Intl.DateTimeFormat('ar-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(new Date(2026,9,25,12));s.schedule.location='زيورخ · معاينة';await SahibDesktop.invoke('desktop_sync_schedule',{schedule:s.schedule})})()`);await sleep(350);
+  if(await widget.evaluate('document.body.dataset.expanded!=="true"')){await widget.evaluate('document.getElementById("widget-compact").click()');await sleep(350);}
+  record('Arabic taskbar panel uses RTL',await widget.evaluate('document.body.dataset.expanded==="true"&&document.documentElement.dir==="rtl"&&document.getElementById("widget-label").textContent==="الصلاة القادمة"'));
+  await widget.screenshot('taskbar-arabic-preview.png');
+  await widget.evaluate('document.getElementById("widget-settings").click()');await sleep(350);
+  record('Widget settings button opens native controls',await session.evaluate('!!document.querySelector("#settings-body [data-desktop-pref=widgetMode]")'));
+  await session.evaluate('closeSettings()');
+  await session.evaluate(`(async()=>{await SahibDesktop.invoke('desktop_set_preferences',{prefs:${JSON.stringify(savedPresentation.prefs)},autostart:null});await SahibDesktop.invoke('desktop_sync_schedule',{schedule:${JSON.stringify(savedPresentation.schedule)}});await SahibDesktop.invoke('desktop_widget_action',{action:'collapse'})})()`);
  }finally{widget.close();}
  const eventId=`acceptance:hidden:${Date.now()}`;
  record('Main window closes to tray',await session.evaluate(`(async()=>{const invoke=window.__TAURI__.core.invoke,state=await invoke('desktop_state');await invoke('desktop_set_preferences',{prefs:{...state.prefs,closeToTray:true,startMinimized:true,widgetOpacity:0.8},autostart:null});await invoke('desktop_sync_schedule',{schedule:{...state.schedule,alerts:[{id:${JSON.stringify(eventId)},at:Date.now()+1500,title:'Silent acceptance test',body:'',sound:'off',volume:0,notify:false}]}});await window.__TAURI__.window.getCurrentWindow().close();return !await window.__TAURI__.window.getCurrentWindow().isVisible()})()`));

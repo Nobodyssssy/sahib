@@ -1,3 +1,17 @@
 <!doctype html>
-<html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sahib · Prayer widget</title><link rel="stylesheet" href="css/tokens.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/garden-tokens.css"><link rel="stylesheet" href="css/app-language.css"><link rel="stylesheet" href="css/desktop-widget.css"></head>
-<body><main class="prayer-widget" id="widget"><header data-tauri-drag-region><span id="widget-label">Next prayer</span><nav><button id="widget-open" title="Open Sahib" aria-label="Open Sahib">↗</button><button id="widget-stop" title="Stop audio" aria-label="Stop audio">◼</button><button id="widget-close" title="Hide widget" aria-label="Hide widget">×</button></nav></header><section><div><h1 id="widget-name">Sahib</h1><p id="widget-location">Choose your location in Sahib</p></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section><footer><span id="widget-status">Open Sahib to load prayer times</span><span id="widget-brand">صاحب</span></footer></main><script src="js/desktop-widget.js"></script></body></html>
+<html lang="en" dir="ltr" data-theme="sahib" data-mode="light" data-accent="green"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sahib · Prayer widget</title><link rel="stylesheet" href="css/tokens.css"><link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/garden-tokens.css"><link rel="stylesheet" href="css/app-language.css"><link rel="stylesheet" href="css/desktop-widget.css"></head>
+<body>
+<button id="widget-compact" class="widget-compact" aria-label="Open prayer timetable" aria-expanded="false"><span class="compact-prayer"><strong id="compact-name">Sahib</strong><span id="compact-clock">—</span></span><span class="compact-countdown"><span id="compact-label">Next prayer</span><strong id="compact-countdown">—</strong></span><span class="compact-reminder" id="compact-reminder"></span></button>
+<main class="prayer-widget" id="widget">
+<header><span id="widget-label">Next prayer</span><nav aria-label="Widget controls">
+<button id="widget-settings" title="Widget settings" aria-label="Widget settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 3-1 3-3 1v4l2 2-1 3 3 3 3-1 3 1 3-3-1-3 2-2V7l-3-1-1-3Z"/><circle cx="12" cy="11" r="3"/></svg></button>
+<button id="widget-open" title="Open Sahib" aria-label="Open Sahib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6m0-6L10 14M10 5H5v15h15v-6"/></svg></button>
+<button id="widget-stop" title="Stop audio" aria-label="Stop audio"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+<button id="widget-close" title="Hide widget" aria-label="Hide widget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+</nav></header>
+<section class="widget-hero"><div><h1 id="widget-name">Sahib</h1><p id="widget-location">Choose your location in Sahib</p></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section>
+<div class="widget-date"><span id="widget-date"></span><span id="widget-hijri"></span></div>
+<section class="widget-timetable" id="widget-timetable" aria-label="Prayer timetable"></section>
+<section class="widget-reminders" id="widget-reminders"></section>
+<footer><button id="widget-details">Today’s timetable</button><span id="widget-status"></span><button id="widget-refresh" aria-label="Refresh prayer times">↻</button></footer>
+</main><script src="js/desktop-widget.js"></script></body></html>

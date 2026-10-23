@@ -1473,6 +1473,18 @@ const SahibPractice = (() => {
   }
 
   // Reuse the daybook's occurrence/completion rules for the native scheduler.
+  function widgetReminders(date) {
+    const ar=window.SAHIB_I18N?.language==='ar',title=p=>ar?(p.titleAr||p.title):p.title;
+    const items=getDayAgenda(_dateKey(date)).filter(row=>!['done','skipped'].includes(row.status)&&!_isSnoozed(row.practice.id,_dateKey(date))).map(row=>({id:row.practice.id,title:title(row.practice),detail:ar?'من وردك اليومي':'From your daily practice',kind:'practice'}));
+    const tomorrow=_addDays(date,1),key=_dateKey(tomorrow);
+    for(const id of ['monday-thursday-fast','white-days-fast','arafah-fast','ashura-fast']){
+      const p=_get(id);if(!p||!_occursOn(p,tomorrow))continue;
+      const weekday=tomorrow.toLocaleDateString(ar?'ar':'en',{weekday:'long'});
+      items.unshift({id:`tomorrow:${id}:${key}`,title:ar?`غداً ${weekday} · ${title(p)}`:`Tomorrow, ${weekday} · ${title(p)}`,detail:ar?'صيام تطوع · حسب التقويم الهجري المختار':'Optional fast · follows your Hijri calendar',kind:'tomorrow'});
+    }
+    return items.slice(0,30);
+  }
+
   function nativeSchedule(days) {
     const alerts=[],ar=window.SAHIB_I18N?.language==='ar';
     if(!runtime.ready) return alerts;
@@ -1625,6 +1637,7 @@ const SahibPractice = (() => {
     setTimings,
     checkReminders,
     nativeSchedule,
+    widgetReminders,
     refresh: _refreshSurfaces,
     complete: _complete,
     undo: _undo,

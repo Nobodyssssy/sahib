@@ -8,7 +8,7 @@
  check('Native schedule extends beyond a month',state.schedule.validUntil>Date.now()+30*86400000);
  check('Widget has future prayers',state.schedule.prayers.some(p=>p.at>Date.now()));
  check('Browser SW disabled',(await navigator.serviceWorker.getRegistrations()).length===0);
- openSettings('desktop');await new Promise(r=>setTimeout(r,300));check('Native settings present',document.querySelectorAll('[data-desktop-pref]').length===7);closeSettings();
+ openSettings('desktop');await new Promise(r=>setTimeout(r,300));check('Native settings present',document.querySelectorAll('[data-desktop-pref]').length===14);closeSettings();
  await openReader('jazariyyah');check('Native PDF reader',_readerTotalPages>0&&document.querySelectorAll('#reader-body canvas').length>0);_closeReaderFromHistory();
  check('Arbitrary audio paths rejected',await invoke('desktop_preview_audio',{id:'../../private.mp3',volume:0}).then(()=>false,()=>true));
  check('External non-web schemes rejected',await invoke('desktop_open_url',{url:'file:///C:/Windows/win.ini'}).then(()=>false,()=>true));

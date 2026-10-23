@@ -1,5 +1,6 @@
 mod audio;
 mod scheduler;
+mod taskbar;
 use audio::{AudioJob, NativeAudio};
 use scheduler::Schedule;
 use serde::{Deserialize, Serialize};
@@ -38,6 +39,13 @@ struct DesktopPrefs {
     widget_opacity: f64,
     widget_click_through: bool,
     widget_position: Option<(i32, i32)>,
+    widget_mode: String,
+    widget_theme: String,
+    widget_monitor: String,
+    widget_offset: i32,
+    widget_edge: String,
+    widget_reminders: bool,
+    widget_warning_minutes: i32,
 }
 impl Default for DesktopPrefs {
     fn default() -> Self {
@@ -49,6 +57,13 @@ impl Default for DesktopPrefs {
             widget_opacity: 0.96,
             widget_click_through: false,
             widget_position: None,
+            widget_mode: "floating".into(),
+            widget_theme: "app".into(),
+            widget_monitor: "primary".into(),
+            widget_offset: 210,
+            widget_edge: "left".into(),
+            widget_reminders: true,
+            widget_warning_minutes: 10,
         }
     }
 }
@@ -64,6 +79,7 @@ struct DesktopState {
     file: PathBuf,
     audio: NativeAudio,
     position_dirty: AtomicBool,
+    widget_expanded: AtomicBool,
 }
 impl DesktopState {
     fn save(&self, disk: &DiskState) -> Result<(), String> {
@@ -92,10 +108,89 @@ fn emit_state(app: &tauri::AppHandle) {
 }
 fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
     if let Some(w) = app.get_webview_window("widget") {
-        let _ = w.set_always_on_top(p.widget_always_on_top);
-        let _ = w.set_ignore_cursor_events(p.widget_click_through);
+        let docked = p.widget_mode == "taskbar";
+        let expanded = app
+            .state::<DesktopState>()
+            .widget_expanded
+            .load(Ordering::Relaxed);
+        let _ = w.set_always_on_top(docked || p.widget_always_on_top);
+        let _ = w.set_ignore_cursor_events(!docked && p.widget_click_through);
+        if docked {
+            let monitors = w.available_monitors().unwrap_or_default();
+            let chosen = monitors
+                .iter()
+                .find(|m| m.name().map(|n| n == &p.widget_monitor).unwrap_or(false))
+                .cloned()
+                .or_else(|| w.primary_monitor().ok().flatten());
+            if let Some(m) = chosen {
+                let pos = m.position();
+                let size = m.size();
+                let scale = m.scale_factor();
+                if taskbar::fullscreen(
+                    (
+                        pos.x,
+                        pos.y,
+                        pos.x + size.width as i32,
+                        pos.y + size.height as i32,
+                    ),
+                    w.hwnd().map(|h| h.0 as isize).unwrap_or(0),
+                ) {
+                    let _ = w.hide();
+                    return;
+                }
+                if let Some((left, top, right, bottom)) = taskbar::bounds((
+                    pos.x,
+                    pos.y,
+                    pos.x + size.width as i32,
+                    pos.y + size.height as i32,
+                )) {
+                    // Auto-hidden taskbars stay hidden. The overlay returns when the bar opens.
+                    if !expanded
+                        && bottom.min(pos.y + size.height as i32) - top.max(pos.y)
+                            < (12.0 * scale) as i32
+                    {
+                        let _ = w.hide();
+                        return;
+                    }
+                    let width = ((if expanded { 380.0 } else { 260.0 }) * scale) as i32;
+                    let height = if expanded {
+                        (550.0 * scale) as i32
+                    } else {
+                        bottom - top
+                    };
+                    let offset = (p.widget_offset as f64 * scale) as i32;
+                    let x = (if p.widget_edge == "right" {
+                        right - width - offset
+                    } else {
+                        left + offset
+                    })
+                    .clamp(left, (right - width).max(left));
+                    let y = if expanded {
+                        (top - height - 8).max(pos.y)
+                    } else {
+                        top
+                    };
+                    let target_size =
+                        tauri::PhysicalSize::new(width.max(1) as u32, height.max(1) as u32);
+                    if w.inner_size().ok() != Some(target_size) {
+                        let _ = w.set_size(target_size);
+                    }
+                    let target = tauri::PhysicalPosition::new(x, y);
+                    if w.outer_position().ok() != Some(target) {
+                        let _ = w.set_position(target);
+                    }
+                }
+            }
+        } else {
+            let _ = w.set_size(tauri::LogicalSize::new(
+                380.0,
+                if expanded { 550.0 } else { 350.0 },
+            ));
+        }
         if p.widget_visible {
-            let _ = w.show();
+            if !w.is_visible().unwrap_or(false) {
+                let _ = w.show();
+            }
         } else {
             let _ = w.hide();
         }
@@ -199,9 +294,15 @@ fn play(app: &tauri::AppHandle, id: &str, volume: f32) -> Result<(), String> {
 #[tauri::command]
 fn desktop_state(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
     let state = app.state::<DesktopState>();
-    let d = state.disk.lock().map_err(|e| e.to_string())?;
+    let d = state.disk.lock().map_err(|e| e.to_string())?.clone();
+    let widget_bounds = app.get_webview_window("widget").and_then(|w| {
+        let pos = w.outer_position().ok()?;
+        let size = w.inner_size().ok()?;
+        Some((pos.x, pos.y, size.width, size.height))
+    });
+    let taskbar_bounds = taskbar::bounds((i32::MIN, i32::MIN, i32::MAX, i32::MAX));
     Ok(
-        serde_json::json!({"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok()}),
+        serde_json::json!({"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.get_webview_window("widget").and_then(|w| w.available_monitors().ok()).unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
     )
 }
 #[tauri::command]
@@ -241,6 +342,25 @@ fn desktop_set_preferences(
         return Err("Invalid opacity".into());
     }
     prefs.widget_opacity = prefs.widget_opacity.clamp(0.5, 1.0);
+    if !["floating", "taskbar"].contains(&prefs.widget_mode.as_str())
+        || ![
+            "app",
+            "windows",
+            "sahib",
+            "aura",
+            "dracula",
+            "catppuccin",
+            "rose-pine",
+            "tokyo-night",
+        ]
+        .contains(&prefs.widget_theme.as_str())
+        || !["left", "right"].contains(&prefs.widget_edge.as_str())
+        || prefs.widget_monitor.len() > 200
+    {
+        return Err("Invalid widget preferences".into());
+    }
+    prefs.widget_offset = prefs.widget_offset.clamp(0, 4000);
+    prefs.widget_warning_minutes = prefs.widget_warning_minutes.clamp(1, 60);
     if let Some(on) = autostart {
         if on {
             app.autolaunch().enable()
@@ -251,10 +371,54 @@ fn desktop_set_preferences(
     }
     let state = app.state::<DesktopState>();
     let mut d = state.disk.lock().map_err(|e| e.to_string())?;
+    let mode_changed = d.prefs.widget_mode != prefs.widget_mode;
     d.prefs = prefs.clone();
     state.save(&d)?;
     drop(d);
+    if mode_changed {
+        state.widget_expanded.store(false, Ordering::Relaxed);
+        if prefs.widget_mode == "floating" {
+            position_widget(&app, &prefs);
+        }
+    }
     apply_widget(&app, &prefs);
+    emit_state(&app);
+    Ok(())
+}
+#[tauri::command]
+fn desktop_widget_action(
+    window: tauri::WebviewWindow,
+    app: tauri::AppHandle,
+    action: String,
+) -> Result<(), String> {
+    if window.label() != "widget" && window.label() != "main" {
+        return Err("Local widget only".into());
+    }
+    let state = app.state::<DesktopState>();
+    match action.as_str() {
+        "toggle" => {
+            state.widget_expanded.fetch_xor(true, Ordering::Relaxed);
+        }
+        "collapse" => {
+            state.widget_expanded.store(false, Ordering::Relaxed);
+        }
+        "settings" | "practice" => {
+            state.widget_expanded.store(false, Ordering::Relaxed);
+            show_main(&app);
+            let _ = app.emit_to("main", "sahib:widget-open", &action);
+        }
+        "refresh" => {
+            let _ = app.emit_to("main", "sahib:refresh-schedule", ());
+        }
+        _ => return Err("Unknown widget action".into()),
+    }
+    let prefs = state.disk.lock().map_err(|e| e.to_string())?.prefs.clone();
+    apply_widget(&app, &prefs);
+    if action == "toggle" && state.widget_expanded.load(Ordering::Relaxed) {
+        if let Some(w) = app.get_webview_window("widget") {
+            let _ = w.set_focus();
+        }
+    }
     emit_state(&app);
     Ok(())
 }
@@ -378,7 +542,7 @@ fn start_scheduler(app: tauri::AppHandle) {
         loop {
             let now = now_ms();
             let state = app.state::<DesktopState>();
-            let due = {
+            let (due, tooltip) = {
                 let Ok(mut d) = state.disk.lock() else { break };
                 let schedule = d.schedule.clone();
                 let due = scheduler::take_due(&schedule, &mut d.fired, now);
@@ -387,29 +551,32 @@ fn start_scheduler(app: tauri::AppHandle) {
                         eprintln!("[desktop] State save failed: {e}");
                     }
                 }
-                if let Some(next) = schedule
+                let tooltip = schedule
                     .prayers
                     .iter()
                     .filter(|p| p.at > now)
                     .min_by_key(|p| p.at)
-                {
-                    if let Some(tray) = app.tray_by_id("sahib") {
+                    .map(|next| {
                         let name = if schedule.language == "ar" {
                             &next.name_ar
                         } else {
                             &next.name
                         };
                         let mins = (next.at - now) / 60000;
-                        let _ = tray.set_tooltip(Some(format!(
+                        format!(
                             "Sahib · {name} · {} · {}h {}m",
                             next.clock,
                             mins / 60,
                             mins % 60
-                        )));
-                    }
-                }
-                due
+                        )
+                    });
+                (due, tooltip)
             };
+            // Window/tray APIs dispatch to the UI thread. Never hold the data
+            // mutex here: a window event on that thread can also need the data.
+            if let (Some(tray), Some(tooltip)) = (app.tray_by_id("sahib"), tooltip) {
+                let _ = tray.set_tooltip(Some(tooltip));
+            }
             for event in due {
                 if event.notify {
                     if let Err(e) = app
@@ -440,8 +607,8 @@ fn start_scheduler(app: tauri::AppHandle) {
                     .filter(|e| e.at > now)
                     .map(|e| (e.at - now) as u64)
                     .min()
-                    .unwrap_or(30000)
-                    .clamp(500, 30000)
+                    .unwrap_or(1000)
+                    .clamp(100, 1000)
             };
             std::thread::sleep(Duration::from_millis(wait));
         }
@@ -471,6 +638,7 @@ pub fn run() {
             desktop_save_audio,
             desktop_remove_audio,
             desktop_open_url
+            ,desktop_widget_action
         ])
         .setup(|app| {
             let dir = app.path().app_data_dir()?;
@@ -491,6 +659,7 @@ pub fn run() {
                 file,
                 audio: NativeAudio::start(),
                 position_dirty: AtomicBool::new(false),
+                widget_expanded: AtomicBool::new(false),
             });
             for config in &app.config().app.windows {
                 let h = app.handle().clone();
@@ -571,6 +740,16 @@ pub fn run() {
                 show_main(app.handle());
             }
             start_scheduler(app.handle().clone());
+            let handle=app.handle().clone();
+            std::thread::spawn(move || loop {
+                std::thread::sleep(Duration::from_secs(2));
+                let h=handle.clone();
+                let _=handle.run_on_main_thread(move || {
+                    let state=h.state::<DesktopState>();
+                    let prefs=state.disk.lock().unwrap().prefs.clone();
+                    if prefs.widget_mode=="taskbar" && prefs.widget_visible {apply_widget(&h,&prefs);}
+                });
+            });
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -590,12 +769,20 @@ pub fn run() {
                     drop(d);
                     app.exit(0);
                 }
+            } else if let WindowEvent::Focused(false) = event {
+                if window.label()=="widget" {
+                    let state=window.state::<DesktopState>();
+                    let prefs=state.disk.lock().unwrap().prefs.clone();
+                    if prefs.widget_mode=="taskbar" && state.widget_expanded.swap(false,Ordering::Relaxed) {apply_widget(window.app_handle(),&prefs);emit_state(window.app_handle());}
+                }
             } else if let WindowEvent::Moved(position) = event {
                 if window.label() == "widget" {
                     let state = window.state::<DesktopState>();
                     if let Ok(mut d) = state.disk.lock() {
-                        d.prefs.widget_position = Some((position.x, position.y));
-                        state.position_dirty.store(true, Ordering::Relaxed);
+                        if d.prefs.widget_mode=="floating" {
+                            d.prefs.widget_position = Some((position.x, position.y));
+                            state.position_dirty.store(true, Ordering::Relaxed);
+                        }
                     };
                 }
             }
