@@ -30,13 +30,13 @@ window.SahibDesktop=(()=>{
    }
    if(!days.length)throw Error(text('Set a location and load prayer times first.','اختر موقعك وحمّل مواقيت الصلاة أولاً.'));
    const prayers=[],alerts=[],sounds={};
-   if(prefs.alerts.enabled)for(const kind of ['standard','fajr'])sounds[kind]=await sound(kind,prefs);
    for(const day of days)for(const name of Object.keys(nameAR)){
     const date=_pwEventDate(day.date,day.timings[name],day.timezone);if(!date||date.getTime()<=now)continue;
     const at=date.getTime(),label=ar()?nameAR[name]:name,clock=formatPrayerTime(day.timings[name],prefs.timeFormat);
     prayers.push({name,nameAr:nameAR[name],at,clock});
     if(!prefs.alerts.enabled)continue;
     const choice=prefs.alerts.perPrayer[name]||{},mode=choice.mode||(choice.alert===false||choice.sound===false?'off':'chime');if(mode==='off')continue;
+    if(mode==='adhan'){const kind=name==='Fajr'?'fajr':'standard';if(!(kind in sounds))sounds[kind]=await sound(kind,prefs);}
     const add=(kind,time)=>{if(time<=now)return;alerts.push({id:`prayer:${day.date}:${name}:${kind}`,at:time,title:`${ar()?'صاحب':'Sahib'} · ${label}`,body:kind==='time'?`${label} · ${clock}`:text(`${label} in ${prefs.alerts.leadMinutes} minutes · ${clock}`,`${label} بعد ${prefs.alerts.leadMinutes} دقيقة · ${clock}`),sound:kind==='lead'?'chime':mode==='adhan'?sounds[name==='Fajr'?'fajr':'standard']:'chime',volume:prefs.alerts.volume,notify:!!prefs.alerts.notify});};
     if(prefs.alerts.atTime)add('time',at);
     add('lead',at-Math.max(1,prefs.alerts.leadMinutes||10)*60000);
@@ -66,7 +66,7 @@ window.SahibDesktop=(()=>{
    SETTINGS_TABS.push('desktop');const button=document.createElement('button');button.type='button';button.className='settings-tab';button.dataset.settingsTab='desktop';button.setAttribute('role','tab');button.textContent=text('Windows','ويندوز');button.onclick=()=>setSettingsTab('desktop');document.getElementById('settings-tabs').append(button);
    const render=renderSettingsBody;renderSettingsBody=async()=>_settingsTab==='desktop'?settings():render();
    const removeAudio=clearLocalAdhan;clearLocalAdhan=async kind=>{await removeAudio(kind);if(!await store.getMeta(ADHAN_LOCAL_KEYS[kind])){await invoke('desktop_remove_audio',{kind});imported.delete(kind);}};
-   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.1.1','صاحب لويندوز · نسخة تجريبية 0.1.1')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
+   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.1.2','صاحب لويندوز · نسخة تجريبية 0.1.2')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
    const alertsHTML=_alertsHTML;_alertsHTML=async()=>{
     const html=await alertsHTML();return html.replace(/<div class="settings-note">\s*<strong>Browser limits:<\/strong>[\s\S]*?<\/div>/,`<div class="settings-note">${text('Windows reminders and audio continue while Sahib stays in the tray. Quit stops them. Sahib does not wake a sleeping PC.','تستمر تنبيهات ويندوز والأذان ما دام صاحب في علبة النظام. الإنهاء يوقفها، ولا يوقظ التطبيق الحاسوب النائم.')}</div>`);
    };

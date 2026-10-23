@@ -1,0 +1,120 @@
+name: Windows preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, codex/windows-tauri]
+    paths:
+      - '.github/workflows/windows-preview.yml'
+      - 'src-tauri/**'
+      - 'js/**'
+      - 'css/**'
+      - 'assets/**'
+      - 'icons/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'index.html'
+      - 'desktop-widget.html'
+      - 'manifest.webmanifest'
+      - 'package*.json'
+  pull_request:
+    paths:
+      - 'src-tauri/**'
+      - 'js/**'
+      - 'css/**'
+      - 'assets/**'
+      - 'icons/**'
+      - 'tools/**'
+      - 'tests/**'
+      - '*.html'
+      - 'manifest.webmanifest'
+      - 'package*.json'
+      - '.github/workflows/windows-preview.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-sahib-rust-${{ hashFiles('src-tauri/Cargo.lock', 'src-tauri/Cargo.toml') }}
+      - name: Select stable Rust
+        run: rustup default stable
+      - name: Ensure Microsoft WebView2 Runtime
+        shell: pwsh
+        run: |
+          $runtimeKeys = @(
+            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}',
+            'HKCU:\Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}'
+          )
+          function Test-WebViewRuntime {
+            foreach ($key in $runtimeKeys) {
+              $version = (Get-ItemProperty -LiteralPath $key -Name pv -ErrorAction SilentlyContinue).pv
+              if ($version -and [version]$version -gt [version]'0.0.0.0') { return $true }
+            }
+            return $false
+          }
+          if (!(Test-WebViewRuntime)) {
+            $bootstrapper = Join-Path $env:RUNNER_TEMP 'MicrosoftEdgeWebview2Setup.exe'
+            Invoke-WebRequest 'https://go.microsoft.com/fwlink/p/?LinkId=2124703' -OutFile $bootstrapper
+            $signature = Get-AuthenticodeSignature -LiteralPath $bootstrapper
+            if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') {
+              throw 'WebView2 bootstrapper signature verification failed'
+            }
+            $setup = Start-Process -FilePath $bootstrapper -ArgumentList '/silent', '/install' -WindowStyle Hidden -Wait -PassThru
+            if ($setup.ExitCode -notin @(0, 3010)) { throw "WebView2 setup failed: $($setup.ExitCode)" }
+            if (!(Test-WebViewRuntime)) { throw 'WebView2 Runtime was not detected after installation' }
+          }
+      - name: Install locked JavaScript dependencies
+        run: npm ci
+      - name: Verify shared application resources
+        run: npm run verify
+      - name: Test native scheduler and recording decoders
+        run: npm run desktop:test
+      - name: Test packaged UI and native lifecycle
+        run: npm run desktop:acceptance
+      - name: Build unsigned Windows installer
+        run: npm run desktop:build
+      - name: Generate installer checksum
+        id: package
+        run: npm run desktop:checksum
+      - name: Save installer and checksum
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Sahib-${{ steps.package.outputs.version }}-windows-x64
+          path: |
+            ${{ steps.package.outputs.installer }}
+            ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+          retention-days: 14
+      - name: Save acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Windows-acceptance-${{ github.sha }}
+          include-hidden-files: true
+          path: |
+            .qa/windows-acceptance-*/report.json
+            .qa/windows-acceptance-*/*.png
+            .qa/windows-acceptance-*/app.log
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const config=JSON.parse(fs.readFileSync(path.join(root,'src-tauri','tauri.conf.json'),'utf8'));
+const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+if(config.identifier!=='com.sahib.companion'||config.productName!=='Sahib'||config.version!==pkg.version||!/^\d+\.\d+\.\d+$/.test(pkg.version))throw Error('Production package identity/version mismatch');
+const installer=path.join(root,'src-tauri','target','release','bundle','nsis',`Sahib_${pkg.version}_x64-setup.exe`);
+const content=fs.readFileSync(installer);
+if(content[0]!==0x4d||content[1]!==0x5a)throw Error('Installer is not a Windows executable');
+const sha256=createHash('sha256').update(content).digest('hex'),checksum=installer+'.sha256';
+fs.writeFileSync(checksum,`${sha256}  ${path.basename(installer)}\n`);
+if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,`installer=${installer}\nchecksum=${checksum}\nversion=${pkg.version}\n`);
+console.log(JSON.stringify({version:pkg.version,installer,checksum,bytes:content.length,sha256},null,2));
