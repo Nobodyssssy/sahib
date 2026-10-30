@@ -264,6 +264,7 @@ function localBookCardHTML(b){
       <div class="book-title">${esc(title)}</div>
       ${author ? `<div class="book-author">${esc(author)}</div>` : ''}
       <div class="book-author" style="opacity:.6">${sizeMb} MB</div>
+      ${bookReadingProgressHTML(b.id)}
     </div>
     <button class="local-trash-btn" onclick="event.stopPropagation();onDeleteLocalBook('${b.id}')" title="${_booksLang === 'ar' ? 'حذف' : 'Delete'}" aria-label="Delete">
       ${icon('trash-2', 14)}
@@ -329,15 +330,10 @@ function renderBookList(host, list, isSearch){
   }, 50);
 }
 
-function bookCardHTML(b){
-  const cat = getCategoryById(b.category);
-  const progress = getBookProgress(b.id);
+function bookReadingProgressHTML(id){
+  const progress = getBookProgress(id);
   const isRead = !!progress;
   const isFinished = progress && progress.totalPages && progress.page >= progress.totalPages;
-
-  const title = _booksLang === 'ar' ? b.titleAr : (b.titleEn || b.titleAr);
-  const author = _booksLang === 'ar' ? b.author : (b.authorEn || b.author);
-
   let progressLine = '';
   if(isRead && progress.totalPages){
     const pct = Math.round(progress.page / progress.totalPages * 100);
@@ -353,6 +349,20 @@ function bookCardHTML(b){
               : `Page ${progress.page} of ${progress.totalPages}`)}
       </div>`;
   }
+
+  return progressLine;
+}
+
+function bookCardHTML(b){
+  const cat = getCategoryById(b.category);
+  const progress = getBookProgress(b.id);
+  const isRead = !!progress;
+  const isFinished = progress && progress.totalPages && progress.page >= progress.totalPages;
+
+  const title = _booksLang === 'ar' ? b.titleAr : (b.titleEn || b.titleAr);
+  const author = _booksLang === 'ar' ? b.author : (b.authorEn || b.author);
+
+  const progressLine = bookReadingProgressHTML(b.id);
 
   return `<div class="book-card" style="--cc:${cat.color}" onclick="openBookDetail('${b.id}')">
     <div class="book-cover" id="cover-${b.id}">

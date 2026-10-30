@@ -121,12 +121,10 @@ async function _renderBookCover(bookId){
     const book = getBookById(bookId);
     if(!book) return null;
 
-    const engine = await initPdfEngine();
     const url = resolveBookPath(book);
-
-    /* Open a fresh document just for the cover render */
     const cachedPdf = await (await caches.open('sahib-books')).match(url);
     if(!cachedPdf && !book.downloadAllowed) return null;
+    const engine = await initPdfEngine();
     const doc = cachedPdf
       ? await engine.openDocumentBuffer({id:'cover-'+bookId,content:await cachedPdf.arrayBuffer()}).toPromise()
       : await engine.openDocumentUrl({ id: 'cover-' + bookId, url }).toPromise();
@@ -187,7 +185,8 @@ async function generateCoversForGrid(){
   const cards = document.querySelectorAll('[id^="cover-"]');
   for(const card of cards){
     const bookId = card.id.replace(/^cover-/, '');
-    await attachBookCover(bookId, card);
+    if(getBookById(bookId)?.isLocal) await attachLocalBookCover(bookId, card);
+    else await attachBookCover(bookId, card);
   }
 }
 
