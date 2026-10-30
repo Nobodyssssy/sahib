@@ -32,3 +32,7 @@ Repeatable checks: `node tools/verify-release.mjs`, `node tools/test-book-catalo
 - No PDF edition currently has verified redistribution evidence recorded. Unverified entries remain metadata/cached access; public downloads require permission. Optional OPDS fetching is not implemented; explicit JSON build manifests and local imports use the unified library.
 - Complete reserved-rights Adhan permission and version-pinned vendor/content notices before public distribution. Preserve bundled font notices. No rights clearance is implied by this feature freeze.
 - The local installer remains unsigned. Use trusted Authenticode signing before public production distribution; no certificate was available during this audit. No automatic Sahib updater exists; WebView2 runtime updates do not update Sahib.
+
+## Final local package
+
+`Sahib RC_0.2.4-rc.6_x64-setup.exe`: 23,073,294 bytes (about 22 MiB), unsigned. SHA-256: `ac77687d1fa97133f0c7d195d92dc3aa14cc80a20e8b82dd671389544a3618a4`. Final static PE audit found no imports on its limited Windows-11-only list; this is not actual Windows 10 execution. The original installed Sahib app remains running; this installer was not installed over it.

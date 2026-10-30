@@ -42,3 +42,5 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 - Final self-contained UI acceptance passed 1280×720, 2560×1440 at browser DPR 2, and 390×844 mobile; separate 1920×1080 reader and dark greeting/theme-font checks passed. Browser scale is not physical Windows DPI verification. Custom sound reselection from the actual expanded widget now persists after main destruction; native suite re-passed.
 
 - Final visual/accessibility review corrected smaller greeting contrast by inheriting the readable hero color and localized the session TAP/Prev/completion text. Arabic label and active theme-font checks passed.
+
+- Final unsigned local RC6 built successfully: 23,073,294 bytes; SHA-256 ac77687d1fa97133f0c7d195d92dc3aa14cc80a20e8b82dd671389544a3618a4. Release integrity and limited PE import audit pass. Original installed Sahib remains running; QA processes closed. Changes committed locally on codex/windows-tauri; no main merge or production publication.
