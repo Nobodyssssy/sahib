@@ -153,7 +153,7 @@ html[data-sidebar-collapsed="true"] body .sidebar-brand .sahib-mark-compact{disp
   .library-table tr:focus-within,.library-table tbody tr:hover{background:var(--surface)}
 }
 
-.garden-greeting-secondary{font:16px/1.8 var(--font-ui);color:var(--text2);margin-block:8px}
+.garden-greeting-secondary{font:16px/1.8 var(--font-ui);color:inherit;margin-block:8px}
 .asma-card-translit{font:14px/1.5 var(--font-ui);color:var(--text2);margin-block:8px}
 html[data-theme=sahib][data-mode=dark]{--accent-peach:#ffb38a}
 @media(min-width:1024px){

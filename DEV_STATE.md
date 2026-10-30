@@ -40,3 +40,5 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 - Final v1 feature scope is frozen on this branch, with only acceptance/defect/accessibility/licensing/release work remaining. See docs/WINDOWS-V1-FREEZE.md. No main merge or production release.
 
 - Final self-contained UI acceptance passed 1280×720, 2560×1440 at browser DPR 2, and 390×844 mobile; separate 1920×1080 reader and dark greeting/theme-font checks passed. Browser scale is not physical Windows DPI verification. Custom sound reselection from the actual expanded widget now persists after main destruction; native suite re-passed.
+
+- Final visual/accessibility review corrected smaller greeting contrast by inheriting the readable hero color and localized the session TAP/Prev/completion text. Arabic label and active theme-font checks passed.

@@ -57,6 +57,9 @@ Your daily practice|وردك اليومي
 In your calendar|في تقويمك
 Transliteration|الكتابة بالحروف اللاتينية
 Repetitions|التكرارات
+TAP|اضغط
+Prev|السابق
+Session complete!|اكتملت الجلسة!
 Fit width|ملاءمة العرض
 Fit page|ملاءمة الصفحة
 Actual size|الحجم الفعلي
@@ -367,7 +370,7 @@ Search your adhkar…|ابحث في الأذكار…`;
    if(key.includes(' · '))return key.split(' · ').map(part=>text(part)).join(' · ');
    const dates={Sunday:'الأحد',Monday:'الاثنين',Tuesday:'الثلاثاء',Wednesday:'الأربعاء',Thursday:'الخميس',Friday:'الجمعة',Saturday:'السبت',January:'يناير',February:'فبراير',March:'مارس',April:'أبريل',May:'مايو',June:'يونيو',July:'يوليو',August:'أغسطس',September:'سبتمبر',October:'أكتوبر',November:'نوفمبر',December:'ديسمبر'};
    if(/\b(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|January|February|March|April|May|June|July|August|September|October|November|December)\b/.test(key)&&/\d/.test(key))return key.replace(/\b[A-Za-z]+\b/g,word=>dates[word]||word);
-   const dynamic=[[/^(\d+) min advance notice$/,'تنبيه قبل $1 دقيقة'],[/^(\d+) left$/,'المتبقي $1'],[/^(\d+) min before$/,'قبل $1 دقيقة'],[/^Target: (\d+)×$/,'الهدف: $1×'],[/^Cached: (\d+) books$/,'المحفوظ: $1 كتاب'],[/^Origin quota remaining: ([\d.]+) MB$/,'المساحة المتبقية: $1 ميغابايت'],[/^([\d.]+) MB to download$/,'$1 ميغابايت للتنزيل'],[/^(\d+) of (\d+) books not cached$/,'$1 من $2 كتاب غير محفوظ'],[/^(\d+) active$/,'$1 مفعّل'],[/^(\d+) practices$/,'$1 من الأوراد'],[/^saved just now$/,'حُفظ الآن'],[/^manual$/,'يدوي'],[/^updated just now$/,'حُدّث الآن'],[/^([\d.]+) MB used of about ([\d.]+) GB available$/,'المستخدم $1 ميغابايت من نحو $2 غيغابايت متاحة']];
+   const dynamic=[[/^You completed all (\d+) adkar in this session\.$/,'أكملت $1 ذكرًا في هذه الجلسة.'],[/^(\d+) min advance notice$/,'تنبيه قبل $1 دقيقة'],[/^(\d+) left$/,'المتبقي $1'],[/^(\d+) min before$/,'قبل $1 دقيقة'],[/^Target: (\d+)×$/,'الهدف: $1×'],[/^Cached: (\d+) books$/,'المحفوظ: $1 كتاب'],[/^Origin quota remaining: ([\d.]+) MB$/,'المساحة المتبقية: $1 ميغابايت'],[/^([\d.]+) MB to download$/,'$1 ميغابايت للتنزيل'],[/^(\d+) of (\d+) books not cached$/,'$1 من $2 كتاب غير محفوظ'],[/^(\d+) active$/,'$1 مفعّل'],[/^(\d+) practices$/,'$1 من الأوراد'],[/^saved just now$/,'حُفظ الآن'],[/^manual$/,'يدوي'],[/^updated just now$/,'حُدّث الآن'],[/^([\d.]+) MB used of about ([\d.]+) GB available$/,'المستخدم $1 ميغابايت من نحو $2 غيغابايت متاحة']];
    for(const [re,to]of dynamic)if(re.test(key))return key.replace(re,to);
   }
   return value;
