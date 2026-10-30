@@ -85,8 +85,8 @@ const PRAYER_DEFAULT_PREFS = {
     sound: true,
     volume: 0.55,
     audio: {
-      standard: 'azhar',
-      fajr: 'fajr-balakong'
+      standard: 'qatami',
+      fajr: 'qatami-fajr'
     },
     perPrayer: {
       Fajr:    { alert: true, sound: true, mode: 'chime' },

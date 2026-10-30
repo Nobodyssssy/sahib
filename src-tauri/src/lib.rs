@@ -65,6 +65,8 @@ struct DesktopPrefs {
     widget_theme: String,
     widget_style: String,
     widget_show_seconds: bool,
+    timer_sound: String,
+    timer_volume: f32,
     widget_monitor: String,
     widget_offset: i32,
     widget_right_offset: i32,
@@ -88,6 +90,8 @@ impl Default for DesktopPrefs {
             widget_theme: "app".into(),
             widget_style: "landmark".into(),
             widget_show_seconds: true,
+            timer_sound: "timer-gentle".into(),
+            timer_volume: 0.35,
             widget_monitor: "primary".into(),
             widget_offset: 210,
             widget_right_offset: 0,
@@ -712,9 +716,14 @@ fn play(app: &tauri::AppHandle, id: &str, volume: f32) -> Result<(), String> {
     let job = match id {
         "off" => return Ok(()),
         "chime" => AudioJob::Chime(volume),
-        "local-standard" | "local-fajr" => {
+        "timer-gentle" | "timer-bell" | "timer-wood" | "timer-beep" => {
+            AudioJob::Timer(id.into(), volume)
+        }
+        "local-standard" | "local-fajr" | "local-timer" => {
             let name = if id == "local-fajr" {
                 "fajr.bin"
+            } else if id == "local-timer" {
+                "timer.bin"
             } else {
                 "standard.bin"
             };
@@ -810,7 +819,8 @@ async fn desktop_set_preferences(
         .contains(&prefs.widget_theme.as_str())
         || !["left", "right", "manual"].contains(&prefs.widget_edge.as_str())
         || !["native", "web"].contains(&prefs.widget_renderer.as_str())
-        || !["landmark", "minimal", "ribbon"].contains(&prefs.widget_style.as_str())
+        || !["landmark", "minimal", "ribbon", "slim", "countdown"]
+            .contains(&prefs.widget_style.as_str())
         || prefs.widget_monitor.len() > 200
     {
         return Err("Invalid widget preferences".into());
@@ -1032,6 +1042,50 @@ fn desktop_show_main(app: tauri::AppHandle) {
 }
 
 #[tauri::command]
+fn desktop_timer_audio(
+    window: tauri::WebviewWindow,
+    app: tauri::AppHandle,
+    sound: String,
+    volume: f32,
+) -> Result<(), String> {
+    if !is_widget(window.label()) && window.label() != "main" {
+        return Err("Local widget only".into());
+    }
+    if ![
+        "timer-gentle",
+        "timer-bell",
+        "timer-wood",
+        "timer-beep",
+        "off",
+        "local-timer",
+    ]
+    .contains(&sound.as_str())
+        || !volume.is_finite()
+        || !(0.0..=1.0).contains(&volume)
+    {
+        return Err("Invalid timer audio".into());
+    }
+    let state = app.state::<DesktopState>();
+    let mut disk = state.disk.lock().map_err(|e| e.to_string())?;
+    if sound == "local-timer"
+        && !state
+            .file
+            .parent()
+            .unwrap()
+            .join("audio/timer.bin")
+            .exists()
+    {
+        return Err("Import a timer recording first".into());
+    }
+    disk.prefs.timer_sound = sound;
+    disk.prefs.timer_volume = volume;
+    state.save(&disk)?;
+    drop(disk);
+    emit_state(&app);
+    Ok(())
+}
+
+#[tauri::command]
 fn desktop_timer(
     window: tauri::WebviewWindow,
     app: tauri::AppHandle,
@@ -1115,6 +1169,7 @@ fn desktop_remove_audio(
     let name = match kind.as_str() {
         "standard" => "standard.bin",
         "fajr" => "fajr.bin",
+        "timer" => "timer.bin",
         _ => return Err("Invalid audio slot".into()),
     };
     let state = app.state::<DesktopState>();
@@ -1145,7 +1200,11 @@ fn desktop_preview_audio(
     id: String,
     volume: f32,
 ) -> Result<(), String> {
-    require_main(&window)?;
+    if !is_widget(window.label())
+        || !(id.starts_with("timer-") || id == "local-timer" || id == "off")
+    {
+        require_main(&window)?;
+    }
     play(&app, &id, volume)
 }
 #[tauri::command]
@@ -1156,10 +1215,13 @@ fn desktop_save_audio(
     encoded: String,
 ) -> Result<(), String> {
     use base64::Engine;
-    require_main(&window)?;
+    if kind != "timer" || !is_widget(window.label()) {
+        require_main(&window)?;
+    }
     let name = match kind.as_str() {
         "standard" => "standard.bin",
         "fajr" => "fajr.bin",
+        "timer" => "timer.bin",
         _ => return Err("Invalid audio slot".into()),
     };
     if encoded.len() > 28 * 1024 * 1024 {
@@ -1308,7 +1370,7 @@ fn start_scheduler(app: tauri::AppHandle) {
                             if !state.audio.active.load(Ordering::Relaxed)
                                 && !due.iter().any(|e| e.sound != "off")
                             {
-                                let _ = play(&app, "chime", 0.35);
+                                let _ = play(&app, &p.timer_sound, p.timer_volume);
                             }
                             if p.widget_visible {
                                 #[cfg(feature = "native-widget-experiment")]
@@ -1402,6 +1464,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             desktop_state,
             desktop_timer,
+            desktop_timer_audio,
             desktop_sync_schedule,
             desktop_set_preferences,
             desktop_show_main,

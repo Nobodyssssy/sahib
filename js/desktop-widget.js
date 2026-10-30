@@ -65,8 +65,31 @@
   if(key!==timerKey&&!timerEditing){timerKey=key;el('timer-minutes').value=Math.max(1,Math.round((t.seconds||300)/60));el('timer-repeat').checked=!!t.repeat;el('timer-focus').checked=!!t.focus;}
   document.querySelectorAll('[data-timer-minutes]').forEach(b=>b.textContent=b.dataset.timerMinutes+text(' min',' د'));
   el('timer-restart').disabled=!t.seconds;el('timer-stop').disabled=!t.deadline&&!t.finished;
+  el('timer-sound').value=state.prefs.timerSound||'timer-gentle';
+  el('timer-volume').value=Math.round((state.prefs.timerVolume??0.35)*100);
+  el('timer-volume-value').textContent=el('timer-volume').value+'%';
+  el('timer-custom-row').hidden=el('timer-sound').value!=='local-timer';
+  put('timer-sound-label',text('Timer sound','صوت المؤقت'));put('timer-volume-label',text('Volume','مستوى الصوت'));
+  put('timer-custom-label',text('Import WAV, MP3 or OGG · up to 20 MB','استيراد WAV أو MP3 أو OGG · حتى 20 م.ب'));
+  const sounds=[['Gentle Chime · recommended','رنين لطيف · موصى به'],['Soft Bell','جرس هادئ'],['Wooden Tap','نقرة خشبية'],['Digital Beep','تنبيه رقمي'],['Silent','صامت'],['Custom Sound','صوت مخصص']];
+  [...el('timer-sound').options].forEach((o,i)=>o.textContent=text(...sounds[i]));
   renderTimerTick();
  }
+ async function saveTimerAudio(){
+  try{await invoke('desktop_timer_audio',{sound:el('timer-sound').value,volume:Number(el('timer-volume').value)/100});await refresh();}
+  catch(error){el('timer-finished').hidden=false;el('timer-finished').textContent=String(error);}
+ }
+ el('timer-sound').onchange=()=>{el('timer-custom-row').hidden=el('timer-sound').value!=='local-timer';if(el('timer-sound').value!=='local-timer')saveTimerAudio();};
+ el('timer-volume').oninput=()=>el('timer-volume-value').textContent=el('timer-volume').value+'%';
+ el('timer-volume').onchange=saveTimerAudio;
+ el('timer-custom').onchange=async event=>{
+  const file=event.target.files[0];if(!file)return;
+  try{
+   if(file.size>20*1024*1024 || !/\.(wav|mp3|ogg)$/i.test(file.name))throw Error('Choose WAV, MP3 or OGG, up to 20 MB');
+   const encoded=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result.split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});
+   await invoke('desktop_save_audio',{kind:'timer',encoded});await saveTimerAudio();
+  }catch(error){el('timer-finished').hidden=false;el('timer-finished').textContent=String(error);}
+ };
  async function timerAction(action){
   const minutes=Number(el('timer-minutes').value);
   if(action==='start'&&(!Number.isFinite(minutes)||minutes<1||minutes>1440)){el('timer-minutes').reportValidity();return;}

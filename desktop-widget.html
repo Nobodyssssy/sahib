@@ -38,6 +38,9 @@
 <label><input type="checkbox" id="timer-repeat"><span id="timer-repeat-label">Repeat every interval</span></label>
 <label><input type="checkbox" id="timer-focus"><span id="timer-focus-label">Focus · allow prayer Adhan only</span></label>
 <small id="timer-focus-note">Silences other Sahib reminders during the timer. Windows and other apps are unchanged.</small>
+<label><span id="timer-sound-label">Timer sound</span><select id="timer-sound"><option value="timer-gentle">Gentle Chime</option><option value="timer-bell">Soft Bell</option><option value="timer-wood">Wooden Tap</option><option value="timer-beep">Digital Beep</option><option value="off">Silent</option><option value="local-timer">Custom Sound</option></select></label>
+<label id="timer-custom-row" hidden><span id="timer-custom-label">Import WAV, MP3 or OGG · up to 20 MB</span><input id="timer-custom" type="file" accept=".wav,.mp3,.ogg,audio/wav,audio/mpeg,audio/ogg"></label>
+<label><span id="timer-volume-label">Volume</span><input id="timer-volume" type="range" min="0" max="100" value="35"><output id="timer-volume-value">35%</output></label>
 <div class="timer-actions"><button id="timer-start" type="button">Start / change time</button><button id="timer-restart" type="button">Restart</button><button id="timer-stop" type="button">Stop</button></div>
 </section>
 <section class="widget-reminders" id="widget-reminders"></section>

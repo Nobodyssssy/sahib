@@ -34,3 +34,15 @@ body[data-style=ribbon] .widget-compact{border-inline-start:4px solid var(--widg
 .widget-timer button:hover,.widget-timer button:focus-visible{border-color:var(--widget-accent);outline:2px solid var(--widget-accent);outline-offset:1px}.widget-timer button:disabled{opacity:.5}
 #timer-finished{color:var(--widget-accent);font-weight:700}#timer-finished[hidden]{display:none}#timer-focus-note{color:var(--widget-muted);line-height:1.5}
 html:lang(ar) .prayer-widget h1{font-family:Tajawal,sans-serif;font-size:32px;font-weight:500;line-height:1.5;padding-inline:4px}
+
+.widget-timer select{max-width:65%;font:inherit;color:var(--widget-text);background:var(--widget-surface);border:1px solid var(--widget-line);border-radius:6px;padding:5px}.widget-timer input[type=range]{accent-color:var(--widget-accent);max-width:160px}.widget-timer [hidden]{display:none!important}.widget-timer input[type=file]{max-width:100%;font:inherit}
+
+body[data-style=minimal] .widget-compact{border-radius:0}
+body[data-style=slim] .widget-compact{grid-template-columns:minmax(0,1fr) auto;border-radius:3px}
+body[data-style=slim] .compact-emblem,body[data-style=slim] .compact-countdown>span{display:none}
+body[data-style=slim] .compact-prayer{flex-direction:row;align-items:center;gap:9px}
+body[data-style=slim] .compact-countdown strong{font-size:13px}
+body[data-style=countdown] .widget-compact{grid-template-columns:minmax(0,1fr) auto}
+body[data-style=countdown] .compact-emblem,body[data-style=countdown] .compact-countdown>span{display:none}
+body[data-style=countdown] .compact-countdown strong{font-size:21px;color:var(--widget-accent)}
+body[data-style=countdown] .compact-prayer strong{font-size:11px;color:var(--widget-muted)}

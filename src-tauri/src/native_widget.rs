@@ -25,6 +25,7 @@ pub struct View {
     pub reason: String,
     pub handle: isize,
     pub shell_lifted: bool,
+    pub style: String,
     #[serde(skip)]
     drag: Option<(i32, i32)>,
     #[serde(skip)]
@@ -241,6 +242,7 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             reason: reason.into(),
             handle,
             shell_lifted: lifted,
+            style: p.widget_style.clone(),
             drag: old.as_ref().and_then(|v| v.drag),
             flags: old.as_ref().and_then(|v| v.flags),
         };
@@ -276,8 +278,10 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 let _ = w.set_size(size);
             }
             if size_changed
-                || old.as_ref().map(|v| (v.bounds.2, v.bounds.3, v.scale))
-                    != Some((bounds.2, bounds.3, scale))
+                || old
+                    .as_ref()
+                    .map(|v| (v.bounds.2, v.bounds.3, v.scale, v.style.clone()))
+                    != Some((bounds.2, bounds.3, scale, p.widget_style.clone()))
             {
                 unsafe {
                     SetWindowRgn(
@@ -287,8 +291,8 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
                             0,
                             bounds.2 as i32 + 1,
                             bounds.3 as i32 + 1,
-                            (14. * scale) as i32,
-                            (14. * scale) as i32,
+                            (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32,
+                            (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32,
                         ),
                         1,
                     );
@@ -339,7 +343,8 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             &view,
             "native-observe",
         );
-        if old.as_ref().map(|v| v.scale) != Some(scale) {
+        if old.as_ref().map(|v| (v.scale, v.style.clone())) != Some((scale, p.widget_style.clone()))
+        {
             drop_fonts(&state, &label);
         }
         unsafe {
@@ -607,149 +612,10 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             (
                 font(13., FW_SEMIBOLD),
                 font(12., FW_NORMAL),
-                font(16., FW_SEMIBOLD),
+                font(if style == "countdown" { 21. } else { 16. }, FW_SEMIBOLD),
             )
         })
     };
-    let emblem = if ar { w - u(35.) } else { u(8.) };
-    let cy = h / 2;
-    fill(
-        dc,
-        RECT {
-            left: emblem,
-            top: cy - u(6.),
-            right: emblem + u(3.),
-            bottom: cy + u(10.),
-        },
-        accent,
-    );
-    fill(
-        dc,
-        RECT {
-            left: emblem + u(20.),
-            top: cy - u(11.),
-            right: emblem + u(23.),
-            bottom: cy + u(10.),
-        },
-        accent,
-    );
-    fill(
-        dc,
-        RECT {
-            left: emblem + u(6.),
-            top: cy,
-            right: emblem + u(17.),
-            bottom: cy + u(10.),
-        },
-        accent,
-    );
-    fill(
-        dc,
-        RECT {
-            left: emblem + u(10.),
-            top: cy + u(4.),
-            right: emblem + u(13.),
-            bottom: cy + u(10.),
-        },
-        surface,
-    );
-    let brush = CreateSolidBrush(accent);
-    let old_brush = SelectObject(dc, brush);
-    let pen = CreatePen(PS_SOLID, 1, accent);
-    let old_pen = SelectObject(dc, pen);
-    let points = [
-        POINT {
-            x: emblem + u(5.),
-            y: cy - u(1.),
-        },
-        POINT {
-            x: emblem + u(11.),
-            y: cy - u(10.),
-        },
-        POINT {
-            x: emblem + u(18.),
-            y: cy - u(1.),
-        },
-    ];
-    Polygon(dc, points.as_ptr(), 3);
-    SelectObject(dc, old_brush);
-    SelectObject(dc, old_pen);
-    DeleteObject(brush);
-    DeleteObject(pen);
-    let separator = if ar { w - u(38.) } else { u(37.) };
-    fill(
-        dc,
-        RECT {
-            left: separator,
-            top: u(7.),
-            right: separator + 1,
-            bottom: h - u(7.),
-        },
-        line,
-    );
-    let (left, right, flags) = if ar {
-        (
-            u(93.),
-            w - u(if style == "minimal" { 12. } else { 45. }),
-            DT_RIGHT | DT_RTLREADING,
-        )
-    } else {
-        (
-            u(if style == "minimal" { 12. } else { 45. }),
-            w - u(92.),
-            DT_LEFT,
-        )
-    };
-    if style == "minimal" {
-        fill(
-            dc,
-            RECT {
-                left: if ar { w - u(40.) } else { 0 },
-                top: 0,
-                right: if ar { w } else { u(40.) },
-                bottom: h,
-            },
-            surface,
-        );
-    }
-    if style == "ribbon" {
-        fill(
-            dc,
-            RECT {
-                left: if ar { w - u(4.) } else { 0 },
-                top: u(5.),
-                right: if ar { w } else { u(4.) },
-                bottom: h - u(5.),
-            },
-            accent,
-        );
-    }
-    text(
-        dc,
-        &name,
-        RECT {
-            left,
-            top: cy - u(17.),
-            right,
-            bottom: cy,
-        },
-        fonts.0 as _,
-        ink,
-        flags,
-    );
-    text(
-        dc,
-        &clock,
-        RECT {
-            left,
-            top: cy,
-            right,
-            bottom: cy + u(17.),
-        },
-        fonts.1 as _,
-        ink,
-        flags & !DT_RTLREADING,
-    );
     let seconds = at.map(|t| ((t - now_ms()) / 1000).max(0));
     let countdown = seconds
         .map(|s| {
@@ -760,37 +626,268 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             }
         })
         .unwrap_or("—".into());
-    let (left, right, flags) = if ar {
-        (u(7.), u(93.), DT_LEFT)
+    if style == "slim" || style == "countdown" {
+        let cy = h / 2;
+        let name_left = if ar { w - u(83.) } else { u(8.) };
+        let name_right = if ar { w - u(8.) } else { u(83.) };
+        let flags = if ar {
+            DT_RIGHT | DT_RTLREADING
+        } else {
+            DT_LEFT
+        };
+        if style == "slim" {
+            text(
+                dc,
+                &name,
+                RECT {
+                    left: name_left,
+                    top: cy - u(10.),
+                    right: name_right,
+                    bottom: cy + u(11.),
+                },
+                fonts.0 as _,
+                ink,
+                flags,
+            );
+            text(
+                dc,
+                &clock,
+                RECT {
+                    left: if ar { w - u(132.) } else { u(86.) },
+                    top: cy - u(10.),
+                    right: if ar { w - u(86.) } else { u(132.) },
+                    bottom: cy + u(11.),
+                },
+                fonts.1 as _,
+                muted,
+                DT_CENTER,
+            );
+            text(
+                dc,
+                &countdown,
+                RECT {
+                    left: if ar { u(8.) } else { u(136.) },
+                    top: cy - u(10.),
+                    right: if ar { w - u(136.) } else { w - u(8.) },
+                    bottom: cy + u(11.),
+                },
+                fonts.0 as _,
+                ink,
+                if ar { DT_LEFT } else { DT_RIGHT },
+            );
+        } else {
+            text(
+                dc,
+                &name,
+                RECT {
+                    left: name_left,
+                    top: cy - u(17.),
+                    right: name_right,
+                    bottom: cy,
+                },
+                fonts.1 as _,
+                muted,
+                flags,
+            );
+            text(
+                dc,
+                &clock,
+                RECT {
+                    left: name_left,
+                    top: cy,
+                    right: name_right,
+                    bottom: cy + u(17.),
+                },
+                fonts.1 as _,
+                ink,
+                flags & !DT_RTLREADING,
+            );
+            text(
+                dc,
+                &countdown,
+                RECT {
+                    left: if ar { u(8.) } else { u(88.) },
+                    top: cy - u(15.),
+                    right: if ar { w - u(88.) } else { w - u(8.) },
+                    bottom: cy + u(17.),
+                },
+                fonts.2 as _,
+                accent,
+                if ar { DT_LEFT } else { DT_RIGHT },
+            );
+        }
     } else {
-        (w - u(95.), w - u(7.), DT_RIGHT)
-    };
-    text(
-        dc,
-        if ar { "المتبقي" } else { "Remaining" },
-        RECT {
-            left,
-            top: cy - u(19.),
-            right,
-            bottom: cy - u(3.),
-        },
-        fonts.1 as _,
-        muted,
-        flags,
-    );
-    text(
-        dc,
-        &countdown,
-        RECT {
-            left,
-            top: cy - u(3.),
-            right,
-            bottom: cy + u(18.),
-        },
-        fonts.2 as _,
-        ink,
-        flags & !DT_RTLREADING,
-    );
+        let emblem = if ar { w - u(35.) } else { u(8.) };
+        let cy = h / 2;
+        fill(
+            dc,
+            RECT {
+                left: emblem,
+                top: cy - u(6.),
+                right: emblem + u(3.),
+                bottom: cy + u(10.),
+            },
+            accent,
+        );
+        fill(
+            dc,
+            RECT {
+                left: emblem + u(20.),
+                top: cy - u(11.),
+                right: emblem + u(23.),
+                bottom: cy + u(10.),
+            },
+            accent,
+        );
+        fill(
+            dc,
+            RECT {
+                left: emblem + u(6.),
+                top: cy,
+                right: emblem + u(17.),
+                bottom: cy + u(10.),
+            },
+            accent,
+        );
+        fill(
+            dc,
+            RECT {
+                left: emblem + u(10.),
+                top: cy + u(4.),
+                right: emblem + u(13.),
+                bottom: cy + u(10.),
+            },
+            surface,
+        );
+        let brush = CreateSolidBrush(accent);
+        let old_brush = SelectObject(dc, brush);
+        let pen = CreatePen(PS_SOLID, 1, accent);
+        let old_pen = SelectObject(dc, pen);
+        let points = [
+            POINT {
+                x: emblem + u(5.),
+                y: cy - u(1.),
+            },
+            POINT {
+                x: emblem + u(11.),
+                y: cy - u(10.),
+            },
+            POINT {
+                x: emblem + u(18.),
+                y: cy - u(1.),
+            },
+        ];
+        Polygon(dc, points.as_ptr(), 3);
+        SelectObject(dc, old_brush);
+        SelectObject(dc, old_pen);
+        DeleteObject(brush);
+        DeleteObject(pen);
+        let separator = if ar { w - u(38.) } else { u(37.) };
+        fill(
+            dc,
+            RECT {
+                left: separator,
+                top: u(7.),
+                right: separator + 1,
+                bottom: h - u(7.),
+            },
+            line,
+        );
+        let (left, right, flags) = if ar {
+            (
+                u(93.),
+                w - u(if style == "minimal" { 12. } else { 45. }),
+                DT_RIGHT | DT_RTLREADING,
+            )
+        } else {
+            (
+                u(if style == "minimal" { 12. } else { 45. }),
+                w - u(92.),
+                DT_LEFT,
+            )
+        };
+        if style == "minimal" {
+            fill(
+                dc,
+                RECT {
+                    left: if ar { w - u(40.) } else { 0 },
+                    top: 0,
+                    right: if ar { w } else { u(40.) },
+                    bottom: h,
+                },
+                surface,
+            );
+        }
+        if style == "ribbon" {
+            fill(
+                dc,
+                RECT {
+                    left: if ar { w - u(4.) } else { 0 },
+                    top: u(5.),
+                    right: if ar { w } else { u(4.) },
+                    bottom: h - u(5.),
+                },
+                accent,
+            );
+        }
+        text(
+            dc,
+            &name,
+            RECT {
+                left,
+                top: cy - u(17.),
+                right,
+                bottom: cy,
+            },
+            fonts.0 as _,
+            ink,
+            flags,
+        );
+        text(
+            dc,
+            &clock,
+            RECT {
+                left,
+                top: cy,
+                right,
+                bottom: cy + u(17.),
+            },
+            fonts.1 as _,
+            ink,
+            flags & !DT_RTLREADING,
+        );
+        let (left, right, flags) = if ar {
+            (u(7.), u(93.), DT_LEFT)
+        } else {
+            (w - u(95.), w - u(7.), DT_RIGHT)
+        };
+        text(
+            dc,
+            if ar { "المتبقي" } else { "Remaining" },
+            RECT {
+                left,
+                top: cy - u(19.),
+                right,
+                bottom: cy - u(3.),
+            },
+            fonts.1 as _,
+            muted,
+            flags,
+        );
+        text(
+            dc,
+            &countdown,
+            RECT {
+                left,
+                top: cy - u(3.),
+                right,
+                bottom: cy + u(18.),
+            },
+            fonts.2 as _,
+            ink,
+            flags & !DT_RTLREADING,
+        );
+    }
     if let (Some(at), Some(previous)) = (at, previous) {
         if at > previous {
             let progress = ((now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);

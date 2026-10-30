@@ -7,7 +7,19 @@ window.SahibDesktop=(()=>{
  const nameAR={Fajr:'الفجر',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'};
  function error(err){lastError=String(err?.message||err);console.warn('[desktop]',lastError);if(typeof toast==='function')toast(text('Windows: ','ويندوز: ')+lastError,'alert');}
  async function refresh(){state=await invoke('desktop_state');audioPlaying=state.audioPlaying;if(state.audioError&&lastError!==state.audioError)error(state.audioError);return state;}
- function presentation(){const styles=getComputedStyle(document.documentElement),theme={};for(const [widget,app]of Object.entries({'--surface':'--color-surface-raised','--surface-2':'--color-surface','--text':'--color-text-primary','--text-muted':'--color-text-secondary','--border':'--color-border','--accent':'--color-accent','--font-ui':'--font-ui','--font-display':'--font-display'}))theme[widget]=styles.getPropertyValue(app).trim();return Object.assign(theme,{family:SAHIB_THEME.state.theme,mode:SAHIB_THEME.state.mode,accent:SAHIB_THEME.state.accent,font:SAHIB_THEME.state.font});}
+ function presentation(){
+  const styles=getComputedStyle(document.documentElement),theme={},canvas=document.createElement('canvas');canvas.width=canvas.height=1;
+  const context=canvas.getContext('2d',{willReadFrequently:true});
+  for(const [widget,app]of Object.entries({'--surface':'--color-surface-raised','--surface-2':'--color-surface','--text':'--color-text-primary','--text-muted':'--color-text-secondary','--border':'--color-border','--accent':'--color-accent','--font-ui':'--font-ui','--font-display':'--font-display'})){
+   let value=styles.getPropertyValue(app).trim();
+   if(!widget.startsWith('--font')&&context&&CSS.supports('color',value)){
+    context.clearRect(0,0,1,1);context.fillStyle=value;context.fillRect(0,0,1,1);
+    value='#'+[...context.getImageData(0,0,1,1).data].slice(0,3).map(n=>n.toString(16).padStart(2,'0')).join('');
+   }
+   theme[widget]=value;
+  }
+  return Object.assign(theme,{family:SAHIB_THEME.state.theme,mode:SAHIB_THEME.state.mode,accent:SAHIB_THEME.state.accent,font:SAHIB_THEME.state.font});
+ }
  async function sound(kind,prefs){
   const selected=prefs.alerts.audio[kind];
   if(selected!=='local')return (ADHAN_BUNDLED[kind].find(s=>s.id===selected)||ADHAN_BUNDLED[kind][0]).id;
@@ -78,7 +90,7 @@ window.SahibDesktop=(()=>{
    number('widgetOffset',text(p.widgetEdge==='manual'?'Position on this display (px)':'Extra spacing (px)',p.widgetEdge==='manual'?'الموضع في هذه الشاشة (بكسل)':'المسافة الإضافية (بكسل)'),p.widgetEdge==='manual'?Math.round(manual):p.widgetEdge==='right'?p.widgetRightOffset:p.widgetOffset,0,4000)+
    note(text('Drag the compact widget along the taskbar to position it. Each display remembers its own position. If space is insufficient, Sahib uses a floating card.','اسحب الأداة المصغّرة على شريط المهام لتحديد موضعها. يُحفظ موضع مستقل لكل شاشة. عند ضيق المساحة تُستخدم بطاقة عائمة.'))+
    '<button class="io-btn" id="desktop-reset-position">'+text('Reset taskbar positions','إعادة ضبط مواضع شريط المهام')+'</button>';
-  const appearance=select('widgetStyle','Compact design','تصميم الأداة',[['landmark',text('Landmark','المئذنة')],['minimal',text('Minimal','بسيط')],['ribbon',text('Accent ribbon','شريط اللون')]])+check('widgetShowSeconds','Show seconds','إظهار الثواني')+select('widgetTheme','Appearance','المظهر',[['app',text('Follow Sahib','اتباع صاحب')],['windows',text('Windows style','نمط ويندوز')],...SAHIB_THEME.THEMES.map(t=>[t.id,t.label])])+
+  const appearance=select('widgetStyle','Compact design','تصميم الأداة',[['landmark',text('Signature','التوقيع')],['minimal',text('Classic','الكلاسيكي')],['slim',text('Slim','النحيف')],['countdown',text('Countdown Focus','العد التنازلي')],['ribbon',text('Accent ribbon (legacy)','شريط اللون (السابق)')]])+check('widgetShowSeconds','Show seconds','إظهار الثواني')+select('widgetTheme','Appearance','المظهر',[['app',text('Follow Sahib','اتباع صاحب')],['windows',text('Windows style','نمط ويندوز')],...SAHIB_THEME.THEMES.map(t=>[t.id,t.label])])+
    '<label class="desktop-option"><span>'+text('Frame opacity','عتامة الإطار')+'</span><input type="range" min="50" max="100" step="5" value="'+Math.round(p.widgetOpacity*100)+'" data-desktop-pref="widgetOpacity"></label>'+
    note(text('The panel and prayer cards stay opaque for readability; opacity adjusts the frame.','تبقى اللوحة وبطاقات الصلاة معتمة لسهولة القراءة؛ يتحكم الإعداد في الإطار.'))+(state.nativeAvailable?note(text('The lightweight compact widget stays at least 90% opaque for readable text.','تبقى عتامة الأداة الخفيفة ٩٠٪ على الأقل لسهولة قراءة النص.')):'')+
    check('widgetReminders','Show daily practice and fasting prompts','إظهار الورد وتذكيرات الصيام')+
