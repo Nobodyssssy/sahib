@@ -1,5 +1,12 @@
 'use strict';
 
+window.addEventListener('sahib:counters-reset',()=>{
+  counters = store.getCounters();
+  sessTapCount = 0;
+  sessIdx = 0;
+  lastReset = new Date().toDateString();
+});
+
 /* ═══════════════════════════════════════════════════════════
    App bootstrap
    • Load state from IndexedDB (async)
@@ -142,14 +149,19 @@
 
     /* 9. Re-check daily reset when the app comes back to the foreground
           (handles the "left open past midnight" case) */
-    document.addEventListener('visibilitychange', async () => {
+    async function refreshDailyAdhkar(){
       if(document.visibilityState !== 'visible') return;
       const didReset = await store.checkDailyReset();
       if(didReset){
         if(typeof renderCatsGrid === 'function') renderCatsGrid();
         if(typeof renderAdkarGrid === 'function') renderAdkarGrid();
+        if(typeof renderHome === 'function') renderHome();
+        if(document.getElementById('session-overlay')?.classList.contains('open')) renderSessionStep();
       }
-    });
+    }
+    document.addEventListener('visibilitychange',()=>refreshDailyAdhkar().catch(console.error));
+    window.addEventListener('focus',()=>refreshDailyAdhkar().catch(console.error));
+    setInterval(()=>refreshDailyAdhkar().catch(console.error),30000);
 
 /* Load sprite.svg into the hidden mount, so <use> can find icons */
 async function loadIconSprite(){

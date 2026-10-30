@@ -1,0 +1,3143 @@
+{
+  "identity": "Separate installed RC with old QA profile; production untouched",
+  "checks": [
+    {
+      "name": "RC1 to RC2 installer upgrade",
+      "pass": true
+    },
+    {
+      "name": "Older profile IndexedDB blob and settings preserved",
+      "pass": true
+    },
+    {
+      "name": "Widget disabled immediately",
+      "pass": true
+    },
+    {
+      "name": "Floating rich widget restored",
+      "pass": true
+    },
+    {
+      "name": "Native compact restored",
+      "pass": true
+    },
+    {
+      "name": "PDF page survives hidden window",
+      "pass": true
+    },
+    {
+      "name": "Main and rich widget WebViews retire",
+      "pass": true
+    },
+    {
+      "name": "PDF page survives destroyed/recreated main",
+      "pass": true
+    },
+    {
+      "name": "Background process tree contains no WebView2",
+      "pass": true
+    }
+  ],
+  "saved": {
+    "version": "0.2.4-rc.2",
+    "metadata": "IndexedDB survives",
+    "blob": "persistent blob",
+    "local": "persistent setting",
+    "state": {
+      "audioError": null,
+      "audioPlaying": false,
+      "autostart": false,
+      "monitors": [
+        "\\\\.\\DISPLAY2",
+        "\\\\.\\DISPLAY1"
+      ],
+      "nativeAvailable": true,
+      "nativeWidgetViews": {
+        "native-widget": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            539,
+            1380,
+            300,
+            60
+          ],
+          "handle": 154995368,
+          "monitor": "\\\\.\\DISPLAY1",
+          "reason": "normal",
+          "scale": 1.25,
+          "shellLifted": false,
+          "visible": true,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      },
+      "notificationPermission": "granted",
+      "now": 1792775228883,
+      "prefs": {
+        "closeToTray": true,
+        "startMinimized": false,
+        "widgetAlwaysOnTop": true,
+        "widgetClickThrough": false,
+        "widgetEdge": "right",
+        "widgetMode": "taskbar",
+        "widgetMonitor": "primary",
+        "widgetOffset": 210,
+        "widgetOpacity": 0.96,
+        "widgetPosition": null,
+        "widgetPositions": {},
+        "widgetReminders": true,
+        "widgetRenderer": "native",
+        "widgetRightOffset": 1000,
+        "widgetTheme": "app",
+        "widgetVisible": true,
+        "widgetWarningMinutes": 10
+      },
+      "schedule": {
+        "alerts": [],
+        "language": "en",
+        "location": "Zurich memory fixture",
+        "prayers": [
+          {
+            "at": 1792778400000,
+            "clock": "20:00",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1792815240000,
+            "clock": "06:14",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1792840200000,
+            "clock": "13:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1792849980000,
+            "clock": "15:53",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1792858920000,
+            "clock": "18:22",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1792864740000,
+            "clock": "19:59",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1792901760000,
+            "clock": "05:16",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1792926600000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1792936260000,
+            "clock": "14:51",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1792945200000,
+            "clock": "17:20",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1792951020000,
+            "clock": "18:57",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1792988220000,
+            "clock": "05:17",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793013000000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793022600000,
+            "clock": "14:50",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793031540000,
+            "clock": "17:19",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793037360000,
+            "clock": "18:56",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793074740000,
+            "clock": "05:19",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793099400000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793108940000,
+            "clock": "14:49",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793117820000,
+            "clock": "17:17",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793123640000,
+            "clock": "18:54",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793161200000,
+            "clock": "05:20",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793185800000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793195220000,
+            "clock": "14:47",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793204100000,
+            "clock": "17:15",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793209980000,
+            "clock": "18:53",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793247660000,
+            "clock": "05:21",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793272200000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793281560000,
+            "clock": "14:46",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793290440000,
+            "clock": "17:14",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793296260000,
+            "clock": "18:51",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793334180000,
+            "clock": "05:23",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793358540000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793367900000,
+            "clock": "14:45",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793376720000,
+            "clock": "17:12",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793382600000,
+            "clock": "18:50",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793420640000,
+            "clock": "05:24",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793444940000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793454240000,
+            "clock": "14:44",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793463060000,
+            "clock": "17:11",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793468880000,
+            "clock": "18:48",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793507100000,
+            "clock": "05:25",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793531340000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793540520000,
+            "clock": "14:42",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793549340000,
+            "clock": "17:09",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793555220000,
+            "clock": "18:47",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793593620000,
+            "clock": "05:27",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793617740000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793626860000,
+            "clock": "14:41",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793635680000,
+            "clock": "17:08",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793641560000,
+            "clock": "18:46",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793680080000,
+            "clock": "05:28",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793704140000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793713200000,
+            "clock": "14:40",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793721960000,
+            "clock": "17:06",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793727840000,
+            "clock": "18:44",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793766540000,
+            "clock": "05:29",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793790540000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793799540000,
+            "clock": "14:39",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793808300000,
+            "clock": "17:05",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793814180000,
+            "clock": "18:43",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793853000000,
+            "clock": "05:30",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793876940000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793885880000,
+            "clock": "14:38",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793894580000,
+            "clock": "17:03",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793900520000,
+            "clock": "18:42",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1793939520000,
+            "clock": "05:32",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1793963340000,
+            "clock": "12:09",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1793972160000,
+            "clock": "14:36",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1793980920000,
+            "clock": "17:02",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1793986800000,
+            "clock": "18:40",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794025980000,
+            "clock": "05:33",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794049800000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794058500000,
+            "clock": "14:35",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794067200000,
+            "clock": "17:00",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794073140000,
+            "clock": "18:39",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794112440000,
+            "clock": "05:34",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794136200000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794144840000,
+            "clock": "14:34",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794153540000,
+            "clock": "16:59",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794159480000,
+            "clock": "18:38",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794198960000,
+            "clock": "05:36",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794222600000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794231180000,
+            "clock": "14:33",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794239880000,
+            "clock": "16:58",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794245820000,
+            "clock": "18:37",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794285420000,
+            "clock": "05:37",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794309000000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794317520000,
+            "clock": "14:32",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794326160000,
+            "clock": "16:56",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794332160000,
+            "clock": "18:36",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794371880000,
+            "clock": "05:38",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794395400000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794403860000,
+            "clock": "14:31",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794412500000,
+            "clock": "16:55",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794418500000,
+            "clock": "18:35",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794458400000,
+            "clock": "05:40",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794481800000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794490200000,
+            "clock": "14:30",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794498840000,
+            "clock": "16:54",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794504840000,
+            "clock": "18:34",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794544860000,
+            "clock": "05:41",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794568200000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794576540000,
+            "clock": "14:29",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794585180000,
+            "clock": "16:53",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794591180000,
+            "clock": "18:33",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794631320000,
+            "clock": "05:42",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794654600000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794662880000,
+            "clock": "14:28",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794671460000,
+            "clock": "16:51",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794677520000,
+            "clock": "18:32",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794717780000,
+            "clock": "05:43",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794741000000,
+            "clock": "12:10",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794749220000,
+            "clock": "14:27",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794757800000,
+            "clock": "16:50",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794763860000,
+            "clock": "18:31",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794804300000,
+            "clock": "05:45",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794827460000,
+            "clock": "12:11",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794835620000,
+            "clock": "14:27",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794844140000,
+            "clock": "16:49",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794850200000,
+            "clock": "18:30",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794890760000,
+            "clock": "05:46",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1794913860000,
+            "clock": "12:11",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1794921960000,
+            "clock": "14:26",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1794930480000,
+            "clock": "16:48",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1794936540000,
+            "clock": "18:29",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1794977220000,
+            "clock": "05:47",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795000260000,
+            "clock": "12:11",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795008300000,
+            "clock": "14:25",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795016820000,
+            "clock": "16:47",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795022880000,
+            "clock": "18:28",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795063680000,
+            "clock": "05:48",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795086660000,
+            "clock": "12:11",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795094640000,
+            "clock": "14:24",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795103160000,
+            "clock": "16:46",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795109280000,
+            "clock": "18:28",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795150140000,
+            "clock": "05:49",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795173060000,
+            "clock": "12:11",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795181040000,
+            "clock": "14:24",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795189500000,
+            "clock": "16:45",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795195620000,
+            "clock": "18:27",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795236660000,
+            "clock": "05:51",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795259520000,
+            "clock": "12:12",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795267380000,
+            "clock": "14:23",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795275840000,
+            "clock": "16:44",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795281960000,
+            "clock": "18:26",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795323120000,
+            "clock": "05:52",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795345920000,
+            "clock": "12:12",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795353720000,
+            "clock": "14:22",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795362180000,
+            "clock": "16:43",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795368360000,
+            "clock": "18:26",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795409580000,
+            "clock": "05:53",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795432320000,
+            "clock": "12:12",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795440120000,
+            "clock": "14:22",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795448520000,
+            "clock": "16:42",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795454700000,
+            "clock": "18:25",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795496040000,
+            "clock": "05:54",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795518780000,
+            "clock": "12:13",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795526460000,
+            "clock": "14:21",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795534920000,
+            "clock": "16:42",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795541040000,
+            "clock": "18:24",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795582500000,
+            "clock": "05:55",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795605180000,
+            "clock": "12:13",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795612800000,
+            "clock": "14:20",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795621260000,
+            "clock": "16:41",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795627440000,
+            "clock": "18:24",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          },
+          {
+            "at": 1795668960000,
+            "clock": "05:56",
+            "name": "Fajr",
+            "nameAr": "الفجر"
+          },
+          {
+            "at": 1795691580000,
+            "clock": "12:13",
+            "name": "Dhuhr",
+            "nameAr": "الظهر"
+          },
+          {
+            "at": 1795699200000,
+            "clock": "14:20",
+            "name": "Asr",
+            "nameAr": "العصر"
+          },
+          {
+            "at": 1795707600000,
+            "clock": "16:40",
+            "name": "Maghrib",
+            "nameAr": "المغرب"
+          },
+          {
+            "at": 1795713780000,
+            "clock": "18:23",
+            "name": "Isha",
+            "nameAr": "العشاء"
+          }
+        ],
+        "theme": {
+          "--accent": "#ffb86c",
+          "--border": "#44475a",
+          "--font-display": "'Amiri', Georgia, 'Times New Roman', serif",
+          "--font-ui": "Inter,Tajawal,sans-serif",
+          "--surface": "#343646",
+          "--surface-2": "#303240",
+          "--text": "#f8f8f2",
+          "--text-muted": "#c9c9d6",
+          "accent": "peach",
+          "family": "dracula",
+          "font": "inter",
+          "mode": "dark"
+        },
+        "validUntil": 1795713780000,
+        "widgetDays": [
+          {
+            "end": 1792792800000,
+            "hijri": "Jumada I 12, 1448 AH",
+            "label": "Friday 23 October",
+            "prayers": [
+              {
+                "at": 1792728780000,
+                "clock": "06:13",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1792734960000,
+                "clock": "07:56",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1792753800000,
+                "clock": "13:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1792763640000,
+                "clock": "15:54",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1792772640000,
+                "clock": "18:24",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1792778400000,
+                "clock": "20:00",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-10-24",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Saturday · The white days"
+              }
+            ],
+            "start": 1792706400000
+          },
+          {
+            "end": 1792879200000,
+            "hijri": "Jumada I 13, 1448 AH",
+            "label": "Saturday 24 October",
+            "prayers": [
+              {
+                "at": 1792815240000,
+                "clock": "06:14",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1792821420000,
+                "clock": "07:57",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1792840200000,
+                "clock": "13:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1792849980000,
+                "clock": "15:53",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1792858920000,
+                "clock": "18:22",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1792864740000,
+                "clock": "19:59",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-10-25",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Sunday · The white days"
+              }
+            ],
+            "start": 1792792800000
+          },
+          {
+            "end": 1792969200000,
+            "hijri": "Jumada I 14, 1448 AH",
+            "label": "Sunday 25 October",
+            "prayers": [
+              {
+                "at": 1792901760000,
+                "clock": "05:16",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1792907940000,
+                "clock": "06:59",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1792926600000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1792936260000,
+                "clock": "14:51",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1792945200000,
+                "clock": "17:20",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1792951020000,
+                "clock": "18:57",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-10-26",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · The white days"
+              },
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-10-26",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1792879200000
+          },
+          {
+            "end": 1793055600000,
+            "hijri": "Jumada I 15, 1448 AH",
+            "label": "Monday 26 October",
+            "prayers": [
+              {
+                "at": 1792988220000,
+                "clock": "05:17",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1792994400000,
+                "clock": "07:00",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793013000000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793022600000,
+                "clock": "14:50",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793031540000,
+                "clock": "17:19",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793037360000,
+                "clock": "18:56",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1792969200000
+          },
+          {
+            "end": 1793142000000,
+            "hijri": "Jumada I 16, 1448 AH",
+            "label": "Tuesday 27 October",
+            "prayers": [
+              {
+                "at": 1793074740000,
+                "clock": "05:19",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793080920000,
+                "clock": "07:02",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793099400000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793108940000,
+                "clock": "14:49",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793117820000,
+                "clock": "17:17",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793123640000,
+                "clock": "18:54",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793055600000
+          },
+          {
+            "end": 1793228400000,
+            "hijri": "Jumada I 17, 1448 AH",
+            "label": "Wednesday 28 October",
+            "prayers": [
+              {
+                "at": 1793161200000,
+                "clock": "05:20",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793167380000,
+                "clock": "07:03",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793185800000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793195220000,
+                "clock": "14:47",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793204100000,
+                "clock": "17:15",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793209980000,
+                "clock": "18:53",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-10-29",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Thursday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1793142000000
+          },
+          {
+            "end": 1793314800000,
+            "hijri": "Jumada I 18, 1448 AH",
+            "label": "Thursday 29 October",
+            "prayers": [
+              {
+                "at": 1793247660000,
+                "clock": "05:21",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793253900000,
+                "clock": "07:05",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793272200000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793281560000,
+                "clock": "14:46",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793290440000,
+                "clock": "17:14",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793296260000,
+                "clock": "18:51",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793228400000
+          },
+          {
+            "end": 1793401200000,
+            "hijri": "Jumada I 19, 1448 AH",
+            "label": "Friday 30 October",
+            "prayers": [
+              {
+                "at": 1793334180000,
+                "clock": "05:23",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793340360000,
+                "clock": "07:06",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793358540000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793367900000,
+                "clock": "14:45",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793376720000,
+                "clock": "17:12",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793382600000,
+                "clock": "18:50",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793314800000
+          },
+          {
+            "end": 1793487600000,
+            "hijri": "Jumada I 20, 1448 AH",
+            "label": "Saturday 31 October",
+            "prayers": [
+              {
+                "at": 1793420640000,
+                "clock": "05:24",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793426880000,
+                "clock": "07:08",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793444940000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793454240000,
+                "clock": "14:44",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793463060000,
+                "clock": "17:11",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793468880000,
+                "clock": "18:48",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793401200000
+          },
+          {
+            "end": 1793574000000,
+            "hijri": "Jumada I 21, 1448 AH",
+            "label": "Sunday 1 November",
+            "prayers": [
+              {
+                "at": 1793507100000,
+                "clock": "05:25",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793513340000,
+                "clock": "07:09",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793531340000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793540520000,
+                "clock": "14:42",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793549340000,
+                "clock": "17:09",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793555220000,
+                "clock": "18:47",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-02",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1793487600000
+          },
+          {
+            "end": 1793660400000,
+            "hijri": "Jumada I 22, 1448 AH",
+            "label": "Monday 2 November",
+            "prayers": [
+              {
+                "at": 1793593620000,
+                "clock": "05:27",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793599860000,
+                "clock": "07:11",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793617740000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793626860000,
+                "clock": "14:41",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793635680000,
+                "clock": "17:08",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793641560000,
+                "clock": "18:46",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793574000000
+          },
+          {
+            "end": 1793746800000,
+            "hijri": "Jumada I 23, 1448 AH",
+            "label": "Tuesday 3 November",
+            "prayers": [
+              {
+                "at": 1793680080000,
+                "clock": "05:28",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793686320000,
+                "clock": "07:12",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793704140000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793713200000,
+                "clock": "14:40",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793721960000,
+                "clock": "17:06",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793727840000,
+                "clock": "18:44",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793660400000
+          },
+          {
+            "end": 1793833200000,
+            "hijri": "Jumada I 24, 1448 AH",
+            "label": "Wednesday 4 November",
+            "prayers": [
+              {
+                "at": 1793766540000,
+                "clock": "05:29",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793772840000,
+                "clock": "07:14",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793790540000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793799540000,
+                "clock": "14:39",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793808300000,
+                "clock": "17:05",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793814180000,
+                "clock": "18:43",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-05",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Thursday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1793746800000
+          },
+          {
+            "end": 1793919600000,
+            "hijri": "Jumada I 25, 1448 AH",
+            "label": "Thursday 5 November",
+            "prayers": [
+              {
+                "at": 1793853000000,
+                "clock": "05:30",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793859300000,
+                "clock": "07:15",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793876940000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793885880000,
+                "clock": "14:38",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793894580000,
+                "clock": "17:03",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793900520000,
+                "clock": "18:42",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793833200000
+          },
+          {
+            "end": 1794006000000,
+            "hijri": "Jumada I 26, 1448 AH",
+            "label": "Friday 6 November",
+            "prayers": [
+              {
+                "at": 1793939520000,
+                "clock": "05:32",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1793945820000,
+                "clock": "07:17",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1793963340000,
+                "clock": "12:09",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1793972160000,
+                "clock": "14:36",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1793980920000,
+                "clock": "17:02",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1793986800000,
+                "clock": "18:40",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1793919600000
+          },
+          {
+            "end": 1794092400000,
+            "hijri": "Jumada I 27, 1448 AH",
+            "label": "Saturday 7 November",
+            "prayers": [
+              {
+                "at": 1794025980000,
+                "clock": "05:33",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794032280000,
+                "clock": "07:18",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794049800000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794058500000,
+                "clock": "14:35",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794067200000,
+                "clock": "17:00",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794073140000,
+                "clock": "18:39",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794006000000
+          },
+          {
+            "end": 1794178800000,
+            "hijri": "Jumada I 28, 1448 AH",
+            "label": "Sunday 8 November",
+            "prayers": [
+              {
+                "at": 1794112440000,
+                "clock": "05:34",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794118800000,
+                "clock": "07:20",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794136200000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794144840000,
+                "clock": "14:34",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794153540000,
+                "clock": "16:59",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794159480000,
+                "clock": "18:38",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-09",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1794092400000
+          },
+          {
+            "end": 1794265200000,
+            "hijri": "Jumada I 29, 1448 AH",
+            "label": "Monday 9 November",
+            "prayers": [
+              {
+                "at": 1794198960000,
+                "clock": "05:36",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794205260000,
+                "clock": "07:21",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794222600000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794231180000,
+                "clock": "14:33",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794239880000,
+                "clock": "16:58",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794245820000,
+                "clock": "18:37",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794178800000
+          },
+          {
+            "end": 1794351600000,
+            "hijri": "Jumada I 30, 1448 AH",
+            "label": "Tuesday 10 November",
+            "prayers": [
+              {
+                "at": 1794285420000,
+                "clock": "05:37",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794291780000,
+                "clock": "07:23",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794309000000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794317520000,
+                "clock": "14:32",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794326160000,
+                "clock": "16:56",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794332160000,
+                "clock": "18:36",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794265200000
+          },
+          {
+            "end": 1794438000000,
+            "hijri": "Jumada II 1, 1448 AH",
+            "label": "Wednesday 11 November",
+            "prayers": [
+              {
+                "at": 1794371880000,
+                "clock": "05:38",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794378240000,
+                "clock": "07:24",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794395400000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794403860000,
+                "clock": "14:31",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794412500000,
+                "clock": "16:55",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794418500000,
+                "clock": "18:35",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-12",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Thursday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1794351600000
+          },
+          {
+            "end": 1794524400000,
+            "hijri": "Jumada II 2, 1448 AH",
+            "label": "Thursday 12 November",
+            "prayers": [
+              {
+                "at": 1794458400000,
+                "clock": "05:40",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794464760000,
+                "clock": "07:26",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794481800000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794490200000,
+                "clock": "14:30",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794498840000,
+                "clock": "16:54",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794504840000,
+                "clock": "18:34",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794438000000
+          },
+          {
+            "end": 1794610800000,
+            "hijri": "Jumada II 3, 1448 AH",
+            "label": "Friday 13 November",
+            "prayers": [
+              {
+                "at": 1794544860000,
+                "clock": "05:41",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794551220000,
+                "clock": "07:27",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794568200000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794576540000,
+                "clock": "14:29",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794585180000,
+                "clock": "16:53",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794591180000,
+                "clock": "18:33",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794524400000
+          },
+          {
+            "end": 1794697200000,
+            "hijri": "Jumada II 4, 1448 AH",
+            "label": "Saturday 14 November",
+            "prayers": [
+              {
+                "at": 1794631320000,
+                "clock": "05:42",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794637740000,
+                "clock": "07:29",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794654600000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794662880000,
+                "clock": "14:28",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794671460000,
+                "clock": "16:51",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794677520000,
+                "clock": "18:32",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794610800000
+          },
+          {
+            "end": 1794783600000,
+            "hijri": "Jumada II 5, 1448 AH",
+            "label": "Sunday 15 November",
+            "prayers": [
+              {
+                "at": 1794717780000,
+                "clock": "05:43",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794724200000,
+                "clock": "07:30",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794741000000,
+                "clock": "12:10",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794749220000,
+                "clock": "14:27",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794757800000,
+                "clock": "16:50",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794763860000,
+                "clock": "18:31",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-16",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1794697200000
+          },
+          {
+            "end": 1794870000000,
+            "hijri": "Jumada II 6, 1448 AH",
+            "label": "Monday 16 November",
+            "prayers": [
+              {
+                "at": 1794804300000,
+                "clock": "05:45",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794810720000,
+                "clock": "07:32",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794827460000,
+                "clock": "12:11",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794835620000,
+                "clock": "14:27",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794844140000,
+                "clock": "16:49",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794850200000,
+                "clock": "18:30",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794783600000
+          },
+          {
+            "end": 1794956400000,
+            "hijri": "Jumada II 7, 1448 AH",
+            "label": "Tuesday 17 November",
+            "prayers": [
+              {
+                "at": 1794890760000,
+                "clock": "05:46",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794897180000,
+                "clock": "07:33",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1794913860000,
+                "clock": "12:11",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1794921960000,
+                "clock": "14:26",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1794930480000,
+                "clock": "16:48",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1794936540000,
+                "clock": "18:29",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1794870000000
+          },
+          {
+            "end": 1795042800000,
+            "hijri": "Jumada II 8, 1448 AH",
+            "label": "Wednesday 18 November",
+            "prayers": [
+              {
+                "at": 1794977220000,
+                "clock": "05:47",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1794983640000,
+                "clock": "07:34",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795000260000,
+                "clock": "12:11",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795008300000,
+                "clock": "14:25",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795016820000,
+                "clock": "16:47",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795022880000,
+                "clock": "18:28",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-19",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Thursday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1794956400000
+          },
+          {
+            "end": 1795129200000,
+            "hijri": "Jumada II 9, 1448 AH",
+            "label": "Thursday 19 November",
+            "prayers": [
+              {
+                "at": 1795063680000,
+                "clock": "05:48",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795070160000,
+                "clock": "07:36",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795086660000,
+                "clock": "12:11",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795094640000,
+                "clock": "14:24",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795103160000,
+                "clock": "16:46",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795109280000,
+                "clock": "18:28",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1795042800000
+          },
+          {
+            "end": 1795215600000,
+            "hijri": "Jumada II 10, 1448 AH",
+            "label": "Friday 20 November",
+            "prayers": [
+              {
+                "at": 1795150140000,
+                "clock": "05:49",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795156620000,
+                "clock": "07:37",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795173060000,
+                "clock": "12:11",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795181040000,
+                "clock": "14:24",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795189500000,
+                "clock": "16:45",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795195620000,
+                "clock": "18:27",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1795129200000
+          },
+          {
+            "end": 1795302000000,
+            "hijri": "Jumada II 11, 1448 AH",
+            "label": "Saturday 21 November",
+            "prayers": [
+              {
+                "at": 1795236660000,
+                "clock": "05:51",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795243140000,
+                "clock": "07:39",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795259520000,
+                "clock": "12:12",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795267380000,
+                "clock": "14:23",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795275840000,
+                "clock": "16:44",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795281960000,
+                "clock": "18:26",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1795215600000
+          },
+          {
+            "end": 1795388400000,
+            "hijri": "Jumada II 12, 1448 AH",
+            "label": "Sunday 22 November",
+            "prayers": [
+              {
+                "at": 1795323120000,
+                "clock": "05:52",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795329600000,
+                "clock": "07:40",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795345920000,
+                "clock": "12:12",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795353720000,
+                "clock": "14:22",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795362180000,
+                "clock": "16:43",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795368360000,
+                "clock": "18:26",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-11-23",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · The white days"
+              },
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-23",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Monday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1795302000000
+          },
+          {
+            "end": 1795474800000,
+            "hijri": "Jumada II 13, 1448 AH",
+            "label": "Monday 23 November",
+            "prayers": [
+              {
+                "at": 1795409580000,
+                "clock": "05:53",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795416120000,
+                "clock": "07:42",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795432320000,
+                "clock": "12:12",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795440120000,
+                "clock": "14:22",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795448520000,
+                "clock": "16:42",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795454700000,
+                "clock": "18:25",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-11-24",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Tuesday · The white days"
+              }
+            ],
+            "start": 1795388400000
+          },
+          {
+            "end": 1795561200000,
+            "hijri": "Jumada II 14, 1448 AH",
+            "label": "Tuesday 24 November",
+            "prayers": [
+              {
+                "at": 1795496040000,
+                "clock": "05:54",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795502580000,
+                "clock": "07:43",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795518780000,
+                "clock": "12:13",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795526460000,
+                "clock": "14:21",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795534920000,
+                "clock": "16:42",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795541040000,
+                "clock": "18:24",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:white-days-fast:2026-11-25",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Wednesday · The white days"
+              }
+            ],
+            "start": 1795474800000
+          },
+          {
+            "end": 1795647600000,
+            "hijri": "Jumada II 15, 1448 AH",
+            "label": "Wednesday 25 November",
+            "prayers": [
+              {
+                "at": 1795582500000,
+                "clock": "05:55",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795589040000,
+                "clock": "07:44",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795605180000,
+                "clock": "12:13",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795612800000,
+                "clock": "14:20",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795621260000,
+                "clock": "16:41",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795627440000,
+                "clock": "18:24",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [
+              {
+                "detail": "Optional fast · follows your Hijri calendar",
+                "id": "tomorrow:monday-thursday-fast:2026-11-26",
+                "kind": "tomorrow",
+                "title": "Tomorrow, Thursday · Monday & Thursday fast"
+              }
+            ],
+            "start": 1795561200000
+          },
+          {
+            "end": 1795734000000,
+            "hijri": "Jumada II 16, 1448 AH",
+            "label": "Thursday 26 November",
+            "prayers": [
+              {
+                "at": 1795668960000,
+                "clock": "05:56",
+                "name": "Fajr",
+                "nameAr": "الفجر"
+              },
+              {
+                "at": 1795675560000,
+                "clock": "07:46",
+                "name": "Sunrise",
+                "nameAr": "الشروق"
+              },
+              {
+                "at": 1795691580000,
+                "clock": "12:13",
+                "name": "Dhuhr",
+                "nameAr": "الظهر"
+              },
+              {
+                "at": 1795699200000,
+                "clock": "14:20",
+                "name": "Asr",
+                "nameAr": "العصر"
+              },
+              {
+                "at": 1795707600000,
+                "clock": "16:40",
+                "name": "Maghrib",
+                "nameAr": "المغرب"
+              },
+              {
+                "at": 1795713780000,
+                "clock": "18:23",
+                "name": "Isha",
+                "nameAr": "العشاء"
+              }
+            ],
+            "reminders": [],
+            "start": 1795647600000
+          }
+        ]
+      },
+      "systemLight": false,
+      "taskbarBounds": [
+        0,
+        1380,
+        2560,
+        1440
+      ],
+      "widgetBounds": null,
+      "widgetDiagnostics": {
+        "audits": 90,
+        "latest": {
+          "native-widget": {
+            "action": "native-observe",
+            "context": {
+              "bar": [
+                0,
+                1380,
+                2560,
+                1440
+              ],
+              "bounds": [
+                539,
+                1380,
+                300,
+                60
+              ],
+              "handle": 154995368,
+              "monitor": "\\\\.\\DISPLAY1",
+              "reason": "normal",
+              "scale": 1.25,
+              "shellLifted": false,
+              "visible": true,
+              "work": [
+                0,
+                0,
+                2560,
+                1380
+              ]
+            },
+            "observation": {
+              "bounds": {
+                "bottom": 1440,
+                "left": 539,
+                "right": 839,
+                "top": 1380
+              },
+              "cloaked": 0,
+              "coveredByTaskbar": false,
+              "coveringClass": "Tauri Window",
+              "foreground": 2033686,
+              "foregroundClass": "Tauri Window",
+              "minimized": false,
+              "taskbarRank": -1,
+              "topmost": true,
+              "valid": true,
+              "visible": true,
+              "widgetRank": 7
+            },
+            "reason": "normal"
+          },
+          "widget": {
+            "action": "observe",
+            "context": {
+              "bar": [
+                0,
+                1380,
+                2560,
+                1440
+              ],
+              "bounds": [
+                2073,
+                10,
+                475,
+                655
+              ],
+              "effectiveMode": "floating",
+              "expanded": false,
+              "fallback": false,
+              "height": 524,
+              "monitor": "\\\\.\\DISPLAY1",
+              "safeBounds": [
+                70,
+                2089
+              ],
+              "scale": 1.25,
+              "shellLifted": false,
+              "work": [
+                0,
+                0,
+                2560,
+                1380
+              ]
+            },
+            "observation": {
+              "bounds": {
+                "bottom": 665,
+                "left": 2073,
+                "right": 2548,
+                "top": 10
+              },
+              "cloaked": 0,
+              "coveredByTaskbar": false,
+              "coveringClass": "Tauri Window",
+              "foreground": 142412412,
+              "foregroundClass": "Tauri Window",
+              "minimized": false,
+              "taskbarRank": -1,
+              "topmost": true,
+              "valid": true,
+              "visible": true,
+              "widgetRank": 11
+            },
+            "reason": "normal"
+          }
+        },
+        "operations": {
+          "move": 1,
+          "recreate-primary": 1,
+          "resize": 2,
+          "show": 1
+        }
+      },
+      "widgetExpanded": false,
+      "widgetLogPath": "C:\\Users\\Protagonist\\AppData\\Roaming\\com.sahib.companion.rc\\widget-diagnostics.jsonl",
+      "widgetViews": {
+        "widget": {
+          "bar": [
+            0,
+            1380,
+            2560,
+            1440
+          ],
+          "bounds": [
+            2073,
+            10,
+            475,
+            655
+          ],
+          "effectiveMode": "floating",
+          "expanded": false,
+          "fallback": false,
+          "height": 524,
+          "monitor": "\\\\.\\DISPLAY1",
+          "safeBounds": [
+            70,
+            2089
+          ],
+          "scale": 1.25,
+          "shellLifted": false,
+          "work": [
+            0,
+            0,
+            2560,
+            1380
+          ]
+        }
+      },
+      "widgetWindows": []
+    }
+  },
+  "memory": {
+    "durationSeconds": 36.031,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.043365435319585914,
+    "cpuOneCorePercent": 0.6938469651133746,
+    "meanWorkingSetMiB": 65.23214285714286,
+    "meanPrivateWorkingSetMiB": 18.06640625,
+    "meanPrivateCommitMiB": 62.01953125,
+    "note": "Actual installed optimized RC2, without desktop-qa feature. Runtime CDP enabled solely for this isolated verification. Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. ",
+    "samples": [
+      {
+        "at": 1792775247008,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.4375,
+            "workingSet": 68411392,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192
+          }
+        ]
+      },
+      {
+        "at": 1792775253030,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.515625,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0.078125,
+            "cpuOneCorePercent": 1.2973264696114248
+          }
+        ]
+      },
+      {
+        "at": 1792775259025,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.5625,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0.046875,
+            "cpuOneCorePercent": 0.7819015846538782
+          }
+        ]
+      },
+      {
+        "at": 1792775265029,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.5625,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0,
+            "cpuOneCorePercent": 0
+          }
+        ]
+      },
+      {
+        "at": 1792775271038,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.609375,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0.046875,
+            "cpuOneCorePercent": 0.7800798801797303
+          }
+        ]
+      },
+      {
+        "at": 1792775277051,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.65625,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0.046875,
+            "cpuOneCorePercent": 0.7795609512722435
+          }
+        ]
+      },
+      {
+        "at": 1792775283039,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 7004,
+            "parentId": 8584,
+            "created": "639283717983750685",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.6875,
+            "workingSet": 68399104,
+            "privateWorkingSet": 18944000,
+            "privateCommit": 65032192,
+            "intervalCpuSeconds": 0.03125,
+            "cpuOneCorePercent": 0.5218770875083499
+          }
+        ]
+      }
+    ]
+  },
+  "pass": true
+}

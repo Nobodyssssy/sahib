@@ -1,0 +1,228 @@
+{
+  "tests": [
+    {
+      "name": "Daily reset synchronizes live counters",
+      "pass": true
+    },
+    {
+      "name": "Daily reset persists the current local date",
+      "pass": true
+    },
+    {
+      "name": "Same-day progress is retained",
+      "pass": true
+    },
+    {
+      "name": "Pending counter save cannot restore yesterday counts",
+      "pass": true
+    },
+    {
+      "name": "Morning shortcut opens morning collection",
+      "pass": true
+    },
+    {
+      "name": "Evening shortcut opens evening collection",
+      "pass": true
+    },
+    {
+      "name": "Timer rejects an invalid interval",
+      "pass": true
+    },
+    {
+      "name": "Native timer starts and persists focus/repeat",
+      "pass": true
+    },
+    {
+      "name": "Timer restarts with the same duration",
+      "pass": true
+    },
+    {
+      "name": "Stopping timer clears focus and deadline",
+      "pass": true
+    },
+    {
+      "name": "landmark preference applied",
+      "pass": true
+    },
+    {
+      "name": "landmark native design remains visible",
+      "pass": true,
+      "detail": {
+        "actionAt": 1793367756176,
+        "observedAt": 1793367756215,
+        "foreground": 1518598,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 14,
+        "taskbarRank": 25,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1518598,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1518598
+      }
+    },
+    {
+      "name": "minimal preference applied",
+      "pass": true
+    },
+    {
+      "name": "minimal native design remains visible",
+      "pass": true,
+      "detail": {
+        "actionAt": 1793367759200,
+        "observedAt": 1793367759233,
+        "foreground": 1518598,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 14,
+        "taskbarRank": 25,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1518598,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1518598
+      }
+    },
+    {
+      "name": "ribbon preference applied",
+      "pass": true
+    },
+    {
+      "name": "ribbon native design remains visible",
+      "pass": true,
+      "detail": {
+        "actionAt": 1793367762251,
+        "observedAt": 1793367762283,
+        "foreground": 1518598,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 14,
+        "taskbarRank": 25,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1518598,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1518598
+      }
+    },
+    {
+      "name": "Timer runs without a main WebView",
+      "pass": true
+    },
+    {
+      "name": "Timer completion opens widget controls",
+      "pass": true
+    },
+    {
+      "name": "Hidden seconds uses hh:mm in rich widget",
+      "pass": true
+    },
+    {
+      "name": "Restart from popup uses previous duration",
+      "pass": true
+    },
+    {
+      "name": "Preset starts a five-minute timer",
+      "pass": true
+    },
+    {
+      "name": "Timer popup retires its WebView",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "background": {
+    "durationSeconds": 17.429,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.02801544839061335,
+    "cpuOneCorePercent": 0.4482471742498136,
+    "meanWorkingSetMiB": 78.25,
+    "meanPrivateWorkingSetMiB": 18.15625,
+    "meanPrivateCommitMiB": 61.51171875,
+    "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Optimized release QA with isolated test hooks.",
+    "samples": [
+      {
+        "at": 1793367785404,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 33964,
+            "parentId": 30228,
+            "created": "639289645517355367",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 1.078125,
+            "workingSet": 82051072,
+            "privateWorkingSet": 19038208,
+            "privateCommit": 64499712
+          }
+        ]
+      },
+      {
+        "at": 1793367791199,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 33964,
+            "parentId": 30228,
+            "created": "639289645517355367",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 1.09375,
+            "workingSet": 82051072,
+            "privateWorkingSet": 19038208,
+            "privateCommit": 64499712,
+            "intervalCpuSeconds": 0.015625,
+            "cpuOneCorePercent": 0.26962899050905953
+          }
+        ]
+      },
+      {
+        "at": 1793367797019,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 33964,
+            "parentId": 30228,
+            "created": "639289645517355367",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 1.109375,
+            "workingSet": 82051072,
+            "privateWorkingSet": 19038208,
+            "privateCommit": 64499712,
+            "intervalCpuSeconds": 0.015625,
+            "cpuOneCorePercent": 0.26847079037800686
+          }
+        ]
+      },
+      {
+        "at": 1793367802833,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 33964,
+            "parentId": 30228,
+            "created": "639289645517355367",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 1.15625,
+            "workingSet": 82051072,
+            "privateWorkingSet": 19038208,
+            "privateCommit": 64499712,
+            "intervalCpuSeconds": 0.046875,
+            "cpuOneCorePercent": 0.8062435500515996
+          }
+        ]
+      }
+    ]
+  },
+  "pass": true
+}

@@ -1,0 +1,15 @@
+{
+  "identifier": "com.sahib.companion.rc",
+  "productName": "Sahib RC",
+  "version": "0.2.4-rc.4",
+  "bundle": {
+    "icon": [
+      "../branding/sahib-0.2.4/icon.ico",
+      "../branding/sahib-0.2.4/icon-128.png"
+    ],
+    "resources": {
+      "../native-resources/fonts/OFL-Tajawal.txt": "licenses/Tajawal-OFL.txt",
+      "../branding/sahib-0.2.4/OFL-Amiri.txt": "licenses/Amiri-OFL.txt"
+    }
+  }
+}

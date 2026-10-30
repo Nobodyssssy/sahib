@@ -1,4 +1,4 @@
-//! Experimental compact UI: a plain Tauri HWND painted with Win32 GDI.
+//! Native compact UI: a Tauri HWND with GDI surfaces and DirectWrite text.
 //! No WebView, Explorer parenting, IPC server or second prayer engine.
 use super::*;
 use std::{ptr, sync::OnceLock};
@@ -27,6 +27,8 @@ pub struct View {
     pub shell_lifted: bool,
     #[serde(skip)]
     drag: Option<(i32, i32)>,
+    #[serde(skip)]
+    flags: Option<(bool, bool, u8)>,
 }
 #[derive(Default)]
 pub struct State {
@@ -35,15 +37,11 @@ pub struct State {
     fonts: Mutex<HashMap<String, (isize, isize, isize)>>,
 }
 pub fn active(app: &tauri::AppHandle) -> bool {
+    let state = app.state::<DesktopState>();
+    let disk = state.disk.lock().unwrap();
     experiment::mode() == "native"
-        && app
-            .state::<DesktopState>()
-            .disk
-            .lock()
-            .unwrap()
-            .prefs
-            .widget_mode
-            == "taskbar"
+        && disk.prefs.widget_mode == "taskbar"
+        && disk.prefs.widget_renderer != "web"
 }
 fn native_label(i: usize) -> String {
     if i == 0 {
@@ -54,6 +52,11 @@ fn native_label(i: usize) -> String {
 }
 pub fn init(app: &tauri::AppHandle) {
     let _ = APP.set(app.clone());
+}
+pub fn focus(app: &tauri::AppHandle) {
+    if let Some(w) = app.get_window("native-widget") {
+        let _ = w.set_focus();
+    }
 }
 pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     let count = if p.widget_monitor == "all" {
@@ -68,7 +71,11 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
         let label = native_label(i);
         if app.get_window(&label).is_none() {
             if let Err(e) = tauri::WindowBuilder::new(app, &label)
-                .title("Sahib experimental compact widget")
+                .title(if cfg!(feature = "brand-preview") {
+                    "Sahib RC · Prayer companion"
+                } else {
+                    "Sahib · Prayer companion"
+                })
                 .inner_size(240., 48.)
                 .decorations(false)
                 .resizable(false)
@@ -194,7 +201,7 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
         let shell_active = taskbar::shell_interaction();
         let lifted = shell_active && old.as_ref().is_some_and(|v| v.shell_lifted);
         if lifted {
-            bounds.1 = (area.3 - bounds.3 as i32 - (8. * scale) as i32).max(area.1);
+            bounds = taskbar::shell_safe_position(bounds, area, scale);
         }
         let rebuilding = bar.is_none() && old.as_ref().and_then(|v| v.bar).is_some();
         let reason = if !p.widget_visible {
@@ -233,7 +240,23 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             handle,
             shell_lifted: lifted,
             drag: old.as_ref().and_then(|v| v.drag),
+            flags: old.as_ref().and_then(|v| v.flags),
         };
+        let flags = (
+            fits || p.widget_always_on_top,
+            !fits && p.widget_click_through,
+            (p.widget_opacity.clamp(0.9, 1.0) * 255.).round() as u8,
+        );
+        if view.flags != Some(flags) {
+            let _ = w.set_always_on_top(flags.0);
+            let _ = w.set_ignore_cursor_events(flags.1);
+            unsafe {
+                let style = GetWindowLongPtrW(handle as HWND, GWL_EXSTYLE);
+                SetWindowLongPtrW(handle as HWND, GWL_EXSTYLE, style | WS_EX_LAYERED as isize);
+                SetLayeredWindowAttributes(handle as HWND, 0, flags.2, LWA_ALPHA);
+            }
+            view.flags = Some(flags);
+        }
         state
             .views
             .lock()
@@ -273,11 +296,12 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             if observed.valid
                 && observed.visible
                 && observed.cloaked == 0
+                && flags.0
                 && (observed.covered_by_taskbar || !observed.topmost)
             {
                 let success = widget_watch::recover_order(handle);
                 if shell_active && widget_watch::observe(handle).covered_by_taskbar {
-                    bounds.1 = (area.3 - bounds.3 as i32 - (8. * scale) as i32).max(area.1);
+                    bounds = taskbar::shell_safe_position(bounds, area, scale);
                     let _ = w.set_position(tauri::PhysicalPosition::new(bounds.0, bounds.1));
                     view.bounds = bounds;
                     view.shell_lifted = true;
@@ -460,6 +484,16 @@ fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
     .map(|v| v.unwrap_or(if light { 0x303030 } else { 0xdddddd }))
 }
 unsafe fn text(dc: HDC, value: &str, rect: RECT, font: HFONT, color: u32, flags: u32) {
+    if let Some(app) = APP.get() {
+        let d = app.state::<DesktopState>();
+        let surface = {
+            let disk = d.disk.lock().unwrap();
+            palette(app, &disk)[0]
+        };
+        if native_text::draw(app, dc, value, rect, font, color, surface, flags) {
+            return;
+        }
+    }
     let v: Vec<u16> = value.encode_utf16().collect();
     let old = SelectObject(dc, font);
     SetTextColor(dc, color);
@@ -483,7 +517,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     let Some(view) = state.views.lock().unwrap().get(label).cloned() else {
         return;
     };
-    let (name, clock, at, previous, ar, colors) = {
+    let (name, clock, at, previous, ar, colors, style, show_seconds) = {
         let ds = app.state::<DesktopState>();
         let d = ds.disk.lock().unwrap();
         let now = now_ms();
@@ -521,6 +555,8 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             prev,
             ar,
             palette(app, &d),
+            d.prefs.widget_style.clone(),
+            d.prefs.widget_show_seconds,
         )
     };
     let (surface, ink, muted, line, accent) =
@@ -644,10 +680,42 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         line,
     );
     let (left, right, flags) = if ar {
-        (u(93.), w - u(45.), DT_RIGHT | DT_RTLREADING)
+        (
+            u(93.),
+            w - u(if style == "minimal" { 12. } else { 45. }),
+            DT_RIGHT | DT_RTLREADING,
+        )
     } else {
-        (u(45.), w - u(92.), DT_LEFT)
+        (
+            u(if style == "minimal" { 12. } else { 45. }),
+            w - u(92.),
+            DT_LEFT,
+        )
     };
+    if style == "minimal" {
+        fill(
+            dc,
+            RECT {
+                left: if ar { w - u(40.) } else { 0 },
+                top: 0,
+                right: if ar { w } else { u(40.) },
+                bottom: h,
+            },
+            surface,
+        );
+    }
+    if style == "ribbon" {
+        fill(
+            dc,
+            RECT {
+                left: if ar { w - u(4.) } else { 0 },
+                top: u(5.),
+                right: if ar { w } else { u(4.) },
+                bottom: h - u(5.),
+            },
+            accent,
+        );
+    }
     text(
         dc,
         &name,
@@ -672,11 +740,17 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         },
         fonts.1 as _,
         ink,
-        flags,
+        flags & !DT_RTLREADING,
     );
     let seconds = at.map(|t| ((t - now_ms()) / 1000).max(0));
     let countdown = seconds
-        .map(|s| format!("{:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60))
+        .map(|s| {
+            if show_seconds {
+                format!("{:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
+            } else {
+                format!("{:02}:{:02}", s / 3600, s / 60 % 60)
+            }
+        })
         .unwrap_or("—".into());
     let (left, right, flags) = if ar {
         (u(7.), u(93.), DT_LEFT)
@@ -707,7 +781,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         },
         fonts.2 as _,
         ink,
-        flags,
+        flags & !DT_RTLREADING,
     );
     if let (Some(at), Some(previous)) = (at, previous) {
         if at > previous {
@@ -725,6 +799,15 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
                 accent,
             );
         }
+    }
+    if windows_sys::Win32::UI::Input::KeyboardAndMouse::GetFocus() == hwnd {
+        let focus_rect = RECT {
+            left: u(3.),
+            top: u(3.),
+            right: w - u(3.),
+            bottom: h - u(3.),
+        };
+        DrawFocusRect(dc, &focus_rect);
     }
     BitBlt(screen, 0, 0, w, h, dc, 0, 0, SRCCOPY);
     SelectObject(dc, old);
@@ -758,6 +841,32 @@ unsafe extern "system" fn subclass(
                 return 0;
             }
             WM_ERASEBKGND => return 1,
+            WM_GETOBJECT if lp as i32 == -25 => {
+                return native_accessibility::get(app, &label, hwnd as isize, wp, lp);
+            }
+            WM_KEYDOWN => match wp as u32 {
+                13 | 32 => {
+                    if let Some(v) = app
+                        .state::<State>()
+                        .views
+                        .lock()
+                        .unwrap()
+                        .get(&label)
+                        .cloned()
+                    {
+                        panel(app, v.monitor);
+                    }
+                    return 0;
+                }
+                121 => {
+                    experiment::open_main(app, true, Some("settings"));
+                    return 0;
+                }
+                _ => {}
+            },
+            WM_SETFOCUS | WM_KILLFOCUS => {
+                InvalidateRect(hwnd, ptr::null(), 0);
+            }
             WM_MOUSEACTIVATE => return MA_NOACTIVATE as isize,
             WM_LBUTTONDOWN => {
                 if let Some(v) = app.state::<State>().views.lock().unwrap().get_mut(&label) {
@@ -801,6 +910,7 @@ unsafe extern "system" fn subclass(
                 return 0;
             }
             WM_NCDESTROY => {
+                native_accessibility::disconnect(hwnd as isize);
                 drop_fonts(&app.state::<State>(), &label);
                 app.state::<State>().views.lock().unwrap().remove(&label);
                 RemoveWindowSubclass(hwnd, Some(subclass), 1);

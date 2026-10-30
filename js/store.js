@@ -7,6 +7,8 @@ const store = (() => {
   let _cache = { cats: [], adkar: [], favs: [], counters: {}, meta: {} };
   let _ready = false;
   let _readyResolvers = [];
+  let _resetPending = null;
+  let _counterWrites = Promise.resolve();
 
   function _markReady(){
     _ready = true;
@@ -71,28 +73,36 @@ countersArr.forEach(row => { _cache.counters[`c_${row.id}`] = row.count; });
 
   /* FIX: Save counters one by one to avoid setMany IndexedDB crash */
   async function saveCounters(obj){
-    _cache.counters = { ...obj };
-    await db.counters.clear();
-    for (const [k, v] of Object.entries(obj)) {
-      const id = Number(String(k).replace(/^c_/, ''));
-      if (!Number.isNaN(id)) await db.counters.set(id, v);
-    }
+    const snapshot = { ...obj };
+    _cache.counters = snapshot;
+    _counterWrites = _counterWrites.catch(()=>{}).then(async()=>{
+      await db.counters.clear();
+      for (const [k, v] of Object.entries(snapshot)) {
+        const id = Number(String(k).replace(/^c_/, ''));
+        if (!Number.isNaN(id)) await db.counters.set(id, v);
+      }
+    });
+    await _counterWrites;
   }
-  async function setCounter(id, count){ _cache.counters[id] = count; await db.counters.set(id, count); }
-  async function clearCounters(){ _cache.counters = {}; await db.counters.clear(); }
+  async function setCounter(id, count){ _cache.counters[`c_${id}`] = count; _counterWrites = _counterWrites.catch(()=>{}).then(()=>db.counters.set(id, count)); await _counterWrites; }
+  async function clearCounters(){ _cache.counters = {}; _counterWrites = _counterWrites.catch(()=>{}).then(()=>db.counters.clear()); await _counterWrites; }
 
   async function setMeta(key, value){ _cache.meta[key] = value; await db.meta.set(key, value); }
   async function getMeta(key){ if(key in _cache.meta) return _cache.meta[key]; return db.meta.get(key); }
 
   async function checkDailyReset(){
+    if(_resetPending) return _resetPending;
     const today = new Date().toDateString();
     const last  = _cache.meta.lastReset || '';
     if(last !== today){
-      await clearCounters();
-      await setMeta('lastReset', today);
-      const el = document.getElementById('daily-reset-info');
-      if(el){ el.textContent = 'Counters reset for today'; setTimeout(() => { el.textContent = ''; }, 4000); }
-      return true;
+      _resetPending = (async()=>{
+        const cleared = clearCounters();
+        window.dispatchEvent(new Event('sahib:counters-reset'));
+        await cleared;
+        await setMeta('lastReset', today);
+        return true;
+      })();
+      try{ return await _resetPending; }finally{ _resetPending = null; }
     }
     return false;
   }

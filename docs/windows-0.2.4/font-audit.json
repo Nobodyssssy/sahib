@@ -1,0 +1,114 @@
+[
+  {
+    "file": "assets\\fonts\\Amiri-Bold.woff2",
+    "bytes": 79732,
+    "glyphCoverage": 502,
+    "family": "Amiri",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "assets\\fonts\\Amiri-Regular.woff2",
+    "bytes": 79316,
+    "glyphCoverage": 502,
+    "family": "Amiri",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "assets\\fonts\\Cairo-Latin.woff2",
+    "bytes": 33820,
+    "glyphCoverage": 217,
+    "family": "Cairo",
+    "arabicLabels": false,
+    "diacritics": false
+  },
+  {
+    "file": "assets\\fonts\\Cairo-LatinExt.woff2",
+    "bytes": 16648,
+    "glyphCoverage": 148,
+    "family": "Cairo",
+    "arabicLabels": false,
+    "diacritics": false
+  },
+  {
+    "file": "assets\\fonts\\Cairo-Variable.woff2",
+    "bytes": 30896,
+    "glyphCoverage": 302,
+    "family": "Cairo",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "assets\\fonts\\Dm-sans-Variable.woff2",
+    "bytes": 62724,
+    "glyphCoverage": 222,
+    "family": "DM Sans 9pt",
+    "arabicLabels": false,
+    "diacritics": false
+  },
+  {
+    "file": "assets\\fonts\\Inter-Variable.woff2",
+    "bytes": 25960,
+    "glyphCoverage": 157,
+    "family": "Inter",
+    "arabicLabels": false,
+    "diacritics": false
+  },
+  {
+    "file": "assets\\fonts\\Manrope-Variable.woff2",
+    "bytes": 55308,
+    "glyphCoverage": 702,
+    "family": "Manrope Variable Light",
+    "arabicLabels": false,
+    "diacritics": false
+  },
+  {
+    "file": "assets\\fonts\\Tajawal-Bold.woff2",
+    "bytes": 8712,
+    "glyphCoverage": 170,
+    "family": "Tajawal",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "assets\\fonts\\Tajawal-Medium.woff2",
+    "bytes": 8524,
+    "glyphCoverage": 170,
+    "family": "Tajawal Medium",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "assets\\fonts\\Tajawal-Regular.woff2",
+    "bytes": 8724,
+    "glyphCoverage": 170,
+    "family": "Tajawal",
+    "arabicLabels": true,
+    "diacritics": true
+  },
+  {
+    "file": "notonaskharabic-NotoNaskhArabic[wght].ttf",
+    "sourceBytes": 307592,
+    "subsetBytes": 109168,
+    "family": "Noto Naskh Arabic",
+    "shapingTables": [
+      "GSUB",
+      "GPOS",
+      "GDEF"
+    ],
+    "packaged": false
+  },
+  {
+    "file": "notosansarabic-NotoSansArabic[wdth,wght].ttf",
+    "sourceBytes": 844676,
+    "subsetBytes": 106456,
+    "family": "Noto Sans Arabic",
+    "shapingTables": [
+      "GSUB",
+      "GPOS",
+      "GDEF"
+    ],
+    "packaged": false
+  }
+]

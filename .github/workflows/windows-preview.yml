@@ -11,6 +11,8 @@ on:
       - 'css/**'
       - 'assets/**'
       - 'icons/**'
+      - 'branding/**'
+      - 'native-resources/**'
       - 'tools/**'
       - 'tests/**'
       - 'index.html'
@@ -24,6 +26,8 @@ on:
       - 'css/**'
       - 'assets/**'
       - 'icons/**'
+      - 'branding/**'
+      - 'native-resources/**'
       - 'tools/**'
       - 'tests/**'
       - '*.html'
@@ -108,6 +112,20 @@ jobs:
           path: |
             ${{ steps.package.outputs.installer }}
             ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+          retention-days: 14
+      - name: Build separate native widget release candidate
+        run: npm run desktop:build:rc
+      - name: Checksum native release candidate
+        id: rc
+        run: node tools/desktop-checksum.mjs --rc
+      - name: Save separate native release candidate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Sahib-RC-${{ steps.rc.outputs.version }}-windows-x64
+          path: |
+            ${{ steps.rc.outputs.installer }}
+            ${{ steps.rc.outputs.checksum }}
           if-no-files-found: error
           retention-days: 14
       - name: Save compiled dependencies

@@ -149,6 +149,9 @@ desktop.ini
 
 # Tauri source configuration (the original app ignores JSON exports broadly)
 !/src-tauri/tauri.conf.json
+!/src-tauri/tauri.rc.conf.json
+!/branding/sahib-0.2.4/provenance.json
+!/docs/windows-0.2.4/*.json
 !/src-tauri/capabilities/*.json
 /src-tauri/gen/schemas/
 /src-tauri/.tauri/

@@ -1,0 +1,412 @@
+{
+  "note": "Only soak measurements extracted from an earlier lifecycle run. That run exposed PDF restoration and a readiness-test issue; the final 66-check lifecycle report passed after correction. This is not a passing report for the earlier whole suite.",
+  "soak": {
+    "durationSeconds": 619.449,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.05754231785021851,
+    "cpuOneCorePercent": 0.9206770856034961,
+    "meanWorkingSetMiB": 69.76636904761905,
+    "meanPrivateWorkingSetMiB": 17.987723214285715,
+    "meanPrivateCommitMiB": 61.439732142857146,
+    "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Optimized release QA with isolated test hooks.",
+    "samples": [
+      {
+        "at": 1792772195043,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 2.4375,
+            "workingSet": 73666560,
+            "privateWorkingSet": 19820544,
+            "privateCommit": 65519616
+          }
+        ]
+      },
+      {
+        "at": 1792772225937,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 2.625,
+            "workingSet": 72466432,
+            "privateWorkingSet": 18632704,
+            "privateCommit": 64184320,
+            "intervalCpuSeconds": 0.1875,
+            "cpuOneCorePercent": 0.6069139638764809
+          }
+        ]
+      },
+      {
+        "at": 1792772256818,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.015625,
+            "workingSet": 72466432,
+            "privateWorkingSet": 18632704,
+            "privateCommit": 64184320,
+            "intervalCpuSeconds": 0.390625,
+            "cpuOneCorePercent": 1.2649363686409119
+          }
+        ]
+      },
+      {
+        "at": 1792772287741,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.640625,
+            "workingSet": 72728576,
+            "privateWorkingSet": 18632704,
+            "privateCommit": 64184320,
+            "intervalCpuSeconds": 0.625,
+            "cpuOneCorePercent": 2.021149306341558
+          }
+        ]
+      },
+      {
+        "at": 1792772318787,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 3.828125,
+            "workingSet": 72679424,
+            "privateWorkingSet": 18583552,
+            "privateCommit": 64094208,
+            "intervalCpuSeconds": 0.1875,
+            "cpuOneCorePercent": 0.6039425368807576
+          }
+        ]
+      },
+      {
+        "at": 1792772349672,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 4.21875,
+            "workingSet": 72699904,
+            "privateWorkingSet": 18583552,
+            "privateCommit": 64094208,
+            "intervalCpuSeconds": 0.390625,
+            "cpuOneCorePercent": 1.2647725433058117
+          }
+        ]
+      },
+      {
+        "at": 1792772380604,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 4.390625,
+            "workingSet": 72716288,
+            "privateWorkingSet": 18599936,
+            "privateCommit": 64126976,
+            "intervalCpuSeconds": 0.171875,
+            "cpuOneCorePercent": 0.5556543385490754
+          }
+        ]
+      },
+      {
+        "at": 1792772411555,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 4.65625,
+            "workingSet": 72716288,
+            "privateWorkingSet": 18599936,
+            "privateCommit": 64126976,
+            "intervalCpuSeconds": 0.265625,
+            "cpuOneCorePercent": 0.8582113663532681
+          }
+        ]
+      },
+      {
+        "at": 1792772442499,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 4.875,
+            "workingSet": 72716288,
+            "privateWorkingSet": 18599936,
+            "privateCommit": 64126976,
+            "intervalCpuSeconds": 0.21875,
+            "cpuOneCorePercent": 0.7069221820062047
+          }
+        ]
+      },
+      {
+        "at": 1792772473374,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 5.171875,
+            "workingSet": 73072640,
+            "privateWorkingSet": 18706432,
+            "privateCommit": 64360448,
+            "intervalCpuSeconds": 0.296875,
+            "cpuOneCorePercent": 0.9615384615384616
+          }
+        ]
+      },
+      {
+        "at": 1792772505489,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 5.578125,
+            "workingSet": 73281536,
+            "privateWorkingSet": 18915328,
+            "privateCommit": 64544768,
+            "intervalCpuSeconds": 0.40625,
+            "cpuOneCorePercent": 1.2649852094037053
+          }
+        ]
+      },
+      {
+        "at": 1792772536362,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 5.78125,
+            "workingSet": 73482240,
+            "privateWorkingSet": 19062784,
+            "privateCommit": 64688128,
+            "intervalCpuSeconds": 0.203125,
+            "cpuOneCorePercent": 0.6579373562659929
+          }
+        ]
+      },
+      {
+        "at": 1792772567236,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 6.015625,
+            "workingSet": 73408512,
+            "privateWorkingSet": 19001344,
+            "privateCommit": 64598016,
+            "intervalCpuSeconds": 0.234375,
+            "cpuOneCorePercent": 0.7591338990736543
+          }
+        ]
+      },
+      {
+        "at": 1792772598149,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 6.3125,
+            "workingSet": 73424896,
+            "privateWorkingSet": 18989056,
+            "privateCommit": 64565248,
+            "intervalCpuSeconds": 0.296875,
+            "cpuOneCorePercent": 0.9603564843269822
+          }
+        ]
+      },
+      {
+        "at": 1792772629038,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 6.65625,
+            "workingSet": 73388032,
+            "privateWorkingSet": 18927616,
+            "privateCommit": 64462848,
+            "intervalCpuSeconds": 0.34375,
+            "cpuOneCorePercent": 1.1128557091521254
+          }
+        ]
+      },
+      {
+        "at": 1792772659943,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 6.84375,
+            "workingSet": 73596928,
+            "privateWorkingSet": 18960384,
+            "privateCommit": 64495616,
+            "intervalCpuSeconds": 0.1875,
+            "cpuOneCorePercent": 0.6066979453162918
+          }
+        ]
+      },
+      {
+        "at": 1792772690819,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 7.109375,
+            "workingSet": 73596928,
+            "privateWorkingSet": 18960384,
+            "privateCommit": 64495616,
+            "intervalCpuSeconds": 0.265625,
+            "cpuOneCorePercent": 0.8602960228008809
+          }
+        ]
+      },
+      {
+        "at": 1792772721766,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 7.296875,
+            "workingSet": 73596928,
+            "privateWorkingSet": 18960384,
+            "privateCommit": 64495616,
+            "intervalCpuSeconds": 0.1875,
+            "cpuOneCorePercent": 0.6058745597311532
+          }
+        ]
+      },
+      {
+        "at": 1792772752688,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 7.59375,
+            "workingSet": 73494528,
+            "privateWorkingSet": 18960384,
+            "privateCommit": 64495616,
+            "intervalCpuSeconds": 0.296875,
+            "cpuOneCorePercent": 0.9600769678546018
+          }
+        ]
+      },
+      {
+        "at": 1792772783597,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 7.890625,
+            "workingSet": 73531392,
+            "privateWorkingSet": 18980864,
+            "privateCommit": 64532480,
+            "intervalCpuSeconds": 0.296875,
+            "cpuOneCorePercent": 0.9604807661199003
+          }
+        ]
+      },
+      {
+        "at": 1792772814492,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 11932,
+            "parentId": 20580,
+            "created": "639283689549498668",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 8.140625,
+            "workingSet": 73531392,
+            "privateWorkingSet": 18980864,
+            "privateCommit": 64532480,
+            "intervalCpuSeconds": 0.25,
+            "cpuOneCorePercent": 0.8091924259588931
+          }
+        ]
+      }
+    ]
+  }
+}

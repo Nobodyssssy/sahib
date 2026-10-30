@@ -12,6 +12,7 @@ let _readerBookId = null;
 let _readerPdf = null;
 let _readerTotalPages = 0;
 let _readerCurrentPage = 1;
+let _readerNavigationTarget = null;
 let _readerMode = 'scroll';      /* 'scroll' | 'flip' */
 let _readerZoom = 1;             /* 1 = fit width */
 let _readerControlsVisible = true;
@@ -22,6 +23,17 @@ let _readerAutoSaveTimer = null;
 let _readerScrolledToRestore = false;
 let _readerTheme = 'light';
 let _readerBlobUrl = null;
+for(const type of ['wheel','touchstart','pointerdown']){
+  document.addEventListener(type,event=>{
+    if(event.target?.closest?.('#reader-body')) _readerNavigationTarget=null;
+  },{passive:true});
+}
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden) _readerAlignNavigationTarget();
+});
+document.addEventListener('keydown',event=>{
+  if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key)&&$('reader-overlay')?.classList.contains('open')) _readerNavigationTarget=null;
+});
 
 /* ═══════════════════════════════════════════════════════════
    Open / close
@@ -34,6 +46,7 @@ async function openReader(bookId){
   _readerMode = 'scroll';
   _readerZoom = 1;
   _readerCurrentPage = 1;
+  _readerNavigationTarget = null;
   _readerRenderedPages.clear();
   _readerScrolledToRestore = false;
   _readerTheme = 'light';
@@ -293,10 +306,16 @@ async function renderReaderContent(){
 /* ═══════════════════════════════════════════════════════════
    SCROLL MODE — all pages stacked in a scroll container
    ═══════════════════════════════════════════════════════════ */
+function _readerAlignNavigationTarget(){
+  if(_readerNavigationTarget===null||document.hidden||!$('reader-overlay')?.classList.contains('open'))return;
+  $(`reader-page-${_readerNavigationTarget}`)?.scrollIntoView({block:'start',behavior:'instant'});
+}
+
 async function renderScrollMode(){
   const body = $('reader-body');
   body.innerHTML = `<div class="reader-scroll" id="reader-scroll"></div>`;
   const container = $('reader-scroll');
+  _readerNavigationTarget=_readerCurrentPage;
 
   _syncReaderZoomLayout();
 
@@ -349,6 +368,7 @@ async function renderScrollPage(pageNum, wrapEl, width){
     wrapEl.style.width = size.width + 'px';
     wrapEl.style.maxWidth = _readerZoom > 1.001 ? 'none' : '';
     wrapEl.style.minHeight = size.height + 'px';
+    _readerAlignNavigationTarget();
   }catch(err){
     console.warn('[reader] page', pageNum, 'failed', err);
   }
@@ -356,30 +376,32 @@ async function renderScrollPage(pageNum, wrapEl, width){
 
 function setupScrollObserver(pageWidth){
   if(_readerObserver) _readerObserver.disconnect();
-
-  _readerObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const pageNum = parseInt(entry.target.dataset.page, 10);
-
-      if(entry.isIntersecting && !_readerRenderedPages.has(pageNum)){
-        renderScrollPage(pageNum, entry.target, pageWidth);
-        _readerRenderedPages.add(pageNum);
-      }
-
-      if(entry.isIntersecting && entry.intersectionRatio > 0.4){
-        if(!_readerScrolledToRestore) return;
-        _readerCurrentPage = pageNum;
-        updateReaderProgressUI();
-        scheduleAutoSave();
+  _readerObserver = new IntersectionObserver(entries=>{
+    if(document.hidden)return;
+    entries.forEach(entry=>{
+      const page=parseInt(entry.target.dataset.page,10);
+      if(entry.isIntersecting&&!_readerRenderedPages.has(page)){
+        _readerRenderedPages.add(page);
+        renderScrollPage(page,entry.target,pageWidth);
       }
     });
-  }, {
-    root: null,
-    rootMargin: '300px 0px',
-    threshold: [0, 0.4, 1]
-  });
-
-  document.querySelectorAll('.reader-page-wrap').forEach(el => _readerObserver.observe(el));
+    if(!_readerScrolledToRestore||_readerNavigationTarget!==null)return;
+    // The 300px margin preloads pages. It must not count an off-screen page
+    // as the user's reading position, or callback order can overwrite it.
+    const body=$('reader-body').getBoundingClientRect();
+    const top=Math.max(0,body.top),bottom=Math.min(innerHeight,body.bottom);
+    const candidates=new Set(entries.map(entry=>entry.target));
+    for(const n of [_readerCurrentPage-1,_readerCurrentPage,_readerCurrentPage+1]){
+      const el=$('reader-page-'+n);if(el)candidates.add(el);
+    }
+    let best=_readerCurrentPage,visible=0;
+    candidates.forEach(el=>{
+      const r=el.getBoundingClientRect(),height=Math.max(0,Math.min(bottom,r.bottom)-Math.max(top,r.top));
+      if(height>visible){visible=height;best=parseInt(el.dataset.page,10);}
+    });
+    if(visible>0&&best!==_readerCurrentPage){_readerCurrentPage=best;updateReaderProgressUI();scheduleAutoSave();}
+  },{root:null,rootMargin:'300px 0px',threshold:[0,0.4,1]});
+  document.querySelectorAll('.reader-page-wrap').forEach(el=>_readerObserver.observe(el));
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -422,6 +444,7 @@ function closeReader(){
 
 /* History-driven close. Does the actual close, no push. */
 function _closeReaderFromHistory(){
+  _readerNavigationTarget = null;
   if(_readerBookId && _readerCurrentPage){
     saveBookProgress(_readerBookId, _readerCurrentPage, _readerTotalPages);
   }
@@ -476,8 +499,9 @@ function gotoReaderPage(page){
   scheduleAutoSave();
 
   if(_readerMode === 'scroll'){
+    _readerNavigationTarget = page;
     const target = $(`reader-page-${page}`);
-    if(target) target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if(target) target.scrollIntoView({ block: 'start', behavior: 'instant' });
   } else {
     renderFlipCurrentPage();
   }

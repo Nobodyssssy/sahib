@@ -1,6 +1,7 @@
 'use strict';
 
 async function startSession(){
+  await store.checkDailyReset();
   let items = data.filter(d =>
     Array.isArray(d.categories) && d.categories.includes(currentCat)
   );
@@ -152,7 +153,8 @@ async function _clearSessProgress(){
   try{ await store.setMeta('sessProgress', null); }catch(e){}
 }
 
-function sessionTap(id, target){
+async function sessionTap(id, target){
+  await store.checkDailyReset();
   const k = `c_${id}`;
   counters[k] = (counters[k] || 0) + 1;
   persistCounters();

@@ -1,0 +1,457 @@
+{
+  "started": "2026-10-23T16:00:32.653Z",
+  "build": "release",
+  "fonts": [
+    {
+      "name": "Tajawal",
+      "ttfBytes": 26144,
+      "nativeText": {
+        "drawn": 128,
+        "failed": 0,
+        "family": "Tajawal",
+        "renderer": "DirectWrite"
+      },
+      "memory": {
+        "durationSeconds": 11.78,
+        "logicalProcessors": 16,
+        "cpuSystemPercent": 0.05803002971137522,
+        "cpuOneCorePercent": 0.9284804753820035,
+        "meanWorkingSetMiB": 65.5390625,
+        "meanPrivateWorkingSetMiB": 16.515625,
+        "meanPrivateCommitMiB": 60.973958333333336,
+        "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Debug QA is not a release benchmark.",
+        "samples": [
+          {
+            "at": 1792771441452,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 10296,
+                "parentId": 19604,
+                "created": "639283682340775364",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.03125,
+                "workingSet": 68722688,
+                "privateWorkingSet": 17317888,
+                "privateCommit": 63905792
+              }
+            ]
+          },
+          {
+            "at": 1792771447339,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 10296,
+                "parentId": 19604,
+                "created": "639283682340775364",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.109375,
+                "workingSet": 68722688,
+                "privateWorkingSet": 17317888,
+                "privateCommit": 63950848,
+                "intervalCpuSeconds": 0.078125,
+                "cpuOneCorePercent": 1.327076609478512
+              }
+            ]
+          },
+          {
+            "at": 1792771453232,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 10296,
+                "parentId": 19604,
+                "created": "639283682340775364",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.140625,
+                "workingSet": 68722688,
+                "privateWorkingSet": 17317888,
+                "privateCommit": 63950848,
+                "intervalCpuSeconds": 0.03125,
+                "cpuOneCorePercent": 0.5302901747836417
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Noto Sans Arabic",
+      "ttfBytes": 106456,
+      "nativeText": {
+        "drawn": 136,
+        "failed": 0,
+        "family": "Noto Sans Arabic",
+        "renderer": "DirectWrite"
+      },
+      "memory": {
+        "durationSeconds": 11.776,
+        "logicalProcessors": 16,
+        "cpuSystemPercent": 0.049756920855978264,
+        "cpuOneCorePercent": 0.7961107336956522,
+        "meanWorkingSetMiB": 65.76171875,
+        "meanPrivateWorkingSetMiB": 16.7265625,
+        "meanPrivateCommitMiB": 61.26171875,
+        "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Debug QA is not a release benchmark.",
+        "samples": [
+          {
+            "at": 1792771463187,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 18236,
+                "parentId": 19604,
+                "created": "639283682562758463",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 0.90625,
+                "workingSet": 68956160,
+                "privateWorkingSet": 17539072,
+                "privateCommit": 64237568
+              }
+            ]
+          },
+          {
+            "at": 1792771469070,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 18236,
+                "parentId": 19604,
+                "created": "639283682562758463",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 0.9375,
+                "workingSet": 68956160,
+                "privateWorkingSet": 17539072,
+                "privateCommit": 64237568,
+                "intervalCpuSeconds": 0.03125,
+                "cpuOneCorePercent": 0.531191568927418
+              }
+            ]
+          },
+          {
+            "at": 1792771474963,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 18236,
+                "parentId": 19604,
+                "created": "639283682562758463",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1,
+                "workingSet": 68956160,
+                "privateWorkingSet": 17539072,
+                "privateCommit": 64237568,
+                "intervalCpuSeconds": 0.0625,
+                "cpuOneCorePercent": 1.0605803495672834
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Noto Naskh Arabic",
+      "ttfBytes": 109168,
+      "nativeText": {
+        "drawn": 148,
+        "failed": 0,
+        "family": "Noto Naskh Arabic",
+        "renderer": "DirectWrite"
+      },
+      "memory": {
+        "durationSeconds": 11.8,
+        "logicalProcessors": 16,
+        "cpuSystemPercent": 0.07448358050847458,
+        "cpuOneCorePercent": 1.1917372881355932,
+        "meanWorkingSetMiB": 65.59375,
+        "meanPrivateWorkingSetMiB": 16.6875,
+        "meanPrivateCommitMiB": 60.9296875,
+        "note": "Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. Debug QA is not a release benchmark.",
+        "samples": [
+          {
+            "at": 1792771481828,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 21996,
+                "parentId": 19604,
+                "created": "639283682750382167",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.015625,
+                "workingSet": 68780032,
+                "privateWorkingSet": 17498112,
+                "privateCommit": 63889408
+              }
+            ]
+          },
+          {
+            "at": 1792771487703,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 21996,
+                "parentId": 19604,
+                "created": "639283682750382167",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.078125,
+                "workingSet": 68780032,
+                "privateWorkingSet": 17498112,
+                "privateCommit": 63889408,
+                "intervalCpuSeconds": 0.0625,
+                "cpuOneCorePercent": 1.0638297872340425
+              }
+            ]
+          },
+          {
+            "at": 1792771493628,
+            "cores": 16,
+            "processes": [
+              {
+                "id": 21996,
+                "parentId": 19604,
+                "created": "639283682750382167",
+                "name": "sahib-desktop",
+                "role": "host",
+                "cpu": 1.15625,
+                "workingSet": 68780032,
+                "privateWorkingSet": 17498112,
+                "privateCommit": 63889408,
+                "intervalCpuSeconds": 0.078125,
+                "cpuOneCorePercent": 1.3185654008438819
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "tests": [
+    {
+      "name": "Tajawal uses successful DirectWrite shaping",
+      "pass": true,
+      "detail": {
+        "drawn": 128,
+        "failed": 0,
+        "family": "Tajawal",
+        "renderer": "DirectWrite"
+      }
+    },
+    {
+      "name": "Tajawal compact has no WebView2",
+      "pass": true
+    },
+    {
+      "name": "Tajawal native-widget visible at physical 125%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771439208,
+        "observedAt": 1792771439247,
+        "foreground": 1050710,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 10,
+        "taskbarRank": 24,
+        "hitClass": "Tauri Window",
+        "hitHandle": 2689120,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 2689120
+      }
+    },
+    {
+      "name": "Tajawal native-widget-1 visible at physical 100%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771439685,
+        "observedAt": 1792771439727,
+        "foreground": 1050710,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 9,
+        "taskbarRank": 26,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1050710,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1050710
+      }
+    },
+    {
+      "name": "Tajawal UI Automation Arabic label and Invoke pattern",
+      "pass": true,
+      "detail": {
+        "name": "الصلاة القادمة المغرب. الوقت ⁦18:24⁩. المتبقي ⁦00:19:59⁩",
+        "automationId": "native-widget",
+        "controlType": "ControlType.Button",
+        "help": "اضغط إدخال لفتح مواقيت الصلاة. اضغط F10 لفتح الإعدادات.",
+        "keyboardFocusable": true,
+        "enabled": true,
+        "offscreen": false,
+        "bounds": "1079,1380,300,60",
+        "invokeSupported": true
+      }
+    },
+    {
+      "name": "UI Automation Invoke opens rich panel",
+      "pass": true
+    },
+    {
+      "name": "Accessible panel closes without a retained WebView",
+      "pass": true
+    },
+    {
+      "name": "Noto Sans Arabic uses successful DirectWrite shaping",
+      "pass": true,
+      "detail": {
+        "drawn": 136,
+        "failed": 0,
+        "family": "Noto Sans Arabic",
+        "renderer": "DirectWrite"
+      }
+    },
+    {
+      "name": "Noto Sans Arabic compact has no WebView2",
+      "pass": true
+    },
+    {
+      "name": "Noto Sans Arabic native-widget visible at physical 125%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771461390,
+        "observedAt": 1792771461431,
+        "foreground": 4982778,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 10,
+        "taskbarRank": 24,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1247294,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1247294
+      }
+    },
+    {
+      "name": "Noto Sans Arabic native-widget-1 visible at physical 100%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771461894,
+        "observedAt": 1792771461935,
+        "foreground": 4982778,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 9,
+        "taskbarRank": 26,
+        "hitClass": "Tauri Window",
+        "hitHandle": 4982778,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 4982778
+      }
+    },
+    {
+      "name": "Noto Sans Arabic UI Automation Arabic label and Invoke pattern",
+      "pass": true,
+      "detail": {
+        "name": "الصلاة القادمة المغرب. الوقت ⁦18:24⁩. المتبقي ⁦00:19:37⁩",
+        "automationId": "native-widget",
+        "controlType": "ControlType.Button",
+        "help": "اضغط إدخال لفتح مواقيت الصلاة. اضغط F10 لفتح الإعدادات.",
+        "keyboardFocusable": true,
+        "enabled": true,
+        "offscreen": false,
+        "bounds": "1079,1380,300,60",
+        "invokeSupported": true
+      }
+    },
+    {
+      "name": "Noto Naskh Arabic uses successful DirectWrite shaping",
+      "pass": true,
+      "detail": {
+        "drawn": 148,
+        "failed": 0,
+        "family": "Noto Naskh Arabic",
+        "renderer": "DirectWrite"
+      }
+    },
+    {
+      "name": "Noto Naskh Arabic compact has no WebView2",
+      "pass": true
+    },
+    {
+      "name": "Noto Naskh Arabic native-widget visible at physical 125%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771480090,
+        "observedAt": 1792771480126,
+        "foreground": 1574964,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 10,
+        "taskbarRank": 24,
+        "hitClass": "Tauri Window",
+        "hitHandle": 2556136,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 2556136
+      }
+    },
+    {
+      "name": "Noto Naskh Arabic native-widget-1 visible at physical 100%",
+      "pass": true,
+      "detail": {
+        "actionAt": 1792771480562,
+        "observedAt": 1792771480614,
+        "foreground": 1574964,
+        "visible": true,
+        "iconic": false,
+        "cloaked": 0,
+        "topmost": true,
+        "widgetRank": 9,
+        "taskbarRank": 26,
+        "hitClass": "Tauri Window",
+        "hitHandle": 1574964,
+        "coveredByTaskbar": false,
+        "foregroundClass": "Tauri Window",
+        "handle": 1574964
+      }
+    },
+    {
+      "name": "Noto Naskh Arabic UI Automation Arabic label and Invoke pattern",
+      "pass": true,
+      "detail": {
+        "name": "الصلاة القادمة المغرب. الوقت ⁦18:24⁩. المتبقي ⁦00:19:19⁩",
+        "automationId": "native-widget",
+        "controlType": "ControlType.Button",
+        "help": "اضغط إدخال لفتح مواقيت الصلاة. اضغط F10 لفتح الإعدادات.",
+        "keyboardFocusable": true,
+        "enabled": true,
+        "offscreen": false,
+        "bounds": "1079,1380,300,60",
+        "invokeSupported": true
+      }
+    }
+  ],
+  "errors": [],
+  "finished": "2026-10-23T16:04:53.701Z",
+  "pass": true
+}

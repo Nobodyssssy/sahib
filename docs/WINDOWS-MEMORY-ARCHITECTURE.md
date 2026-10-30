@@ -1,5 +1,7 @@
 # Windows background memory experiment
 
+Update: the separate 0.2.4 RC now enables the native compact renderer and on-demand rich windows, with a selectable WebView fallback. The ordinary build remains unchanged. See [current measurements, DirectWrite/UIA implementation and approval gates](WINDOWS-0.2.4-RC.md). The original 0.2.3 investigation below remains a historical record.
+
 The ordinary Windows build keeps its web widget. The native compact view and main-window unloading are opt-in experiments on `codex/windows-tauri`; neither is the default, and this work does not merge into main.
 
 ## Three configurations

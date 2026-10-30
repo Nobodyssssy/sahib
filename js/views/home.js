@@ -111,6 +111,14 @@ function gardenPracticeCard(){
   return `<article class="garden-action"><span class="garden-action-icon">${icon('practice',25)}</span><h2>Daily practice</h2><p>${selected ? `${total} ${total === 1 ? 'practice' : 'practices'} today` : 'Choose your routines'}</p>${selected ? `<div class="garden-progress"><progress value="${completed}" max="${total || 1}" aria-label="Daily practices completed"></progress><span>${completed} / ${total}</span></div>` : ''}<button onclick="openPracticeView('today')">${selected ? 'Open practice' : 'Get started'} ${icon('arrow-left',14)}</button></article>`;
 }
 
+function homeOpenPractice(id){
+  if(id === 'morning-adhkar' || id === 'evening-adhkar'){
+    openCat(id === 'morning-adhkar' ? 'sabah' : 'masaa');
+    return;
+  }
+  openPracticeDetail(id);
+}
+
 function gardenAdhkarCard(key, label, glyph){
   const items = data.filter(item => Array.isArray(item.categories) && item.categories.includes(key));
   const done = items.filter(item => (counters[`c_${item.id}`] || 0) >= item.repeat).length;
@@ -202,7 +210,7 @@ function renderHomePracticePanel(){
     const time = p.timeLabel || p.reminderTime || '';
     const done = item.done;
     return `<div class="desk-practice-row${done ? ' is-done' : ''}" data-practice-id="${esc(p.id)}">
-      <button type="button" class="desk-practice-copy" onclick="openPracticeDetail('${esc(p.id)}')">
+      <button type="button" class="desk-practice-copy" onclick="homeOpenPractice('${esc(p.id)}')">
         <span class="desk-practice-title"><span lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span>${esc(p.title)}</span></span>
         <span class="desk-practice-time">${esc(time || 'Any time')}</span>
       </button>

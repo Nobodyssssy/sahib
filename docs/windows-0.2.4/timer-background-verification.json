@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Focus allows scheduled Adhan with no main WebView",
+      "pass": true
+    },
+    {
+      "name": "Competing practice consumed without replay",
+      "pass": true
+    },
+    {
+      "name": "Fullscreen defers timer popup and sound",
+      "pass": true
+    },
+    {
+      "name": "Timer still expires during fullscreen",
+      "pass": true
+    },
+    {
+      "name": "Leaving fullscreen reveals completion popup",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

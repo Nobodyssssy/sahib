@@ -1,4 +1,4 @@
-//! Opt-in memory investigation. Not compiled into the ordinary preview.
+//! On-demand WebView lifecycle; native-default only in the separate RC build.
 use super::*;
 use std::sync::OnceLock;
 static MODE: OnceLock<String> = OnceLock::new();
@@ -7,7 +7,13 @@ pub fn mode() -> &'static str {
         || match std::env::var("SAHIB_MEMORY_EXPERIMENT").as_deref() {
             Ok("unload") => "unload".into(),
             Ok("native") => "native".into(),
-            _ => "keep".into(),
+            _ => {
+                if cfg!(feature = "native-widget-rc") {
+                    "native".into()
+                } else {
+                    "keep".into()
+                }
+            }
         },
     )
 }
@@ -30,8 +36,16 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
         .unwrap();
     let h = app.clone();
     let builder = tauri::WebviewWindowBuilder::from_config(app, config)?;
-    #[cfg(debug_assertions)]
-    let builder = if let Some(dir) = std::env::var_os("SAHIB_TEST_DATA_DIR") {
+    #[cfg(feature = "brand-preview")]
+    let builder = builder.title(if config.label == "main" {
+        "Sahib RC · Brand review"
+    } else {
+        "Sahib RC · Prayer timetable"
+    });
+    #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+    let builder = if let Some(dir) = std::env::var_os("SAHIB_TEST_DATA_DIR")
+        .filter(|_| app.config().identifier == "com.sahib.companion.qa")
+    {
         let builder = builder.data_directory(PathBuf::from(dir).join("webview"));
         if let Some(port) = std::env::var("SAHIB_TEST_CDP_PORT")
             .ok()
@@ -159,9 +173,11 @@ pub fn environment_current(app: &tauri::AppHandle) -> bool {
 // Test control disappears from release builds. Only enabled with an explicit,
 // isolated QA data directory; no network listener or ordinary profile access.
 pub fn start_qa_control(app: &tauri::AppHandle) {
-    #[cfg(debug_assertions)]
+    #[cfg(any(debug_assertions, feature = "desktop-qa"))]
     {
-        if std::env::var_os("SAHIB_TEST_DATA_DIR").is_none() {
+        if app.config().identifier != "com.sahib.companion.qa"
+            || std::env::var_os("SAHIB_TEST_DATA_DIR").is_none()
+        {
             return;
         }
         let app = app.clone();
@@ -199,6 +215,26 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                         open_main(&app, true, request["route"].as_str());
                     }
                     "refresh" => request_refresh(&app),
+                    "typography" => {
+                        let scale = request["scale"].as_f64().unwrap_or(1.0);
+                        if ![1.0, 1.25, 1.5, 2.0].contains(&scale) {
+                            return Err("Invalid scale".into());
+                        }
+                        let path = app
+                            .state::<DesktopState>()
+                            .file
+                            .parent()
+                            .unwrap()
+                            .join(format!("typography-{}.bmp", (scale * 100.) as i32));
+                        let h = app.clone();
+                        let (tx, rx) = std::sync::mpsc::channel();
+                        app.run_on_main_thread(move || {
+                            let _ = tx.send(unsafe { native_text::sample(&h, scale, &path) });
+                        })
+                        .map_err(|e| e.to_string())?;
+                        rx.recv_timeout(Duration::from_secs(15))
+                            .map_err(|e| e.to_string())??;
+                    }
                     "panel" => {
                         native_widget::panel(&app, request["monitor"].as_str().unwrap_or("").into())
                     }
@@ -224,7 +260,11 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                             _ => "off",
                         };
                         d.schedule.alerts.push(scheduler::Alert {
-                            id: format!("qa-memory:{}", request["id"]),
+                            id: if request["prayer"].as_bool().unwrap_or(false) {
+                                format!("prayer:qa:{}:time", request["id"])
+                            } else {
+                                format!("qa-memory:{}", request["id"])
+                            },
                             at: now_ms() + 1500,
                             title: "Sahib QA memory test".into(),
                             body: "Experimental background reminder".into(),
@@ -287,7 +327,7 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                     .unwrap()
                     .clone();
                 Ok(
-                    serde_json::json!({"mode":mode(),"mainExists":app.get_webview_window("main").is_some(),"mainVisible":app.get_webview_window("main").is_some_and(|w|w.is_visible().unwrap_or(false)),"webviews":app.webview_windows().keys().cloned().collect::<Vec<_>>(),"native":native,"prefs":d.prefs,"validUntil":d.schedule.valid_until,"fired":d.fired,"audioPlaying":app.state::<DesktopState>().audio.active.load(Ordering::Relaxed),"audioError":*app.state::<DesktopState>().audio.error.lock().unwrap()}),
+                    serde_json::json!({"nativeText":native_text::diagnostics(),"mode":mode(),"mainExists":app.get_webview_window("main").is_some(),"mainVisible":app.get_webview_window("main").is_some_and(|w|w.is_visible().unwrap_or(false)),"webviews":app.webview_windows().keys().cloned().collect::<Vec<_>>(),"native":native,"prefs":d.prefs,"validUntil":d.schedule.valid_until,"fired":d.fired,"audioPlaying":app.state::<DesktopState>().audio.active.load(Ordering::Relaxed),"audioError":*app.state::<DesktopState>().audio.error.lock().unwrap()}),
                 )
             })();
             let response = serde_json::json!({"id":request["id"],"result":result.as_ref().ok(),"error":result.as_ref().err()});
@@ -297,7 +337,7 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
             );
         });
     }
-    #[cfg(not(debug_assertions))]
+    #[cfg(not(any(debug_assertions, feature = "desktop-qa")))]
     let _ = app;
 }
 pub fn command(

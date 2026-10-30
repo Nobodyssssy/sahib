@@ -137,7 +137,8 @@ function closeDetail(){
   });
 }
 
-function inc(id){
+async function inc(id){
+  await store.checkDailyReset();
   const k = `c_${id}`;
   const d = data.find(x => x.id === id);
   counters[k] = (counters[k] || 0) + 1;

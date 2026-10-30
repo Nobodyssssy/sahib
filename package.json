@@ -1,6 +1,6 @@
 {
   "name": "sahib",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
   "description": "Sahib shared web application and Windows desktop host",
   "scripts": {
@@ -11,7 +11,8 @@
     "desktop:test": "cargo test --locked --manifest-path src-tauri/Cargo.toml",
     "predesktop:test": "node tools/prepare-desktop.mjs",
     "desktop:acceptance": "node tools/desktop-acceptance.mjs",
-    "desktop:checksum": "node tools/desktop-checksum.mjs"
+    "desktop:checksum": "node tools/desktop-checksum.mjs",
+    "desktop:build:rc": "node tools/build-windows-rc.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0"

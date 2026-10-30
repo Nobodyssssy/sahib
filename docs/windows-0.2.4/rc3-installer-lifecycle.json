@@ -1,0 +1,19 @@
+{
+  "identity": "com.sahib.companion.rc",
+  "version": "0.2.4-rc.3",
+  "productionTouched": false,
+  "upgradeExit": 0,
+  "installedVersion": "0.2.4-rc.3",
+  "oldProfileRetained": true,
+  "licenses": [
+    "Amiri-OFL.txt",
+    "Tajawal-OFL.txt"
+  ],
+  "uninstallExit": 0,
+  "executableRemoved": true,
+  "shortcutRemoved": true,
+  "dataPreservedAfterUninstall": true,
+  "reinstallExit": 0,
+  "reinstalled": true,
+  "pass": true
+}

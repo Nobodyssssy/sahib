@@ -15,6 +15,8 @@ extern "system" {
     fn ClientToScreen(window: *mut c_void, point: *mut Point) -> i32;
     fn GetCursorPos(point: *mut Point) -> i32;
     fn GetForegroundWindow() -> *mut c_void;
+    fn WindowFromPoint(point: Point) -> *mut c_void;
+    fn GetAncestor(window: *mut c_void, flags: u32) -> *mut c_void;
     fn GetClassNameW(window: *mut c_void, name: *mut u16, count: i32) -> i32;
     fn FindWindowW(class: *const u16, title: *const u16) -> *mut c_void;
     fn FindWindowExW(
@@ -79,6 +81,61 @@ pub fn shell_interaction() -> bool {
             .iter()
             .any(|name| path.ends_with(name))
     }
+}
+// Keep a temporary lifted overlay outside the Start/Search panel itself.
+// Restore the user's saved placement as soon as shell interaction ends.
+pub fn shell_safe_position(
+    mut b: (i32, i32, u32, u32),
+    area: (i32, i32, i32, i32),
+    scale: f64,
+) -> (i32, i32, u32, u32) {
+    let gap = (8. * scale).round() as i32;
+    b.1 = (area.3 - b.3 as i32 - gap).max(area.1);
+    // The shell animates multiple surfaces with different bounds. Begin at
+    // the work-area edge so a centered Start panel cannot immediately cover
+    // a newly lifted widget before the next location event arrives.
+    b.0 = area.0 + gap;
+    unsafe {
+        let mut r = Rect::default();
+        let hit = GetAncestor(
+            WindowFromPoint(Point {
+                x: b.0 + b.2 as i32 / 2,
+                y: b.1 + b.3 as i32 / 2,
+            }),
+            2,
+        );
+        let mut name = [0u16; 128];
+        let n = GetClassNameW(hit, name.as_mut_ptr(), 128);
+        let class = String::from_utf16_lossy(&name[..n.max(0) as usize]);
+        let panel = if matches!(
+            class.as_str(),
+            "Windows.UI.Core.CoreWindow"
+                | "XamlExplorerHostIslandWindow"
+                | "Microsoft.UI.Content.DesktopChildSiteBridge"
+        ) {
+            hit
+        } else {
+            GetForegroundWindow()
+        };
+        if GetWindowRect(panel, &mut r) != 0
+            && b.0 < r.right
+            && b.0 + b.2 as i32 > r.left
+            && b.1 < r.bottom
+            && b.1 + b.3 as i32 > r.top
+        {
+            let candidates = [r.left - gap - b.2 as i32, r.right + gap];
+            if let Some(x) = candidates
+                .into_iter()
+                .filter(|x| *x >= area.0 && *x + b.2 as i32 <= area.2)
+                .min_by_key(|x| (*x - b.0).abs())
+            {
+                b.0 = x;
+            } else if r.top - gap - b.3 as i32 >= area.1 {
+                b.1 = r.top - gap - b.3 as i32;
+            }
+        }
+    }
+    b
 }
 #[repr(C)]
 #[derive(Default)]

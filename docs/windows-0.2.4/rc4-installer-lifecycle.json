@@ -1,0 +1,23 @@
+{
+  "identity": "com.sahib.companion.rc",
+  "version": "0.2.4-rc.4",
+  "productionTouched": false,
+  "upgradeExit": 0,
+  "installedVersion": "0.2.4-rc.4",
+  "installerSHA256": "a4651ce4b875754f3d20b7a5dd7abaab366baad9be844e7ede6845a975ccb499",
+  "installedExeMatchesBuild": true,
+  "bundleMetadata": "Tauri NSIS bundle-type metadata: UNK to NSS (three bytes). All remaining executable bytes must match.",
+  "oldProfileRetained": true,
+  "licenses": [
+    "Amiri-OFL.txt",
+    "Tajawal-OFL.txt"
+  ],
+  "uninstallExit": 0,
+  "executableRemoved": true,
+  "shortcutRemoved": true,
+  "dataPreservedAfterUninstall": true,
+  "reinstallExit": 0,
+  "reinstalled": true,
+  "pass": true,
+  "byteComparisonCompletedAfterReinstall": true
+}

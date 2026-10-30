@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][long]$Handle,[ValidateSet('click','settings','drag')][string]$Action='click')
+param([Parameter(Mandatory=$true)][long]$Handle,[ValidateSet('click','settings','drag','enter','space','f10')][string]$Action='click')
 Add-Type @'
 using System;using System.Runtime.InteropServices;
 public static class SahibNativeInput {
@@ -6,11 +6,13 @@ public static class SahibNativeInput {
  [DllImport("user32.dll")]public static extern IntPtr SendMessage(IntPtr w,uint m,IntPtr a,IntPtr b);
  [DllImport("user32.dll")]public static extern bool GetCursorPos(out Point p);
  [DllImport("user32.dll")]public static extern bool SetCursorPos(int x,int y);
+ [DllImport("user32.dll")]public static extern bool SetForegroundWindow(IntPtr w);
 }
 '@
 $point=New-Object SahibNativeInput+Point;[void][SahibNativeInput]::GetCursorPos([ref]$point)
 try{
- if($Action -eq 'settings'){[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x205,[IntPtr]::Zero,[IntPtr]::Zero)}
+ if($Action -in @('enter','space','f10')){[void][SahibNativeInput]::SetForegroundWindow([IntPtr]$Handle);$key=if($Action -eq 'enter'){13}elseif($Action -eq 'space'){32}else{121};[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x100,[IntPtr]$key,[IntPtr]::Zero)}
+ elseif($Action -eq 'settings'){[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x205,[IntPtr]::Zero,[IntPtr]::Zero)}
  else{
   [void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x201,[IntPtr]1,[IntPtr]::Zero)
   if($Action -eq 'drag'){[void][SahibNativeInput]::SetCursorPos(($point.x+45),$point.y)}

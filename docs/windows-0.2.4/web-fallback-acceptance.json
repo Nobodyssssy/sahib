@@ -1,0 +1,478 @@
+{
+  "started": "2026-10-30T13:54:28.597Z",
+  "commit": "2cf726f34200d9407d8be326824bfbf7170b14f6",
+  "dirty": true,
+  "tests": [
+    {
+      "name": "Separate QA identity",
+      "pass": true
+    },
+    {
+      "name": "Packaged app ready",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click practice",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click cats",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click hijri",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click asma",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click books",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click tasbih",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Sidebar click home",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings click opens dialog",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click prayer",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click alerts",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click data",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click about",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings tab click appearance",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Theme button click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Settings close button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Search button",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Adhkar page reopens",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Generated category click",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "No blocked event handlers",
+      "pass": true,
+      "suite": "tests/desktop-navigation.js"
+    },
+    {
+      "name": "Desktop adapter loaded",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich summer offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich winter offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Tokyo offset",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition before rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Zurich DST transition after rollback",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Offline cache refreshes after a device timezone change",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native schedule extends beyond a month",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Widget has future prayers",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Browser SW disabled",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native settings present",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Native PDF reader",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Arbitrary audio paths rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "External non-web schemes rejected",
+      "pass": true,
+      "suite": "tests/desktop-smoke.js"
+    },
+    {
+      "name": "Settings changed during schedule preparation",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Old schedule cannot re-enable disabled prayer alerts",
+      "pass": true,
+      "suite": "tests/desktop-cancellation.js"
+    },
+    {
+      "name": "Chime reminders work without unused imported recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Widget timetable survives missing unused recordings",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "No missing-recording error for chime-only reminders",
+      "pass": true,
+      "suite": "tests/desktop-chime-schedule.js"
+    },
+    {
+      "name": "Sunday previews the Monday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Wednesday previews the Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Ordinary Friday does not preview a Monday or Thursday fast",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Hijri day 12 previews the white days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Excluded Tashriq day is not suggested for fasting",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget has six daily prayer markers including sunrise",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Widget calendar boundaries include DST days",
+      "pass": true,
+      "suite": "tests/desktop-widget-reminders.js"
+    },
+    {
+      "name": "Disabled prayer alerts are explicit",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Timing controls cannot imply active alerts",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Explicit Adhan setup is available",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup enables master and at-time playback",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup keeps volume and recordings",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Notifications remain an explicit choice",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Adhan setup reaches the native schedule",
+      "pass": true,
+      "suite": "tests/desktop-alert-setup.js"
+    },
+    {
+      "name": "Daily reset synchronizes live counters",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Daily reset persists the current local date",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Same-day progress is retained",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Pending counter save cannot restore yesterday counts",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Returning to an open app resets the previous day",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Morning shortcut opens morning collection",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Evening shortcut opens evening collection",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Timer rejects an invalid interval",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Native timer starts and persists focus/repeat",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Timer restarts with the same duration",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Stopping timer clears focus and deadline",
+      "pass": true,
+      "suite": "tests/desktop-daily-reset.js"
+    },
+    {
+      "name": "Sahib dark enabled switch has contrasting thumb",
+      "pass": true
+    },
+    {
+      "name": "Widget uses the shared next prayer",
+      "pass": true
+    },
+    {
+      "name": "Widget receives a small presentation packet",
+      "pass": true,
+      "detail": "{\"full\":35813,\"widget\":2502}"
+    },
+    {
+      "name": "Countdown ticks retain prayer and reminder elements",
+      "pass": true
+    },
+    {
+      "name": "Expired timetable asks to refresh instead of showing stale prayers",
+      "pass": true
+    },
+    {
+      "name": "Native clock-change event rebuilds the shared timetable",
+      "pass": true
+    },
+    {
+      "name": "Widget cannot invoke main-only commands",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget sahib dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget aura dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget dracula dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget catppuccin dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget rose-pine dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget tokyo-night dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows light appearance",
+      "pass": true
+    },
+    {
+      "name": "Widget windows dark appearance",
+      "pass": true
+    },
+    {
+      "name": "Taskbar compact view",
+      "pass": true
+    },
+    {
+      "name": "Native widget sits inside the primary taskbar",
+      "pass": true,
+      "detail": "{\"taskbar\":[0,1380,2560,1440],\"widget\":[263,1380,300,60]}"
+    },
+    {
+      "name": "Taskbar reminder fits without clipping",
+      "pass": true
+    },
+    {
+      "name": "Click opens full taskbar timetable",
+      "pass": true
+    },
+    {
+      "name": "Taskbar close collapses without hiding",
+      "pass": true
+    },
+    {
+      "name": "Arabic taskbar panel uses RTL",
+      "pass": true
+    },
+    {
+      "name": "Widget settings button opens native controls",
+      "pass": true
+    },
+    {
+      "name": "Main window closes to tray",
+      "pass": true
+    },
+    {
+      "name": "Native event fires while the main window is hidden",
+      "pass": true
+    },
+    {
+      "name": "Start minimized survives restart",
+      "pass": true
+    },
+    {
+      "name": "Widget preferences survive restart",
+      "pass": true
+    },
+    {
+      "name": "Fired-event ledger survives restart",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "audioHardware": false,
+  "startupSamplesMs": [
+    1602,
+    677
+  ],
+  "finished": "2026-10-30T13:55:11.585Z",
+  "pass": true
+}

@@ -2,7 +2,7 @@
 /* Platform adapter. This file is injected only into the packaged desktop entry. */
 window.SahibDesktop=(()=>{
  const available=!!window.__TAURI__,invoke=(name,args)=>window.__TAURI__.core.invoke(name,args);
- let started=false,busy=false,again=false,revision=0,timer,state=null,lastError='',audioPlaying=false,retiring=false;
+ let started=false,busy=false,again=false,revision=0,timer,state=null,lastError='',audioPlaying=false,retiring=false,pendingImports=0;
  const imported=new Map(),ar=()=>window.SAHIB_I18N?.language==='ar',text=(en,arabic)=>ar()?arabic:en;
  const nameAR={Fajr:'الفجر',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'};
  function error(err){lastError=String(err?.message||err);console.warn('[desktop]',lastError);if(typeof toast==='function')toast(text('Windows: ','ويندوز: ')+lastError,'alert');}
@@ -57,7 +57,7 @@ window.SahibDesktop=(()=>{
  function queueSync(){if(retiring)return;revision++;clearTimeout(timer);timer=setTimeout(sync,450);}
  async function invalidateAlerts(){revision++;try{await refresh();await invoke('desktop_sync_schedule',{schedule:{...state.schedule,alerts:[],prayers:state.schedule.prayers.filter(p=>p.at>Date.now())}});}catch(err){error(err);}queueSync();}
  async function preview(kind,volume,prefs){try{prefs=prefs||await getPrayerPrefs();await invoke('desktop_preview_audio',{id:await sound(kind,prefs),volume:Number(volume??prefs.alerts.volume)});audioPlaying=true;return true;}catch(err){error(err);return false;}}
- async function preferences(key,value){try{await refresh();const args={prefs:{...state.prefs},autostart:null};if(key==='autostart')args.autostart=value;else args.prefs[key]=value;if(key==='widgetMode'&&value==='taskbar')args.prefs.widgetVisible=true;if(key==='widgetOffset'&&args.prefs.widgetEdge==='right'){args.prefs.widgetRightOffset=value;args.prefs.widgetOffset=state.prefs.widgetOffset;}if(key==='widgetOffset'&&args.prefs.widgetEdge==='manual'){const name=state.widgetViews?.widget?.monitor;args.prefs.widgetPositions={...args.prefs.widgetPositions,[name]:value};}await invoke('desktop_set_preferences',args);await refresh();if(_settingsTab==='desktop')await settings();}catch(err){error(err);}}
+ async function preferences(key,value){try{await refresh();const args={prefs:{...state.prefs},autostart:null};if(key==='autostart')args.autostart=value;else args.prefs[key]=value;if(key==='widgetMode'&&value==='taskbar')args.prefs.widgetVisible=true;if(key==='widgetOffset'&&args.prefs.widgetEdge==='right'){args.prefs.widgetRightOffset=value;args.prefs.widgetOffset=state.prefs.widgetOffset;}if(key==='widgetOffset'&&args.prefs.widgetEdge==='manual'){const name=(state.widgetViews?.widget||state.nativeWidgetViews?.["native-widget"])?.monitor;args.prefs.widgetPositions={...args.prefs.widgetPositions,[name]:value};}await invoke('desktop_set_preferences',args);await refresh();if(_settingsTab==='desktop')await settings();}catch(err){error(err);}}
  async function enableAdhan(){
   const perPrayer=Object.fromEntries(Object.keys(nameAR).map(name=>[name,{mode:'adhan',alert:true,sound:true}]));
   await savePrayerPrefs({alerts:{enabled:true,atTime:true,perPrayer}});await sync();if(_settingsTab==='alerts')await renderSettingsBody();
@@ -69,17 +69,18 @@ window.SahibDesktop=(()=>{
   const section=(title,content)=>'<section class="settings-card"><h3>'+title+'</h3>'+content+'</section>';
   const note=value=>'<p class="settings-note">'+value+'</p>';
   const number=(key,label,value,min,max)=>'<label class="desktop-option"><span>'+label+'</span><input type="number" min="'+min+'" max="'+max+'" value="'+value+'" data-desktop-pref="'+key+'"></label>';
-  const primary=state.widgetViews?.widget,manual=p.widgetPositions?.[primary?.monitor]??p.widgetOffset;
+  const primary=state.widgetViews?.widget||state.nativeWidgetViews?.['native-widget'],manual=p.widgetPositions?.[primary?.monitor]??p.widgetOffset;
   const placement=check('widgetVisible','Show prayer widget','إظهار أداة الصلاة')+
+   (state.nativeAvailable?select('widgetRenderer','Compact widget mode','وضع الأداة المصغرة',[['native',text('Lightweight Windows widget','أداة ويندوز خفيفة')],['web',text('Compatibility mode','وضع التوافق')]])+note(text('Lightweight mode uses less memory. Compatibility mode keeps the previous widget available. An active session, open book or unfinished edit stays ready when you close the window.','يستخدم الوضع الخفيف ذاكرة أقل. يتيح وضع التوافق استخدام الأداة السابقة. تبقى الجلسة النشطة والكتاب المفتوح والتعديل غير المكتمل محفوظة عند إغلاق النافذة.')):'')+
    select('widgetMode','Placement','الموضع',[['floating',text('Floating widget','أداة عائمة')],['taskbar',text('Taskbar overlay','أداة فوق شريط المهام')]])+
    select('widgetMonitor','Displays','الشاشات',[['primary',text('Primary display','الشاشة الرئيسية')],['all',text('All taskbar displays','كل شاشات شريط المهام')],...(state.monitors||[]).map(n=>[n,n])])+
    select('widgetEdge','Position','الموضع',[['left',text('Left','اليسار')],['right',text('Before notification area','قبل منطقة الإشعارات')],['manual',text('Manual — drag on each display','يدوي — اسحب في كل شاشة')]])+
    number('widgetOffset',text(p.widgetEdge==='manual'?'Position on this display (px)':'Extra spacing (px)',p.widgetEdge==='manual'?'الموضع في هذه الشاشة (بكسل)':'المسافة الإضافية (بكسل)'),p.widgetEdge==='manual'?Math.round(manual):p.widgetEdge==='right'?p.widgetRightOffset:p.widgetOffset,0,4000)+
    note(text('Drag the compact widget along the taskbar to position it. Each display remembers its own position. If space is insufficient, Sahib uses a floating card.','اسحب الأداة المصغّرة على شريط المهام لتحديد موضعها. يُحفظ موضع مستقل لكل شاشة. عند ضيق المساحة تُستخدم بطاقة عائمة.'))+
    '<button class="io-btn" id="desktop-reset-position">'+text('Reset taskbar positions','إعادة ضبط مواضع شريط المهام')+'</button>';
-  const appearance=select('widgetTheme','Appearance','المظهر',[['app',text('Follow Sahib','اتباع صاحب')],['windows',text('Windows style','نمط ويندوز')],...SAHIB_THEME.THEMES.map(t=>[t.id,t.label])])+
+  const appearance=select('widgetStyle','Compact design','تصميم الأداة',[['landmark',text('Landmark','المئذنة')],['minimal',text('Minimal','بسيط')],['ribbon',text('Accent ribbon','شريط اللون')]])+check('widgetShowSeconds','Show seconds','إظهار الثواني')+select('widgetTheme','Appearance','المظهر',[['app',text('Follow Sahib','اتباع صاحب')],['windows',text('Windows style','نمط ويندوز')],...SAHIB_THEME.THEMES.map(t=>[t.id,t.label])])+
    '<label class="desktop-option"><span>'+text('Frame opacity','عتامة الإطار')+'</span><input type="range" min="50" max="100" step="5" value="'+Math.round(p.widgetOpacity*100)+'" data-desktop-pref="widgetOpacity"></label>'+
-   note(text('The panel and prayer cards stay opaque for readability; opacity adjusts the frame.','تبقى اللوحة وبطاقات الصلاة معتمة لسهولة القراءة؛ يتحكم الإعداد في الإطار.'))+
+   note(text('The panel and prayer cards stay opaque for readability; opacity adjusts the frame.','تبقى اللوحة وبطاقات الصلاة معتمة لسهولة القراءة؛ يتحكم الإعداد في الإطار.'))+(state.nativeAvailable?note(text('The lightweight compact widget stays at least 90% opaque for readable text.','تبقى عتامة الأداة الخفيفة ٩٠٪ على الأقل لسهولة قراءة النص.')):'')+
    check('widgetReminders','Show daily practice and fasting prompts','إظهار الورد وتذكيرات الصيام')+
    number('widgetWarningMinutes',text('Highlight prayer within (minutes)','إبراز الصلاة خلال (دقائق)'),p.widgetWarningMinutes,1,60);
   const startup=check('closeToTray','Keep reminders running when I close the window','استمرار التنبيهات عند إغلاق النافذة')+
@@ -104,7 +105,8 @@ window.SahibDesktop=(()=>{
    SETTINGS_TABS.push('desktop');const button=document.createElement('button');button.type='button';button.className='settings-tab';button.dataset.settingsTab='desktop';button.setAttribute('role','tab');button.textContent=text('Windows','ويندوز');button.onclick=()=>setSettingsTab('desktop');document.getElementById('settings-tabs').append(button);
    const render=renderSettingsBody;renderSettingsBody=async()=>_settingsTab==='desktop'?settings():render();
    const removeAudio=clearLocalAdhan;clearLocalAdhan=async kind=>{await removeAudio(kind);if(!await store.getMeta(ADHAN_LOCAL_KEYS[kind])){await invoke('desktop_remove_audio',{kind});imported.delete(kind);}};
-   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.2.3','صاحب لويندوز · نسخة تجريبية 0.2.3')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
+   const importAudio=importAdhanFile;importAdhanFile=async(...args)=>{pendingImports++;try{return await importAudio(...args);}finally{pendingImports--;}};
+   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · Preview 0.2.4','صاحب لويندوز · نسخة تجريبية 0.2.4')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
    const alertsHTML=_alertsHTML;_alertsHTML=async()=>{
     const html=await alertsHTML(),prefs=await getPrayerPrefs(),a=prefs.alerts,template=document.createElement('template');template.innerHTML=html;
     const timing=template.content.querySelector('.alert-setting-grid');timing?.querySelectorAll('button,select,input').forEach(control=>control.disabled=!a.enabled);
@@ -151,7 +153,7 @@ window.SahibDesktop=(()=>{
      if(retiring)return;retiring=true;clearTimeout(timer);
      try{
       // Keep an unfinished editor alive rather than silently discarding its draft.
-      if(document.querySelector('#ov-form.open,#ov-editcat.open')){retiring=false;return;}
+      if(pendingImports||document.querySelector('#ov-form.open,#ov-editcat.open,#session-overlay.open,#reader-overlay.open')){retiring=false;return;}
       const deadline=Date.now()+30000;while(busy&&Date.now()<deadline)await new Promise(r=>setTimeout(r,50));
       if(busy)throw Error('Schedule preparation still running; main view kept loaded');
       await sync();clearTimeout(timer);

@@ -27,7 +27,9 @@ try{
   }
   await windows.command({mode:'normal'});
   const primary=(await control('status')).native['native-widget'];
-  await windows.command({cursorX:600,cursorY:400});await windows.command({autoHide:true});await sleep(1800);record('Native compact follows taskbar auto-hide',!(await control('status')).native['native-widget'].visible);
+  await windows.command({autoHide:true});await windows.command({mode:'normal'});await windows.command({cursorX:600,cursorY:400});
+  for(let i=0;i<40;i++){report.autoHide=(await control('status')).native['native-widget'];if(!report.autoHide.visible)break;await sleep(200);}
+  record('Native compact follows taskbar auto-hide',!report.autoHide.visible,report.autoHide);
   await windows.command({cursorX:Math.round((primary.bar[0]+primary.bar[2])/2),cursorY:primary.bar[3]-1});await sleep(1000);record('Native compact returns on taskbar hover',(await control('status')).native['native-widget'].visible);await windows.command({autoHide:false});await windows.command({mode:'normal'});
   if(process.argv.includes('--restart-explorer')){report.explorerRestart=ps('tools/restart-taskbar-qa.ps1');await sleep(3000);state=await control('status');report.afterExplorer=state;for(const[label,v]of Object.entries(state.native)){const p=probe(v,label+'-after-explorer.png');record(label+' survives actual Explorer restart',v.visible&&p.visible&&!p.coveredByTaskbar&&p.hitHandle===p.handle,p);}}
   const tray=ps('tools/inspect-qa-tray.ps1',['-RootProcess',String(qa.app.pid),'-ClickOpen']);record('Tray icon remains registered and opens main',tray.registered&&tray.clicked);const trayMain=await qa.connect('main');await qa.waitReady(trayMain);await trayMain.evaluate('window.__TAURI__.window.getCurrentWindow().close()');trayMain.close();for(let i=0;i<100&&(await control('status')).mainExists;i++)await sleep(100);await windows.command({mode:'normal'});record('Tray reopen can return to native-only background',(await control('status')).webviews.length===0);

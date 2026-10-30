@@ -1,0 +1,21 @@
+{
+  "authoritativeSource": "index.html .sahib-mark",
+  "text": "صاحب",
+  "font": "assets/fonts/Amiri-Regular.woff2",
+  "fontSHA256": "0d23e3fcdadc995db12650b30c3dcdedafc57e8daf4fbd016b6dae17bc59348d",
+  "fontLicense": "assets/fonts/licenses/amiri-OFL.txt",
+  "shaper": "HarfBuzz via uharfbuzz",
+  "cropUsed": false,
+  "productionAssetsReplaced": false,
+  "icoSizes": [
+    16,
+    20,
+    24,
+    32,
+    40,
+    48,
+    64,
+    128,
+    256
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "identity": "com.sahib.companion.rc",
+  "checks": [
+    {
+      "name": "Installed RC4 identity/version",
+      "pass": true
+    },
+    {
+      "name": "Installed landmark visible",
+      "pass": true
+    },
+    {
+      "name": "Installed minimal visible",
+      "pass": true
+    },
+    {
+      "name": "Installed ribbon visible",
+      "pass": true
+    },
+    {
+      "name": "Installed timer and hh:mm controls",
+      "pass": true
+    },
+    {
+      "name": "Installed Arabic timer interface",
+      "pass": true
+    },
+    {
+      "name": "Installed background has no WebView2",
+      "pass": true
+    }
+  ],
+  "accessible": {
+    "name": "Next prayer Maghrib. Time ⁦17:12⁩. Remaining ⁦02:00⁩",
+    "automationId": "native-widget",
+    "controlType": "ControlType.Button",
+    "help": "Press Enter or Space for prayer times. Press F10 for Settings. Focus from the Sahib tray menu.",
+    "keyboardFocusable": true,
+    "enabled": true,
+    "offscreen": false,
+    "bounds": "539,1380,300,60",
+    "invokeSupported": true
+  },
+  "memory": {
+    "durationSeconds": 17.426,
+    "logicalProcessors": 16,
+    "cpuSystemPercent": 0.02802027143349019,
+    "cpuOneCorePercent": 0.44832434293584306,
+    "meanWorkingSetMiB": 84.501953125,
+    "meanPrivateWorkingSetMiB": 19.154296875,
+    "meanPrivateCommitMiB": 63.71875,
+    "note": "Actual installed optimized RC4, without desktop-qa feature. Runtime CDP enabled only for verification. Sahib host plus all descendant WebView2 processes. Summed working sets may double-count shared pages; private commit is not resident RAM. CPU deltas use PID plus creation time; processes that exit between samples are not captured. ",
+    "samples": [
+      {
+        "at": 1793369490995,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 45916,
+            "parentId": 26372,
+            "created": "639289662712159283",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 0.859375,
+            "workingSet": 88625152,
+            "privateWorkingSet": 20094976,
+            "privateCommit": 66834432
+          }
+        ]
+      },
+      {
+        "at": 1793369496803,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 45916,
+            "parentId": 26372,
+            "created": "639289662712159283",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 0.890625,
+            "workingSet": 88625152,
+            "privateWorkingSet": 20094976,
+            "privateCommit": 66834432,
+            "intervalCpuSeconds": 0.03125,
+            "cpuOneCorePercent": 0.5380509641873279
+          }
+        ]
+      },
+      {
+        "at": 1793369502617,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 45916,
+            "parentId": 26372,
+            "created": "639289662712159283",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 0.921875,
+            "workingSet": 88588288,
+            "privateWorkingSet": 20074496,
+            "privateCommit": 66793472,
+            "intervalCpuSeconds": 0.03125,
+            "cpuOneCorePercent": 0.5374957000343997
+          }
+        ]
+      },
+      {
+        "at": 1793369508421,
+        "cores": 16,
+        "processes": [
+          {
+            "id": 45916,
+            "parentId": 26372,
+            "created": "639289662712159283",
+            "name": "sahib-desktop",
+            "role": "host",
+            "cpu": 0.9375,
+            "workingSet": 88588288,
+            "privateWorkingSet": 20074496,
+            "privateCommit": 66793472,
+            "intervalCpuSeconds": 0.015625,
+            "cpuOneCorePercent": 0.26921088904204
+          }
+        ]
+      }
+    ]
+  },
+  "pass": true
+}

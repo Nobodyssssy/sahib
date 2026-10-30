@@ -2,8 +2,13 @@ mod audio;
 #[cfg(feature = "native-widget-experiment")]
 mod experiment;
 #[cfg(feature = "native-widget-experiment")]
+mod native_accessibility;
+#[cfg(feature = "native-widget-experiment")]
+mod native_text;
+#[cfg(feature = "native-widget-experiment")]
 mod native_widget;
 mod scheduler;
+mod session_timer;
 mod taskbar;
 mod widget_watch;
 use audio::{AudioJob, NativeAudio};
@@ -56,7 +61,10 @@ struct DesktopPrefs {
     widget_click_through: bool,
     widget_position: Option<(i32, i32)>,
     widget_mode: String,
+    widget_renderer: String,
     widget_theme: String,
+    widget_style: String,
+    widget_show_seconds: bool,
     widget_monitor: String,
     widget_offset: i32,
     widget_right_offset: i32,
@@ -76,7 +84,10 @@ impl Default for DesktopPrefs {
             widget_click_through: false,
             widget_position: None,
             widget_mode: "floating".into(),
+            widget_renderer: "native".into(),
             widget_theme: "app".into(),
+            widget_style: "landmark".into(),
+            widget_show_seconds: true,
             widget_monitor: "primary".into(),
             widget_offset: 210,
             widget_right_offset: 0,
@@ -93,6 +104,7 @@ struct DiskState {
     prefs: DesktopPrefs,
     schedule: Schedule,
     fired: HashMap<String, i64>,
+    timer: session_timer::SessionTimer,
 }
 struct DesktopState {
     disk: Mutex<DiskState>,
@@ -102,6 +114,7 @@ struct DesktopState {
     widget_expanded: AtomicBool,
     widget_views: Mutex<HashMap<String, WidgetView>>,
     creating_widgets: AtomicBool,
+    timer_popup_pending: AtomicBool,
     widget_diagnostics: Mutex<widget_watch::Diagnostics>,
 }
 #[derive(Clone, Serialize)]
@@ -189,8 +202,10 @@ fn build_extra_widget(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> 
         .clone();
     config.label = label.into();
     let builder = tauri::WebviewWindowBuilder::from_config(app, &config)?;
-    #[cfg(debug_assertions)]
-    let builder = if let Some(dir) = std::env::var_os("SAHIB_TEST_DATA_DIR") {
+    #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+    let builder = if let Some(dir) = std::env::var_os("SAHIB_TEST_DATA_DIR")
+        .filter(|_| app.config().identifier == "com.sahib.companion.qa")
+    {
         let builder = builder.data_directory(PathBuf::from(dir).join("webview"));
         if let Ok(port) = std::env::var("SAHIB_TEST_CDP_PORT") {
             builder.additional_browser_args(&format!("--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --remote-debugging-port={port} --enable-logging=stderr"))
@@ -249,6 +264,19 @@ fn ensure_widget_windows(app: &tauri::AppHandle, p: &DesktopPrefs) {
     state.creating_widgets.store(false, Ordering::Release);
 }
 fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    #[cfg(feature = "native-widget-experiment")]
+    if experiment::mode() != "keep" && !p.widget_visible {
+        app.state::<DesktopState>()
+            .widget_expanded
+            .store(false, Ordering::Relaxed);
+        for (label, w) in app.webview_windows() {
+            if is_widget(&label) {
+                let _ = w.destroy();
+            }
+        }
+        native_widget::apply(app, p);
+        return;
+    }
     #[cfg(feature = "native-widget-experiment")]
     if native_widget::active(app) {
         native_widget::apply(app, p);
@@ -449,7 +477,7 @@ fn apply_rich_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
         };
         let shell_active = taskbar::shell_interaction();
         if docked && !view.expanded && shell_active && view.shell_lifted {
-            target.1 = (area.3 - target.3 as i32 - (8. * scale) as i32).max(area.1);
+            target = taskbar::shell_safe_position(target, area, scale);
         } else {
             view.shell_lifted = false;
         }
@@ -554,7 +582,7 @@ fn apply_rich_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
                     && shell_active
                     && widget_watch::observe(handle).covered_by_taskbar
                 {
-                    target.1 = (area.3 - target.3 as i32 - (8. * scale) as i32).max(area.1);
+                    target = taskbar::shell_safe_position(target, area, scale);
                     let _ = w.set_position(tauri::PhysicalPosition::new(target.0, target.1));
                     view.bounds = Some(target);
                     view.shell_lifted = true;
@@ -605,6 +633,27 @@ fn position_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
         }
     }
 }
+
+#[cfg(feature = "brand-preview")]
+fn candidate_tray_image(app: &tauri::AppHandle) -> tauri::Result<tauri::image::Image<'static>> {
+    let size = (16.
+        * app
+            .primary_monitor()
+            .ok()
+            .flatten()
+            .map(|m| m.scale_factor())
+            .unwrap_or(1.))
+    .round() as u32;
+    let bytes: &[u8] = match size {
+        0..=16 => include_bytes!("../../branding/sahib-0.2.4/tray-16.png"),
+        17..=20 => include_bytes!("../../branding/sahib-0.2.4/tray-20.png"),
+        21..=24 => include_bytes!("../../branding/sahib-0.2.4/tray-24.png"),
+        25..=32 => include_bytes!("../../branding/sahib-0.2.4/tray-32.png"),
+        _ => include_bytes!("../../branding/sahib-0.2.4/tray-48.png"),
+    };
+    tauri::image::Image::from_bytes(bytes)
+}
+
 fn make_menu(app: &tauri::AppHandle, ar: bool) -> tauri::Result<Menu<tauri::Wry>> {
     let text = |en, arabic| if ar { arabic } else { en };
     let show = MenuItem::with_id(
@@ -642,7 +691,14 @@ fn make_menu(app: &tauri::AppHandle, ar: bool) -> tauri::Result<Menu<tauri::Wry>
         true,
         None::<&str>,
     )?;
-    Menu::with_items(app, &[&show, &widget, &unlock, &stop, &quit])
+    let focus = MenuItem::with_id(
+        app,
+        "focus-widget",
+        text("Focus prayer widget", "الانتقال إلى أداة الصلاة"),
+        true,
+        None::<&str>,
+    )?;
+    Menu::with_items(app, &[&show, &widget, &focus, &unlock, &stop, &quit])
 }
 fn play(app: &tauri::AppHandle, id: &str, volume: f32) -> Result<(), String> {
     if !volume.is_finite() || !(0.0..=1.0).contains(&volume) {
@@ -687,9 +743,14 @@ fn desktop_state(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
     let diagnostic_snapshot =
         serde_json::to_value(&*state.widget_diagnostics.lock().unwrap()).unwrap();
     let view_snapshot = state.widget_views.lock().unwrap().clone();
+    #[cfg(not(feature = "native-widget-experiment"))]
+    let native_views = serde_json::Value::Null;
+    #[cfg(feature = "native-widget-experiment")]
+    let native_views =
+        serde_json::to_value(&*app.state::<native_widget::State>().views.lock().unwrap()).unwrap();
     let widget_windows:Vec<_>=app.webview_windows().into_iter().filter(|(label,_)|is_widget(label)).map(|(label,w)|serde_json::json!({"label":label,"visible":w.is_visible().unwrap_or(false),"position":w.outer_position().ok(),"size":w.inner_size().ok(),"scale":w.scale_factor().ok()})).collect();
     Ok(
-        serde_json::json!({"widgetDiagnostics":diagnostic_snapshot,"widgetLogPath":state.file.parent().unwrap().join("widget-diagnostics.jsonl"),"widgetWindows":widget_windows,"widgetViews":view_snapshot,"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.available_monitors().unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
+        serde_json::json!({"nativeAvailable":cfg!(feature = "native-widget-experiment"),"nativeWidgetViews":native_views,"widgetDiagnostics":diagnostic_snapshot,"widgetLogPath":state.file.parent().unwrap().join("widget-diagnostics.jsonl"),"widgetWindows":widget_windows,"widgetViews":view_snapshot,"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"timer":d.timer,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.available_monitors().unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
     )
 }
 #[tauri::command]
@@ -744,6 +805,8 @@ async fn desktop_set_preferences(
         ]
         .contains(&prefs.widget_theme.as_str())
         || !["left", "right", "manual"].contains(&prefs.widget_edge.as_str())
+        || !["native", "web"].contains(&prefs.widget_renderer.as_str())
+        || !["landmark", "minimal", "ribbon"].contains(&prefs.widget_style.as_str())
         || prefs.widget_monitor.len() > 200
     {
         return Err("Invalid widget preferences".into());
@@ -805,7 +868,7 @@ fn desktop_widget_state(
         .filter(|d| d.end > now && d.start < now + 2 * 86400000)
         .take(2)
         .collect();
-    let mut value = serde_json::json!({"prefs":d.prefs,"schedule":{"prayers":prayers,"widgetDays":days,"language":d.schedule.language,"theme":d.schedule.theme,"location":d.schedule.location,"validUntil":d.schedule.valid_until},"audioPlaying":state.audio.active.load(Ordering::Relaxed)});
+    let mut value = serde_json::json!({"timer":d.timer,"prefs":d.prefs,"schedule":{"prayers":prayers,"widgetDays":days,"language":d.schedule.language,"theme":d.schedule.theme,"location":d.schedule.location,"validUntil":d.schedule.valid_until},"audioPlaying":state.audio.active.load(Ordering::Relaxed)});
     drop(d);
     let mut view = state
         .widget_views
@@ -962,6 +1025,43 @@ fn desktop_widget_action(
 #[tauri::command]
 fn desktop_show_main(app: tauri::AppHandle) {
     show_main(&app)
+}
+
+#[tauri::command]
+fn desktop_timer(
+    window: tauri::WebviewWindow,
+    app: tauri::AppHandle,
+    action: String,
+    seconds: Option<u32>,
+    repeat: Option<bool>,
+    focus: Option<bool>,
+) -> Result<(), String> {
+    if !is_widget(window.label()) && window.label() != "main" {
+        return Err("Local widget only".into());
+    }
+    let state = app.state::<DesktopState>();
+    let mut d = state.disk.lock().map_err(|e| e.to_string())?;
+    match action.as_str() {
+        "start" => d.timer.start(
+            seconds.unwrap_or(300),
+            repeat.unwrap_or(false),
+            focus.unwrap_or(false),
+            now_ms(),
+        )?,
+        "restart" => {
+            let old = d.timer.clone();
+            d.timer
+                .start(old.seconds.max(10), old.repeat, old.focus, now_ms())?;
+        }
+        "stop" => d.timer = session_timer::SessionTimer::default(),
+        "dismiss" => d.timer.finished = false,
+        _ => return Err("Unknown timer action".into()),
+    }
+    state.save(&d)?;
+    drop(d);
+    state.timer_popup_pending.store(false, Ordering::Relaxed);
+    emit_state(&app);
+    Ok(())
 }
 #[tauri::command]
 fn desktop_experiment(
@@ -1123,11 +1223,25 @@ fn start_scheduler(app: tauri::AppHandle) {
             let state = app.state::<DesktopState>();
             let (due, tooltip) = {
                 let Ok(mut d) = state.disk.lock() else { break };
+                let timer_due = d.timer.tick(now);
+                let quiet = d.timer.quiet(now);
+                if timer_due {
+                    state.timer_popup_pending.store(true, Ordering::Relaxed);
+                }
                 let DiskState {
                     schedule, fired, ..
                 } = &mut *d;
-                let due = scheduler::take_due(schedule, fired, now);
-                if !due.is_empty() || state.position_dirty.swap(false, Ordering::Relaxed) {
+                let (due, consumed_alerts) = if quiet {
+                    scheduler::take_due_with_focus(schedule, fired, now, true)
+                } else {
+                    let due = scheduler::take_due(schedule, fired, now);
+                    let consumed = !due.is_empty();
+                    (due, consumed)
+                };
+                if timer_due
+                    || consumed_alerts
+                    || state.position_dirty.swap(false, Ordering::Relaxed)
+                {
                     if let Err(e) = state.save(&d) {
                         eprintln!("[desktop] State save failed: {e}");
                     }
@@ -1154,6 +1268,70 @@ fn start_scheduler(app: tauri::AppHandle) {
                     });
                 (due, tooltip)
             };
+            if state.timer_popup_pending.load(Ordering::Relaxed) {
+                let monitor = app.primary_monitor().ok().flatten();
+                if let Some(m) = monitor {
+                    let pos = m.position();
+                    let size = m.size();
+                    if !taskbar::fullscreen(
+                        (
+                            pos.x,
+                            pos.y,
+                            pos.x + size.width as i32,
+                            pos.y + size.height as i32,
+                        ),
+                        0,
+                    ) {
+                        if state.timer_popup_pending.swap(false, Ordering::Relaxed) {
+                            let (p, ar) = {
+                                let d = state.disk.lock().unwrap();
+                                (d.prefs.clone(), d.schedule.language == "ar")
+                            };
+                            let _ = app
+                                .notification()
+                                .builder()
+                                .title(if ar {
+                                    "انتهى المؤقت"
+                                } else {
+                                    "Session timer finished"
+                                })
+                                .body(if ar {
+                                    "أعد تشغيله أو غيّر المدة أو أوقفه من الأداة."
+                                } else {
+                                    "Restart, change the duration or stop from the widget."
+                                })
+                                .show();
+                            if !state.audio.active.load(Ordering::Relaxed)
+                                && !due.iter().any(|e| e.sound != "off")
+                            {
+                                let _ = play(&app, "chime", 0.35);
+                            }
+                            if p.widget_visible {
+                                #[cfg(feature = "native-widget-experiment")]
+                                if native_widget::active(&app) {
+                                    native_widget::panel(
+                                        &app,
+                                        m.name().cloned().unwrap_or_default(),
+                                    );
+                                }
+                                if let Some(w) = app.get_webview_window("widget") {
+                                    state.widget_expanded.store(true, Ordering::Relaxed);
+                                    state
+                                        .widget_views
+                                        .lock()
+                                        .unwrap()
+                                        .entry("widget".into())
+                                        .or_default()
+                                        .expanded = true;
+                                    apply_widget(&app, &p);
+                                    let _ = w.set_focus();
+                                }
+                            }
+                            emit_state(&app);
+                        }
+                    }
+                }
+            }
             #[cfg(feature = "native-widget-experiment")]
             if native_widget::active(&app) {
                 native_widget::tick(&app);
@@ -1219,6 +1397,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             desktop_state,
+            desktop_timer,
             desktop_sync_schedule,
             desktop_set_preferences,
             desktop_show_main,
@@ -1233,8 +1412,8 @@ pub fn run() {
         ])
         .setup(|app| {
             let dir = app.path().app_data_dir()?;
-            #[cfg(debug_assertions)]
-            let dir = std::env::var_os("SAHIB_TEST_DATA_DIR")
+            #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+            let dir = std::env::var_os("SAHIB_TEST_DATA_DIR").filter(|_| app.config().identifier == "com.sahib.companion.qa")
                 .map(PathBuf::from)
                 .unwrap_or(dir);
             fs::create_dir_all(&dir)?;
@@ -1254,6 +1433,7 @@ pub fn run() {
                 widget_expanded: AtomicBool::new(false),
                 widget_views: Mutex::new(HashMap::new()),
                 creating_widgets: AtomicBool::new(false),
+                timer_popup_pending: AtomicBool::new(false),
                 widget_diagnostics: Mutex::new(widget_watch::Diagnostics::default()),
             });
             #[cfg(feature = "native-widget-experiment")]
@@ -1262,11 +1442,13 @@ pub fn run() {
             { app.manage(native_widget::State::default());native_widget::init(app.handle());experiment::start_qa_control(app.handle()); }
             for config in &app.config().app.windows {
                 #[cfg(feature = "native-widget-experiment")]
-                if experiment::mode()!="keep" && (config.label=="widget"&&prefs.widget_mode=="taskbar"&&experiment::mode()=="native" || config.label=="main"&&prefs.start_minimized&&prefs.widget_mode=="taskbar") {continue;}
+                if experiment::mode()!="keep" && (config.label=="widget"&&(!prefs.widget_visible||prefs.widget_mode=="taskbar"&&prefs.widget_renderer!="web"&&experiment::mode()=="native") || config.label=="main"&&prefs.start_minimized) {continue;}
                 let h = app.handle().clone();
                 let builder = tauri::WebviewWindowBuilder::from_config(app, config)?;
-                #[cfg(debug_assertions)]
-                let builder = if let Some(test_dir) = std::env::var_os("SAHIB_TEST_DATA_DIR") {
+    #[cfg(feature = "brand-preview")]
+    let builder = builder.title(if config.label == "main" {"Sahib RC · Brand review"} else {"Sahib RC · Prayer timetable"});
+                #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+                let builder = if let Some(test_dir) = std::env::var_os("SAHIB_TEST_DATA_DIR").filter(|_| app.config().identifier == "com.sahib.companion.qa") {
                     let builder = builder.data_directory(PathBuf::from(test_dir).join("webview"));
                     // Elevated CI hosts ignore WebView2's environment overrides. Pass the
                     // isolated QA port through the API; this code is absent in release builds.
@@ -1298,8 +1480,12 @@ pub fn run() {
                     .build()?;
             }
             let menu = make_menu(app.handle(), ar)?;
+            #[cfg(not(feature = "brand-preview"))]
+            let tray_image = app.default_window_icon().unwrap().clone();
+            #[cfg(feature = "brand-preview")]
+            let tray_image = candidate_tray_image(app.handle())?;
             TrayIconBuilder::with_id("sahib")
-                .icon(app.default_window_icon().unwrap().clone())
+                .icon(tray_image)
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .tooltip("Sahib")
@@ -1315,6 +1501,11 @@ pub fn run() {
                 })
                 .on_menu_event(|app, event| match event.id.as_ref() {
                     "show" => show_main(app),
+                    "focus-widget" => {
+                        #[cfg(feature = "native-widget-experiment")]
+                        if native_widget::active(app) { native_widget::focus(app); }
+                        if let Some(w) = app.get_webview_window("widget") { let _ = w.set_focus(); }
+                    }
                     "quit" => app.exit(0),
                     "stop" => desktop_stop_audio(app.clone()),
                     "widget" | "unlock" => {
@@ -1329,8 +1520,12 @@ pub fn run() {
                         let p = d.prefs.clone();
                         let _ = state.save(&d);
                         drop(d);
-                        apply_widget(app, &p);
-                        emit_state(app);
+                        let handle=app.clone();
+                        std::thread::spawn(move||{
+                            ensure_widget_windows(&handle,&p);
+                            let ui=handle.clone();
+                            let _=handle.run_on_main_thread(move||{apply_widget(&ui,&p);emit_state(&ui);});
+                        });
                     }
                     _ => {}
                 })

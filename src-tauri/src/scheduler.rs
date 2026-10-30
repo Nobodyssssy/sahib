@@ -80,6 +80,15 @@ pub struct Schedule {
 
 // A persisted ledger prevents replay after refresh/restart. Old alerts are never burst-played.
 pub fn take_due(schedule: &Schedule, fired: &mut HashMap<String, i64>, now: i64) -> Vec<Alert> {
+    take_due_with_focus(schedule, fired, now, false).0
+}
+
+pub fn take_due_with_focus(
+    schedule: &Schedule,
+    fired: &mut HashMap<String, i64>,
+    now: i64,
+    focus: bool,
+) -> (Vec<Alert>, bool) {
     fired.retain(|_, at| *at > now - 7 * 86_400_000);
     let mut due: Vec<_> = schedule
         .alerts
@@ -94,6 +103,8 @@ pub fn take_due(schedule: &Schedule, fired: &mut HashMap<String, i64>, now: i64)
     for event in &due {
         fired.insert(event.id.clone(), event.at);
     }
+    let consumed = !due.is_empty();
+    due.retain(|event| crate::session_timer::allows_alert(focus, &event.id, &event.sound));
     // A silent practice notice must not suppress a prayer's adhan at the same deadline.
     let last = due.iter().rposition(|event| event.sound != "off");
     for (i, event) in due.iter_mut().enumerate() {
@@ -101,7 +112,7 @@ pub fn take_due(schedule: &Schedule, fired: &mut HashMap<String, i64>, now: i64)
             event.sound = "off".into();
         }
     }
-    due
+    (due, consumed)
 }
 
 pub fn validate(schedule: &Schedule, now: i64) -> Result<(), String> {
@@ -163,6 +174,22 @@ pub fn validate(schedule: &Schedule, now: i64) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn focus_does_not_let_a_practice_chime_suppress_adhan() {
+        let mut prayer = event("prayer:today:Dhuhr:time", 1000);
+        prayer.sound = "qatami".into();
+        let s = Schedule {
+            alerts: vec![prayer, event("practice:reading", 1000)],
+            ..Default::default()
+        };
+        let mut fired = HashMap::new();
+        let (due, consumed) = take_due_with_focus(&s, &mut fired, 1000, true);
+        assert!(consumed);
+        assert_eq!(due.len(), 1);
+        assert_eq!(due[0].sound, "qatami");
+        assert_eq!(fired.len(), 2);
+        assert!(take_due(&s, &mut fired, 1001).is_empty());
+    }
     #[test]
     fn clock_rollback_does_not_repeat_fired_alerts() {
         let s = Schedule {

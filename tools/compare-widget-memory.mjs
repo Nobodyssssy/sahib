@@ -11,13 +11,13 @@ export function qaControl(qa){let id=0;return async(action,values={})=>{
  for(let n=0;n<300;n++){try{const r=JSON.parse(fs.readFileSync(path.join(qa.profile,'qa-response.json'),'utf8'));if(r.id===id){if(r.error)throw Error(r.error);return r.result;}}catch(e){if(!['ENOENT'].includes(e.code)&&!(e instanceof SyntaxError))throw e;}await sleep(100);}throw Error('QA control timeout '+action);
 };}
 export async function fixture(main){
- await main.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich memory fixture");await SahibDesktop.sync();await SahibDesktop.preferences("widgetMode","taskbar");await SahibDesktop.preferences("widgetTheme","windows");await SahibDesktop.preferences("widgetEdge","right");await SahibDesktop.preferences("widgetVisible",true);await SahibDesktop.preferences("closeToTray",true);await store.setMeta("memoryFixture",{text:"IndexedDB survives",blob:new Blob(["persistent blob"])});localStorage.setItem("memory-fixture","persistent setting");showView("view-home")})()');
+ await main.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich memory fixture");await SahibDesktop.sync();await SahibDesktop.preferences("widgetMode","taskbar");await SahibDesktop.preferences("widgetTheme","windows");await SahibDesktop.preferences("widgetEdge","right");await SahibDesktop.preferences("widgetRightOffset",600);await SahibDesktop.preferences("widgetVisible",true);await SahibDesktop.preferences("closeToTray",true);await store.setMeta("memoryFixture",{text:"IndexedDB survives",blob:new Blob(["persistent blob"])});localStorage.setItem("memory-fixture","persistent setting");showView("view-home")})()');
 }
 // Importable helpers do not launch an experiment by themselves.
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname.replace(/^\/(.:)/,'$1'))){await compare();}
 async function compare(){
  const output=path.resolve('.qa',`widget-memory-comparison-${Date.now()}`);fs.mkdirSync(output,{recursive:true});
- const report={started:new Date().toISOString(),runs:[],errors:[]};let qa,fixtureWindow;
+ const report={started:new Date().toISOString(),build:process.argv.includes('--release')?'release':'debug',runs:[],errors:[]};let qa,fixtureWindow;
  try{
   if(!process.argv.includes('--skip-build'))await buildQA(output,['native-widget-experiment']);
   fixtureWindow=await startWindowFixture(output);

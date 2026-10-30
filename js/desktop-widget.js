@@ -1,6 +1,7 @@
 'use strict';
 (async()=>{
  const invoke=window.__TAURI__.core.invoke,el=id=>document.getElementById(id);
+ let timerEditing=false,timerKey="";
  let state=null,remindersKey='',tickKey='',lastHeight=0,refreshTimer,drag=null,ignoreClick=false,movePending=false;
  const families={sahib:['green','tajawal'],aura:['mauve','dm-sans'],dracula:['mauve','inter'],catppuccin:['mauve','manrope'],'rose-pine':['pink','amiri'],'tokyo-night':['blue','cairo']};
  const icons={Fajr:'moon',Sunrise:'sunrise',Dhuhr:'sun',Asr:'cloud',Maghrib:'sunset',Isha:'moon'},action=action=>invoke('desktop_widget_action',{action});
@@ -14,8 +15,9 @@
  function tick(){
   if(!state)return;const {now,next,day}=moments(),key=[next?.at,day?.start,state.schedule.validUntil<now].join(':');
   if(key!==tickKey){tickKey=key;renderContent();return;}
+  renderTimerTick();
   const seconds=next?Math.max(0,Math.floor((next.at-now)/1000)):0;
-  const value=next?[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].map(v=>String(v).padStart(2,'0')).join(':'):'—';
+  const value=next?[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].slice(0,state.prefs.widgetShowSeconds===false?2:3).map(v=>String(v).padStart(2,'0')).join(':'):'—';
   put('widget-countdown',value);put('compact-countdown',value);
   const previous=day?.prayers.filter(p=>p.at<=now).at(-1),progress=previous&&next?Math.max(0,Math.min(1,(now-previous.at)/(next.at-previous.at))):0;el('widget-compact').style.setProperty('--prayer-progress',String(Math.floor(progress*1000)/1000));
   const soon=String(!!next&&next.at-now<=state.prefs.widgetWarningMinutes*60000);if(document.body.dataset.soon!==soon)document.body.dataset.soon=soon;
@@ -23,6 +25,8 @@
  function renderContent(){
   if(!state)return;const {schedule:s,prefs:p}=state,ar=s.language==='ar',text=(en,arabic)=>ar?arabic:en,{now,next,day}=moments();
   const root=document.documentElement,theme=s.theme||{},family=p.widgetTheme==='app'?(theme.family||'sahib'):families[p.widgetTheme]?p.widgetTheme:'sahib';
+  document.body.dataset.style=p.widgetStyle||'landmark';
+  renderTimer();
   root.lang=ar?'ar':'en';root.dir=ar?'rtl':'ltr';root.dataset.theme=family;root.dataset.appearance=p.widgetTheme;root.dataset.mode=p.widgetTheme==='windows'?(state.systemLight?'light':'dark'):(theme.mode||'light');root.dataset.accent=p.widgetTheme==='app'?(theme.accent||'green'):families[family][0];root.dataset.font=p.widgetTheme==='windows'?'system':p.widgetTheme==='app'?(theme.font||'tajawal'):families[family][1];
   root.style.cssText='';
   if(p.widgetTheme==='app')for(const [key,value]of Object.entries(theme))if(key.startsWith('--'))root.style.setProperty(key,value);
@@ -47,6 +51,31 @@
   for(const [target,source]of [['widget-open-top','widget-open'],['widget-settings-footer','widget-settings']]){el(target).title=el(source).title;el(target).setAttribute('aria-label',el(source).getAttribute('aria-label'));}
   el('widget-compact').setAttribute('aria-expanded',String(state.widgetExpanded));tickKey=[next?.at,day?.start,s.validUntil<now].join(':');tick();fit();
  }
+ function renderTimerTick(){
+  const t=state.timer||{},seconds=t.deadline?Math.max(0,Math.ceil((t.deadline-Date.now())/1000)):t.finished?0:(t.seconds||300);
+  put('timer-countdown',[Math.floor(seconds/60),seconds%60].map(v=>String(v).padStart(2,'0')).join(':'));
+ }
+ function renderTimer(){
+  const t=state.timer||{},ar=state.schedule.language==='ar',text=(en,arabic)=>ar?arabic:en;
+  for(const [id,en,arabic]of [['timer-heading','Dhikr / reading timer','مؤقت الذكر والقراءة'],['timer-duration-label','Minutes','دقائق'],['timer-repeat-label','Repeat every interval','التكرار بعد كل مدة'],['timer-focus-label','Focus · allow prayer Adhan only','تركيز · السماح بأذان الصلاة فقط'],['timer-focus-note','Silences other Sahib reminders during the timer. Windows and other apps are unchanged.','يكتم تذكيرات صاحب الأخرى أثناء المؤقت فقط. لا يغيّر إعدادات ويندوز أو التطبيقات الأخرى.'],['timer-finished','Session finished','انتهت الجلسة'],['timer-start','Start / change time','بدء / تغيير المدة'],['timer-restart','Restart','إعادة التشغيل'],['timer-stop','Stop','إيقاف']])put(id,text(en,arabic));
+  el('timer-minutes').setAttribute('aria-label',text('Timer duration in minutes','مدة المؤقت بالدقائق'));
+  el('widget-timer-open').title=text('Session timer','مؤقت الجلسة');el('widget-timer-open').setAttribute('aria-label',el('widget-timer-open').title);
+  el('timer-finished').hidden=!t.finished;
+  const key=JSON.stringify([t.seconds,t.repeat,t.focus]);
+  if(key!==timerKey&&!timerEditing){timerKey=key;el('timer-minutes').value=Math.max(1,Math.round((t.seconds||300)/60));el('timer-repeat').checked=!!t.repeat;el('timer-focus').checked=!!t.focus;}
+  document.querySelectorAll('[data-timer-minutes]').forEach(b=>b.textContent=b.dataset.timerMinutes+text(' min',' د'));
+  el('timer-restart').disabled=!t.seconds;el('timer-stop').disabled=!t.deadline&&!t.finished;
+  renderTimerTick();
+ }
+ async function timerAction(action){
+  const minutes=Number(el('timer-minutes').value);
+  if(action==='start'&&(!Number.isFinite(minutes)||minutes<1||minutes>1440)){el('timer-minutes').reportValidity();return;}
+  try{await invoke('desktop_timer',{action,seconds:Math.round(minutes*60),repeat:el('timer-repeat').checked,focus:el('timer-focus').checked});timerEditing=false;timerKey='';await refresh();}catch(e){el('timer-finished').hidden=false;el('timer-finished').textContent=String(e);}
+ }
+ for(const field of ['timer-minutes','timer-repeat','timer-focus'])el(field).addEventListener('input',()=>{timerEditing=true;});
+ el('widget-timer-open').onclick=()=>{el('widget-timer').scrollIntoView({block:'nearest'});el('timer-minutes').focus();};
+ for(const action of ['start','restart','stop'])el('timer-'+action).onclick=()=>timerAction(action);
+ document.querySelectorAll('[data-timer-minutes]').forEach(b=>b.onclick=()=>{timerEditing=true;el('timer-minutes').value=b.dataset.timerMinutes;});
  async function refresh(){state=await invoke('desktop_widget_state');renderContent();}
  function queueRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>refresh().catch(console.error),60);}
  el('widget-open-top').onclick=()=>invoke('desktop_show_main');el('widget-settings-footer').onclick=()=>action('settings');

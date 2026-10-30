@@ -2,6 +2,10 @@
 
 The Windows host shares Sahib's existing HTML/CSS/JavaScript application. Tauri owns the tray, windows, startup registration, notifications, scheduling and audio output. Android remains planned.
 
+The separate [0.2.4 RC](WINDOWS-0.2.4-RC.md) enables the native compact renderer and on-demand WebViews under `com.sahib.companion.rc`. Build it with `npm run desktop:build:rc`, checksum with `node tools/desktop-checksum.mjs --rc`. It installs alongside the ordinary app and does not migrate its profile automatically. Its candidate icons require approval before production replacement.
+
+Windows settings now include **Compact design** (Landmark, Minimal, Accent ribbon) and **Show seconds**; disabling seconds displays prayer countdowns as hh:mm. The widget's clock control opens a Dhikr/reading timer with presets/custom minutes, repeat and optional focus. Completion offers restart/change/stop. Focus silences other Sahib reminders only; existing enabled prayer-time Adhan continues. Timer popups/chimes wait until fullscreen ends. Timer deadlines survive an app restart, but Sahib must be running and Windows awake to alarm at the deadline.
+
 ## Build
 
 Install Node.js 22+, current stable Rust with the MSVC target, Microsoft C++ Build Tools with the Windows SDK, and WebView2. Then run `npm ci`, `npm run desktop:test`, `npm run desktop:acceptance`, and `npm run desktop:build`. Run `npm run desktop:checksum` to generate the current installer's SHA-256 file. The per-user NSIS installer is written to `src-tauri/target/release/bundle/nsis/`. An unsigned preview installer may require Windows confirmation. Production signing and automatic updates are not configured.
