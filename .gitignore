@@ -136,6 +136,7 @@ desktop.ini
 !**/pnpm-lock.yaml
 # Future native build output
 /src-tauri/target/
+/releases-local/
 /src-tauri/gen/android/.gradle/
 /src-tauri/gen/android/**/build/
 *.log
