@@ -481,8 +481,10 @@ function renderBookDetail(b){
         </div>
       </div>` : ''}
 
+    ${!b.downloadAllowed ? `<p class="settings-note">${ar?'تحميل جديد غير متاح حتى التحقق من إذن التوزيع. تبقى النسخ المخزنة والملفات الشخصية متاحة.':'New downloads await redistribution permission. Existing cached copies and personal imports remain available.'}</p>` : ''}
+    ${b.officialUrl?`<a href="${esc(b.officialUrl)}" target="_blank" rel="noopener noreferrer">${ar?'المصدر الرسمي':'Official source'}</a>`:''}
     <div class="book-detail-actions" style="display:flex;gap:10px">
-      <button class="btn-save" style="flex:1;padding:14px;font-size:15px" onclick="readBook('${b.id}')">
+      <button class="btn-save" style="flex:1;padding:14px;font-size:15px" id="book-read-${b.id}" ${b.downloadAllowed?'':'disabled'} onclick="readBook('${b.id}')">
         ${isRead
           ? `${icon('book-open', 16)} ${ar ? 'متابعة القراءة' : 'Continue reading'}`
           : `${icon('book-open', 16)} ${ar ? 'ابدأ القراءة' : 'Start reading'}`}
@@ -498,6 +500,7 @@ function renderBookDetail(b){
       </button>` : ''}
   `;
 
+  if(!b.downloadAllowed) window.OFFLINE_BOOKS.isBookCached(b.id).then(cached=>{const button=$('book-read-'+b.id);if(button)button.disabled=!cached;});
   const coverEl = $(`detail-cover-${b.id}`);
   if(coverEl && typeof attachBookCover === 'function'){
     setTimeout(() => attachBookCover(b.id, coverEl), 30);
@@ -810,6 +813,7 @@ async function renderDesktopLibrary(host){
   if(_booksCategory === '__beginner') books = getBeginnerBooks();
   else if(_booksCategory) books = books.filter(b=>_booksCategory === 'local' ? b.isLocal : b.category === _booksCategory);
   books = books.slice().sort((a,b)=>{
+    if(_booksCategory === '__beginner') return (a.readingOrder||0)-(b.readingOrder||0);
     if(_librarySort === 'recent') return (getBookProgress(b.id)?.lastRead||0)-(getBookProgress(a.id)?.lastRead||0);
     if(_librarySort === 'author') return (a.author||'').localeCompare(b.author||'',ar?'ar':'en');
     return (ar?a.titleAr:a.titleEn||a.titleAr).localeCompare(ar?b.titleAr:b.titleEn||b.titleAr,ar?'ar':'en');

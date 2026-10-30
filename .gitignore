@@ -155,3 +155,6 @@ desktop.ini
 !/src-tauri/capabilities/*.json
 /src-tauri/gen/schemas/
 /src-tauri/.tauri/
+
+# Explicit reviewed public catalog manifests
+!/catalog/*.json
