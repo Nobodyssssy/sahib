@@ -57,3 +57,11 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 
 - Final suspended-cache lifecycle suite passed with the main closed for widget-only data checks: current timer display within one tick of native time, same document reused, and compatibility compact/floating transitions remain live. Startup preload and idle eviction/recreation also pass. Timing records are available in desktop_state.panelTiming and benchmark/report tools; no per-second log writes.
 - Policy: native-only startup stays native-only; main-visible opportunistic preload; hidden JS intervals paused; best-effort supported WebView2 suspension; 60-second idle lease serviced by existing watchdog. Report records both the temporary +67 MiB private-resident / +197 MiB commit cost and return to native-only after eviction. Source/API review confirms no Windows-11-only API; actual Windows 10 still pending.
+
+## Closeout — 2026-10-31
+
+- User authorized branch publication, production merge/release only after release checks, permanent recovery backup and regenerable workspace cleanup. No further feature work or Android implementation.
+- Final repeat: resource checks (57 scripts, 82 HTML resources, 116 precache entries), catalog checks (70 stable entries/10 reading-order entries), and 21 native unit tests pass. Performance refinement committed as 711add9; previous actual isolated lifecycle/widget evidence retained for backup.
+- Distribution remains blocked by reserved-rights Al-Qatami recordings, unverified Names audio and incomplete version-pinned vendor/content notices. Do not merge or upload a binary/source release claiming clearance. Windows CI no longer uploads installers or saves compiled runtime caches while clearance is pending; source changes do not add recordings/PDFs.
+- Approved brand assets are preserved. The private RC7 recovery package uses approved RC branding, not a claimed final production installer. Keep the installed app/profile untouched. Documented unsigned status and lack of automatic updates.
+- Future architecture documented only in docs/FUTURE-MOBILE-WEB.md. Recovery backup and measured cleanup are the remaining closeout operations.

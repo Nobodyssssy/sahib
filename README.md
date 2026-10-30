@@ -4,6 +4,8 @@ Sahib is a private, offline-first Islamic daily companion, built with vanilla HT
 
 [Open Sahib](https://nobodyssssy.github.io/sahib/) · [Official repository](https://github.com/Nobodyssssy/sahib) · [Report an issue](https://github.com/Nobodyssssy/sahib/issues)
 
+Windows development is frozen at candidate **0.2.4-rc.7**. Production distribution and the main merge remain blocked by recording permissions and complete dependency notices; no cleared Windows release is claimed. See [distribution readiness](docs/DISTRIBUTION-READINESS.md), [widget timing measurements](docs/WINDOWS-PANEL-PERFORMANCE.md) and the [future mobile/web roadmap](docs/FUTURE-MOBILE-WEB.md). Candidate installers are unsigned and Sahib has no automatic updater.
+
 ## Install and deploy
 
 Open the official website online once. In Edge or Chrome, choose **Install Sahib** from the address bar or browser app menu. On a phone, use the browser's **Install app** or **Add to Home Screen** option. Allow the initial offline download to finish before disconnecting. Refresh and manifest shortcuts such as [`?cat=sabah`](https://nobodyssssy.github.io/sahib/?cat=sabah) work under the same `/sahib/` directory; the app does not require server-side route rewrites.
