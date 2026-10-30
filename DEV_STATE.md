@@ -38,3 +38,5 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 
 - Confirmed hidden Classic→Signature transition retained the old clip shape; track the last actually applied region rather than hidden-window observations. Actual region probe now verifies the rounded corner after hidden selection; all native regression checks still pass.
 - Final v1 feature scope is frozen on this branch, with only acceptance/defect/accessibility/licensing/release work remaining. See docs/WINDOWS-V1-FREEZE.md. No main merge or production release.
+
+- Final self-contained UI acceptance passed 1280×720, 2560×1440 at browser DPR 2, and 390×844 mobile; separate 1920×1080 reader and dark greeting/theme-font checks passed. Browser scale is not physical Windows DPI verification. Custom sound reselection from the actual expanded widget now persists after main destruction; native suite re-passed.

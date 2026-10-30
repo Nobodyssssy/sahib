@@ -68,7 +68,7 @@ async function renderHome(){
       <div class="garden-grid">
         <div class="garden-main">
           <section class="garden-welcome" aria-labelledby="garden-greeting">
-            <div class="garden-welcome-copy"><h1 id="garden-greeting">${esc(greeting)}</h1><div class="garden-greeting-ar" lang="ar" dir="rtl">${esc(greetingAr)}</div><p>A little time for remembrance.<br>A little space for reflection.</p><div class="garden-flourish" aria-hidden="true"><span></span>◇<span></span></div></div>
+            <div class="garden-welcome-copy"><h1 id="garden-greeting" data-no-i18n lang="${uiLocale==='ar'?'ar':'en'}">${uiLocale==='ar'?'السَّلَامُ عَلَيْكُمْ':'Peace be upon you'}</h1><div class="garden-greeting-secondary" id="garden-time-greeting" data-no-i18n>${esc(uiLocale==='ar'?greetingAr:greeting)}</div><p>A little time for remembrance.<br>A little space for reflection.</p><div class="garden-flourish" aria-hidden="true"><span></span>◇<span></span></div></div>
           </section>
           <section class="garden-prayer-suite" aria-label="Prayer and day breakdown" data-prayer-face="${window._homePrayerFace || 0}"><div class="home-prayer-switch"><button onclick="turnHomePrayer(-1)" aria-label="Previous prayer card">${icon('chevron-left',17)}</button><div role="tablist" aria-label="Prayer card"><button role="tab" data-prayer-tab="0" onclick="turnHomePrayer(0,0)">Prayer times</button><button role="tab" data-prayer-tab="1" onclick="turnHomePrayer(0,1)">Day rhythm</button></div><button onclick="turnHomePrayer(1)" aria-label="Next prayer card">${icon('chevron-right',17)}</button></div><div class="garden-prayer" aria-label="Prayer times"><div id="home-prayer-widget"></div><div class="garden-timezone">Times use ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone || 'your device timezone')}</div></div><div id="home-day-cycle" class="home-tab-cycle"></div></section>
           <section class="garden-actions" aria-label="Daily shortcuts">
@@ -587,3 +587,15 @@ function turnHomePrayer(delta,target){
   window._homePrayerFace=target==null?((window._homePrayerFace||0)+delta+2)%2:target;
   syncHomePrayerFace();
 }
+
+
+function refreshHomeGreeting(){
+  if(document.hidden || !$('view-home')?.classList.contains('active')) return;
+  const ar = window.SAHIB_I18N?.language === 'ar';
+  const title = $('garden-greeting'), secondary = $('garden-time-greeting');
+  if(title){ title.textContent = ar ? 'السَّلَامُ عَلَيْكُمْ' : 'Peace be upon you'; title.lang = ar ? 'ar' : 'en'; }
+  if(secondary) secondary.textContent = ar ? greetingArForNow(new Date()) : greetingForNow(new Date());
+}
+setInterval(refreshHomeGreeting, 60000);
+document.addEventListener('visibilitychange', refreshHomeGreeting);
+window.addEventListener('focus', refreshHomeGreeting);

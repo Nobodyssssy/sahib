@@ -79,7 +79,7 @@
   try{await invoke('desktop_timer_audio',{sound:el('timer-sound').value,volume:Number(el('timer-volume').value)/100});await refresh();}
   catch(error){el('timer-finished').hidden=false;el('timer-finished').textContent=String(error);}
  }
- el('timer-sound').onchange=()=>{el('timer-custom-row').hidden=el('timer-sound').value!=='local-timer';if(el('timer-sound').value!=='local-timer')saveTimerAudio();};
+ el('timer-sound').onchange=()=>{el('timer-custom-row').hidden=el('timer-sound').value!=='local-timer';saveTimerAudio();};
  el('timer-volume').oninput=()=>el('timer-volume-value').textContent=el('timer-volume').value+'%';
  el('timer-volume').onchange=saveTimerAudio;
  el('timer-custom').onchange=async event=>{

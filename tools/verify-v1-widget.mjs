@@ -43,5 +43,11 @@ try{
  const disk=JSON.parse(fs.readFileSync(path.join(run.profile,'desktop-state.json'),'utf8'));assert.equal(disk.timer.finished,true);assert.equal(disk.timer.deadline,0);assert.equal(disk.prefs.timerSound,'timer-bell');
  assert.ok(!(await run.targets()).some(t=>/\/($|index.html$)/.test(t.url)),'Main WebView should unload during background timer');
  results.push({backgroundTimer:true,mainDestroyed:true,adhanPreferencesUnchanged:true,invalidInputRejected:true});
+ widget=await run.connect('desktop-widget');
+ for(const sound of ['off','local-timer']){
+  await widget.evaluate(`(()=>{const select=document.getElementById('timer-sound');select.value='${sound}';select.dispatchEvent(new Event('change'));})()`);await sleep(300);
+  assert.equal(await widget.evaluate(`(async()=>(await window.__TAURI__.core.invoke('desktop_widget_state')).prefs.timerSound)()`),sound,'Widget sound reselection must persist');
+ }
+ results.push({customReselectionFromWidget:true});
  fs.writeFileSync(path.join(output,'results.json'),JSON.stringify(results,null,2));console.log(JSON.stringify({output,results}));
 }finally{main?.close();widget?.close();await run.stop();}

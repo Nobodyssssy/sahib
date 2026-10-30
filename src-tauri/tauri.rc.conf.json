@@ -1,7 +1,7 @@
 {
   "identifier": "com.sahib.companion.rc",
   "productName": "Sahib RC",
-  "version": "0.2.4-rc.5",
+  "version": "0.2.4-rc.6",
   "bundle": {
     "icon": [
       "../branding/sahib-0.2.4/icon.ico",

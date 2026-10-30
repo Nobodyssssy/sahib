@@ -111,12 +111,13 @@ function renderAsmaGrid(){
 
 function asmaCardHTML(n){
   const isMemo = isMemorized(n.id);
-  const display = _asmaLang === 'ar' ? n.ar : n.transliteration;
+  const display = n.ar;
   const sub = _asmaLang === 'ar' ? n.tafsirAr : n.meaningEn;
 
   return `<div class="asma-card ${isMemo?'memo':''}" onclick="openAsmaDetail(${n.id})">
     <div class="asma-card-num">${n.id}</div>
-    <div class="asma-card-ar">${display}</div>
+    <div class="asma-card-ar" lang="ar" dir="rtl" data-no-i18n>${display}</div>
+    <div class="asma-card-translit" dir="ltr" data-no-i18n>${esc(n.transliteration)}</div>
     <div class="asma-card-sub">${esc(sub)}</div>
     ${isMemo ? `<div class="asma-card-check">${icon('check', 16)}</div>` : ''}
   </div>`;

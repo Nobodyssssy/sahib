@@ -24,7 +24,7 @@ function openAppSearch(){
   ov.classList.add('open');lockBody();renderAppSearch();
   loadLocalBooks().then(()=>{if(document.getElementById('ov-app-search')?.classList.contains('open'))renderAppSearch()});requestAnimationFrame(()=>document.getElementById('app-search-input').focus());
 }
-function closeAppSearch(){document.getElementById('ov-app-search')?.classList.remove('open');unlockBody();}
+function closeAppSearch(){const overlay=document.getElementById('ov-app-search');if(!overlay?.classList.contains('open'))return;overlay.classList.remove('open');unlockBody();if(_appSearchOrigin?.isConnected)_appSearchOrigin.focus({preventScroll:true});}
 function renderAppSearch(){
   const query=document.getElementById('app-search-input').value.trim();
   const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f\u064b-\u065f]/g,'').replace(/[أإآ]/g,'ا');
@@ -50,3 +50,19 @@ function openAppReading(index){
 }
 function closeAppReading(){document.getElementById('ov-app-reading')?.classList.remove('open');unlockBody();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAppReading()});
+
+
+document.addEventListener('keydown',event=>{
+ const overlay=document.getElementById('ov-app-search');
+ if(!overlay?.classList.contains('open'))return;
+ const input=document.getElementById('app-search-input'),results=[...overlay.querySelectorAll('.app-search-result')];
+ if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+  event.preventDefault();const index=results.indexOf(document.activeElement),next=event.key==='ArrowDown'?index+1:index<0?results.length-1:index-1;
+  if(next<0)input.focus();else results[Math.min(next,results.length-1)]?.focus();
+ }else if(event.key==='Enter'&&document.activeElement===input&&results.length){event.preventDefault();results[0].click();}
+ else if(event.key==='Tab'){
+  const controls=[...overlay.querySelectorAll('button,input,a,[tabindex="0"]')].filter(el=>!el.disabled&&el.getClientRects().length);
+  if(event.shiftKey&&document.activeElement===controls[0]){event.preventDefault();controls.at(-1)?.focus();}
+  else if(!event.shiftKey&&document.activeElement===controls.at(-1)){event.preventDefault();controls[0]?.focus();}
+ }
+});

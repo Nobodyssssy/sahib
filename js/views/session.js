@@ -268,7 +268,8 @@ function _closeSessionFromHistory(){
 
 document.addEventListener('keydown', event => {
   if(!matchMedia('(min-width: 1024px)').matches || !$('session-overlay')?.classList.contains('open')) return;
-  if(event.altKey || event.ctrlKey || event.metaKey || event.repeat || event.target.closest('button,input,textarea,select,[contenteditable]')) return;
+  if(event.altKey || event.ctrlKey || event.metaKey || event.repeat || event.target.closest?.('input,textarea,select,[contenteditable]')) return;
+  if(event.key === ' ' && event.target.closest?.('button')) return;
   if(event.key === ' ' && sessIdx < sessItems.length){
     event.preventDefault();
     const item = sessItems[sessIdx];

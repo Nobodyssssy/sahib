@@ -250,6 +250,10 @@ function refreshPrayerConsumers(){
 async function applyCity(name, country, admin, lat, lng){
   const label = [name, admin, country].filter(Boolean).join(', ');
   await setManualLocation(lat, lng, label);
+  if(await store.getMeta('regionalMethodAuto')){
+    const region=PRAYER_REGIONS.find(r=>r[0]===prayerRegionForLocation({country}));
+    if(region&&region[1]!==null){await savePrayerPrefs({method:region[1]});await store.setMeta('prayerRegion',region[0]);}
+  }
   await addRecentCity({ name, country, admin1: admin, lat, lng });
   closeLocationPicker();
   toast(`${name} saved`, 'map-pin');

@@ -162,6 +162,9 @@ function ensureReaderOverlay(){
     <div class="reader-sidebar" id="reader-sidebar"></div>
   `;
   document.body.appendChild(el);
+  el.addEventListener('pointerdown',event=>{
+    if(event.target.closest('#reader-body') && document.activeElement?.closest('.reader-topbar,.reader-bottombar')) document.activeElement.blur();
+  });
   for(const type of ['pointermove','pointerdown','keydown','focusin','focusout']){
     el.addEventListener(type, readerWakeControls);
   }

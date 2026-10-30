@@ -38,7 +38,7 @@
     'tokyo-night': { blue:'Blue', mauve:'Magenta', sky:'Cyan', teal:'Teal', green:'Green', gold:'Yellow', peach:'Orange', red:'Red' },
     'rose-pine': { pink:'Rose', mauve:'Iris', teal:'Foam', blue:'Pine', gold:'Gold', red:'Love' }
   };
-  const DEFAULT_ACCENTS = { sahib:'green', catppuccin:'mauve', aura:'mauve', dracula:'mauve', 'tokyo-night':'blue', 'rose-pine':'pink' };
+  const DEFAULT_ACCENTS = { sahib:'peach', catppuccin:'peach', aura:'gold', dracula:'peach', 'tokyo-night':'peach', 'rose-pine':'gold' };
   let familyAccents = {};
 
   const THEME_FONTS = {sahib:'tajawal',aura:'dm-sans',dracula:'inter',catppuccin:'manrope','rose-pine':'amiri','tokyo-night':'cairo'};
@@ -60,7 +60,7 @@
   const state = {
     theme: 'sahib',
     mode: 'light',
-    accent: 'green',
+    accent: 'peach',
     font: 'tajawal',
     sidebarPosition: 'left',
     sidebarCollapsed: false
@@ -159,7 +159,7 @@
   async function init() {
     let theme = 'sahib';
     let mode = 'light';
-    let accent = 'green';
+    let accent = 'peach';
     let font = 'tajawal';
     let sidebarPosition = 'left';
     let sidebarCollapsed = false;

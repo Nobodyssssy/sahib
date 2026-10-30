@@ -118,13 +118,13 @@ html[data-sidebar-collapsed="true"] body .sidebar-brand .sahib-mark-compact{disp
   body .session-overlay .session-body { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 32px; padding: 32px; max-height: calc(100dvh - 190px); flex: 1 1 auto; }
   .session-reading { display: block; min-width: 0; max-width: 850px; margin-inline: auto; }
   body .session-reading .session-arabic { font-size: clamp(28px, 2.4vw, 42px); line-height: 2.1; text-align: start; direction: rtl; padding-block: 12px; }
-  body .session-reading .translit-swap { direction: ltr; font-family: var(--font-body); font-size: 24px; line-height: 1.8; }
+  body .session-reading .translit-swap { direction: ltr; font-family: var(--font-ui); font-size: 24px; line-height: 1.8; }
   body .session-counter-area { align-self: start; position: sticky; top: 0; margin: 0; padding: 24px 16px; border-inline-start: 1px solid var(--border); }
   body .session-header { padding: 14px 24px; }
   body .session-footer { justify-content: flex-end; padding: 14px 24px; gap: 16px; }
   body .session-footer button { flex: 0 1 200px; }
   body .session-overlay.is-done .session-body { display: block; }
-  body .reader-overlay .reader-body { flex: none; position: absolute; inset: 64px 0 52px; }
+  body .reader-overlay .reader-body { flex: none; position: absolute; inset: 0; }
   body .reader-overlay .reader-topbar { position: absolute; inset: 0 0 auto; width: auto; height: 64px; box-sizing: border-box; z-index: 10; }
   body .reader-overlay .reader-bottombar { position: absolute; inset: auto 0 0; height: 52px; box-sizing: border-box; z-index: 10; }
   body .reader-overlay.reader-idle :is(.reader-topbar,.reader-bottombar) { opacity: 0; pointer-events: none; }
@@ -151,4 +151,27 @@ html[data-sidebar-collapsed="true"] body .sidebar-brand .sahib-mark-compact{disp
   .library-table th{color:var(--text3);font-weight:500}.library-table td:first-child{width:42%}
   .library-table td button{border:0;background:none;text-align:start;padding:0;line-height:1.7}
   .library-table tr:focus-within,.library-table tbody tr:hover{background:var(--surface)}
+}
+
+.garden-greeting-secondary{font:16px/1.8 var(--font-ui);color:var(--text2);margin-block:8px}
+.asma-card-translit{font:14px/1.5 var(--font-ui);color:var(--text2);margin-block:8px}
+html[data-theme=sahib][data-mode=dark]{--accent-peach:#ffb38a}
+@media(min-width:1024px){
+  .app-search-modal{width:min(900px,80vw);max-height:min(760px,84dvh);padding:24px}
+  .app-search-modal #app-search-results{min-height:180px;overscroll-behavior:contain}
+  .app-search-modal .app-search-result:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:var(--surface2)}
+  .app-search-modal h3{position:sticky;top:0;padding-block:7px;background:var(--garden-card)}
+  .tasbih-wrap{min-height:0;gap:20px;padding-block:24px 32px}
+  .tasbih-ring-wrap{margin-bottom:12px}
+  .garden-welcome-copy h1{font-size:clamp(30px,3vw,48px);line-height:1.5}
+}
+
+.regional-method{display:grid;gap:12px;margin-block:16px 24px}.regional-method>.btn-cancel{justify-self:start}.regional-method>label:last-of-type{display:flex;align-items:center;gap:10px}
+
+@media(min-width:1024px){
+  .library-results .book-card{display:flex;flex-direction:column;align-items:stretch;gap:16px;padding:16px;min-height:0}
+  .library-results .book-cover{width:100%;height:220px;max-height:none;flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:8px}
+  .library-results .book-cover img{object-fit:contain!important;width:100%;height:100%}
+  .library-results .book-info{min-width:0;padding:0}
+  .library-results .book-card>.icon-btn,.library-results .local-trash-btn{position:absolute;inset-inline-end:20px;top:20px;background:var(--surface)}
 }

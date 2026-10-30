@@ -8,6 +8,7 @@ const failures=[];let scripts=0,links=0;
 function fail(message){failures.push(message)}
 function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)])}
 for(const file of walk('js').filter(f=>f.endsWith('.js')&&!f.includes(`${path.sep}vendor${path.sep}`))){scripts++;const r=spawnSync(process.execPath,['--check',file],{encoding:'utf8'});if(r.status)fail(`${file}: ${r.stderr}`)}
+for(const file of walk('js').filter(f=>f.endsWith('.js')&&!f.includes(`${path.sep}vendor${path.sep}`))){const source=fs.readFileSync(file,'utf8');for(const fixture of ['Zurich memory fixture','Local acceptance profile'])if(source.includes(fixture))fail(`QA fixture in runtime: ${file}`)}
 const sw=fs.readFileSync('sw.js','utf8');if(spawnSync(process.execPath,['--check','sw.js']).status)fail('Service-worker syntax');
 const shell=[...sw.split('const APP_SHELL = [')[1].split('];')[0].matchAll(/'\.\/([^']*)'/g)].map(m=>m[1]);
 for(const raw of shell){const file=raw.split('?')[0];if(file&&!fs.existsSync(file))fail(`Missing precache: ${raw}`)}

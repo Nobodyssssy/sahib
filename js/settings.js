@@ -317,6 +317,7 @@ async function _prayerHTML(){
   const csv = await getPrayerCsvSchedule();
   const isCsv = prefs.provider === 'csv';
   const adjusted = hasPrayerAdjustments(prefs);
+  const regional = await regionalMethodSettingsHTML(isCsv);
 
   return `
     <div class="settings-section">
@@ -351,6 +352,7 @@ async function _prayerHTML(){
 
     <div class="settings-section">
       <div class="settings-section-title">Calculation</div>
+      ${regional}
       <div class="settings-grid-2">
         <div class="fg">
           <label class="fl" for="settings-method">Method</label>
@@ -1077,3 +1079,35 @@ window.openSettings = openSettings;
 window.closeSettings = closeSettings;
 window.setSettingsTab = setSettingsTab;
 window.updateSettingsUI = updateSettingsUI;
+
+
+const PRAYER_REGIONS = [
+ ['north-america',2,'North America · ISNA','أمريكا الشمالية · ISNA'],
+ ['europe',3,'Europe / UK · MWL or local authority','أوروبا وبريطانيا · رابطة العالم الإسلامي أو المرجع المحلي'],
+ ['france',12,'France · UOIF convention','فرنسا · اصطلاح UOIF'],
+ ['saudi',4,'Saudi Arabia · Umm al-Qura','السعودية · أم القرى'],
+ ['egypt',5,'Egypt / Lebanon / Syria · Egyptian Survey','مصر ولبنان وسوريا · الهيئة المصرية للمساحة'],
+ ['south-asia',1,'Pakistan / Bangladesh / India · Karachi','باكستان وبنغلاديش والهند · كراتشي'],
+ ['singapore',11,'Singapore · MUIS','سنغافورة · MUIS'],
+ ['malaysia',17,'Malaysia · JAKIM','ماليزيا · JAKIM'],
+ ['indonesia',20,'Indonesia · Kemenag','إندونيسيا · Kemenag'],
+ ['algeria',19,'Algeria · Ministry','الجزائر · الوزارة'],['morocco',21,'Morocco · Ministry','المغرب · الوزارة'],['tunisia',18,'Tunisia','تونس'],
+ ['uae',16,'United Arab Emirates · Dubai','الإمارات · دبي'],['qatar',10,'Qatar','قطر'],['kuwait',9,'Kuwait','الكويت'],['turkey',13,'Turkey · Diyanet','تركيا · ديانت'],
+ ['iran',null,'Iran / Shia · use your authority’s timetable','إيران / الشيعة · استخدم جدول مرجعك']
+];
+function prayerRegionForLocation(location){
+ const value=String(location?.country||location?.label||'').toLowerCase();
+ const matches=[['north-america',/united states|canada|\busa\b/],['france',/france/],['saudi',/saudi/],['egypt',/egypt|lebanon|syria/],['south-asia',/pakistan|bangladesh|india/],['singapore',/singapore/],['malaysia',/malaysia/],['indonesia',/indonesia/],['algeria',/algeria/],['morocco',/morocco/],['tunisia',/tunisia/],['uae',/united arab emirates|dubai/],['qatar',/qatar/],['kuwait',/kuwait/],['turkey',/turkey|türkiye/],['iran',/iran/],['europe',/switzerland|united kingdom|germany|italy|spain|belgium|netherlands|austria|sweden|norway|denmark|finland|ireland|portugal/]];
+ return matches.find(([,pattern])=>pattern.test(value))?.[0]||'';
+}
+async function regionalMethodSettingsHTML(isCsv){
+ const ar=window.SAHIB_I18N?.language==='ar',location=await store.getMeta('location');
+ const selected=await store.getMeta('prayerRegion')||prayerRegionForLocation(location),automatic=await store.getMeta('regionalMethodAuto');
+ return `<div class="regional-method"><label for="settings-prayer-region">${ar?'الاقتراح الإقليمي':'Regional suggestion'}</label><select class="fse" id="settings-prayer-region" onchange="store.setMeta('prayerRegion',this.value)" ${isCsv?'disabled':''}><option value="">${ar?'اختر المنطقة':'Choose region'}</option>${PRAYER_REGIONS.map(([id,,en,arabic])=>`<option value="${id}" ${id===selected?'selected':''}>${esc(ar?arabic:en)}</option>`).join('')}</select><button class="btn-cancel" onclick="applyRegionalPrayerMethod()" ${isCsv?'disabled':''}>${ar?'استخدم الاقتراح':'Use suggestion'}</button><label><input type="checkbox" ${automatic?'checked':''} ${isCsv?'disabled':''} onchange="store.setMeta('regionalMethodAuto',this.checked)">${ar?'اتبع الاقتراح عند اختيار مدينة جديدة':'Follow regional suggestion when choosing a new city'}</label><p class="settings-note">${ar?'قد تختلف المراجع المحلية. راجع عشاء رمضان مع جدولك المحلي. لا يتغير المذهب أو التعديلات اليدوية. لإيران ومراجع الشيعة استخدم جدولًا محليًا؛ لا يطبق هذا الاقتراح تأخير المغرب.':'Local authorities can differ. Verify Ramadan Isha against your local timetable. Madhab and manual adjustments stay unchanged. For Iran / Shia conventions, use a local timetable; this suggestion does not implement twilight-delayed Maghrib.'}</p></div>`;
+}
+async function applyRegionalPrayerMethod(){
+ const region=PRAYER_REGIONS.find(r=>r[0]===document.getElementById('settings-prayer-region')?.value);
+ if(!region||region[1]===null){toast(window.SAHIB_I18N?.language==='ar'?'اختر جدول المرجع المحلي':'Choose your local authority’s timetable');return;}
+ await onPrayerMethodChange(region[1]);
+ renderSettingsBody();
+}
