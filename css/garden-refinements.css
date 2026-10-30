@@ -133,3 +133,22 @@ html[data-sidebar-collapsed="true"] body .sidebar-brand .sahib-mark-compact{disp
   html[dir="rtl"] body .reader-sidebar.open { transform: translateX(0); }
   body .reader-overlay .reader-title { font-size: 19px; line-height: 1.6; }
 }
+
+@media(min-width:1024px){
+  .library-toolbar,.library-filters,.library-view-toggle{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .library-toolbar h1{margin:0;font:32px var(--font-display);color:var(--text)}
+  .library-toolbar>span{color:var(--text3)}
+  .library-view-toggle{margin-inline-start:auto;gap:4px}
+  .library-desktop button,.library-desktop select{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+  .library-desktop button[aria-pressed=true]{background:var(--accent);color:var(--color-on-accent,var(--bg))}
+  .library-filters{margin-block:24px}.library-filters .fi{flex:1;min-width:200px}
+  .library-workspace{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px}
+  .library-folders{display:flex;flex-direction:column;gap:5px;align-self:start;position:sticky;top:90px}
+  .library-folders button{text-align:start;border-color:transparent;background:none}
+  .library-results{min-width:0;overflow:auto}.library-results .books-grid{margin:0;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+  .library-table{width:100%;border-collapse:collapse;text-align:start;font-size:14px}
+  .library-table th,.library-table td{text-align:start;padding:14px 12px;border-bottom:1px solid var(--border)}
+  .library-table th{color:var(--text3);font-weight:500}.library-table td:first-child{width:42%}
+  .library-table td button{border:0;background:none;text-align:start;padding:0;line-height:1.7}
+  .library-table tr:focus-within,.library-table tbody tr:hover{background:var(--surface)}
+}

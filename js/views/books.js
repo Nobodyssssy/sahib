@@ -34,6 +34,7 @@ async function renderBooksGrid(){
   if(!host) return;
 
   await loadLocalBooks();
+  if(matchMedia('(min-width: 1024px)').matches){ await renderDesktopLibrary(host); return; }
 
   if(_booksQuery.trim()){
     renderBookList(host, searchBooks(_booksQuery), true);
@@ -530,7 +531,8 @@ async function updateDownloadButtonCard(id){
       btn.style.opacity = '0.5';
     } else {
       btn.innerHTML = icon('download', 16);
-      btn.disabled = false;
+      btn.disabled = !getBookById(id)?.downloadAllowed;
+      if(btn.disabled) btn.title = 'Redistribution permission not verified';
       btn.style.opacity = '1';
     }
   } catch(e){
@@ -549,7 +551,8 @@ async function updateDownloadButtonCard(id){
       btn.style.opacity = '0.5';
     } else {
       btn.innerHTML = icon('download', 16);
-      btn.disabled = false;
+      btn.disabled = !getBookById(id)?.downloadAllowed;
+      if(btn.disabled) btn.title = 'Redistribution permission not verified';
       btn.style.opacity = '1';
     }
   } catch(e){
@@ -789,4 +792,46 @@ async function closeLocalBookDetail(id){
   await deleteLocalBook(id);
   closeBookDetail();
   toast(ar ? 'تم الحذف' : 'Deleted', 'trash-2');
+}
+
+let _libraryView = null;
+let _librarySort = 'title';
+async function setLibraryView(view){
+  _libraryView = view === 'folders' ? 'folders' : 'grid';
+  await store.setMeta('libraryDesktopView', _libraryView);
+  await renderBooksGrid();
+}
+async function renderDesktopLibrary(host){
+  if(!_libraryView){ const saved = await store.getMeta('libraryDesktopView'); _libraryView = _libraryView || saved || 'grid'; }
+  const ar = window.SAHIB_I18N?.language === 'ar';
+  _booksLang = ar ? 'ar' : 'en';
+  const label = (en,arabic) => ar ? arabic : en;
+  let books = _booksQuery.trim() ? searchBooks(_booksQuery) : allBooks();
+  if(_booksCategory === '__beginner') books = getBeginnerBooks();
+  else if(_booksCategory) books = books.filter(b=>_booksCategory === 'local' ? b.isLocal : b.category === _booksCategory);
+  books = books.slice().sort((a,b)=>{
+    if(_librarySort === 'recent') return (getBookProgress(b.id)?.lastRead||0)-(getBookProgress(a.id)?.lastRead||0);
+    if(_librarySort === 'author') return (a.author||'').localeCompare(b.author||'',ar?'ar':'en');
+    return (ar?a.titleAr:a.titleEn||a.titleAr).localeCompare(ar?b.titleAr:b.titleEn||b.titleAr,ar?'ar':'en');
+  });
+  const categoryButton = (id,title) => `<button type="button" aria-pressed="${(_booksCategory||'')===id}" onclick="_booksCategory='${id}';renderBooksGrid()">${esc(title)}</button>`;
+  const sourceLabel = b=>b.isLocal?label('Personal PDF','ملف شخصي'):b.source==='included'?label('Included','مضمّن'):b.downloadAllowed?label('Catalog','الفهرس'):label('Metadata / cached copy','بيانات / نسخة مخزنة');
+  host.innerHTML = `<div class="library-desktop" data-view="${_libraryView}" dir="${ar?'rtl':'ltr'}">
+    <header class="library-toolbar"><h1>${label('Library','المكتبة')}</h1><span>${books.length} ${label('books','كتاب')}</span>
+      <div class="library-view-toggle" aria-label="${label('Library view','عرض المكتبة')}"><button aria-pressed="${_libraryView==='grid'}" onclick="setLibraryView('grid')">${label('Cards','البطاقات')}</button><button aria-pressed="${_libraryView==='folders'}" onclick="setLibraryView('folders')">${label('Folder explorer','المجلدات')}</button></div>
+      <label class="btn-cancel">${label('Add PDF','أضف PDF')}<input type="file" accept="application/pdf,.pdf" hidden onchange="onLocalFileChosen(event)"></label>
+    </header>
+    <div class="library-filters"><input id="books-search" class="fi" value="${esc(_booksQuery)}" placeholder="${label('Search books and authors','ابحث في الكتب والمؤلفين')}" oninput="onBooksSearch(this.value)"><label>${label('Sort','الترتيب')} <select onchange="_librarySort=this.value;renderBooksGrid()"><option value="title" ${_librarySort==='title'?'selected':''}>${label('Title','العنوان')}</option><option value="author" ${_librarySort==='author'?'selected':''}>${label('Author','المؤلف')}</option><option value="recent" ${_librarySort==='recent'?'selected':''}>${label('Recently read','آخر قراءة')}</option></select></label></div>
+    <div class="library-workspace"><nav class="library-folders" aria-label="${label('Categories','الفئات')}">${categoryButton('',label('All books','كل الكتب'))}${categoryButton('__beginner',label('Beginner path','مسار المبتدئ'))}${categoryButton('local',label('Personal imports','الملفات الشخصية'))}${BOOK_CATEGORIES.map(c=>categoryButton(c.id,ar?c.ar:c.en)).join('')}</nav>
+    <section class="library-results">${_libraryView==='grid'?`<div class="books-grid">${books.map(b=>b.isLocal?localBookCardHTML(b):bookCardHTML(b)).join('')}</div>`:
+    `<table class="library-table"><thead><tr><th>${label('Title','العنوان')}</th><th>${label('Author','المؤلف')}</th><th>${label('Source','المصدر')}</th><th>${label('Progress','التقدم')}</th></tr></thead><tbody>${books.map(b=>{const p=getBookProgress(b.id);return `<tr><td><button onclick="${b.isLocal?'openLocalBookDetail':'openBookDetail'}('${b.id}')">${esc(ar?b.titleAr:b.titleEn||b.titleAr)}</button></td><td>${esc(ar?b.author||'':b.authorEn||b.author||'')}</td><td>${esc(sourceLabel(b))}</td><td>${p?`${p.page} / ${p.totalPages||'—'}`:'—'}</td></tr>`;}).join('')}</tbody></table>`}
+    ${books.length?'':`<p>${label('No results','لا توجد نتائج')}</p>`}</section></div></div>`;
+  if(_libraryView==='grid'){
+    generateCoversForGrid();
+    for(const b of books){
+      const card=$('cover-'+b.id)?.closest('.book-card');
+      if(card){card.tabIndex=0;card.setAttribute('role','button');card.onkeydown=e=>{if(e.target===card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();card.click();}};}
+      updateDownloadButtonCard(b.id);
+    }
+  }
 }

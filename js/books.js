@@ -57,6 +57,7 @@ function resolveBookPath(book){
   if(!book) return '';
   if(book.isLocal) return '';          /* resolved via IndexedDB, not a path */
   if(!book.file) return '';
+  if(book.source==='included') return 'assets/books/' + book.file.split('/').map(encodeURIComponent).join('/');
   return BOOKS_BASE_PATH + book.file.split('/').map(encodeURIComponent).join('/');
 }
 
@@ -157,18 +158,7 @@ function isBookPageBookmarked(bookId, page){
    Virtual category id: '__beginner' (double underscore = not a real category).
    ========================================================================== */
 
-const BEGINNER_BOOK_IDS = [
-  'quran-tadabbur-amal',
-  'tafsir-sadi',
-  'jazariyyah',
-  'bukhari-maktabah',
-  'sharh-arbaeen-nawawi',
-  'riyad-salihin',
-  'tawhid-haqq-allah',
-  'ma-la-yasa-u-jahl',
-  'manhaj-salikin',
-  'hisn-muslim',
-];
+const BEGINNER_BOOK_IDS = BOOKS.filter(b=>b.readingOrder).sort((a,b)=>a.readingOrder-b.readingOrder).map(b=>b.id);
 
 const BEGINNER_BOOK_NOTES = {
   'quran-tadabbur-amal':  { ar: 'ابدأ من هنا: كيف تتعامل مع القرآن تدبرًا وعملًا.', en: 'Start here: how to engage the Quran with reflection and action.' },

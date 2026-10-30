@@ -1,39 +1,15 @@
 'use strict';
 
-/* ==========================================================================
-   Offline books
-   - Dedicated Cache Storage bucket for book PDFs: sahib-books
-   - Beginner-path URLs are hardcoded from js/books-data.js so the service
-     worker can precache a small subset without resolving Arabic filenames
-     at runtime.
-   - Everything else is lazy cached on first read.
-   ========================================================================== */
+/* Offline PDF cache. Catalog permissions govern new downloads;
+   existing user caches keep the same bucket and URL identities. */
 
 const OFFLINE_BOOKS_CACHE = 'sahib-books';
 const OFFLINE_BOOKS_BASE  = 'https://sahib-proxy.sahib-app.workers.dev/books/';
 
-/* The 10 beginner-path book URLs, resolved at authoring time from
-   js/books-data.js. Do not edit by hand without re-checking that file. */
-const BEGINNER_BOOK_URLS = {
-  'jazariyyah':           'https://sahib-proxy.sahib-app.workers.dev/books/1.%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Quran%20%26%20Its%20Sciences/Noor-Book.com%20%D8%A7%D9%84%D9%85%D9%82%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%AC%D8%B2%D8%B1%D9%8A%D8%A9%203%20.pdf',
-  'tawhid-haqq-allah':    'https://sahib-proxy.sahib-app.workers.dev/books/4.%20%D8%A7%D9%84%D8%B9%D9%82%D9%8A%D8%AF%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D9%88%D8%AD%D9%8A%D8%AF%20-%20Islamic%20Creed%20%26%20Theology/%D9%84%D8%AA%D9%88%D8%AD%D9%8A%D8%AF%20%D8%A7%D9%84%D8%B0%D9%8A%20%D9%87%D9%88%20%D8%AD%D9%82%20%D8%A7%D9%84%D9%84%D9%87%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%B9%D8%A8%D9%8A%D8%AF%20%D9%85%D8%A4%D9%84%D9%81%20%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D8%A8%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A8%D9%86%20%D8%B9%D8%A8%D8%AF%20%D8%A7%D9%84%D9%88%D9%87%D8%A7%D8%A8.pdf',
-  'ma-la-yasa-u-jahl':    'https://sahib-proxy.sahib-app.workers.dev/books/4.%20%D8%A7%D9%84%D8%B9%D9%82%D9%8A%D8%AF%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D9%88%D8%AD%D9%8A%D8%AF%20-%20Islamic%20Creed%20%26%20Theology/%D9%85%D8%A7%20%D9%84%D8%A7%20%D9%8A%D8%B3%D8%B9%20%D8%A7%D9%84%D9%85%D8%B3%D9%84%D9%85%20%D8%AC%D9%87%D9%84%D9%87.pdf',
-  'manhaj-salikin':       'https://sahib-proxy.sahib-app.workers.dev/books/5.%20%D8%A7%D9%84%D9%81%D9%82%D9%87%20%D9%88%D8%A3%D8%B5%D9%88%D9%84%D9%87%20-%20Islamic%20Jurisprudence%20(Fiqh)/%D9%85%D9%86%D9%87%D8%AC%20%D8%A7%D9%84%D8%B3%D8%A7%D9%84%D9%83%D9%8A%D9%86%20%D9%88%D8%AA%D9%88%D8%B6%D9%8A%D8%AD%20%D8%A7%D9%84%D9%81%D9%82%D9%87%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86.pdf',
-  'hisn-muslim':          'https://sahib-proxy.sahib-app.workers.dev/books/6.%20%D8%A7%D9%84%D8%B1%D9%82%D8%A7%D8%A6%D9%82%D8%8C%20%D8%A7%D9%84%D8%A3%D8%B0%D9%83%D8%A7%D8%B1%20%D9%88%D8%A7%D9%84%D8%AA%D8%B2%D9%83%D9%8A%D8%A9%20-%20Purification%20of%20the%20Soul%20%26%20Adhkar/%D8%AD%D8%B5%D9%86%20%D8%A7%D9%84%D9%85%D8%B3%D9%84%D9%85.pdf',
-};
-
-/* The 5 large beginner-path books. Cached on first read, or via the
-   "Download all" button in Settings. Not precached on install. */
-const LARGE_BOOK_URLS = {
-  'quran-tadabbur-amal':  'https://sahib-proxy.sahib-app.workers.dev/books/1.%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Quran%20%26%20Its%20Sciences/%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%AA%D8%AF%D8%A8%D8%B1%20%D9%88%D8%B9%D9%85%D9%84.pdf',
-  'tafsir-sadi':          'https://sahib-proxy.sahib-app.workers.dev/books/1.%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Quran%20%26%20Its%20Sciences/%D8%AA%D9%8A%D8%B3%D9%8A%D8%B1%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85%20%D8%A7%D9%84%D8%B1%D8%AD%D9%85%D9%86%20%D9%81%D9%8A%20%D8%AA%D9%81%D8%B3%D9%8A%D8%B1%20%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D9%84%D9%85%D9%86%D8%A7%D9%86%20%3D%20%D8%AA%D9%81%D8%B3%D9%8A%D8%B1%20%D8%A7%D9%84%D8%B3%D8%B9%D8%AF%D9%8A%20(%D8%B7.%20%D8%AF%D8%A7%D8%B1%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB).pdf',
-  'bukhari-maktabah':     'https://sahib-proxy.sahib-app.workers.dev/books/2.%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%20%D8%A7%D9%84%D8%B4%D8%B1%D9%8A%D9%81%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Hadith%20%26%20Its%20Sciences/%D8%B5%D8%AD%D9%8A%D8%AD%20%D8%A7%D9%84%D8%A8%D8%AE%D8%A7%D8%B1%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9.pdf',
-  'sharh-arbaeen-nawawi': 'https://sahib-proxy.sahib-app.workers.dev/books/2.%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%20%D8%A7%D9%84%D8%B4%D8%B1%D9%8A%D9%81%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Hadith%20%26%20Its%20Sciences/sharh_arbaeen_nawawi.pdf',
-  'riyad-salihin':        'https://sahib-proxy.sahib-app.workers.dev/books/2.%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%20%D8%A7%D9%84%D8%B4%D8%B1%D9%8A%D9%81%20%D9%88%D8%B9%D9%84%D9%88%D9%85%D9%87%20-%20Hadith%20%26%20Its%20Sciences/%D8%B1%D9%8A%D8%A7%D8%B6%20%D8%A7%D9%84%D8%B5%D8%A7%D9%84%D8%AD%D9%8A%D9%86%20%D9%85%D9%86%20%D9%83%D9%84%D8%A7%D9%85%20%D8%B1%D8%B3%D9%88%D9%84%20%D8%A7%D9%84%D9%84%D9%87%20%D8%B3%D9%8A%D8%AF%20%D8%A7%D9%84%D8%B9%D8%A7%D8%B1%D9%81%D9%8A%D9%86-%20%D8%A7%D9%84%D9%86%D9%88%D9%88%D9%8A%20-%20%D8%B7%20%D8%AF%D8%A7%D8%B1%20%D8%A7%D9%84%D9%85%D9%86%D9%87%D8%A7%D8%AC.pdf',
-};
-
-/* Fast lookup: id -> fully-qualified same-origin URL (relative). */
-const ALL_KNOWN_BOOK_URLS = Object.assign({}, BEGINNER_BOOK_URLS, LARGE_BOOK_URLS);
+/* Derived from the canonical catalog; cache names and legacy URLs stay stable. */
+const ALL_KNOWN_BOOK_URLS = Object.fromEntries(BOOKS.filter(b=>b.file).map(b=>[b.id,resolveBookPath(b)]));
+const BEGINNER_BOOK_URLS = Object.fromEntries(BOOKS.filter(b=>b.readingOrder).map(b=>[b.id,resolveBookPath(b)]));
+const LARGE_BOOK_URLS = {};
 
 /* Build a URL from an id. Falls back to the current resolveBookPath helper
    when the id is unknown (e.g. non-beginner books from BOOKS). */
@@ -72,6 +48,7 @@ async function cacheBookById(id, signal){
   const c = await offlineBooksCache();
   const existing = await c.match(url);
   if(existing) return { id, cached: true, skipped: true };
+  if(!getBookById(id)?.downloadAllowed) throw new Error('Download unavailable: redistribution permission has not been verified.');
   const res = await fetch(url, { signal });
   if(!res.ok) throw new Error('HTTP ' + res.status + ' for ' + id);
   await c.put(url, res.clone());
@@ -83,7 +60,7 @@ async function cacheBookById(id, signal){
 }
 
 async function cacheBeginnerBooks(onProgress, signal){
-  const ids = Object.keys(BEGINNER_BOOK_URLS).concat(Object.keys(LARGE_BOOK_URLS));
+  const ids = BOOKS.filter(b=>b.readingOrder && b.downloadAllowed).map(b=>b.id);
   let done = 0;
   for(const id of ids){
     if(signal && signal.aborted) throw new Error('aborted');

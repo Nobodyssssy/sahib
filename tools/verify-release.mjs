@@ -1,3 +1,5 @@
+import {spawnSync as runCatalogCheck} from 'node:child_process';
+if(runCatalogCheck(process.execPath,['tools/build-book-catalog.mjs','--check'],{stdio:'inherit'}).status)process.exit(1);
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';

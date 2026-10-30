@@ -47,7 +47,13 @@ async function loadPdfDocument(bookId, overrideUrl){
   }else{
     const url = overrideUrl || resolveBookPath(book);
     if(!url) throw new Error('No source URL for book');
-    doc = await engine.openDocumentUrl({ id: bookId, url }).toPromise();
+    const cached = await (await caches.open('sahib-books')).match(url);
+    if(cached){
+      doc = await engine.openDocumentBuffer({id:bookId,content:await cached.arrayBuffer()}).toPromise();
+    }else{
+      if(!book.downloadAllowed) throw new Error('This book is metadata only until redistribution permission is verified. Import your own permitted PDF to read it.');
+      doc = await engine.openDocumentUrl({ id: bookId, url }).toPromise();
+    }
   }
 
   const wrapped = {
@@ -119,7 +125,11 @@ async function _renderBookCover(bookId){
     const url = resolveBookPath(book);
 
     /* Open a fresh document just for the cover render */
-    const doc = await engine.openDocumentUrl({ id: 'cover-' + bookId, url }).toPromise();
+    const cachedPdf = await (await caches.open('sahib-books')).match(url);
+    if(!cachedPdf && !book.downloadAllowed) return null;
+    const doc = cachedPdf
+      ? await engine.openDocumentBuffer({id:'cover-'+bookId,content:await cachedPdf.arrayBuffer()}).toPromise()
+      : await engine.openDocumentUrl({ id: 'cover-' + bookId, url }).toPromise();
     const page = doc.pages[0];
 
     const baseWidth = page.size.width;
