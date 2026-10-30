@@ -55,6 +55,11 @@ Read dhikr|قراءة الذكر
 Today's reading|قراءة اليوم
 Your daily practice|وردك اليومي
 In your calendar|في تقويمك
+Transliteration|الكتابة بالحروف اللاتينية
+Repetitions|التكرارات
+Fit width|ملاءمة العرض
+Fit page|ملاءمة الصفحة
+Actual size|الحجم الفعلي
 Good morning|صباح الخير
 Good afternoon|طاب نهارك
 Good evening|مساء الخير

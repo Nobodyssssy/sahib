@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.14.5';
+const VERSION = 'v2.14.6';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 

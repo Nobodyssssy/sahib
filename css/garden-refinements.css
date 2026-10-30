@@ -109,3 +109,27 @@ body .sidebar-brand .sahib-mark-compact{display:none}
 html[data-sidebar-collapsed="true"] body .sidebar-brand .sahib-mark-compact{display:block;width:52px;height:62px}
 .book-cover-unavailable{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--garden-muted);text-align:center;padding:10px}
 .book-cover-unavailable small{font:10px/1.5 var(--font-label)}
+
+
+.session-reading { display: contents; }
+@media (min-width: 1024px) {
+  body .session-overlay { padding: 24px clamp(24px, 5vw, 100px); }
+  body .session-overlay > :is(.session-header,.session-body,.session-footer) { max-width: 1280px; width: 100%; }
+  body .session-overlay .session-body { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 32px; padding: 32px; max-height: calc(100dvh - 190px); flex: 1 1 auto; }
+  .session-reading { display: block; min-width: 0; max-width: 850px; margin-inline: auto; }
+  body .session-reading .session-arabic { font-size: clamp(28px, 2.4vw, 42px); line-height: 2.1; text-align: start; direction: rtl; padding-block: 12px; }
+  body .session-reading .translit-swap { direction: ltr; font-family: var(--font-body); font-size: 24px; line-height: 1.8; }
+  body .session-counter-area { align-self: start; position: sticky; top: 0; margin: 0; padding: 24px 16px; border-inline-start: 1px solid var(--border); }
+  body .session-header { padding: 14px 24px; }
+  body .session-footer { justify-content: flex-end; padding: 14px 24px; gap: 16px; }
+  body .session-footer button { flex: 0 1 200px; }
+  body .session-overlay.is-done .session-body { display: block; }
+  body .reader-overlay .reader-body { flex: none; position: absolute; inset: 64px 0 52px; }
+  body .reader-overlay .reader-topbar { position: absolute; inset: 0 0 auto; width: auto; height: 64px; box-sizing: border-box; z-index: 10; }
+  body .reader-overlay .reader-bottombar { position: absolute; inset: auto 0 0; height: 52px; box-sizing: border-box; z-index: 10; }
+  body .reader-overlay.reader-idle :is(.reader-topbar,.reader-bottombar) { opacity: 0; pointer-events: none; }
+  body .reader-overlay .reader-sidebar { top: 64px; bottom: 52px; width: clamp(230px, 20vw, 310px); }
+  html[dir="rtl"] body .reader-sidebar { left: auto; right: 0; transform: translateX(100%); border-right: 0; border-left: 1px solid var(--border); }
+  html[dir="rtl"] body .reader-sidebar.open { transform: translateX(0); }
+  body .reader-overlay .reader-title { font-size: 19px; line-height: 1.6; }
+}

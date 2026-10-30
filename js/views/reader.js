@@ -141,7 +141,9 @@ function ensureReaderOverlay(){
         <span class="reader-setting-label">Zoom <span id="reader-zoom-readout" style="color:var(--text3);font-weight:400;margin-left:6px">100%</span></span>
         <div class="reader-setting-buttons">
           <button class="reader-setting-btn" onclick="readerZoomOut()" title="Zoom out (Ctrl + scroll down)">−</button>
-          <button class="reader-setting-btn" onclick="readerZoomReset()" title="Reset zoom">Reset</button>
+          <button class="reader-setting-btn" onclick="readerFit('width')">Fit width</button>
+          <button class="reader-setting-btn" onclick="readerFit('page')">Fit page</button>
+          <button class="reader-setting-btn" onclick="readerFit('actual')">Actual size</button>
           <button class="reader-setting-btn" onclick="readerZoomIn()" title="Zoom in (Ctrl + scroll up)">+</button>
         </div>
       </div>
@@ -160,6 +162,10 @@ function ensureReaderOverlay(){
     <div class="reader-sidebar" id="reader-sidebar"></div>
   `;
   document.body.appendChild(el);
+  for(const type of ['pointermove','pointerdown','keydown','focusin','focusout']){
+    el.addEventListener(type, readerWakeControls);
+  }
+
 
   if(typeof injectHeaderIcons === 'function'){
     injectHeaderIcons();
@@ -233,6 +239,7 @@ function renderReaderUI(){
   _updateReaderZoomReadout();
   _attachReaderWheelZoom();
   _attachReaderPinchZoom();
+  readerWakeControls();
 }
 
 function updateReaderBookmarkBtn(){
@@ -1031,6 +1038,8 @@ document.addEventListener('keydown', (e) => {
   const overlay = $('reader-overlay');
   if(!overlay || !overlay.classList.contains('open')) return;
 
+  if(e.target.closest('input,textarea,select,[contenteditable]')) return;
+
   switch(e.key){
     case 'ArrowRight':
     case 'ArrowDown':
@@ -1074,3 +1083,37 @@ document.addEventListener('keydown', (e) => {
 
 /* Sync fullscreen button icon */
 document.addEventListener('fullscreenchange', updateReaderFullscreenIcon);
+
+
+let _readerChromeTimer = null;
+function readerWakeControls(){
+  const overlay = $('reader-overlay');
+  if(!overlay?.classList.contains('open') || !matchMedia('(min-width: 1024px)').matches) return;
+  clearTimeout(_readerChromeTimer);
+  overlay.classList.remove('reader-idle');
+  _readerControlsVisible = true;
+  $('reader-topbar')?.classList.remove('hidden');
+  $('reader-bottombar')?.classList.remove('hidden');
+  _readerChromeTimer = setTimeout(() => {
+    if(!overlay.classList.contains('open')) return;
+    const busy = overlay.querySelector('.reader-settings-panel.open,.reader-sidebar.open');
+    const focused = overlay.contains(document.activeElement) && document.activeElement.matches('button,input,select,textarea,a');
+    const hovered = overlay.querySelector('.reader-topbar:hover,.reader-bottombar:hover');
+    if(busy || focused || hovered){ readerWakeControls(); return; }
+    overlay.classList.add('reader-idle');
+  }, 3000);
+}
+
+async function readerFit(mode){
+  if(!_readerPdf) return;
+  const bookId = _readerBookId;
+  const page = await _readerPdf.getPage(_readerCurrentPage);
+  if(bookId !== _readerBookId) return;
+  const body = $('reader-body');
+  const width = Math.min(body.clientWidth || 700, 900);
+  const fitWidth = width / page.size.width;
+  const fitPage = Math.min(fitWidth, Math.max(100, body.clientHeight - 32) / page.size.height);
+  _readerZoom = mode === 'actual' ? 1 / fitWidth : mode === 'page' ? fitPage / fitWidth : 1;
+  _updateReaderZoomReadout();
+  await refreshReaderPages();
+}

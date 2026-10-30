@@ -67,7 +67,7 @@ function renderSessionStep(){
   const toggleRow = hasTranslit
     ? `<div class="detail-lang-toggle">
          <button type="button" class="detail-lang-btn on" data-lang="ar" onclick="sessSetLang('ar')">عربي</button>
-         <button type="button" class="detail-lang-btn" data-lang="en" onclick="sessSetLang('en')">English</button>
+         <button type="button" class="detail-lang-btn" data-lang="en" onclick="sessSetLang('en')">Transliteration</button>
        </div>`
     : '';
   const translitBlock = hasTranslit
@@ -90,6 +90,7 @@ function renderSessionStep(){
     : '';
 
   $('sess-body').innerHTML = `
+    <div class="session-reading">
     ${d.situation ? `<div class="session-situation">${d.situation}</div>` : ''}
     <div class="session-arabic" id="sess-arabic">${d.arabic}</div>
     ${translitBlock}
@@ -99,7 +100,7 @@ function renderSessionStep(){
       ${relBadge}
     </div>
     ${refBlock}
-    <div class="session-counter-area">
+    </div><aside class="session-counter-area" aria-label="Repetitions">
       <button class="session-tap-btn ${isDone?'done':''}" id="sess-tap" onclick="sessionTap(${d.id},${d.repeat})">
         <span id="sess-tap-num">${sessTapCount}</span>
         <span class="session-tap-label">TAP</span>
@@ -108,7 +109,7 @@ function renderSessionStep(){
       <div class="session-prog-bar">
         <div class="session-prog-fill ${isDone?'done-fill':''}" id="sess-pfill" style="width:${pct}%"></div>
       </div>
-    </div>`;
+    </aside>`;
 
   setTimeout(() => {
     document.querySelectorAll('#sess-body details').forEach(el => el.removeAttribute('open'));
@@ -263,3 +264,18 @@ function _closeSessionFromHistory(){
   }
   _closeSessionHard();
 }
+
+
+document.addEventListener('keydown', event => {
+  if(!matchMedia('(min-width: 1024px)').matches || !$('session-overlay')?.classList.contains('open')) return;
+  if(event.altKey || event.ctrlKey || event.metaKey || event.repeat || event.target.closest('button,input,textarea,select,[contenteditable]')) return;
+  if(event.key === ' ' && sessIdx < sessItems.length){
+    event.preventDefault();
+    const item = sessItems[sessIdx];
+    sessionTap(item.id, item.repeat);
+  } else if(event.key === 'PageDown'){
+    event.preventDefault(); sessionNext();
+  } else if(event.key === 'PageUp'){
+    event.preventDefault(); sessionPrev();
+  }
+});
