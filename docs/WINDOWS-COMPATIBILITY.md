@@ -6,7 +6,7 @@ Confirmed fixes:
 - Recognize vertical taskbars when selecting the existing floating fallback. Previously the WebView fallback could wait indefinitely after a horizontal-to-vertical taskbar change.
 - Rebuild the native widget clipping region after DPI changes even when Windows has already resized its HWND. Actual RC4 clipped the countdown at 150%; RC5 client/region bounds matched at 150%, 200% and restored 125%.
 
-Actual acceptance: S3 suspend/resume, timer completion chime and popup, lock/unlock widget recovery, and Narrator prayer/time/countdown were confirmed by the user. The real Sion Maghrib alert on 2026-10-30 at 17:19 fired at its scheduled millisecond; audio was confirmed by the user. Original application and RC profile were restored after testing.
+Actual acceptance: S3 suspend/resume, timer completion chime and popup, lock/unlock widget recovery, and Narrator prayer/time/countdown were confirmed by the user. The real Sion Maghrib alert on 2026-10-30 at 17:19 was observed in the alert ledger 308 ms after its deadline; audio was confirmed by the user. The ledger stores scheduled timestamps, so it does not measure audio onset or prove zero dispatch delay. Original application and RC profile were restored after testing.
 
 The reviewed DirectWrite Factory5 requirement starts at Windows 10 build 15063, below 22H2. DPI awareness, UI Automation, GDI window regions and classic tray APIs are supported. No application dependency requiring Windows 11 was identified. The PE import audit checks a limited explicit API list; it cannot establish compatibility of every dynamic call or dependency.
 

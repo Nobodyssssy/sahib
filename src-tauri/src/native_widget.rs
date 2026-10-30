@@ -27,6 +27,8 @@ pub struct View {
     pub shell_lifted: bool,
     pub style: String,
     #[serde(skip)]
+    clip: Option<(u32, u32, i32)>,
+    #[serde(skip)]
     drag: Option<(i32, i32)>,
     #[serde(skip)]
     flags: Option<(bool, bool, u8)>,
@@ -243,6 +245,7 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             handle,
             shell_lifted: lifted,
             style: p.widget_style.clone(),
+            clip: old.as_ref().and_then(|v| v.clip),
             drag: old.as_ref().and_then(|v| v.drag),
             flags: old.as_ref().and_then(|v| v.flags),
         };
@@ -277,25 +280,30 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             if size_changed {
                 let _ = w.set_size(size);
             }
-            if size_changed
-                || old
-                    .as_ref()
-                    .map(|v| (v.bounds.2, v.bounds.3, v.scale, v.style.clone()))
-                    != Some((bounds.2, bounds.3, scale, p.widget_style.clone()))
-            {
+            let corner = (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32;
+            let clip = (bounds.2, bounds.3, corner);
+            if size_changed || view.clip != Some(clip) {
                 unsafe {
-                    SetWindowRgn(
-                        handle as HWND,
-                        CreateRoundRectRgn(
-                            0,
-                            0,
-                            bounds.2 as i32 + 1,
-                            bounds.3 as i32 + 1,
-                            (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32,
-                            (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32,
-                        ),
-                        1,
+                    let region = CreateRoundRectRgn(
+                        0,
+                        0,
+                        bounds.2 as i32 + 1,
+                        bounds.3 as i32 + 1,
+                        corner,
+                        corner,
                     );
+                    if !region.is_null() {
+                        if SetWindowRgn(handle as HWND, region, 1) != 0 {
+                            view.clip = Some(clip);
+                            state
+                                .views
+                                .lock()
+                                .unwrap()
+                                .insert(label.clone(), view.clone());
+                        } else {
+                            DeleteObject(region);
+                        }
+                    }
                 }
             }
             if w.outer_position().ok() != Some(position) {

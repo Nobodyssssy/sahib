@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {spawnSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 import {setTimeout as sleep} from 'node:timers/promises';
 import {buildQA,startQA} from './desktop-qa-session.mjs';
@@ -10,6 +11,13 @@ const results=[];
 try{
  main=await run.connect('main');await run.waitReady(main);await sleep(1500);
  const invoke=(name,args)=>main.evaluate(`window.__TAURI__.core.invoke(${JSON.stringify(name)},${JSON.stringify(args)})`);
+ for(const family of ['sahib','catppuccin','aura','dracula','tokyo-night','rose-pine']){
+  await main.evaluate(`SAHIB_THEME.apply({theme:'${family}',mode:'light',accent:'peach'})`);
+  await sleep(150);await main.evaluate('SahibDesktop.sync()');await sleep(150);
+  const colors=(await invoke('desktop_state',{})).schedule.theme;
+  for(const key of ['--surface','--text','--text-muted','--border','--accent'])assert.match(colors[key],/^#[0-9a-f]{6}$/i,`${family} ${key} must resolve CSS colors for native rendering`);
+ }
+ results.push({nativeColors:'six themes resolved to RGB'});
  const originalAlerts=await main.evaluate('(async()=>JSON.stringify((await getPrayerPrefs()).alerts))()');
  for(const sound of ['timer-gentle','timer-bell','timer-wood','timer-beep','off']){
   await invoke('desktop_timer_audio',{sound,volume:0});await invoke('desktop_preview_audio',{id:sound,volume:0});await sleep(150);
@@ -24,6 +32,12 @@ try{
  for(const widgetStyle of ['minimal','landmark','slim','countdown']){
   const state=await invoke('desktop_state',{});await invoke('desktop_set_preferences',{prefs:{...state.prefs,widgetVisible:true,widgetMode:'taskbar',widgetRenderer:'native',widgetStyle},autostart:null});assert.equal((await invoke('desktop_state',{})).prefs.widgetStyle,widgetStyle);results.push({widgetStyle,persisted:true});
  }
+ const setPrefs=async patch=>{const state=await invoke('desktop_state',{});await invoke('desktop_set_preferences',{prefs:{...state.prefs,...patch},autostart:null});};
+ const readClip=()=>{const r=spawnSync('powershell.exe',['-NoProfile','-File','tools/read-native-dpi.ps1','-RootProcess',String(run.app.pid)],{encoding:'utf8',windowsHide:true});assert.equal(r.status,0,r.stderr);return JSON.parse(r.stdout);};
+ await setPrefs({widgetVisible:true,widgetStyle:'minimal'});assert.equal(readClip().cornerFilled,true);
+ await setPrefs({widgetVisible:false});await setPrefs({widgetStyle:'landmark'});await setPrefs({widgetVisible:true});
+ const clip=readClip();assert.equal(clip.cornerFilled,false,'Rounded layout must apply after being selected while hidden');assert.equal(clip.fits,true);
+ results.push({hiddenLayoutTransition:true,clipFits:true});
  await invoke('desktop_stop_audio',{});await invoke('desktop_timer_audio',{sound:'timer-bell',volume:0});await invoke('desktop_timer',{action:'start',seconds:10,repeat:false,focus:true});
  await main.evaluate('window.__TAURI__.window.getCurrentWindow().close()').catch(()=>{});await sleep(12000);
  const disk=JSON.parse(fs.readFileSync(path.join(run.profile,'desktop-state.json'),'utf8'));assert.equal(disk.timer.finished,true);assert.equal(disk.timer.deadline,0);assert.equal(disk.prefs.timerSound,'timer-bell');
