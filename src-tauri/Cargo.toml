@@ -8,7 +8,7 @@ rust-version = "1.80"
 
 [features]
 default = []
-native-widget-experiment = ["dep:windows-sys", "dep:windows", "dep:windows-core", "tauri/unstable"]
+native-widget-experiment = ["dep:windows-sys", "dep:windows", "dep:windows-core", "tauri/unstable", "dep:webview2-com"]
 native-widget-rc = ["native-widget-experiment"]
 brand-preview = []
 desktop-qa = []
@@ -33,6 +33,7 @@ rodio = { version = "0.21.1", default-features = false, features = ["playback", 
 windows-sys = { version = "0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_UI_WindowsAndMessaging", "Win32_UI_Shell", "Win32_UI_Input_KeyboardAndMouse"] }
 windows = { version = "0.62.2", optional = true, features = ["Win32_Foundation", "Win32_Graphics_DirectWrite", "Win32_Graphics_Direct2D", "Win32_Graphics_Direct2D_Common", "Win32_Graphics_Dxgi_Common", "Win32_Graphics_Gdi", "Win32_UI_Accessibility", "Win32_System_Com", "Win32_System_Variant"] }
 windows-core = { version = "0.62.2", optional = true }
+webview2-com = { version = "0.39.1", optional = true }
 
 [profile.release]
 codegen-units = 1

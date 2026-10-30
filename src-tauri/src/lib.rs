@@ -7,6 +7,7 @@ mod native_accessibility;
 mod native_text;
 #[cfg(feature = "native-widget-experiment")]
 mod native_widget;
+mod panel_perf;
 mod scheduler;
 mod session_timer;
 mod taskbar;
@@ -298,11 +299,7 @@ fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 .clone();
             apply_rich_widget(app, &panel_prefs);
         } else {
-            for (label, w) in app.webview_windows() {
-                if is_widget(&label) {
-                    let _ = w.destroy();
-                }
-            }
+            native_widget::hide_panel(app);
         }
         return;
     }
@@ -763,7 +760,7 @@ fn desktop_state(app: tauri::AppHandle) -> Result<serde_json::Value, String> {
         serde_json::to_value(&*app.state::<native_widget::State>().views.lock().unwrap()).unwrap();
     let widget_windows:Vec<_>=app.webview_windows().into_iter().filter(|(label,_)|is_widget(label)).map(|(label,w)|serde_json::json!({"label":label,"visible":w.is_visible().unwrap_or(false),"position":w.outer_position().ok(),"size":w.inner_size().ok(),"scale":w.scale_factor().ok()})).collect();
     Ok(
-        serde_json::json!({"nativeAvailable":cfg!(feature = "native-widget-experiment"),"nativeWidgetViews":native_views,"widgetDiagnostics":diagnostic_snapshot,"widgetLogPath":state.file.parent().unwrap().join("widget-diagnostics.jsonl"),"widgetWindows":widget_windows,"widgetViews":view_snapshot,"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"timer":d.timer,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.available_monitors().unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
+        serde_json::json!({"panelTiming":panel_perf::snapshot(),"nativeAvailable":cfg!(feature = "native-widget-experiment"),"nativeWidgetViews":native_views,"widgetDiagnostics":diagnostic_snapshot,"widgetLogPath":state.file.parent().unwrap().join("widget-diagnostics.jsonl"),"widgetWindows":widget_windows,"widgetViews":view_snapshot,"widgetBounds":widget_bounds,"taskbarBounds":taskbar_bounds,"timer":d.timer,"prefs":d.prefs,"schedule":d.schedule,"now":now_ms(),"autostart":app.autolaunch().is_enabled().unwrap_or(false),"audioPlaying":state.audio.active.load(Ordering::Relaxed),"audioError":*state.audio.error.lock().unwrap(),"notificationPermission":app.notification().permission_state().ok(),"widgetExpanded":state.widget_expanded.load(Ordering::Relaxed),"systemLight":taskbar::system_light(),"monitors":app.available_monitors().unwrap_or_default().iter().filter_map(|m|m.name().cloned()).collect::<Vec<_>>()}),
     )
 }
 #[tauri::command]
@@ -847,6 +844,8 @@ async fn desktop_set_preferences(
     let state = app.state::<DesktopState>();
     let mut d = state.disk.lock().map_err(|e| e.to_string())?;
     let mode_changed = d.prefs.widget_mode != prefs.widget_mode;
+    #[cfg(feature = "native-widget-experiment")]
+    let renderer_changed = d.prefs.widget_renderer != prefs.widget_renderer;
     d.prefs = prefs.clone();
     state.save(&d)?;
     drop(d);
@@ -857,8 +856,36 @@ async fn desktop_set_preferences(
         }
     }
     ensure_widget_windows(&app, &prefs);
+    #[cfg(feature = "native-widget-experiment")]
+    if prefs.widget_visible && (mode_changed || renderer_changed) && !native_widget::active(&app) {
+        native_widget::resume_compatibility_panel(&app);
+    }
     apply_widget(&app, &prefs);
     emit_state(&app);
+    Ok(())
+}
+#[cfg(feature = "native-widget-experiment")]
+fn app_panel_ready(app: &tauri::AppHandle) {
+    native_widget::panel_loaded(app);
+}
+#[tauri::command]
+fn desktop_panel_phase(
+    window: tauri::WebviewWindow,
+    id: u64,
+    phase: String,
+    metrics: serde_json::Value,
+) -> Result<(), String> {
+    if window.label() != "widget"
+        || !["hydratedMs", "paintedMs", "readyMs"].contains(&phase.as_str())
+        || metrics.to_string().len() > 4096
+    {
+        return Err("Invalid panel timing".into());
+    }
+    #[cfg(feature = "native-widget-experiment")]
+    if id == panel_perf::id() && (phase == "readyMs" || phase == "paintedMs") {
+        app_panel_ready(window.app_handle());
+    }
+    panel_perf::frontend(id, &phase, metrics);
     Ok(())
 }
 #[tauri::command]
@@ -869,6 +896,9 @@ fn desktop_widget_state(
     if !is_widget(window.label()) {
         return Err("Widget only".into());
     }
+    widget_payload(&app, window.label())
+}
+fn widget_payload(app: &tauri::AppHandle, label: &str) -> Result<serde_json::Value, String> {
     let state = app.state::<DesktopState>();
     let now = now_ms();
     let d = state.disk.lock().map_err(|e| e.to_string())?;
@@ -888,12 +918,13 @@ fn desktop_widget_state(
         .widget_views
         .lock()
         .unwrap()
-        .get(window.label())
+        .get(label)
         .cloned()
         .unwrap_or_default();
-    if window.label() == "widget" {
+    if label == "widget" {
         view.expanded = state.widget_expanded.load(Ordering::Relaxed)
     }
+    value["panelOpenId"] = panel_perf::id().into();
     value["widgetExpanded"] = view.expanded.into();
     value["view"] = serde_json::to_value(view).unwrap();
     value["systemLight"] = taskbar::system_light().into();
@@ -1475,7 +1506,7 @@ pub fn run() {
             desktop_save_audio,
             desktop_remove_audio,
             desktop_open_url,desktop_experiment
-            ,desktop_widget_action,desktop_widget_state,desktop_widget_size,desktop_widget_drag
+            ,desktop_panel_phase,desktop_widget_action,desktop_widget_state,desktop_widget_size,desktop_widget_drag
         ])
         .setup(|app| {
             let dir = app.path().app_data_dir()?;

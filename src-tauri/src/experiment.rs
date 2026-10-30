@@ -59,6 +59,30 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
     } else {
         builder
     };
+    let builder = if label == "widget" {
+        let mut snapshot = widget_payload(app, "widget").unwrap_or(serde_json::json!({}));
+        if native_widget::active(app) {
+            snapshot["widgetExpanded"] = true.into();
+        }
+        let document_open_id = panel_perf::id();
+        builder
+            .initialization_script(format!(
+                "window.__SAHIB_PANEL_OPEN_ID__={};window.__SAHIB_WIDGET_BOOTSTRAP__={};",
+                panel_perf::id(),
+                snapshot
+            ))
+            .on_page_load(move |_, payload| {
+                panel_perf::mark(
+                    document_open_id,
+                    match payload.event() {
+                        tauri::webview::PageLoadEvent::Started => "navigationStartedMs",
+                        tauri::webview::PageLoadEvent::Finished => "navigationFinishedMs",
+                    },
+                );
+            })
+    } else {
+        builder
+    };
     builder
         .on_navigation(move |url| {
             if url.host_str() == Some("tauri.localhost") || url.scheme() == "tauri" {
@@ -234,6 +258,15 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                         .map_err(|e| e.to_string())?;
                         rx.recv_timeout(Duration::from_secs(15))
                             .map_err(|e| e.to_string())??;
+                    }
+                    "panel-timing" => {
+                        let mut v = panel_perf::snapshot();
+                        v["suspended"] = app
+                            .state::<native_widget::State>()
+                            .panel_suspended
+                            .load(Ordering::Acquire)
+                            .into();
+                        return Ok(v);
                     }
                     "panel" => {
                         native_widget::panel(&app, request["monitor"].as_str().unwrap_or("").into())

@@ -1,7 +1,19 @@
 'use strict';
+const widgetJsStart=performance.now();
+let widgetOpenId=window.__SAHIB_PANEL_OPEN_ID__||0,widgetFetchMs=0,widgetReportedId=-1;
+const widgetReportedPhases=new Set();
+function reportPanelPhase(phase,renderStart=performance.now(),openId=widgetOpenId){
+ if(openId!==widgetOpenId)return;
+ if(widgetReportedId!==openId){widgetReportedId=openId;widgetReportedPhases.clear();}
+ if(widgetReportedPhases.has(phase))return;widgetReportedPhases.add(phase);
+ const metrics={documentReused:widgetOpenId!==(window.__SAHIB_PANEL_OPEN_ID__||0),jsStartMs:widgetJsStart,cssEndMs:Math.max(0,...performance.getEntriesByType('resource').filter(r=>r.name.includes('.css')).map(r=>r.responseEnd)),stateFetchMs:widgetFetchMs,renderMs:performance.now()-renderStart};
+ window.__TAURI__.core.invoke('desktop_panel_phase',{id:widgetOpenId,phase,metrics}).catch(()=>{});
+}
+
 (async()=>{
  const invoke=window.__TAURI__.core.invoke,el=id=>document.getElementById(id);
  let timerEditing=false,timerKey="";
+ let widgetActive=!document.hidden,widgetIntervals=[];
  let state=null,remindersKey='',tickKey='',lastHeight=0,refreshTimer,drag=null,ignoreClick=false,movePending=false;
  const families={sahib:['green','tajawal'],aura:['mauve','dm-sans'],dracula:['mauve','inter'],catppuccin:['mauve','manrope'],'rose-pine':['pink','amiri'],'tokyo-night':['blue','cairo']};
  const icons={Fajr:'moon',Sunrise:'sunrise',Dhuhr:'sun',Asr:'cloud',Maghrib:'sunset',Isha:'moon'},action=action=>invoke('desktop_widget_action',{action});
@@ -10,7 +22,7 @@
  function moments(){const now=Date.now(),s=state.schedule;return {now,next:s.prayers.find(p=>p.at>now),day:(s.widgetDays||[]).find(d=>d.start<=now&&d.end>now)};}
  function fit(){
   if(!state||document.body.dataset.mode==='taskbar'&&!state.widgetExpanded)return;
-  requestAnimationFrame(()=>{const card=el('widget'),style=getComputedStyle(card),children=[...card.children].filter(child=>getComputedStyle(child).display!=='none');const height=Math.ceil(children.reduce((sum,child)=>sum+(child.id==='widget-reminders'?Math.min(child.scrollHeight,144):child.getBoundingClientRect().height),0)+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+parseFloat(style.rowGap)*(children.length-1)+16);if(Math.abs(height-lastHeight)>=2){lastHeight=height;invoke('desktop_widget_size',{height}).catch(console.error);}});
+  const measure=()=>{const card=el('widget'),style=getComputedStyle(card),children=[...card.children].filter(child=>getComputedStyle(child).display!=='none');const height=Math.ceil(children.reduce((sum,child)=>sum+(child.id==='widget-reminders'?Math.min(child.scrollHeight,144):child.getBoundingClientRect().height),0)+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+parseFloat(style.rowGap)*(children.length-1)+16);if(Math.abs(height-lastHeight)>=2){lastHeight=height;invoke('desktop_widget_size',{height}).catch(console.error);}};if(document.hidden)measure();else requestAnimationFrame(measure);
  }
  function tick(){
   if(!state)return;const {now,next,day}=moments(),key=[next?.at,day?.start,state.schedule.validUntil<now].join(':');
@@ -99,8 +111,8 @@
  el('widget-timer-open').onclick=()=>{el('widget-timer').scrollIntoView({block:'nearest'});el('timer-minutes').focus();};
  for(const action of ['start','restart','stop'])el('timer-'+action).onclick=()=>timerAction(action);
  document.querySelectorAll('[data-timer-minutes]').forEach(b=>b.onclick=()=>{timerEditing=true;el('timer-minutes').value=b.dataset.timerMinutes;});
- async function refresh(){state=await invoke('desktop_widget_state');renderContent();}
- function queueRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>refresh().catch(console.error),60);}
+ async function refresh(){const start=performance.now();const snapshot=await invoke('desktop_widget_state');if((snapshot.panelOpenId||0)<widgetOpenId)return;state=snapshot;widgetOpenId=state.panelOpenId||widgetOpenId;widgetFetchMs=performance.now()-start;const render=performance.now();renderContent();reportPanelPhase('hydratedMs',render);const openId=widgetOpenId;requestAnimationFrame(()=>requestAnimationFrame(()=>reportPanelPhase('paintedMs',render,openId)));}
+ function queueRefresh(){if(!widgetActive)return;clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>refresh().catch(console.error),0);}
  el('widget-open-top').onclick=()=>invoke('desktop_show_main');el('widget-settings-footer').onclick=()=>action('settings');
  el('widget-open').onclick=()=>invoke('desktop_show_main');el('widget-stop').onclick=()=>invoke('desktop_stop_audio').then(()=>setTimeout(queueRefresh,100));el('widget-close').onclick=()=>state?.prefs.widgetMode==='taskbar'?action('collapse'):invoke('desktop_hide_widget');el('widget-settings').onclick=()=>action('settings');el('widget-details').onclick=()=>action('timetable');el('widget-compact').onclick=()=>{if(ignoreClick){ignoreClick=false;return;}action('toggle');};el('widget-refresh').onclick=()=>action('refresh');
  const compact=el('widget-compact');
@@ -111,7 +123,19 @@
  document.querySelector('header').addEventListener('mousedown',event=>{if(document.body.dataset.mode!=='taskbar'&&event.button===0&&!event.target.closest('button'))window.__TAURI__.window.getCurrentWindow().startDragging();});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')action('collapse');});
  new ResizeObserver(fit).observe(el('widget'));
- await window.__TAURI__.event.listen('sahib:desktop-state',queueRefresh);
- await window.__TAURI__.event.listen('sahib:desktop-alert',()=>setTimeout(queueRefresh,400));
- await refresh();setInterval(tick,1000);setInterval(()=>{if(state?.prefs.widgetVisible)queueRefresh();},30000);setInterval(()=>{if(state?.audioPlaying)queueRefresh();},2000);
+ function activate(active){
+  widgetActive=active;widgetIntervals.forEach(clearInterval);widgetIntervals=[];clearTimeout(refreshTimer);
+  if(active){tick();widgetIntervals=[setInterval(tick,1000),setInterval(queueRefresh,30000),setInterval(()=>{if(state?.audioPlaying)queueRefresh();},2000)];}
+ }
+ function paintSnapshot(snapshot){widgetFetchMs=0;state=snapshot;widgetOpenId=state.panelOpenId||widgetOpenId;const render=performance.now();renderContent();reportPanelPhase('hydratedMs',render);const openId=widgetOpenId;requestAnimationFrame(()=>requestAnimationFrame(()=>reportPanelPhase('paintedMs',render,openId)));}
+ if(window.__SAHIB_WIDGET_BOOTSTRAP__){paintSnapshot(window.__SAHIB_WIDGET_BOOTSTRAP__);delete window.__SAHIB_WIDGET_BOOTSTRAP__;}
+ await Promise.all([
+  window.__TAURI__.event.listen('sahib:desktop-state',queueRefresh),
+  window.__TAURI__.event.listen('sahib:desktop-alert',()=>{if(widgetActive)setTimeout(queueRefresh,400);}),
+  window.__TAURI__.event.listen('sahib:panel-hidden',()=>activate(false)),
+  window.__TAURI__.event.listen('sahib:panel-open',event=>{widgetOpenId=event.payload.id;activate(true);paintSnapshot(event.payload.state);queueRefresh();})
+ ]);
+ document.addEventListener('visibilitychange',()=>{activate(!document.hidden);if(!document.hidden)queueRefresh();});
+ if(!state)await refresh();else if(!document.hidden)queueRefresh();
+ activate(!document.hidden);reportPanelPhase('readyMs');
 })().catch(console.error);

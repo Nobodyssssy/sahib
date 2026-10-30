@@ -37,6 +37,10 @@ pub struct View {
 pub struct State {
     pub views: Mutex<HashMap<String, View>>,
     pub panel_monitor: Mutex<String>,
+    panel_creating: AtomicBool,
+    pub panel_ready: AtomicBool,
+    pub panel_suspended: AtomicBool,
+    panel_hidden: Mutex<Option<Instant>>,
     fonts: Mutex<HashMap<String, (isize, isize, isize)>>,
 }
 pub fn active(app: &tauri::AppHandle) -> bool {
@@ -107,6 +111,9 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     }
 }
 pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if p.widget_visible && active(app) {
+        preload_panel(app);
+    }
     let mut monitors = app.available_monitors().unwrap_or_default();
     let primary = app.primary_monitor().ok().flatten();
     monitors.sort_by_key(|m| {
@@ -378,29 +385,242 @@ pub fn tick(app: &tauri::AppHandle) {
         }
     }
 }
-pub fn panel(app: &tauri::AppHandle, monitor: String) {
-    *app.state::<State>().panel_monitor.lock().unwrap() = monitor;
+const PANEL_IDLE: Duration = Duration::from_secs(60);
+fn panel_idle(app: &tauri::AppHandle) -> Duration {
+    #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+    if app.config().identifier == "com.sahib.companion.qa" {
+        if let Ok(ms) = std::env::var("SAHIB_PANEL_IDLE_MS")
+            .unwrap_or_default()
+            .parse::<u64>()
+        {
+            return Duration::from_millis(ms.clamp(5000, 60000));
+        }
+    }
+    let _ = app;
+    PANEL_IDLE
+}
+fn resume_panel(app: &tauri::AppHandle, w: &tauri::WebviewWindow) {
+    use windows_core::Interface;
+    app.state::<State>()
+        .panel_suspended
+        .store(false, Ordering::Release);
+    let _ = w.with_webview(|webview| unsafe {
+        let controller = webview.controller();
+        if let Ok(core) = controller.CoreWebView2() {
+            if let Ok(core) =
+                core.cast::<webview2_com::Microsoft::Web::WebView2::Win32::ICoreWebView2_3>()
+            {
+                let _ = core.Resume();
+            }
+        }
+        let _ = controller.SetIsVisible(true);
+    });
+}
+fn suspend_panel(app: &tauri::AppHandle, w: &tauri::WebviewWindow) {
+    use windows_core::Interface;
+    let app = app.clone();
+    let _ = w.with_webview(move |webview| unsafe {
+        let controller = webview.controller();
+        let _ = controller.SetIsVisible(false);
+        let Ok(core) = controller.CoreWebView2() else {
+            return;
+        };
+        let Ok(core) =
+            core.cast::<webview2_com::Microsoft::Web::WebView2::Win32::ICoreWebView2_3>()
+        else {
+            return;
+        };
+        let callback =
+            webview2_com::TrySuspendCompletedHandler::create(Box::new(move |result, suspended| {
+                if result.is_ok() && suspended {
+                    if let Some(w) = app.get_webview_window("widget") {
+                        if app
+                            .state::<DesktopState>()
+                            .widget_expanded
+                            .load(Ordering::Relaxed)
+                            || w.is_visible().unwrap_or(false)
+                        {
+                            resume_panel(&app, &w);
+                        } else {
+                            app.state::<State>()
+                                .panel_suspended
+                                .store(true, Ordering::Release);
+                        }
+                    }
+                }
+                Ok(())
+            }));
+        let _ = core.TrySuspend(&callback);
+    });
+}
+pub fn resume_compatibility_panel(app: &tauri::AppHandle) {
+    if let Some(w) = app.get_webview_window("widget") {
+        resume_panel(app, &w);
+    }
+    *app.state::<State>().panel_hidden.lock().unwrap() = None;
+}
+pub fn panel_loaded(app: &tauri::AppHandle) {
+    if !active(app) {
+        return;
+    }
+    app.state::<State>()
+        .panel_ready
+        .store(true, Ordering::Release);
+    if !app
+        .state::<DesktopState>()
+        .widget_expanded
+        .load(Ordering::Relaxed)
+    {
+        if let Some(w) = app.get_webview_window("widget") {
+            if !w.is_visible().unwrap_or(false) {
+                suspend_panel(app, &w);
+            }
+        }
+    }
+}
+pub fn hide_panel(app: &tauri::AppHandle) {
+    let state = app.state::<State>();
+    let Some(w) = app.get_webview_window("widget") else {
+        state.panel_ready.store(false, Ordering::Release);
+        return;
+    };
+    if w.is_visible().unwrap_or(false) {
+        let _ = w.emit("sahib:panel-hidden", ());
+        let _ = w.hide();
+        suspend_panel(app, &w);
+    }
+    if app
+        .get_webview_window("main")
+        .is_some_and(|m| m.is_visible().unwrap_or(false))
+    {
+        *state.panel_hidden.lock().unwrap() = None;
+        return;
+    }
+    let expired = {
+        let mut hidden = state.panel_hidden.lock().unwrap();
+        hidden.get_or_insert_with(Instant::now).elapsed() >= panel_idle(app)
+    };
+    if expired {
+        let _ = w.destroy();
+        state.panel_ready.store(false, Ordering::Release);
+        state.panel_suspended.store(false, Ordering::Release);
+        *state.panel_hidden.lock().unwrap() = None;
+    }
+}
+pub fn preload_panel(app: &tauri::AppHandle) {
+    if app.get_webview_window("widget").is_some()
+        || !app
+            .get_webview_window("main")
+            .is_some_and(|w| w.is_visible().unwrap_or(false))
+    {
+        return;
+    }
+    create_panel(app, true);
+}
+fn reveal_panel(app: &tauri::AppHandle) {
     let state = app.state::<DesktopState>();
-    state.widget_expanded.store(true, Ordering::Relaxed);
+    if !state.widget_expanded.load(Ordering::Relaxed) {
+        hide_panel(app);
+        return;
+    }
+    *app.state::<State>().panel_hidden.lock().unwrap() = None;
+    let id = panel_perf::id();
+    panel_perf::mark(id, "windowReadyMs");
+    if let Some(w) = app.get_webview_window("widget") {
+        resume_panel(app, &w);
+    }
+    if let Ok(snapshot) = widget_payload(app, "widget") {
+        let _ = app.emit_to(
+            "widget",
+            "sahib:panel-open",
+            serde_json::json!({"id":id,"state":snapshot}),
+        );
+    }
+    let prefs = state.disk.lock().unwrap().prefs.clone();
+    apply_widget(app, &prefs);
+    if let Some(w) = app.get_webview_window("widget") {
+        let _ = w.set_focus();
+        panel_perf::mark(id, "shownMs");
+    }
+}
+fn create_panel(app: &tauri::AppHandle, preload: bool) {
+    let state = app.state::<State>();
+    if state.panel_creating.swap(true, Ordering::AcqRel) {
+        return;
+    }
     let app = app.clone();
     std::thread::spawn(move || {
+        if preload {
+            for _ in 0..30 {
+                if app
+                    .state::<DesktopState>()
+                    .widget_expanded
+                    .load(Ordering::Relaxed)
+                {
+                    break;
+                }
+                std::thread::sleep(Duration::from_millis(50));
+            }
+        }
+        let prefs = app
+            .state::<DesktopState>()
+            .disk
+            .lock()
+            .unwrap()
+            .prefs
+            .clone();
+        if !active(&app) || !prefs.widget_visible {
+            app.state::<State>()
+                .panel_creating
+                .store(false, Ordering::Release);
+            return;
+        }
+        if preload
+            && !app
+                .state::<DesktopState>()
+                .widget_expanded
+                .load(Ordering::Relaxed)
+            && !app
+                .get_webview_window("main")
+                .is_some_and(|w| w.is_visible().unwrap_or(false))
+        {
+            app.state::<State>()
+                .panel_creating
+                .store(false, Ordering::Release);
+            return;
+        }
         if app.get_webview_window("widget").is_none() {
-            if let Err(e) = experiment::build_window(&app, "widget") {
-                eprintln!("[experiment] Panel: {e}");
+            if let Err(error) = experiment::build_window(&app, "widget") {
+                eprintln!("[panel] {error}");
+                app.state::<State>()
+                    .panel_creating
+                    .store(false, Ordering::Release);
                 return;
             }
         }
+        app.state::<State>()
+            .panel_creating
+            .store(false, Ordering::Release);
         let h = app.clone();
-        let _ = app.run_on_main_thread(move || {
-            let p = h.state::<DesktopState>().disk.lock().unwrap().prefs.clone();
-            apply_widget(&h, &p);
-            emit_state(&h);
-            if let Some(w) = h.get_webview_window("widget") {
-                let _ = w.set_focus();
-            }
-        });
+        let _ = app.run_on_main_thread(move || reveal_panel(&h));
     });
 }
+pub fn panel(app: &tauri::AppHandle, monitor: String) {
+    let warm = app.get_webview_window("widget").is_some()
+        && app.state::<State>().panel_ready.load(Ordering::Acquire);
+    panel_perf::begin(warm);
+    *app.state::<State>().panel_monitor.lock().unwrap() = monitor;
+    app.state::<DesktopState>()
+        .widget_expanded
+        .store(true, Ordering::Relaxed);
+    if app.get_webview_window("widget").is_some() {
+        let h = app.clone();
+        let _ = app.run_on_main_thread(move || reveal_panel(&h));
+    } else {
+        create_panel(app, false);
+    }
+}
+
 fn color(value: &str) -> Option<u32> {
     let hex = value.strip_prefix('#')?;
     let n = u32::from_str_radix(hex, 16).ok()?;

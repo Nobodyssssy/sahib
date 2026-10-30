@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4-rc.7 — unreleased local performance candidate
+
+- Reuse and suspend the expanded widget for a bounded idle interval instead of recreating it on each click.
+- Bootstrap authoritative cached state, consolidate widget CSS loading and add cold/warm opening timing markers.
+- Keep native-only background startup and release the cached WebView after idle; preserve compatibility/floating modes.
+
 ## 0.2.4-rc.6 — unreleased local feature-freeze candidate
 
 - Add desktop Adhkar workspace and immersive controls for the existing PDF reader.

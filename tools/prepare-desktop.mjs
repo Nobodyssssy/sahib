@@ -12,6 +12,11 @@ for(const name of ['index.html','desktop-widget.html','manifest.webmanifest','cs
  if(!fs.existsSync(name))throw Error('Missing runtime input '+name);
  fs.cpSync(name,path.join(out,name),{recursive:true,filter:src=>!src.endsWith('daily-rhythm.webp')});
 }
+const widgetEntry=path.join(out,'desktop-widget.html');
+let widgetHTML=fs.readFileSync(widgetEntry,'utf8'),widgetCSS='';
+widgetHTML=widgetHTML.replace(/<link rel="stylesheet" href="(css\/[^"]+)">/g,(_,file)=>{widgetCSS+=fs.readFileSync(path.join(out,file),'utf8')+'\n';return '';});
+fs.writeFileSync(path.join(out,'css/widget-runtime.css'),widgetCSS);
+fs.writeFileSync(widgetEntry,widgetHTML.replace('</head>','<link rel="stylesheet" href="css/widget-runtime.css"></head>'));
 // Only the packaged app loads the platform adapter and bypasses the browser service worker.
 const entry=path.join(out,'index.html');
 let html=fs.readFileSync(entry,'utf8');
