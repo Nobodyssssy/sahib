@@ -262,6 +262,67 @@ pub fn panel_rect(
 mod tests {
     use super::*;
     #[test]
+    fn windows10_vertical_and_horizontal_taskbars_are_distinguished() {
+        let monitor = (0, 0, 1920, 1080);
+        for r in [
+            Rect {
+                left: 0,
+                top: 0,
+                right: 64,
+                bottom: 1080,
+            },
+            Rect {
+                left: 1856,
+                top: 0,
+                right: 1920,
+                bottom: 1080,
+            },
+            Rect {
+                left: -62,
+                top: 0,
+                right: 2,
+                bottom: 1080,
+            },
+        ] {
+            assert!(matches_bar(r, monitor, false));
+            assert!(!matches_bar(r, monitor, true));
+        }
+        for r in [
+            Rect {
+                left: 0,
+                top: 0,
+                right: 1920,
+                bottom: 48,
+            },
+            Rect {
+                left: 0,
+                top: 1032,
+                right: 1920,
+                bottom: 1080,
+            },
+        ] {
+            assert!(matches_bar(r, monitor, true));
+            assert!(!matches_bar(r, monitor, false));
+        }
+    }
+    #[test]
+    fn windows10_vertical_fallback_respects_negative_work_area_at_all_scales() {
+        let monitor = (-1920, -200, 0, 880);
+        let bar = Rect {
+            left: -1920,
+            top: -200,
+            right: -1856,
+            bottom: 880,
+        };
+        assert!(matches_bar(bar, monitor, false));
+        assert!(!matches_bar(bar, (0, 0, 1920, 1080), false));
+        let work = (-1856, -200, 0, 880);
+        for scale in [1., 1.25, 1.5, 2.] {
+            let (x, y, w, h) = panel_rect(work, None, work.2 - 240, scale, 180.);
+            assert!(x >= work.0 && y >= work.1 && x + w as i32 <= work.2 && y + h as i32 <= work.3);
+        }
+    }
+    #[test]
     fn scaled_panels_stay_in_negative_and_positive_work_areas() {
         for scale in [1.0, 1.25, 1.5, 2.0] {
             for work in [
@@ -323,6 +384,35 @@ pub fn system_light() -> bool {
     }
 }
 pub fn bounds(monitor: (i32, i32, i32, i32)) -> Option<(i32, i32, i32, i32)> {
+    bounds_for_axis(monitor, true)
+}
+
+pub fn vertical_bounds(monitor: (i32, i32, i32, i32)) -> Option<(i32, i32, i32, i32)> {
+    bounds_for_axis(monitor, false)
+}
+
+fn matches_bar(r: Rect, monitor: (i32, i32, i32, i32), horizontal: bool) -> bool {
+    if horizontal {
+        let x = (r.left + r.right) / 2;
+        x >= monitor.0
+            && x < monitor.2
+            && r.bottom > monitor.1
+            && r.top < monitor.3
+            && r.right - r.left > r.bottom - r.top
+    } else {
+        let y = (r.top + r.bottom) / 2;
+        y >= monitor.1
+            && y < monitor.3
+            && r.right > monitor.0
+            && r.left < monitor.2
+            && r.bottom - r.top > r.right - r.left
+    }
+}
+
+fn bounds_for_axis(
+    monitor: (i32, i32, i32, i32),
+    horizontal: bool,
+) -> Option<(i32, i32, i32, i32)> {
     let mut bars = Vec::new();
     unsafe {
         let primary = FindWindowW(wide("Shell_TrayWnd").as_ptr(), ptr::null());
@@ -347,13 +437,6 @@ pub fn bounds(monitor: (i32, i32, i32, i32)) -> Option<(i32, i32, i32, i32)> {
         }
     }
     bars.into_iter()
-        .find(|r| {
-            let x = (r.left + r.right) / 2;
-            x >= monitor.0
-                && x < monitor.2
-                && r.bottom > monitor.1
-                && r.top < monitor.3
-                && r.right - r.left > r.bottom - r.top
-        })
+        .find(|r| matches_bar(*r, monitor, horizontal))
         .map(|r| (r.left, r.top, r.right, r.bottom))
 }

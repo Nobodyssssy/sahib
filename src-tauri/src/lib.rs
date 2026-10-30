@@ -396,7 +396,11 @@ fn apply_rich_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
             pos.y + size.height as i32,
         );
         let bar = taskbar::bounds(monitor);
-        if p.widget_mode == "taskbar" && bar.is_none() && view.bar.is_some() {
+        if p.widget_mode == "taskbar"
+            && bar.is_none()
+            && view.bar.is_some()
+            && taskbar::vertical_bounds(monitor).is_none()
+        {
             if w.is_visible().unwrap_or(false) {
                 let _ = w.hide();
                 state.widget_diagnostics.lock().unwrap().operation("hide");

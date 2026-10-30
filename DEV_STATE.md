@@ -6,7 +6,7 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 
 - Keep Tauri for the full application and rich panel; use the native compact widget only in the separate 0.2.4 RC. Retain the selectable WebView fallback.
 - DirectWrite renders bundled Tajawal Arabic; Segoe UI handles Latin/numeric labels. No additional Noto family is packaged.
-- Candidate forest/peach icons derive from the existing inline Amiri صاحب logo. Production branding awaits user approval.
+- Forest/peach icons derive from the existing inline Amiri صاحب logo. User approved the final artwork on 2026-10-30. No production build or main merge is authorized.
 - Daily Adhkar counts reset at the local calendar date boundary. Synchronize live counters as well as IndexedDB; recheck on focus, visibility, active use and every 30 seconds while visible.
 - Morning/evening home practice shortcuts open the corresponding Adhkar collection directly.
 - Add three compact designs, an optional hh:mm display, and a persisted native session timer. Focus mode suppresses other Sahib reminders but allows prayer-time Adhan. It does not control Windows or other apps.
@@ -18,5 +18,10 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 - October 30 full native regression passed 32/32 after replacing the premature fixed auto-hide assertion with a normal foreground fixture and actual-hide polling. This includes actual Explorer restart and both physical monitors. The initial 31/32 failure is documented in the RC report.
 - Final RC4 built and checksum recorded in `docs/WINDOWS-0.2.4-RC.md`. Actual upgrade/uninstall/reinstall preserved RC data; old IndexedDB blobs/settings loaded afterwards. Seven actual installed checks passed. The final installed background sample averaged 84.5 MiB total working set, 19.2 MiB private working set and 0.028% CPU with no WebView2 (earlier short sample about 71 MiB).
 - Final Arabic panel screenshot review caught heading overhang; the compact heading now uses bundled Tajawal with safe padding. Real installed RC4 screenshots verify the correction. Full report and candidate icon review assets are ready.
-- Physical 150%/200% displays, actual sleep/lock, monitor hotplug and Narrator listening remain unverified. Native offscreen text renders covered all four scales.
-- Do not replace production branding or merge into main until the user reviews the result.
+- Final audit: actual S3 suspend/resume and lock/unlock performed on Windows 11 IoT Enterprise LTSC build 26100. User confirmed timer chime/popup after resume and widget recovery after unlock. Actual Narrator read prayer name/time/countdown clearly (human confirmation); Narrator restored off.
+- Physical 150% testing exposed RC4's stale clipping region (300×60 clip on a 360×72 window). Local unreleased RC5 updates the region independently of OS resizing. Actual 150%, 200% and restored 125% readings now match full client bounds; countdown was visually complete. Original 125% setting restored.
+- Windows 10 audit identified horizontal→vertical taskbar fallback waiting indefinitely in WebView mode. Targeted orientation recognition fixes it, retaining Windows 11 behavior. Two Windows 10 geometry/fallback tests added; 19 Rust tests and native feature compilation pass. Real Windows 10 22H2 testing remains pending.
+- Distribution remains blocked: reserved-rights Adhan permission is unverified, other bundled content/notices need a complete provenance review, no trusted code-signing certificate is available, and automatic Sahib updates are not configured. Keep audit builds unsigned/local; do not publish production installers.
+- Real Sion Maghrib at 17:19 fired at its scheduled deadline; user confirmed hearing Adhan and timer. Original app restored at 19:33 after the missed-alert grace period; separate RC test profile restored. No production settings changed.
+- Remaining v1 scope authorized: desktop session/reader first, catalog migration in a separate commit, timer sound choices/independent volume/custom import, four layouts independent of theme, opt-in regional recommendation, localized permanent greeting and peach default. Preserve mobile layout, user choices, scheduler and PDF engine; freeze features after verification.
+- Monitor hotplug, virtual-desktop switching and actual system-date rollover remain pending. Do not merge into main or release production builds.

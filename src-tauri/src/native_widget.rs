@@ -203,7 +203,9 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
         if lifted {
             bounds = taskbar::shell_safe_position(bounds, area, scale);
         }
-        let rebuilding = bar.is_none() && old.as_ref().and_then(|v| v.bar).is_some();
+        let rebuilding = bar.is_none()
+            && old.as_ref().and_then(|v| v.bar).is_some()
+            && taskbar::vertical_bounds(monitor).is_none();
         let reason = if !p.widget_visible {
             "user-hidden"
         } else if rebuilding {
@@ -269,8 +271,14 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
         } else {
             let position = tauri::PhysicalPosition::new(bounds.0, bounds.1);
             let size = tauri::PhysicalSize::new(bounds.2, bounds.3);
-            if w.inner_size().ok() != Some(size) {
+            let size_changed = w.inner_size().ok() != Some(size);
+            if size_changed {
                 let _ = w.set_size(size);
+            }
+            if size_changed
+                || old.as_ref().map(|v| (v.bounds.2, v.bounds.3, v.scale))
+                    != Some((bounds.2, bounds.3, scale))
+            {
                 unsafe {
                     SetWindowRgn(
                         handle as HWND,
