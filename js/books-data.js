@@ -73,7 +73,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "jazariyyah",
@@ -92,7 +92,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 3,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "tafsir-sadi",
@@ -111,7 +111,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 2,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "quran-tadabbur-amal",
@@ -130,7 +130,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 1,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "hifz-quran-helmak",
@@ -148,7 +148,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "umdat-al-ahkam",
@@ -166,7 +166,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "taysir-mustalah",
@@ -184,7 +184,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "riyad-salihin",
@@ -203,7 +203,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 6,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-arbaeen-nawawi",
@@ -222,7 +222,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 5,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "bulugh-maram",
@@ -240,7 +240,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "muwatta-malik",
@@ -258,7 +258,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "istiqsa-fath-bari",
@@ -276,7 +276,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "muwatta-shaybani",
@@ -294,7 +294,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "bukhari-maktabah",
@@ -313,7 +313,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 4,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "raheeq-makhtum",
@@ -331,7 +331,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "urjuzah-miyah",
@@ -349,7 +349,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "shamail-muhammadiyya",
@@ -367,7 +367,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "adawi-seerah-nabawiyya",
@@ -385,7 +385,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "muqaddimah-ibn-khaldun",
@@ -403,7 +403,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "tahrir-marra-asr-risalah",
@@ -421,7 +421,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "ashariyyah",
@@ -439,7 +439,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "qawaid-arba",
@@ -457,7 +457,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-usul-thalatha",
@@ -475,7 +475,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "lannaka-allah",
@@ -493,7 +493,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-asma-husna",
@@ -511,7 +511,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-wasitiyyah",
@@ -529,7 +529,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "tawhid-haqq-allah",
@@ -548,7 +548,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 7,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "aqeedah-series",
@@ -566,7 +566,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "jinn-shayateen",
@@ -584,7 +584,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-tahawiyyah",
@@ -602,7 +602,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sharh-hamawiyyah",
@@ -620,7 +620,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "ma-la-yasa-u-jahl",
@@ -639,7 +639,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 8,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sifat-salat-nabi",
@@ -657,7 +657,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "fiqh-ibadat-uthaymeen",
@@ -675,7 +675,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "mulakhkhas-fiqhi-1",
@@ -693,7 +693,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "mulakhkhas-fiqhi-2",
@@ -711,7 +711,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "manhaj-salikin",
@@ -730,7 +730,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 9,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "bidayat-mujtahid",
@@ -748,7 +748,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "maqasid-shariah",
@@ -766,7 +766,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "wasaaya-waba",
@@ -784,7 +784,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "dawa-dawa",
@@ -802,7 +802,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "mukhtasar-minhaj-qasidin",
@@ -820,7 +820,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "adhkar-nawawi",
@@ -838,7 +838,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "kalim-tayyib",
@@ -856,7 +856,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "waabil-sayyib",
@@ -874,7 +874,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "hisn-muslim",
@@ -893,7 +893,7 @@ const BOOKS = [
       "evidence": ""
     },
     "readingOrder": 10,
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "madarij-salikin",
@@ -911,7 +911,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "tazkiyat-nafs-ibn-taymiyyah",
@@ -929,7 +929,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "adab-mufrad",
@@ -947,7 +947,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "fawa-id-ibn-qayyim",
@@ -965,7 +965,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sayd-al-khatir",
@@ -983,7 +983,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "wasiyyat-ibn-qudamah",
@@ -1001,7 +1001,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "miftah-dar-saadah",
@@ -1019,7 +1019,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "fiqh-aqalliyyat",
@@ -1037,7 +1037,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "ibda-mudarr",
@@ -1055,7 +1055,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "din-sahih",
@@ -1073,7 +1073,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "thinking-fast-and-slow",
@@ -1127,7 +1127,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "maghrib-harb-salibiyyah",
@@ -1145,7 +1145,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "rilke-letters",
@@ -1163,7 +1163,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "art-of-war",
@@ -1181,7 +1181,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "mencius",
@@ -1199,7 +1199,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "atomic-habits",
@@ -1235,7 +1235,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sirah-abu-bakr",
@@ -1253,7 +1253,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sirah-umar-khattab",
@@ -1271,7 +1271,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sirah-uthman",
@@ -1289,7 +1289,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sirah-ali",
@@ -1307,7 +1307,7 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   },
   {
     "id": "sirah-umar-abdulaziz",
@@ -1325,6 +1325,6 @@ const BOOKS = [
       "redistribution": "unverified",
       "evidence": ""
     },
-    "downloadAllowed": false
+    "downloadAllowed": true
   }
 ];

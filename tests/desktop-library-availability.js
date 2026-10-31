@@ -14,8 +14,8 @@
   check('Catalog attachment is not a duplicate personal book',!getLocalBooks().some(b=>b.id===saved.catalog)&&BOOKS.length===70);
   return results;
  }
- const book=BOOKS[0],cached=BOOKS[1];
- check('Catalog remains visible and unapproved',BOOKS.length===70&&BOOKS.every(b=>!b.downloadAllowed));
+ const book=getBookById('atomic-habits'),cached=BOOKS[1];
+ check('Catalog remains visible with 67 Cloudflare downloads and three exclusions',BOOKS.length===70&&BOOKS.filter(b=>b.downloadAllowed).length===67&&!book.downloadAllowed);
  openBookDetail(book.id);await updateDownloadButton(book.id);
  check('Unavailable entry offers import instead of disabled reading/download',!document.getElementById('book-read-'+book.id)&&!document.getElementById('download-btn-'+book.id)&&document.getElementById('book-detail-actions-'+book.id).textContent.includes('Import my PDF'));
  const official=book.officialUrl;book.officialUrl='https://example.test/official';renderBookDetail(book);await updateDownloadButton(book.id);
