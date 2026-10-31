@@ -52,3 +52,11 @@ These two recordings are included with their upstream rights notice. They are **
 - Downloaded 22 October 2026; both files' Git blob identifiers matched the pinned upstream tree.
 - SHA-256 standard: `CD03617918BECDDDDF79FC41BEA663402365EE4002432DB4257B5EDB45CFB0F7`.
 - SHA-256 Fajr: `BE394449DA2EED7C396BCB465129CE67EB4A2845EFF184B5D4F5801EE1DDA1E1`.
+
+## Additional Fajr Adhan reference supplied by the user
+
+- Reference: https://www.youtube.com/watch?v=gNk5LmR9qJM
+- The video page and an exact-ID search did not provide independently verifiable recording metadata during this review. No performer, publisher, recording date or match to the bundled Fajr file is asserted from this link. The pinned upstream-file provenance above remains separate.
+- This is a source/reference credit, **not redistribution permission**. A publicly accessible YouTube link does not establish the right to download, bundle or redistribute its audio.
+- No audio has been downloaded from this reference or added to the application. Any future bundling requires permission or a verified applicable licence.
+- User-imported local recordings remain supported. They stay in the user's local profile and are not included in source commits, installers or release assets.

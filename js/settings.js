@@ -1028,6 +1028,8 @@ async function _hydrateStorageInfo(){
    ABOUT
    ═══════════════════════════════════════════════════════════ */
 function _aboutHTML(){
+  const ar=window.SAHIB_I18N?.language==='ar';
+  const version=window.SahibDesktop?.available?'0.2.4':'v2.14.0 · service worker v2.14.0';
   return `
     <div class="settings-section">
       <div class="settings-section-title">Sahib Islamic Companion</div>
@@ -1036,7 +1038,7 @@ function _aboutHTML(){
         No accounts, no analytics, no cloud sync. Your data stays in your browser.
       </div>
       <div class="settings-note settings-attribution">
-        <strong>Version:</strong> v2.14.0 · service worker v2.14.0<br>
+        <strong>Version:</strong> ${version}<br>
         <strong>Privacy:</strong> the only network requests are for content you ask for — AlAdhan prayer times,
         Open-Meteo geocoding, and books/audio already shipped with the app. Local adhan files never leave this device.
       </div>
@@ -1055,6 +1057,8 @@ function _aboutHTML(){
         <a href="https://freesound.org/people/AhmadAiuby/sounds/555065/" target="_blank" rel="noopener">Quseir by the sea</a> by Ahmad Aiuby;
         <a href="https://freesound.org/people/aridtrax/sounds/863861/" target="_blank" rel="noopener">Fajr, Balakong</a> by aridtrax.
         These three field recordings are CC0 1.0. The additional Sheikh Nasser Al-Qatami recordings have reserved rights: upstream explicitly credits Sharjah Quran for Fajr. No CC0 or MIT audio rights are claimed. See <a href="assets/adhan/LICENSES.md" target="_blank" rel="noopener">audio provenance and rights notices</a>.<br>
+        <strong>${ar?'مرجع أذان الفجر:':'Fajr Adhan reference:'}</strong> <a href="https://www.youtube.com/watch?v=gNk5LmR9qJM" target="_blank" rel="noopener">${ar?'رابط يوتيوب قدّمه المستخدم':'User-supplied YouTube reference'}</a>.
+        ${ar?'لم تُتحقق هوية المؤدي أو الناشر أو مطابقة التسجيل للملف المرفق بشكل مستقل. ذكر المصدر لا يمنح إذن إعادة التوزيع. لم يُنزّل صاحب الصوت من هذا الرابط. يمكنك استيراد تسجيل محلي تملك حق استخدامه.':'The performer, publisher and relationship to the bundled recording have not been independently verified. Source credit is not redistribution permission. Sahib has not downloaded audio from this link. You can import a local recording you have the right to use.'}<br>
         <strong>Themes:</strong> Catppuccin, Aura, Dracula, Tokyo Night, Rosé Pine (community palettes).<br>
         <strong>Fonts:</strong> Amiri, Tajawal, Cairo, Inter, DM Sans, Manrope.<br>
         <strong>Icons:</strong> Lucide (ISC). <strong>PDF:</strong> EmbedPDF / PDFium.

@@ -78,11 +78,7 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
         let label = native_label(i);
         if app.get_window(&label).is_none() {
             if let Err(e) = tauri::WindowBuilder::new(app, &label)
-                .title(if cfg!(feature = "brand-preview") {
-                    "Sahib RC · Prayer companion"
-                } else {
-                    "Sahib · Prayer companion"
-                })
+                .title("Sahib · Prayer companion")
                 .inner_size(240., 48.)
                 .decorations(false)
                 .resizable(false)

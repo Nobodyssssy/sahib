@@ -51,9 +51,13 @@
       "nsis"
     ],
     "icon": [
-      "icons/icon.ico",
-      "icons/128x128.png"
+      "../branding/sahib-0.2.4/icon.ico",
+      "../branding/sahib-0.2.4/icon-128.png"
     ],
+    "resources": {
+      "../native-resources/fonts/OFL-Tajawal.txt": "licenses/Tajawal-OFL.txt",
+      "../branding/sahib-0.2.4/OFL-Amiri.txt": "licenses/Amiri-OFL.txt"
+    },
     "shortDescription": "Your daily Islamic companion",
     "category": "Lifestyle",
     "copyright": "Sahib contributors. Third-party recordings retain their reserved rights.",

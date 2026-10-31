@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.4 — standard Windows build prepared, distribution clearance pending
+
+- Enable the completed native compact widget and bounded expanded-panel reuse in the ordinary build, retaining the existing application identifier and storage.
+- Use approved Windows launcher/installer/shortcut/tray artwork by default, with normal Sahib titles and 0.2.4 metadata.
+- Add the user-supplied Fajr YouTube reference in About and audio notices without claiming recording identity or redistribution permission; no YouTube audio downloaded.
+- Keep main/Pages unchanged. Public Windows release remains subject to the documented rights and notices gates.
+
 ## 0.2.4-rc.7 — unreleased local performance candidate
 
 - Reuse and suspend the expanded widget for a bounded idle interval instead of recreating it on each click.

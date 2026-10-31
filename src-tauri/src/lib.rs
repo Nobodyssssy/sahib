@@ -1543,8 +1543,6 @@ pub fn run() {
                 if experiment::mode()!="keep" && (config.label=="widget"&&(!prefs.widget_visible||prefs.widget_mode=="taskbar"&&prefs.widget_renderer!="web"&&experiment::mode()=="native") || config.label=="main"&&prefs.start_minimized) {continue;}
                 let h = app.handle().clone();
                 let builder = tauri::WebviewWindowBuilder::from_config(app, config)?;
-    #[cfg(feature = "brand-preview")]
-    let builder = builder.title(if config.label == "main" {"Sahib RC · Brand review"} else {"Sahib RC · Prayer timetable"});
                 #[cfg(any(debug_assertions, feature = "desktop-qa"))]
                 let builder = if let Some(test_dir) = std::env::var_os("SAHIB_TEST_DATA_DIR").filter(|_| app.config().identifier == "com.sahib.companion.qa") {
                     let builder = builder.data_directory(PathBuf::from(test_dir).join("webview"));

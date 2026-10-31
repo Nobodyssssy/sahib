@@ -12,6 +12,7 @@
     "predesktop:test": "node tools/prepare-desktop.mjs",
     "desktop:acceptance": "node tools/desktop-acceptance.mjs",
     "desktop:checksum": "node tools/desktop-checksum.mjs",
+    "desktop:verify-production": "node tools/verify-production-windows.mjs",
     "desktop:build:rc": "node tools/build-windows-rc.mjs",
     "catalog:build": "node tools/build-book-catalog.mjs",
     "catalog:check": "node tools/build-book-catalog.mjs --check"

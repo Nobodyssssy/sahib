@@ -1,4 +1,4 @@
-name: Windows preview
+name: Windows build
 
 on:
   workflow_dispatch:
@@ -100,20 +100,19 @@ jobs:
         run: npm run desktop:test
       - name: Test packaged UI and native lifecycle
         run: npm run desktop:acceptance
+      - name: Verify actual native production defaults without RC flags
+        run: node tools/verify-production-windows.mjs --release --native
       - name: Compile optional native widget experiment
         run: cargo check --locked --manifest-path src-tauri/Cargo.toml --features native-widget-experiment
       - name: Build unsigned Windows installer
         run: npm run desktop:build
+      - name: Verify normal production identity and approved branding
+        run: npm run desktop:verify-production -- --installer
       - name: Generate installer checksum
         id: package
         run: npm run desktop:checksum
       # Installer distribution is blocked by docs/DISTRIBUTION-READINESS.md.
       # Keep build checks, but do not upload binaries until rights are cleared.
-      - name: Build separate native widget release candidate
-        run: npm run desktop:build:rc
-      - name: Checksum native release candidate
-        id: rc
-        run: node tools/desktop-checksum.mjs --rc
       - name: Save acceptance evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

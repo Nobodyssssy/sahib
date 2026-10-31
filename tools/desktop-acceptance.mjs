@@ -12,6 +12,7 @@ import {soakWidget} from './widget-soak.mjs';
 
 if(process.platform!=='win32')throw Error('Desktop acceptance requires Windows and WebView2.');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const release=process.argv.includes('--release');
 process.chdir(root);
 const output=path.join(root,'.qa',`windows-acceptance-${Date.now()}`),profile=path.join(output,'data');
 fs.mkdirSync(profile,{recursive:true});
@@ -54,9 +55,10 @@ async function connect(target){
 async function start(){
  const startupAt=Date.now();
  const port=await freePort();log=fs.openSync(path.join(output,'app.log'),'a');
- app=spawn(path.join(root,'src-tauri','target','debug','sahib-desktop.exe'),[],{
+ app=spawn(path.join(root,'src-tauri','target',release?'release':'debug','sahib-desktop.exe'),[],{
   cwd:root,windowsHide:true,stdio:['ignore',log,log],
-  env:{...process.env,SAHIB_TEST_DATA_DIR:profile,SAHIB_TEST_CDP_PORT:String(port)}
+  // This suite covers persistent WebView compatibility; native defaults have their own suite.
+  env:{...process.env,SAHIB_MEMORY_EXPERIMENT:'keep',SAHIB_TEST_DATA_DIR:profile,SAHIB_TEST_CDP_PORT:String(port)}
  });
  process.env.SAHIB_QA_PID=String(app.pid);
  app.on('error',error=>report.errors.push(String(error)));
@@ -97,7 +99,7 @@ async function expressionTest(file){
 }
 try{
  const cli=path.join(root,'node_modules','@tauri-apps','cli','tauri.js');
- if(!process.argv.includes('--skip-build'))await run(process.execPath,[cli,'build','--debug','--no-bundle','--config',config,'--','--locked']);
+ if(!process.argv.includes('--skip-build'))await run(process.execPath,[cli,'build',...(release?['--features','desktop-qa']:['--debug']),'--no-bundle','--config',config,'--','--locked']);
  const {port}=await start();
  record('Separate QA identity',await session.evaluate('window.__TAURI__.app.getIdentifier()')==='com.sahib.companion.qa');
  await session.evaluate('(async()=>{await savePrayerPrefs({provider:"local",alerts:{enabled:false,notify:false,volume:0}});await setManualLocation(47.3769,8.5417,"Zurich acceptance fixture");await SahibDesktop.sync();return true})()');

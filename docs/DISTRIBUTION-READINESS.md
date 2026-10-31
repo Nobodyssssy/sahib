@@ -1,6 +1,6 @@
 # Distribution readiness — 2026-10-31
 
-Status: **blocked for production distribution and main merge**. Feature development is closed. The latest candidate is 0.2.4-rc.7, following RC6; it is not a stable 1.0 release. The widget opening refinement is documented in [WINDOWS-PANEL-PERFORMANCE.md](WINDOWS-PANEL-PERFORMANCE.md).
+Status: **public Windows distribution remains blocked**. The standard build is now prepared as Sahib 0.2.4, promoting completed RC functionality and approved branding without an RC identity/profile. Historical RC7 and its evidence remain preserved. `main` is intentionally kept for the website; Windows releases must target `codex/windows-tauri`, not require a main merge. See [production preparation](WINDOWS-0.2.4-PRODUCTION.md) and [widget timing measurements](WINDOWS-PANEL-PERFORMANCE.md).
 
 ## Blocking rights review
 
@@ -12,22 +12,22 @@ Status: **blocked for production distribution and main merge**. Feature developm
 
 The first two items cannot be fixed by adding an attribution paragraph. Obtain permission or prepare and test a distribution that excludes the affected audio, provides cleared defaults and handles saved selections without breaking playback. The current private artifacts still include these recordings; no cleared substitute distribution has been verified. Removing audio alone would not close the outstanding version-pinned PDF-engine notices review. Do not remove the PDF engine without a functioning, licensed replacement or the correct notices.
 
-No new recordings or PDFs are added by the closeout commits. Existing historical repository content is not rewritten or represented as cleared. New installer artifact uploads in the Windows CI workflow are disabled pending this review. Local candidate builds are private recovery artifacts, not redistributable release assets. Do not create a GitHub Release/source archive purporting to be cleared while its tree still contains these assets.
+No new recordings or PDFs are added by the closeout commits. Existing historical repository content is not rewritten or represented as cleared. New installer artifact uploads in the Windows CI workflow are disabled pending this review. Local builds are private recovery artifacts, not redistributable release assets. Do not create a GitHub Release/source archive purporting to be cleared while its tree still contains these assets.
 
 ## Build and acceptance status
 
 - RC6 source/resource checks and catalog stability checks pass; the completed optimization passes 21 Rust unit tests and isolated actual Tauri lifecycle/widget checks. See the performance report and Windows freeze/compatibility documents for precise coverage and remaining manual cases.
 - Actual Windows 10 22H2 acceptance is still outstanding. Windows 11 tests do not certify Windows 10. No Windows certification is claimed.
-- Candidate installers are **unsigned**. No signing certificate has been configured; code signing remains a release decision after rights clearance. Never describe these builds as signed or Windows-certified.
+- Local installers are **unsigned**. No signing certificate has been configured; code signing remains a release decision after rights clearance. Never describe these builds as signed or Windows-certified.
 - There is **no automatic Sahib update mechanism**. Future releases require a manually downloaded installer. WebView2 runtime updates do not update Sahib.
-- Keep production identifiers, browser storage, IndexedDB, installed profiles and service-worker behavior unchanged. Main and the live PWA remain at their currently deployed revision until release gates pass.
+- Keep production identifiers, browser storage, IndexedDB, installed profiles and service-worker behavior unchanged. Main and the live PWA remain unchanged; cleared Windows releases target the Windows branch separately.
 
 ## Resume release preparation
 
 1. Resolve the rights/notices above or prepare a cleared package and test its compatibility.
 2. Run the recorded checks and actual Windows acceptance still outstanding; compare against main.
-3. Use approved `branding/sahib-0.2.4` artwork in final production configuration; RC-only branding configuration is not yet the ordinary production build.
+3. Verify the ordinary production configuration continues using approved `branding/sahib-0.2.4` artwork, native default features and the permanent identifier.
 4. Choose the stable version/tag under the existing 0.2.x scheme; do not label the RC as stable.
-5. Merge only after the gates pass, verify Pages update/offline/installability, then upload a verified installer and SHA-256 to GitHub Release Assets. Never commit build outputs.
+5. Leave main/the live website unchanged. Once cleared, publish tag `v0.2.4` from the verified `codex/windows-tauri` commit, title `Sahib 0.2.4 — Windows`, and upload only the verified normal installer and SHA-256 to GitHub Release Assets. Never commit build outputs.
 
 See [FUTURE-MOBILE-WEB.md](FUTURE-MOBILE-WEB.md) for documentation-only future plans.

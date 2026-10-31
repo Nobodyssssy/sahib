@@ -22,7 +22,7 @@ try{
 
  await main.evaluate(`window.__TAURI__.window.getCurrentWindow().close()`).catch(()=>{});main.close();main=null;await until(()=>control('status').then(s=>!s.mainExists));await control('collapse');await qa.stop();
  fs.rmSync(path.join(profile,'qa-response.json'),{force:true});qa=await startQA(out,{profile,env:{SAHIB_PANEL_IDLE_MS:'5000'}});const secondControl=qaControl(qa);await secondControl('status');
- await secondControl('panel');await until(()=>secondControl('panel-timing').then(p=>p.paintedMs));await secondControl('collapse');
+ await secondControl('panel');await until(()=>secondControl('panel-timing').then(p=>p.paintedMs&&p.readyMs&&p.navigationFinishedMs));await secondControl('collapse');await until(()=>secondControl('panel-timing').then(p=>p.suspended));
  await until(()=>secondControl('status').then(s=>!s.webviews.includes('widget')),25000);await sleep(3000);
  const idle=await measureDesktop(qa.app.pid,10,5);record('Idle eviction returns to native-only process tree',idle.samples.at(-1).processes.every(p=>p.name==='sahib-desktop'),{ws:idle.meanWorkingSetMiB,private:idle.meanPrivateWorkingSetMiB,commit:idle.meanPrivateCommitMiB,cpu:idle.cpuSystemPercent});
  await secondControl('panel');const cold=await until(()=>secondControl('panel-timing').then(p=>p.id===2&&p.paintedMs?p:false));record('Panel recreates correctly after idle eviction',cold.kind==='cold',cold);

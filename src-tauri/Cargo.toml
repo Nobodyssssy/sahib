@@ -7,7 +7,7 @@ edition = "2021"
 rust-version = "1.80"
 
 [features]
-default = []
+default = ["native-widget-rc", "brand-preview"]
 native-widget-experiment = ["dep:windows-sys", "dep:windows", "dep:windows-core", "tauri/unstable", "dep:webview2-com"]
 native-widget-rc = ["native-widget-experiment"]
 brand-preview = []

@@ -23,7 +23,7 @@ let html=fs.readFileSync(entry,'utf8');
 html=html.replace('</head>','<link rel="stylesheet" href="css/desktop.css"></head>')
  .replace(/(<script src="js\/app\.js[^\"]*"><\/script>)/,'<script src="js/desktop.js"></script>$1')
  .replace("if ('serviceWorker' in navigator)","if (!window.__TAURI__ && 'serviceWorker' in navigator)");
-if(process.env.SAHIB_BRAND_PREVIEW==='1'){
+{
  const brand=path.join(root,'branding','sahib-0.2.4');
  for(const [source,target]of [['app-icon.svg','icon.svg'],['pwa-192.png','icon-192.png'],['pwa-512.png','icon-512.png']])fs.copyFileSync(path.join(brand,source),path.join(out,'icons',target));
  const mark=fs.readFileSync(path.join(brand,'sahib-mark.svg'),'utf8').replace('<svg ','<svg class="sahib-mark" ');

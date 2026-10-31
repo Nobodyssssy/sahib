@@ -1,10 +1,11 @@
-//! On-demand WebView lifecycle; native-default only in the separate RC build.
+//! On-demand WebView lifecycle with native compact rendering by default.
 use super::*;
 use std::sync::OnceLock;
 static MODE: OnceLock<String> = OnceLock::new();
 pub fn mode() -> &'static str {
     MODE.get_or_init(
         || match std::env::var("SAHIB_MEMORY_EXPERIMENT").as_deref() {
+            Ok("keep") => "keep".into(),
             Ok("unload") => "unload".into(),
             Ok("native") => "native".into(),
             _ => {
@@ -36,12 +37,6 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
         .unwrap();
     let h = app.clone();
     let builder = tauri::WebviewWindowBuilder::from_config(app, config)?;
-    #[cfg(feature = "brand-preview")]
-    let builder = builder.title(if config.label == "main" {
-        "Sahib RC · Brand review"
-    } else {
-        "Sahib RC · Prayer timetable"
-    });
     #[cfg(any(debug_assertions, feature = "desktop-qa"))]
     let builder = if let Some(dir) = std::env::var_os("SAHIB_TEST_DATA_DIR")
         .filter(|_| app.config().identifier == "com.sahib.companion.qa")

@@ -6,7 +6,8 @@
   "fontLicense": "assets/fonts/licenses/amiri-OFL.txt",
   "shaper": "HarfBuzz via uharfbuzz",
   "cropUsed": false,
-  "productionAssetsReplaced": false,
+  "productionAssetsReplaced": true,
+  "productionScope": "Windows executable, installer, shortcuts, tray and packaged web icons; website icon files unchanged",
   "icoSizes": [
     16,
     20,

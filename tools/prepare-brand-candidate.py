@@ -1,4 +1,4 @@
-"""Rebuild review-only Sahib icons from the authoritative inline Amiri logo.
+"""Rebuild approved Sahib Windows icons from the authoritative inline Amiri logo.
 Dev dependencies: fonttools[woff], uharfbuzz, resvg-py, Pillow. No runtime dependency.
 """
 from pathlib import Path
@@ -63,7 +63,7 @@ for row,bg in [(0,'#f6f0e7'),(1,'#101a1b')]:
  for n in [16,24,32]:
   im=Image.open(OUT/f'tray-{n}.png');sheet.paste(im,(x,y+90),im);draw.text((x-3,y+140),f'{n}',fill='#173e32' if row==0 else '#f4b27d');x+=70
 sheet.save(OUT/'brand-review.png')
-(OUT/'provenance.json').write_text(json.dumps({'authoritativeSource':'index.html .sahib-mark','text':'صاحب','font':'assets/fonts/Amiri-Regular.woff2','fontSHA256':hashlib.sha256((ROOT/'assets/fonts/Amiri-Regular.woff2').read_bytes()).hexdigest(),'fontLicense':'assets/fonts/licenses/amiri-OFL.txt','shaper':'HarfBuzz via uharfbuzz','cropUsed':False,'productionAssetsReplaced':False,'icoSizes':sizes},ensure_ascii=False,indent=2),encoding='utf8')
+(OUT/'provenance.json').write_text(json.dumps({'authoritativeSource':'index.html .sahib-mark','text':'صاحب','font':'assets/fonts/Amiri-Regular.woff2','fontSHA256':hashlib.sha256((ROOT/'assets/fonts/Amiri-Regular.woff2').read_bytes()).hexdigest(),'fontLicense':'assets/fonts/licenses/amiri-OFL.txt','shaper':'HarfBuzz via uharfbuzz','cropUsed':False,'productionAssetsReplaced':True,'productionScope':'Windows executable, installer, shortcuts, tray and packaged web icons; website icon files unchanged','icoSizes':sizes},ensure_ascii=False,indent=2),encoding='utf8')
 print(OUT)
 
 # Review-only PWA exports. The actual PWA manifest/icons are unchanged.
