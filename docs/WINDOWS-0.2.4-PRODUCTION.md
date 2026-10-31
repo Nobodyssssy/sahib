@@ -27,10 +27,10 @@ Verification during promotion: 21 native unit tests passed; actual default-featu
 
 ### Verified private installer
 
-- Filename: `Sahib_0.2.4_x64-setup.exe`; size **23,119,714 bytes**; signature status **NotSigned**.
-- SHA-256: `be016d5aab77246115320271aa8fc18c0bcdeefc45026222e130309b0a24a7c3`.
+- Filename: `Sahib_0.2.4_x64-setup.exe`; size **23,118,558 bytes**; signature status **NotSigned**.
+- SHA-256: `3626c9e0f941b1d9dd94b681a1d635070534c0a4e67a170f512bb2ca1aa1c4d3`.
 - Windows executable metadata: ProductName/FileDescription `Sahib`, ProductVersion/FileVersion `0.2.4`. All nine approved icon resolutions are embedded in the executable; approved 16/32 px icon frames are embedded in the installer. NSIS installer/uninstaller ICO fields explicitly reference the approved artwork.
-- Latest application corrections: library `0c1517b`, monitor-local fullscreen and compact toggle `2df2c19`. Rebuilt with normal `npm run desktop:build`; copied artifact hash verified. See [targeted correction checks](WINDOWS-0.2.4-LIBRARY-FULLSCREEN.md). Earlier promotion/packaging verification above remains historical; these targeted changes did not rerun that entire suite.
+- Latest application corrections: library `0c1517b`, monitor-local fullscreen and compact toggle `2df2c19`, restored 67 existing Cloudflare downloads with three exclusions `80d9d6b`. Rebuilt with normal `npm run desktop:build`; copied artifact hash verified. See [targeted correction checks](WINDOWS-0.2.4-LIBRARY-FULLSCREEN.md). Earlier promotion/packaging verification above remains historical; these targeted changes did not rerun that entire suite.
 - Kept privately under ignored `releases-local/0.2.4/`, with checksum, notes and verification record. It has not been installed over the user's app, published or represented as cleared. No RC application/profile was created.
 - Historical RC artifacts and verification records remain in the previous recovery backup. The new production-preparation backup supplements them; no prior backup is deleted.
 
