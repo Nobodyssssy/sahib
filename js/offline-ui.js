@@ -71,17 +71,20 @@ const OFFLINE_UI = (() => {
   }
 
   async function _cachedBytes(){
-    if(!window.OFFLINE_BOOKS) return 0;
+    if(!window.OFFLINE_BOOKS) return {bytes:0,sizes:new Map()};
     const cache = await caches.open(window.OFFLINE_BOOKS.CACHE);
     const keys = await cache.keys();
     let bytes = 0;
+    const sizes = new Map();
     for(const req of keys){
       const res = await cache.match(req);
       if(!res) continue;
-      const len = res.headers.get('content-length');
-      if(len) bytes += parseInt(len, 10);
+      const length = Number(res.headers.get('content-length'));
+      const size = Number.isFinite(length) && length > 0 ? length : (await res.blob()).size;
+      sizes.set(req.url,size);
+      bytes += size;
     }
-    return bytes;
+    return {bytes,sizes};
   }
 
   function _formatMB(bytes){
@@ -105,7 +108,7 @@ const OFFLINE_UI = (() => {
   function _beginnerIds(){
     if(!window.OFFLINE_BOOKS) return [];
     return Object.keys(window.OFFLINE_BOOKS.BEGINNER_BOOK_URLS)
-      .concat(Object.keys(window.OFFLINE_BOOKS.LARGE_BOOK_URLS));
+      .concat(Object.keys(window.OFFLINE_BOOKS.LARGE_BOOK_URLS)).filter(id => getBookById(id)?.downloadAllowed);
   }
 
   async function _bytesForIds(ids, cachedSet){
@@ -119,7 +122,7 @@ const OFFLINE_UI = (() => {
 
   async function _libraryIdsAll(){
     const urls = _allLibraryUrls();
-    return Object.keys(urls);
+    return Object.keys(urls).filter(id => getBookById(id)?.downloadAllowed);
   }
 
   /* ---------- Modal rendering ---------- */
@@ -152,7 +155,10 @@ const OFFLINE_UI = (() => {
 
     try{
       const cachedIds = await _cachedIdSet();
-      const cachedBytes = await _cachedBytes();
+      const inventory = await _cachedBytes();
+      const cachedBytes = inventory.bytes;
+      const cachedList = Array.from(cachedIds).map(id => getBookById(id)).filter(Boolean);
+      const ar = window.SAHIB_I18N?.language === 'ar';
 
       const beginnerIds = _beginnerIds();
       const beginnerBytes = await _bytesForIds(beginnerIds, cachedIds);
@@ -170,6 +176,7 @@ const OFFLINE_UI = (() => {
         Origin quota remaining: ${freeMB == null ? 'unknown' : _formatMB(freeMB * 1024 * 1024)}
       </div>
 
+      ${cachedList.length ? `<details><summary>${ar?'الكتب المنزّلة':'Downloaded books'} (${cachedList.length})</summary><ul>${cachedList.map(b=>`<li>${esc(ar?b.titleAr:b.titleEn||b.titleAr)} · ${_formatMB(inventory.sizes.get(resolveBookPath(b)))}</li>`).join('')}</ul></details>` : ''}
       <div class="offline-ui-card">
         <div class="offline-ui-card-title">
           <span dir="ltr">Beginner path</span>
@@ -180,22 +187,22 @@ const OFFLINE_UI = (() => {
           ? `<div class="offline-ui-card-sub" dir="ltr">All ${beginnerIds.length} books cached</div>
              <button class="btn-save offline-ui-start offline-ui-done" disabled aria-disabled="true">${icon('check', 16)} Downloaded</button>`
           : `<div class="offline-ui-card-sub" dir="ltr">
-               ${_formatMB(beginnerBytes)} to download · ${beginnerIds.length - beginnerCachedCount} of ${beginnerIds.length} books not cached
+               Approximately ${_formatMB(beginnerBytes)} to download · ${beginnerIds.length - beginnerCachedCount} of ${beginnerIds.length} books not cached
              </div>
              <button class="btn-save offline-ui-start" onclick="window.OFFLINE_UI.start('beginner')">Download</button>`}
       </div>
 
       <div class="offline-ui-card">
         <div class="offline-ui-card-title">
-          <span dir="ltr">Whole library</span>
+          <span dir="ltr">All available books</span>
           <span class="offline-ui-sep"> · </span>
-          <span dir="rtl">المكتبة كاملة</span>
+          <span dir="rtl">كل الكتب المتاحة</span>
         </div>
         ${allIds.length === libraryCachedCount
           ? `<div class="offline-ui-card-sub" dir="ltr">All ${allIds.length} books cached</div>
              <button class="btn-save offline-ui-start offline-ui-done" disabled aria-disabled="true">${icon('check', 16)} Downloaded</button>`
           : `<div class="offline-ui-card-sub" dir="ltr">
-               ${_formatMB(libraryBytes)} to download · ${allIds.length - libraryCachedCount} of ${allIds.length} books not cached
+               Approximately ${_formatMB(libraryBytes)} to download · ${allIds.length - libraryCachedCount} of ${allIds.length} books not cached
              </div>
              <button class="btn-save offline-ui-start" onclick="window.OFFLINE_UI.start('library')">Download</button>`}
       </div>
@@ -308,7 +315,7 @@ const OFFLINE_UI = (() => {
     },
     clear: async () => {
       if(!window.OFFLINE_BOOKS) return;
-      if(!confirm('Remove all cached books? They will re-download on next read.')) return;
+      if(!confirm('Remove downloaded books from cache? Personal imports, bookmarks and reading progress will be kept.')) return;
       await window.OFFLINE_BOOKS.clearOfflineBooks();
       toast('Cleared', 'trash-2');
       await _renderBody();
