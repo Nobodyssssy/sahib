@@ -34,6 +34,16 @@ use tauri_plugin_autostart::ManagerExt as AutoExt;
 use tauri_plugin_notification::NotificationExt;
 use tauri_plugin_opener::OpenerExt;
 
+#[cfg(any(debug_assertions, feature = "desktop-qa"))]
+static WIDGET_TEST_TIME: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+fn widget_now_ms() -> i64 {
+    #[cfg(any(debug_assertions, feature = "desktop-qa"))]
+    {
+        let time = WIDGET_TEST_TIME.load(Ordering::Relaxed);
+        if time > 0 { return time; }
+    }
+    now_ms()
+}
 fn now_ms() -> i64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -659,6 +669,46 @@ fn candidate_tray_image(app: &tauri::AppHandle) -> tauri::Result<tauri::image::I
     tauri::image::Image::from_bytes(bytes)
 }
 
+fn handle_menu(app: &tauri::AppHandle, id: &str) {
+    match id {
+        "show" => show_main(app),
+        "focus-widget" => {
+            #[cfg(feature = "native-widget-experiment")]
+            if native_widget::active(app) {
+                native_widget::focus(app);
+            }
+            if let Some(w) = app.get_webview_window("widget") {
+                let _ = w.set_focus();
+            }
+        }
+        "quit" => app.exit(0),
+        "stop" => desktop_stop_audio(app.clone()),
+        "widget" | "unlock" => {
+            let state = app.state::<DesktopState>();
+            let mut d = state.disk.lock().unwrap();
+            if id == "unlock" {
+                d.prefs.widget_click_through = false;
+                d.prefs.widget_visible = true;
+            } else {
+                d.prefs.widget_visible = !d.prefs.widget_visible;
+            }
+            let p = d.prefs.clone();
+            let _ = state.save(&d);
+            drop(d);
+            let handle = app.clone();
+            std::thread::spawn(move || {
+                ensure_widget_windows(&handle, &p);
+                let ui = handle.clone();
+                let _ = handle.run_on_main_thread(move || {
+                    apply_widget(&ui, &p);
+                    emit_state(&ui);
+                });
+            });
+        }
+        _ => {}
+    }
+}
+
 fn make_menu(app: &tauri::AppHandle, ar: bool) -> tauri::Result<Menu<tauri::Wry>> {
     let text = |en, arabic| if ar { arabic } else { en };
     let show = MenuItem::with_id(
@@ -900,7 +950,7 @@ fn desktop_widget_state(
 }
 fn widget_payload(app: &tauri::AppHandle, label: &str) -> Result<serde_json::Value, String> {
     let state = app.state::<DesktopState>();
-    let now = now_ms();
+    let now = widget_now_ms();
     let d = state.disk.lock().map_err(|e| e.to_string())?;
     let mut prayers: Vec<_> = d.schedule.prayers.iter().filter(|p| p.at > now).collect();
     prayers.sort_by_key(|p| p.at);
@@ -924,6 +974,7 @@ fn widget_payload(app: &tauri::AppHandle, label: &str) -> Result<serde_json::Val
     if label == "widget" {
         view.expanded = state.widget_expanded.load(Ordering::Relaxed)
     }
+    value["presentationNow"] = now.into();
     value["panelOpenId"] = panel_perf::id().into();
     value["widgetExpanded"] = view.expanded.into();
     value["view"] = serde_json::to_value(view).unwrap();
@@ -1483,6 +1534,7 @@ fn start_scheduler(app: tauri::AppHandle) {
 
 pub fn run() {
     tauri::Builder::default()
+        .on_menu_event(|app, event| handle_menu(app, event.id.as_ref()))
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             show_main(app)
         }))
@@ -1595,36 +1647,7 @@ pub fn run() {
                         show_main(tray.app_handle());
                     }
                 })
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "show" => show_main(app),
-                    "focus-widget" => {
-                        #[cfg(feature = "native-widget-experiment")]
-                        if native_widget::active(app) { native_widget::focus(app); }
-                        if let Some(w) = app.get_webview_window("widget") { let _ = w.set_focus(); }
-                    }
-                    "quit" => app.exit(0),
-                    "stop" => desktop_stop_audio(app.clone()),
-                    "widget" | "unlock" => {
-                        let state = app.state::<DesktopState>();
-                        let mut d = state.disk.lock().unwrap();
-                        if event.id.as_ref() == "unlock" {
-                            d.prefs.widget_click_through = false;
-                            d.prefs.widget_visible = true;
-                        } else {
-                            d.prefs.widget_visible = !d.prefs.widget_visible;
-                        }
-                        let p = d.prefs.clone();
-                        let _ = state.save(&d);
-                        drop(d);
-                        let handle=app.clone();
-                        std::thread::spawn(move||{
-                            ensure_widget_windows(&handle,&p);
-                            let ui=handle.clone();
-                            let _=handle.run_on_main_thread(move||{apply_widget(&ui,&p);emit_state(&ui);});
-                        });
-                    }
-                    _ => {}
-                })
+
                 .build(app)?;
             #[cfg(feature = "native-widget-experiment")]
             ensure_widget_windows(app.handle(), &prefs);

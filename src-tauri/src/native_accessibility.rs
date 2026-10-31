@@ -20,11 +20,13 @@ impl Provider {
         let s = self.app.state::<DesktopState>();
         let d = s.disk.lock().unwrap();
         let ar = d.schedule.language == "ar";
-        let now = now_ms();
+        let now = widget_now_ms();
         if let Some(p) = d
             .schedule
-            .prayers
+            .widget_days
             .iter()
+            .flat_map(|d| &d.prayers)
+            .chain(d.schedule.prayers.iter())
             .filter(|p| p.at > now && d.schedule.valid_until > now)
             .min_by_key(|p| p.at)
         {
@@ -36,7 +38,9 @@ impl Provider {
             };
             format!(
                 "{} {}. {} \u{2066}{}\u{2069}. {} \u{2066}{}\u{2069}",
-                if ar {
+                if p.name == "Sunrise" {
+                    if ar { "الشروق القادم، علامة زمنية" } else { "Next sunrise, time marker" }
+                } else if ar {
                     "الصلاة القادمة"
                 } else {
                     "Next prayer"
@@ -94,9 +98,9 @@ impl IRawElementProviderSimple_Impl for Provider_Impl {
             VARIANT::from(true)
         } else if id == UIA_HelpTextPropertyId {
             VARIANT::from(if ar {
-                "اضغط إدخال لفتح مواقيت الصلاة. اضغط F10 لفتح الإعدادات."
+                "اضغط إدخال لفتح مواقيت الصلاة. اضغط F10 لفتح قائمة صاحب."
             } else {
-                "Press Enter or Space for prayer times. Press F10 for Settings. Focus from the Sahib tray menu."
+                "Press Enter or Space for prayer times. Press F10 for the Sahib menu. Focus from the Sahib tray menu."
             })
         } else {
             VARIANT::default()
@@ -128,25 +132,24 @@ impl IInvokeProvider_Impl for Provider_Impl {
 }
 thread_local! {static PROVIDERS:std::cell::RefCell<HashMap<isize,IRawElementProviderSimple>>=std::cell::RefCell::new(HashMap::new());}
 pub unsafe fn get(app: &tauri::AppHandle, label: &str, hwnd: isize, wp: usize, lp: isize) -> isize {
-    PROVIDERS.with(|cell| {
-        let mut p = cell.borrow_mut();
-        let provider = p.entry(hwnd).or_insert_with(|| {
+    let provider = PROVIDERS.with(|cell| {
+        cell.borrow_mut().entry(hwnd).or_insert_with(|| {
             Provider {
                 hwnd,
                 label: label.into(),
                 app: app.clone(),
             }
             .into()
-        });
-        UiaReturnRawElementProvider(HWND(hwnd as _), WPARAM(wp), LPARAM(lp), &*provider).0
-    })
+        }).clone()
+    });
+    UiaReturnRawElementProvider(HWND(hwnd as _), WPARAM(wp), LPARAM(lp), &provider).0
 }
 pub fn disconnect(hwnd: isize) {
-    PROVIDERS.with(|p| {
-        if let Some(provider) = p.borrow_mut().remove(&hwnd) {
-            unsafe {
-                let _ = UiaDisconnectProvider(&provider);
-            }
+    let provider = PROVIDERS.with(|p| p.borrow().get(&hwnd).cloned());
+    if let Some(provider) = provider {
+        unsafe {
+            let _ = UiaDisconnectProvider(&provider);
         }
-    });
+        PROVIDERS.with(|p| p.borrow_mut().remove(&hwnd));
+    }
 }

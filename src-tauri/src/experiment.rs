@@ -344,6 +344,25 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                         })
                         .map_err(|e| e.to_string())?;
                     }
+                    "menu" => {
+                        let id = request["command"].as_str().unwrap_or("");
+                        if !["show", "widget", "focus-widget", "unlock", "stop"].contains(&id) {
+                            return Err("Unknown menu command".into());
+                        }
+                        let h = app.clone();
+                        let id = id.to_string();
+                        app.run_on_main_thread(move || handle_menu(&h, &id))
+                            .map_err(|e| e.to_string())?;
+                    }
+                    "widget-time" => {
+                        WIDGET_TEST_TIME.store(request["at"].as_i64().unwrap_or(0), Ordering::Relaxed);
+                        let h = app.clone();
+                        app.run_on_main_thread(move || {
+                            let p = h.state::<DesktopState>().disk.lock().unwrap().prefs.clone();
+                            apply_widget(&h, &p);
+                            emit_state(&h);
+                        }).map_err(|e| e.to_string())?;
+                    }
                     "status" => {}
                     _ => return Err("Unknown QA action".into()),
                 }

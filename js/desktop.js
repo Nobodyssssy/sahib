@@ -58,7 +58,7 @@ window.SahibDesktop=(()=>{
    const widgetDays=days.map(day=>{
     const date=_pwDateFormat(day.date),tomorrow=new Date(date);tomorrow.setDate(date.getDate()+1);
     const nextDate=`${String(tomorrow.getDate()).padStart(2,'0')}-${String(tomorrow.getMonth()+1).padStart(2,'0')}-${tomorrow.getFullYear()}`;
-    return {start:_pwEventDate(day.date,'00:00',day.timezone).getTime(),end:_pwEventDate(nextDate,'00:00',day.timezone).getTime(),label:date.toLocaleDateString(ar()?'ar':'en-GB',{weekday:'long',day:'numeric',month:'long'}),hijri:new Intl.DateTimeFormat(ar()?'ar-u-ca-islamic-umalqura':'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(date),prayers:['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].map(name=>({name,nameAr:nameAR[name]||'الشروق',at:_pwEventDate(day.date,day.timings[name],day.timezone).getTime(),clock:formatPrayerTime(day.timings[name],prefs.timeFormat)})),reminders:SahibPractice.widgetReminders(date)};
+    return {start:_pwEventDate(day.date,'00:00',day.timezone).getTime(),end:_pwEventDate(nextDate,'00:00',day.timezone).getTime(),label:date.toLocaleDateString(ar()?'ar':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),hijri:new Intl.DateTimeFormat(ar()?'ar-u-ca-islamic-umalqura':'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(date),prayers:['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].map(name=>({name,nameAr:nameAR[name]||'الشروق',at:_pwEventDate(day.date,day.timings[name],day.timezone).getTime(),clock:formatPrayerTime(day.timings[name],prefs.timeFormat)})),reminders:SahibPractice.widgetReminders(date)};
    });
    const theme=presentation();
    if(buildRevision!==revision)return;

@@ -27,11 +27,14 @@
 <button id="widget-stop" title="Stop audio" data-playing="false"><svg class="wi" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
 <button id="widget-close" title="Hide widget"><svg class="wi"><use href="#wi-close"/></svg></button>
 </nav></header>
-<section class="widget-hero"><svg class="widget-landmark" viewBox="0 0 280 130" aria-hidden="true"><path opacity=".4" d="M0 120Q40 70 80 105Q140 30 185 67Q225 40 280 103v27H0Z"/><path d="M100 130V92h6V54l3-9 3 9v38h18V79h4c0-16 28-22 28-33 0 11 28 17 28 33h4v13h20V33l4-11 4 11v59h8v38h-46v-24a10 10 0 0 0-20 0v24Z"/></svg><div><h1 id="widget-name">Sahib</h1><p><svg class="wi"><use href="#wi-pin"/></svg><span id="widget-location">Choose your location in Sahib</span></p></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section>
-<div class="widget-date"><span id="widget-date"></span><span id="widget-hijri"></span></div>
+<section class="widget-hero"><svg class="widget-landmark" viewBox="0 0 280 130" aria-hidden="true"><path opacity=".4" d="M0 120Q40 70 80 105Q140 30 185 67Q225 40 280 103v27H0Z"/><path d="M100 130V92h6V54l3-9 3 9v38h18V79h4c0-16 28-22 28-33 0 11 28 17 28 33h4v13h20V33l4-11 4 11v59h8v38h-46v-24a10 10 0 0 0-20 0v24Z"/></svg><div><h1 id="widget-name">Sahib</h1><p><svg class="wi"><use href="#wi-pin"/></svg><span id="widget-location">Choose your location in Sahib</span></p><div class="widget-date"><span id="widget-date"></span><span id="widget-hijri"></span></div></div><div class="widget-time"><strong id="widget-clock">—</strong><span id="widget-countdown" dir="ltr">—</span></div></section>
+
+<small id="timetable-date" hidden></small>
 <section class="widget-timetable" id="widget-timetable" aria-label="Prayer timetable"></section>
+<section class="widget-practice" aria-labelledby="practice-heading"><div class="practice-head"><strong id="practice-heading">Today’s practice</strong><button id="practice-all" type="button">View all →</button></div><div class="widget-reminders" id="widget-reminders"></div></section>
 <section class="widget-timer" id="widget-timer" aria-labelledby="timer-heading">
-<div class="timer-head"><strong id="timer-heading">Dhikr / reading timer</strong><output id="timer-countdown" dir="ltr" aria-live="off">05:00</output></div>
+<button type="button" id="timer-toggle" class="timer-head" aria-expanded="false" aria-controls="timer-controls"><svg class="wi"><use href="#wi-clock"/></svg><strong id="timer-heading">Dhikr / reading timer</strong><output id="timer-countdown" dir="ltr" aria-live="off">05:00</output><span id="timer-chevron" aria-hidden="true">⌄</span></button>
+<div id="timer-controls" hidden>
 <p id="timer-finished" role="status" hidden>Session finished</p>
 <div class="timer-presets"><button type="button" data-timer-minutes="5">5 min</button><button type="button" data-timer-minutes="10">10 min</button><button type="button" data-timer-minutes="25">25 min</button></div>
 <label class="timer-duration"><span id="timer-duration-label">Minutes</span><input id="timer-minutes" type="number" min="1" max="1440" step="1" value="5" inputmode="numeric"></label>
@@ -42,8 +45,7 @@
 <label id="timer-custom-row" hidden><span id="timer-custom-label">Import WAV, MP3 or OGG · up to 20 MB</span><input id="timer-custom" type="file" accept=".wav,.mp3,.ogg,audio/wav,audio/mpeg,audio/ogg"></label>
 <label><span id="timer-volume-label">Volume</span><input id="timer-volume" type="range" min="0" max="100" value="35"><output id="timer-volume-value">35%</output></label>
 <div class="timer-actions"><button id="timer-start" type="button">Start / change time</button><button id="timer-restart" type="button">Restart</button><button id="timer-stop" type="button">Stop</button></div>
-</section>
-<section class="widget-reminders" id="widget-reminders"></section>
+</div></section>
 <div id="widget-status" class="widget-status" role="status"></div>
 <footer><button id="widget-open"><svg class="wi"><use href="#wi-book"/></svg><span id="widget-open-label">Open Sahib</span></button><button id="widget-details"><svg class="wi"><use href="#wi-clock"/></svg><span id="widget-details-label">Full timetable</span></button><button id="widget-settings-footer"><svg class="wi"><use href="#wi-settings"/></svg><span id="widget-settings-label">Settings</span></button></footer>
 </main><script src="js/desktop-widget.js"></script></body></html>

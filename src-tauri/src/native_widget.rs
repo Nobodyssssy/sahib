@@ -107,9 +107,6 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     }
 }
 pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
-    if p.widget_visible && active(app) {
-        preload_panel(app);
-    }
     let mut monitors = app.available_monitors().unwrap_or_default();
     let primary = app.primary_monitor().ok().flatten();
     monitors.sort_by_key(|m| {
@@ -381,7 +378,7 @@ pub fn tick(app: &tauri::AppHandle) {
         }
     }
 }
-const PANEL_IDLE: Duration = Duration::from_secs(60);
+const PANEL_IDLE: Duration = Duration::from_secs(5);
 fn panel_idle(app: &tauri::AppHandle) -> Duration {
     #[cfg(any(debug_assertions, feature = "desktop-qa"))]
     if app.config().identifier == "com.sahib.companion.qa" {
@@ -485,13 +482,6 @@ pub fn hide_panel(app: &tauri::AppHandle) {
         let _ = w.hide();
         suspend_panel(app, &w);
     }
-    if app
-        .get_webview_window("main")
-        .is_some_and(|m| m.is_visible().unwrap_or(false))
-    {
-        *state.panel_hidden.lock().unwrap() = None;
-        return;
-    }
     let expired = {
         let mut hidden = state.panel_hidden.lock().unwrap();
         hidden.get_or_insert_with(Instant::now).elapsed() >= panel_idle(app)
@@ -502,16 +492,6 @@ pub fn hide_panel(app: &tauri::AppHandle) {
         state.panel_suspended.store(false, Ordering::Release);
         *state.panel_hidden.lock().unwrap() = None;
     }
-}
-pub fn preload_panel(app: &tauri::AppHandle) {
-    if app.get_webview_window("widget").is_some()
-        || !app
-            .get_webview_window("main")
-            .is_some_and(|w| w.is_visible().unwrap_or(false))
-    {
-        return;
-    }
-    create_panel(app, true);
 }
 fn reveal_panel(app: &tauri::AppHandle) {
     let state = app.state::<DesktopState>();
@@ -539,25 +519,13 @@ fn reveal_panel(app: &tauri::AppHandle) {
         panel_perf::mark(id, "shownMs");
     }
 }
-fn create_panel(app: &tauri::AppHandle, preload: bool) {
+fn create_panel(app: &tauri::AppHandle) {
     let state = app.state::<State>();
     if state.panel_creating.swap(true, Ordering::AcqRel) {
         return;
     }
     let app = app.clone();
     std::thread::spawn(move || {
-        if preload {
-            for _ in 0..30 {
-                if app
-                    .state::<DesktopState>()
-                    .widget_expanded
-                    .load(Ordering::Relaxed)
-                {
-                    break;
-                }
-                std::thread::sleep(Duration::from_millis(50));
-            }
-        }
         let prefs = app
             .state::<DesktopState>()
             .disk
@@ -566,20 +534,6 @@ fn create_panel(app: &tauri::AppHandle, preload: bool) {
             .prefs
             .clone();
         if !active(&app) || !prefs.widget_visible {
-            app.state::<State>()
-                .panel_creating
-                .store(false, Ordering::Release);
-            return;
-        }
-        if preload
-            && !app
-                .state::<DesktopState>()
-                .widget_expanded
-                .load(Ordering::Relaxed)
-            && !app
-                .get_webview_window("main")
-                .is_some_and(|w| w.is_visible().unwrap_or(false))
-        {
             app.state::<State>()
                 .panel_creating
                 .store(false, Ordering::Release);
@@ -613,7 +567,7 @@ pub fn panel(app: &tauri::AppHandle, monitor: String) {
         let h = app.clone();
         let _ = app.run_on_main_thread(move || reveal_panel(&h));
     } else {
-        create_panel(app, false);
+        create_panel(app);
     }
 }
 
@@ -780,14 +734,16 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     let Some(view) = state.views.lock().unwrap().get(label).cloned() else {
         return;
     };
-    let (name, clock, at, previous, ar, colors, style, show_seconds) = {
+    let (name, clock, at, previous, ar, colors, style, show_seconds, period) = {
         let ds = app.state::<DesktopState>();
         let d = ds.disk.lock().unwrap();
-        let now = now_ms();
+        let now = widget_now_ms();
         let next = d
             .schedule
-            .prayers
+            .widget_days
             .iter()
+            .flat_map(|d| &d.prayers)
+            .chain(d.schedule.prayers.iter())
             .filter(|p| p.at > now)
             .min_by_key(|p| p.at);
         let prev = d
@@ -820,6 +776,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             palette(app, &d),
             d.prefs.widget_style.clone(),
             d.prefs.widget_show_seconds,
+            next.map(|p| p.name.clone()).unwrap_or_default(),
         )
     };
     let (surface, ink, muted, line, accent) =
@@ -837,6 +794,34 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     fill(dc, rect, surface);
     let scale = view.scale;
     let u = |n: f64| (n * scale).round() as i32;
+    let (sky_color, sky_y, horizon, moon) = match period.as_str() {
+        "Fajr" => (0x986068, 7., false, true),
+        "Sunrise" => (0x9380cf, 18., true, false),
+        "Dhuhr" => (0x58bce0, 6., false, false),
+        "Asr" => (0x68aece, 11., false, false),
+        "Maghrib" => (0x5482e7, 21., true, false),
+        _ => (0xa66759, 10., false, true),
+    };
+    let sky_x = if ar { w - u(14.) } else { u(7.) };
+    let brush = CreateSolidBrush(sky_color);
+    let old_brush = SelectObject(dc, brush);
+    let pen = CreatePen(PS_SOLID, 1, sky_color);
+    let old_pen = SelectObject(dc, pen);
+    Ellipse(dc, sky_x, u(sky_y), sky_x + u(7.), u(sky_y + 7.));
+    if horizon { MoveToEx(dc, sky_x - u(2.), u(sky_y + 6.), ptr::null_mut()); LineTo(dc, sky_x + u(9.), u(sky_y + 6.)); }
+    SelectObject(dc, old_brush);
+    SelectObject(dc, old_pen);
+    DeleteObject(brush);
+    DeleteObject(pen);
+    if moon {
+        let brush = CreateSolidBrush(surface);
+        let old_brush = SelectObject(dc, brush);
+        let pen = CreatePen(PS_SOLID, 1, surface);
+        let old_pen = SelectObject(dc, pen);
+        Ellipse(dc, sky_x + u(2.), u(sky_y - 1.), sky_x + u(9.), u(sky_y + 5.));
+        SelectObject(dc, old_brush); SelectObject(dc, old_pen);
+        DeleteObject(brush); DeleteObject(pen);
+    }
     let fonts = {
         let mut fonts = state.fonts.lock().unwrap();
         *fonts.entry(label.into()).or_insert_with(|| {
@@ -866,7 +851,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             )
         })
     };
-    let seconds = at.map(|t| ((t - now_ms()) / 1000).max(0));
+    let seconds = at.map(|t| ((t - widget_now_ms()) / 1000).max(0));
     let countdown = seconds
         .map(|s| {
             if show_seconds {
@@ -1140,7 +1125,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     }
     if let (Some(at), Some(previous)) = (at, previous) {
         if at > previous {
-            let progress = ((now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);
+            let progress = ((widget_now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);
             let x = u(5.);
             let width = ((w - 2 * x) as f64 * progress) as i32;
             fill(
@@ -1169,6 +1154,16 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     DeleteObject(bitmap);
     DeleteDC(dc);
     EndPaint(hwnd, &ps);
+}
+fn show_context_menu(app: &tauri::AppHandle, label: &str, keyboard: bool) {
+    let ar = app.state::<DesktopState>().disk.lock().unwrap().schedule.language == "ar";
+    if let (Some(window), Ok(menu)) = (app.get_window(label), make_menu(app, ar)) {
+        let _ = if keyboard {
+            window.popup_menu_at(&menu, tauri::PhysicalPosition::new(8, 8))
+        } else {
+            window.popup_menu(&menu)
+        };
+    }
 }
 unsafe extern "system" fn subclass(
     hwnd: HWND,
@@ -1199,7 +1194,7 @@ unsafe extern "system" fn subclass(
             WM_GETOBJECT if lp as i32 == -25 => {
                 return native_accessibility::get(app, &label, hwnd as isize, wp, lp);
             }
-            WM_KEYDOWN => match wp as u32 {
+            WM_KEYDOWN | WM_SYSKEYDOWN => match wp as u32 {
                 13 | 32 => {
                     if let Some(v) = app
                         .state::<State>()
@@ -1213,8 +1208,8 @@ unsafe extern "system" fn subclass(
                     }
                     return 0;
                 }
-                121 => {
-                    experiment::open_main(app, true, Some("settings"));
+                93 | 121 => {
+                    show_context_menu(app, &label, true);
                     return 0;
                 }
                 _ => {}
@@ -1260,8 +1255,8 @@ unsafe extern "system" fn subclass(
                 }
                 return 0;
             }
-            WM_RBUTTONUP => {
-                experiment::open_main(app, true, Some("settings"));
+            WM_RBUTTONUP | WM_CONTEXTMENU => {
+                show_context_menu(app, &label, msg == WM_CONTEXTMENU && lp == -1);
                 return 0;
             }
             WM_NCDESTROY => {

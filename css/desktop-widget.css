@@ -46,3 +46,27 @@ body[data-style=countdown] .widget-compact{grid-template-columns:minmax(0,1fr) a
 body[data-style=countdown] .compact-emblem,body[data-style=countdown] .compact-countdown>span{display:none}
 body[data-style=countdown] .compact-countdown strong{font-size:21px;color:var(--widget-accent)}
 body[data-style=countdown] .compact-prayer strong{font-size:11px;color:var(--widget-muted)}
+
+/* One scroll surface; the timer form is available on demand. */
+.prayer-widget{gap:10px;padding:12px}
+.widget-hero{min-height:122px;padding:12px;border:1px solid var(--widget-line);border-radius:12px;background:radial-gradient(ellipse at 72% 85%,var(--period-glow),transparent 70%),var(--widget-soft)}
+body{--period-glow:color-mix(in srgb,var(--widget-accent) 12%,transparent);--sky-y:20%}
+body[data-period=night]{--period-glow:#68609826;--sky-y:20%}
+body[data-period=dawn]{--period-glow:#cf809335;--sky-y:70%}
+body[data-period=morning]{--period-glow:#e0bc5835;--sky-y:20%}
+body[data-period=afternoon]{--period-glow:#ceae6835;--sky-y:35%}
+body[data-period=sunset]{--period-glow:#e782543d;--sky-y:78%}
+body[data-period=evening]{--period-glow:#5967a635;--sky-y:30%}
+.widget-hero:before{content:'';position:absolute;inset-inline-start:67%;top:var(--sky-y);width:19px;height:19px;border-radius:50%;background:var(--widget-accent);opacity:.22;z-index:0}
+body[data-period=night] .widget-hero:before,body[data-period=evening] .widget-hero:before{background:transparent;box-shadow:-5px 3px 0 0 var(--widget-accent)}
+.prayer-widget h1{font-size:29px;margin-bottom:5px}.widget-time strong{font-size:29px}.widget-time span{font-size:12px;border:1px solid var(--widget-line);border-radius:20px;padding:4px 8px;color:var(--widget-text)}
+.widget-date{margin-top:7px;font-size:10px;gap:0}.widget-landmark{opacity:.12;width:190px}
+.widget-timetable{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.prayer-row{flex-direction:column;gap:5px;padding:9px 2px;min-height:78px;font-size:12px}.prayer-row>span{flex-direction:column;gap:4px;font-size:10px}.prayer-row .wi{width:18px;height:18px}.prayer-row.passed{background:var(--widget-surface)}.prayer-row.sunrise{border-style:dashed}.prayer-row.next{border-width:2px;padding:8px 1px}
+.widget-practice{padding:10px;border:1px solid var(--widget-line);border-radius:12px;background:var(--widget-soft);flex:none}.practice-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:13px}.practice-head button{border:0;background:transparent;color:var(--widget-accent);font-size:11px;padding:5px}
+.widget-reminders{max-height:none;overflow:visible;gap:6px;flex:none}.widget-reminder{padding:8px;min-height:52px;background:var(--widget-surface)}.widget-reminder strong{font-size:12px}.widget-reminder small{font-size:10px}
+.widget-timer{padding:0;gap:0;flex:none;overflow:visible}.widget-timer .timer-head{border:0;background:transparent;width:100%;padding:11px 10px;display:flex;gap:8px;text-align:start}.timer-head strong{flex:1;font-size:12px}.timer-head .wi{color:var(--widget-accent);width:20px;height:20px}.timer-head output{font-size:18px}#timer-controls{display:grid;gap:9px;padding:0 12px 12px}#timer-controls[hidden]{display:none}
+@media(max-height:450px){.widget-reminder:nth-child(n+3){display:none}}
+@media(max-width:359px){.widget-timetable{grid-template-columns:repeat(3,minmax(0,1fr))}.prayer-row{min-height:66px}.widget-hero{padding:9px}.prayer-widget h1,.widget-time strong{font-size:25px}.prayer-widget p{max-width:150px}}
+html:lang(ar) .prayer-widget h1{font-size:28px;line-height:1.3}.widget-time strong,.prayer-row time{direction:ltr;unicode-bidi:isolate}
+
+.prayer-row.sunrise small{font-size:9px;font-weight:400;color:var(--widget-muted);line-height:1}
