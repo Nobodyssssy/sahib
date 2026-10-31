@@ -117,7 +117,7 @@ impl IInvokeProvider_Impl for Provider_Impl {
             .get(&self.label)
             .map(|v| v.monitor.clone());
         if let Some(m) = monitor {
-            native_widget::panel(&self.app, m);
+            native_widget::toggle_panel(&self.app, m);
             Ok(())
         } else {
             Err(windows::core::Error::from_hresult(windows::core::HRESULT(

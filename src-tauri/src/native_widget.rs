@@ -617,6 +617,32 @@ pub fn panel(app: &tauri::AppHandle, monitor: String) {
     }
 }
 
+pub fn toggle_panel(app: &tauri::AppHandle, monitor: String) {
+    let expanded = app
+        .state::<DesktopState>()
+        .widget_expanded
+        .load(Ordering::Relaxed);
+    let same_monitor = *app.state::<State>().panel_monitor.lock().unwrap() == monitor;
+    if expanded && same_monitor {
+        app.state::<DesktopState>()
+            .widget_expanded
+            .store(false, Ordering::Relaxed);
+        if let Some(view) = app
+            .state::<DesktopState>()
+            .widget_views
+            .lock()
+            .unwrap()
+            .get_mut("widget")
+        {
+            view.expanded = false;
+        }
+        hide_panel(app);
+        emit_state(app);
+    } else {
+        panel(app, monitor);
+    }
+}
+
 fn color(value: &str) -> Option<u32> {
     let hex = value.strip_prefix('#')?;
     let n = u32::from_str_radix(hex, 16).ok()?;
@@ -1183,7 +1209,7 @@ unsafe extern "system" fn subclass(
                         .get(&label)
                         .cloned()
                     {
-                        panel(app, v.monitor);
+                        toggle_panel(app, v.monitor);
                     }
                     return 0;
                 }
@@ -1215,7 +1241,7 @@ unsafe extern "system" fn subclass(
                 };
                 if let Some((cursor, start)) = v.1 {
                     if (taskbar::cursor_x() - cursor).abs() < 4 {
-                        panel(app, v.0.monitor);
+                        toggle_panel(app, v.0.monitor);
                     } else if let Some(bar) = v.0.bar {
                         let state = app.state::<DesktopState>();
                         let p = {

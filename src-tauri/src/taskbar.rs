@@ -15,6 +15,13 @@ extern "system" {
     fn ClientToScreen(window: *mut c_void, point: *mut Point) -> i32;
     fn GetCursorPos(point: *mut Point) -> i32;
     fn GetForegroundWindow() -> *mut c_void;
+    fn EnumWindows(
+        callback: unsafe extern "system" fn(*mut c_void, isize) -> i32,
+        data: isize,
+    ) -> i32;
+    fn IsWindowVisible(window: *mut c_void) -> i32;
+    fn IsIconic(window: *mut c_void) -> i32;
+    fn GetWindowLongPtrW(window: *mut c_void, index: i32) -> isize;
     fn WindowFromPoint(point: Point) -> *mut c_void;
     fn GetAncestor(window: *mut c_void, flags: u32) -> *mut c_void;
     fn GetClassNameW(window: *mut c_void, name: *mut u16, count: i32) -> i32;
@@ -26,6 +33,15 @@ extern "system" {
         title: *const u16,
     ) -> *mut c_void;
     fn GetWindowRect(window: *mut c_void, rect: *mut Rect) -> i32;
+}
+#[link(name = "dwmapi")]
+extern "system" {
+    fn DwmGetWindowAttribute(
+        window: *mut c_void,
+        attribute: u32,
+        value: *mut u32,
+        size: u32,
+    ) -> i32;
 }
 #[link(name = "kernel32")]
 extern "system" {
@@ -40,9 +56,8 @@ extern "system" {
 }
 // Start/Search can raise Explorer's taskbar above ordinary topmost windows.
 // Match the actual shell executable, not every UWP/CoreWindow application.
-pub fn shell_interaction() -> bool {
+fn shell_window(window: *mut c_void) -> bool {
     unsafe {
-        let window = GetForegroundWindow();
         let mut name = [0u16; 128];
         let n = GetClassNameW(window, name.as_mut_ptr(), 128);
         let name = String::from_utf16_lossy(&name[..n.max(0) as usize]);
@@ -81,6 +96,9 @@ pub fn shell_interaction() -> bool {
             .iter()
             .any(|name| path.ends_with(name))
     }
+}
+pub fn shell_interaction() -> bool {
+    unsafe { shell_window(GetForegroundWindow()) }
 }
 // Keep a temporary lifted overlay outside the Start/Search panel itself.
 // Restore the user's saved placement as soon as shell interaction ends.
@@ -151,14 +169,52 @@ pub fn cursor_x() -> i32 {
     point.x
 }
 pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
-    if shell_interaction() {
-        return false;
+    let mut search = FullscreenSearch {
+        monitor,
+        widget,
+        owner: std::process::id(),
+        found: false,
+    };
+    // Foreground focus can move to another display while this one remains fullscreen.
+    unsafe {
+        EnumWindows(
+            fullscreen_window,
+            &mut search as *mut FullscreenSearch as isize,
+        );
+    }
+    search.found
+}
+struct FullscreenSearch {
+    monitor: (i32, i32, i32, i32),
+    widget: isize,
+    owner: u32,
+    found: bool,
+}
+fn covers_monitor(rect: Rect, monitor: (i32, i32, i32, i32)) -> bool {
+    rect.left <= monitor.0
+        && rect.top <= monitor.1
+        && rect.right >= monitor.2
+        && rect.bottom >= monitor.3
+}
+unsafe extern "system" fn fullscreen_window(window: *mut c_void, data: isize) -> i32 {
+    let search = &mut *(data as *mut FullscreenSearch);
+    if window as isize == search.widget || IsWindowVisible(window) == 0 || IsIconic(window) != 0 {
+        return 1;
+    }
+    let mut owner = 0;
+    GetWindowThreadProcessId(window, &mut owner);
+    if owner == search.owner {
+        return 1;
+    }
+    // Click-through/non-activating overlays do not occupy the monitor.
+    if GetWindowLongPtrW(window, -20) & (0x20 | 0x08000000) != 0 {
+        return 1;
+    }
+    let mut cloaked = 0;
+    if DwmGetWindowAttribute(window, 14, &mut cloaked, 4) == 0 && cloaked != 0 {
+        return 1;
     }
     unsafe {
-        let window = GetForegroundWindow();
-        if window.is_null() || window as isize == widget {
-            return false;
-        }
         let mut class = [0u16; 128];
         let count = GetClassNameW(window, class.as_mut_ptr(), 128);
         let name = String::from_utf16_lossy(&class[..count.max(0) as usize]);
@@ -170,13 +226,13 @@ pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
         ]
         .contains(&name.as_str())
         {
-            return false;
+            return 1;
         }
         // A maximized outer frame can extend beyond the work area. Test the
         // actual client area instead, including maximized borderless games.
         let mut rect = Rect::default();
         if GetClientRect(window, &mut rect) == 0 {
-            return false;
+            return 1;
         }
         let mut first = Point {
             x: rect.left,
@@ -186,13 +242,24 @@ pub fn fullscreen(monitor: (i32, i32, i32, i32), widget: isize) -> bool {
             x: rect.right,
             y: rect.bottom,
         };
-        ClientToScreen(window, &mut first) != 0
+        if ClientToScreen(window, &mut first) != 0
             && ClientToScreen(window, &mut last) != 0
-            && first.x <= monitor.0
-            && first.y <= monitor.1
-            && last.x >= monitor.2
-            && last.y >= monitor.3
+            && covers_monitor(
+                Rect {
+                    left: first.x,
+                    top: first.y,
+                    right: last.x,
+                    bottom: last.y,
+                },
+                search.monitor,
+            )
+            && !shell_window(window)
+        {
+            search.found = true;
+            return 0;
+        }
     }
+    1
 }
 pub fn safe_edges(bar: (i32, i32, i32, i32), scale: f64) -> (i32, i32, bool) {
     let mut tray = bar.2 - (400.0 * scale) as i32;
@@ -261,6 +328,60 @@ pub fn panel_rect(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fullscreen_coverage_is_monitor_local() {
+        let primary = (0, 0, 2560, 1440);
+        let secondary = (-1920, 0, 0, 1080);
+        let game = Rect {
+            left: 0,
+            top: 0,
+            right: 2560,
+            bottom: 1440,
+        };
+        assert!(covers_monitor(game, primary));
+        assert!(!covers_monitor(game, secondary));
+        let other = Rect {
+            left: -1920,
+            top: 0,
+            right: 0,
+            bottom: 1080,
+        };
+        assert!(covers_monitor(other, secondary));
+        assert!(!covers_monitor(other, primary));
+    }
+
+    #[test]
+    fn maximized_client_and_auto_hide_gap_are_not_fullscreen() {
+        let monitor = (0, 0, 2560, 1440);
+        assert!(!covers_monitor(
+            Rect {
+                left: 0,
+                top: 32,
+                right: 2560,
+                bottom: 1380
+            },
+            monitor
+        ));
+        assert!(!covers_monitor(
+            Rect {
+                left: 0,
+                top: 0,
+                right: 2560,
+                bottom: 1439
+            },
+            monitor
+        ));
+        assert!(covers_monitor(
+            Rect {
+                left: 0,
+                top: 0,
+                right: 2560,
+                bottom: 1440
+            },
+            monitor
+        ));
+    }
     #[test]
     fn windows10_vertical_and_horizontal_taskbars_are_distinguished() {
         let monitor = (0, 0, 1920, 1080);
