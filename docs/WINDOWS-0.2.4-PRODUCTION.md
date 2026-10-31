@@ -25,6 +25,23 @@ Use existing panel lifecycle and widget suites for scheduler/timer/layout/compat
 
 Verification during promotion: 21 native unit tests passed; actual default-feature Tauri checks confirmed native windows/version/title/About, and the panel lifecycle plus widget-v1 regressions passed. The full application/compatibility suite passed 99 checks after updating its local PDF fixture and explicitly selecting its existing keep mode. The normal native default is tested separately without an override. The idle test waits for finished cold navigation and actual suspension before its shortened QA lease. No catalog or prayer logic was changed to make tests pass.
 
+### Verified private installer
+
+- Filename: `Sahib_0.2.4_x64-setup.exe`; size **23,113,545 bytes**; signature status **NotSigned**.
+- SHA-256: `1049a7ad69b13bf8eed2fd9251437b640d47cb8dda5711f0592420122d1b13ee`.
+- Windows executable metadata: ProductName/FileDescription `Sahib`, ProductVersion/FileVersion `0.2.4`. All nine approved icon resolutions are embedded in the executable; approved 16/32 px icon frames are embedded in the installer. NSIS installer/uninstaller ICO fields explicitly reference the approved artwork.
+- Application source commit: `06431ec`; packaging correction: `c4d705b`. Tauri's supported `bundle --bundles nsis` regenerated the package after the NSIS icon correction without altering application behavior.
+- Kept privately under ignored `releases-local/0.2.4/`, with checksum, notes and verification record. It has not been installed over the user's app, published or represented as cleared. No RC application/profile was created.
+- Historical RC artifacts and verification records remain in the previous recovery backup. The new production-preparation backup supplements them; no prior backup is deleted.
+
+### Recovery and regenerated-output cleanup
+
+Private production backup: `E:\Backups\Sahib\2026-10-31-production-0.2.4`. Its full source bundle, source archive, restored mirror, normal installer/checksum/notes and selected QA reports/logs/screenshots passed read-back hash verification (122 files, 1,924,220,379 bytes), bundle verification, restored commit comparison and `git fsck --full` before cleanup. The original complete maintenance/profile backup remains unchanged at `E:\Backups\Sahib\2026-10-31-closeout-004229`.
+
+Regenerated outputs removed: `src-tauri/target` (3,187,125,893 bytes), root `node_modules` (16,516,015), `dist` (32,432,294) and new `.qa` profiles/output (132,602,437). Selected new QA evidence is backed up; installed user profiles were never used or deleted. Workspace: **4.40 GB → 1.03 GB**, recovering **3.37 GB** from this build pass. Logical decimal sizes; small final documentation/Git writes slightly change byte totals. Both private RC7 and normal 0.2.4 installers remain under ignored `releases-local`.
+
+Final result-documentation commits are preserved as an incremental Git bundle/source overlay with restore instructions and verification in `FINAL-SOURCE.md` in the new backup. The full bundle remains intact; apply the overlay after cloning to recover the final pushed branch. No global SDK/toolchain removal, app uninstall, private-data upload or main merge occurred.
+
 ## Publication gate
 
 **Not cleared for public distribution yet.** See [DISTRIBUTION-READINESS.md](DISTRIBUTION-READINESS.md) for outstanding reserved-rights audio, Names recording and version-pinned dependency/content notices. The new YouTube credit supplies no permission and does not close those gates. Automatic CI binary uploads remain disabled.
