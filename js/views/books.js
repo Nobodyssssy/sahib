@@ -374,8 +374,8 @@ function bookCardHTML(b){
       <div class="book-author">${esc(author)}</div>
       ${progressLine}
     </div>
-    <button class="icon-btn" id="download-card-btn-${b.id}" title="${_booksLang === 'ar' ? 'تحميل للاستخدام بلا إنترنت' : 'Download for offline use'}" onclick="event.stopPropagation(); onDownloadBookCard('${b.id}')">
-      ${icon('download', 16)}
+    <button class="icon-btn" id="download-card-btn-${b.id}" title="${b.downloadAllowed?(_booksLang==='ar'?'تحميل':'Download'):(_booksLang==='ar'?'استيراد ملف PDF الخاص بي':'Import my PDF')}" onclick="event.stopPropagation(); ${b.downloadAllowed?'onDownloadBookCard':'importCatalogPdf'}('${b.id}')">
+      ${icon(b.downloadAllowed?'download':'upload', 16)}
     </button>
   </div>`;
 }
@@ -493,16 +493,7 @@ function renderBookDetail(b){
 
     ${!b.downloadAllowed ? `<p class="settings-note">${ar?'تحميل جديد غير متاح حتى التحقق من إذن التوزيع. تبقى النسخ المخزنة والملفات الشخصية متاحة.':'New downloads await redistribution permission. Existing cached copies and personal imports remain available.'}</p>` : ''}
     ${b.officialUrl?`<a href="${esc(b.officialUrl)}" target="_blank" rel="noopener noreferrer">${ar?'المصدر الرسمي':'Official source'}</a>`:''}
-    <div class="book-detail-actions" style="display:flex;gap:10px">
-      <button class="btn-save" style="flex:1;padding:14px;font-size:15px" id="book-read-${b.id}" ${b.downloadAllowed?'':'disabled'} onclick="readBook('${b.id}')">
-        ${isRead
-          ? `${icon('book-open', 16)} ${ar ? 'متابعة القراءة' : 'Continue reading'}`
-          : `${icon('book-open', 16)} ${ar ? 'ابدأ القراءة' : 'Start reading'}`}
-      </button>
-      <button class="icon-btn" id="download-btn-${b.id}" style="padding:10px" onclick="onDownloadBook('${b.id}')" aria-label="${ar ? 'تحميل' : 'Download'}">
-        ${icon('download', 16)}
-      </button>
-    </div>
+    <div class="book-detail-actions" id="book-detail-actions-${b.id}" style="display:flex;gap:10px"></div>
 
     ${isRead ? `
       <button class="book-reset-btn" onclick="resetBookProgress('${b.id}')">
@@ -510,7 +501,6 @@ function renderBookDetail(b){
       </button>` : ''}
   `;
 
-  if(!b.downloadAllowed) window.OFFLINE_BOOKS.isBookCached(b.id).then(cached=>{const button=$('book-read-'+b.id);if(button)button.disabled=!cached;});
   const coverEl = $(`detail-cover-${b.id}`);
   if(coverEl && typeof attachBookCover === 'function'){
     setTimeout(() => attachBookCover(b.id, coverEl), 30);
@@ -519,61 +509,48 @@ function renderBookDetail(b){
 }
 
 async function updateDownloadButton(id){
-  const btn = document.getElementById(`download-btn-${id}`);
-  if(!btn) return;
-  try {
-    const isCached = await window.OFFLINE_BOOKS.isBookCached(id);
-    if(isCached){
-      btn.innerHTML = icon('check', 16);
-      btn.disabled = true;
-      btn.style.opacity = '0.5';
-    }
-  } catch(e) {
-    console.error('Error checking cache', e);
-  }
+  const target = document.getElementById('book-detail-actions-'+id);
+  if(!target) return;
+  const availability = await getBookAvailability(id);
+  if(!target.isConnected || _booksDetailId!==id) return;
+  const ar = _booksLang==='ar';
+  const primary = availability.readable
+    ? `<button class="btn-save" style="flex:1;padding:14px;font-size:15px" id="book-read-${id}" onclick="readBook('${id}')">${icon('book-open',16)} ${ar?'قراءة':'Read'}</button>`
+    : availability.canDownload
+      ? `<button class="btn-save" style="flex:1;padding:14px;font-size:15px" id="download-btn-${id}" onclick="onDownloadBook('${id}')">${icon('download',16)} ${ar?'تحميل':'Download'}</button>`
+      : '';
+  target.innerHTML = primary+`<button class="${primary?'io-btn':'btn-save'}" onclick="importCatalogPdf('${id}')">${icon('upload',16)} ${ar?'استيراد ملف PDF الخاص بي':'Import my PDF'}</button>`;
 }
 
 async function updateDownloadButtonCard(id){
   const btn = document.getElementById(`download-card-btn-${id}`);
   if(!btn) return;
   try {
-    const isCached = await window.OFFLINE_BOOKS.isBookCached(id);
-    if(isCached){
-      btn.innerHTML = icon('check', 16);
-      btn.disabled = true;
-      btn.style.opacity = '0.5';
-    } else {
-      btn.innerHTML = icon('download', 16);
-      btn.disabled = !getBookById(id)?.downloadAllowed;
-      if(btn.disabled) btn.title = 'Redistribution permission not verified';
-      btn.style.opacity = '1';
-    }
+    const availability = await getBookAvailability(id);
+    if(!btn.isConnected) return;
+    const ar = _booksLang==='ar';
+    const action = availability.readable?'readBook':availability.canDownload?'onDownloadBookCard':'importCatalogPdf';
+    btn.innerHTML = icon(availability.readable?'book-open':availability.canDownload?'download':'upload',16);
+    btn.title = availability.readable?(ar?'قراءة':'Read'):availability.canDownload?(ar?'تحميل':'Download'):(ar?'استيراد ملف PDF الخاص بي':'Import my PDF');
+    btn.setAttribute('aria-label',btn.title);
+    btn.onclick = event=>{event.stopPropagation();window[action](id);};
   } catch(e){
     console.error('Error checking cache (card)', e);
   }
 }
 
-async function updateDownloadButtonCard(id){
-  const btn = document.getElementById(`download-card-btn-${id}`);
-  if(!btn) return;
-  try {
-    const isCached = await window.OFFLINE_BOOKS.isBookCached(id);
-    if(isCached){
-      btn.innerHTML = icon('check', 16);
-      btn.disabled = true;
-      btn.style.opacity = '0.5';
-    } else {
-      btn.innerHTML = icon('download', 16);
-      btn.disabled = !getBookById(id)?.downloadAllowed;
-      if(btn.disabled) btn.title = 'Redistribution permission not verified';
-      btn.style.opacity = '1';
-    }
-  } catch(e){
-    console.error('Error checking cache (card)', e);
-  }
+async function allowBookDownload(id){
+  const availability = await getBookAvailability(id);
+  if(availability.readable){readBook(id);return false;}
+  if(availability.canDownload) return true;
+  await updateDownloadButton(id);
+  await updateDownloadButtonCard(id);
+  toast(_booksLang==='ar'?'التحميل غير متاح. استورد ملف PDF الخاص بك أو استخدم المصدر الرسمي.':'Download unavailable. Import your PDF or use the official source.');
+  return false;
 }
 
 async function onDownloadBook(id){
+  if(!await allowBookDownload(id)) return;
   const btn = document.getElementById(`download-btn-${id}`);
   if(!btn) return;
   const ar = _booksLang === 'ar';
@@ -586,12 +563,12 @@ async function onDownloadBook(id){
   } catch(e) {
     console.error('Download error', e);
     toast(ar ? 'فشل التحميل' : 'Download failed');
-    btn.innerHTML = icon('download', 16);
-    btn.disabled = false;
+    updateDownloadButton(id);
   }
 }
 
 async function onDownloadBookCard(id){
+  if(!await allowBookDownload(id)) return;
   const ar = _booksLang === 'ar';
   try {
     await window.OFFLINE_BOOKS.cacheBookById(id);
@@ -602,6 +579,28 @@ async function onDownloadBookCard(id){
     toast(ar ? 'فشل التحميل' : 'Download failed');
     updateDownloadButtonCard(id);
   }
+}
+
+function importCatalogPdf(id){
+  const input = document.createElement('input');
+  input.type='file';input.accept='.pdf,application/pdf';input.hidden=true;
+  input.oncancel=()=>input.remove();
+  input.onchange=async()=>{
+    const file=input.files?.[0];
+    input.remove();
+    if(!file) return;
+    try{
+      await addLocalBookFromFile(file,{catalogId:id});
+      toast(_booksLang==='ar'?'تم حفظ ملف PDF على هذا الجهاز فقط':'PDF saved on this device only','check');
+      if(_booksDetailId===id) renderBookDetail(getBookById(id));
+      else renderBooksGrid();
+      updateDownloadButtonCard(id);
+    }catch(err){
+      if(err.message==='Cancelled by user') return;
+      toast(err.message==='PDF file required'?(_booksLang==='ar'?'اختر ملف PDF صالحاً':'Choose a valid PDF file'):(_booksLang==='ar'?'تعذر الاستيراد: ':'Could not import: ')+err.message);
+    }
+  };
+  document.body.append(input);input.click();
 }
 
 function closeBookDetail(){
@@ -645,12 +644,17 @@ async function resetBookProgress(id){
   toast(ar ? 'تمت إعادة التعيين' : 'Progress reset', 'rotate-ccw');
 }
 
-function readBook(id){
+async function readBook(id){
   const b = getBookById(id);
   if(!b) return;
+  const availability = await getBookAvailability(id);
+  if(!availability.readable && !availability.canDownload){
+    openBookDetail(id);
+    return;
+  }
 
   closeBookDetail();
-  openReader(id);
+  return openReader(id);
 }
 
 /* ==========================================================================

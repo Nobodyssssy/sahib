@@ -38,10 +38,11 @@ async function loadPdfDocument(bookId, overrideUrl){
 
   const engine = await initPdfEngine();
   let doc;
-  if(book.isLocal){
+  const local = await db.localBooks.get(bookId);
+  if(book.isLocal || local?.blob){
     // WebView2 custom HTTPS origins cannot reliably fetch their own blob URLs.
     // Read the existing IndexedDB Blob directly, without a second URL transport.
-    const row = await db.localBooks.get(bookId);
+    const row = local;
     if(!row || !row.blob) throw new Error('Local book not found');
     doc = await engine.openDocumentBuffer({ id: bookId, content: await row.blob.arrayBuffer() }).toPromise();
   }else{

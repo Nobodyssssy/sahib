@@ -21,6 +21,14 @@ function getBookById(id){
   return BOOKS.find(b => b.id === id) || getLocalBookById(id) || null;
 }
 
+async function getBookAvailability(id){
+  const book = getBookById(id);
+  if(!book) return { readable:false, canDownload:false };
+  const local = await db.localBooks.get(id);
+  const readable = !!local?.blob || await window.OFFLINE_BOOKS.isBookCached(id);
+  return { readable, canDownload:!readable && !!book.downloadAllowed };
+}
+
 function getBooksByCategory(categoryId){
   if(!categoryId || categoryId === 'all') return allBooks();
   if(categoryId === 'local') return getLocalBooks();
@@ -118,11 +126,13 @@ async function clearBookProgress(bookId){
    ========================================================================== */
 
 let _bookmarks = null;
+let _bookmarksLoaded = false;
 
 async function loadBookmarks(){
-  if(_bookmarks) return _bookmarks;
+  if(_bookmarksLoaded && _bookmarks !== null) return _bookmarks;
   const stored = await store.getMeta('books-bookmarks');
   _bookmarks = (stored && typeof stored === 'object') ? stored : {};
+  _bookmarksLoaded = true;
   /* One-shot cleanup: the pin feature was removed. Delete any residual `_pinned`. */
   if('_pinned' in _bookmarks){
     delete _bookmarks['_pinned'];
@@ -137,7 +147,7 @@ function getBookBookmarks(bookId){
 }
 
 async function toggleBookBookmark(bookId, page){
-  if(!_bookmarks) await loadBookmarks();
+  await loadBookmarks();
   const list = _bookmarks[bookId] || [];
   const idx = list.indexOf(page);
   if(idx >= 0) list.splice(idx, 1);
@@ -210,6 +220,7 @@ async function loadLocalBooks(){
   _localBooksBytes = 0;
   rows.forEach(r => {
     _localBooksBytes += (r.size || 0);
+    if(BOOKS.some(b => b.id === r.id)) return;
     _localBooks.push({
       id: r.id,
       titleAr: r.titleAr || '',
@@ -243,12 +254,17 @@ function getLocalBooksBytes(){
 
 async function addLocalBookFromFile(file, overrides){
   if(!file) throw new Error('No file');
+  await loadLocalBooks();
+  const catalogId = overrides && overrides.catalogId;
+  if(catalogId && !BOOKS.some(b => b.id === catalogId)) throw new Error('Unknown catalog book');
+  if(catalogId && !/%PDF-\d\.\d/.test(await file.slice(0,1024).text())) throw new Error('PDF file required');
+  const previous = catalogId ? await db.localBooks.get(catalogId) : null;
 
   if(file.size > LOCAL_BOOK_LIMITS.single){
     throw new Error(`File is ${(file.size/1048576).toFixed(1)} MB - over the ${LOCAL_BOOK_LIMITS.single/1048576} MB per-file limit.`);
   }
 
-  const totalAfter = _localBooksBytes + file.size;
+  const totalAfter = _localBooksBytes - (previous?.size || 0) + file.size;
   if(totalAfter > LOCAL_BOOK_LIMITS.refuse){
     throw new Error(`Adding this file would exceed the ${Math.round(LOCAL_BOOK_LIMITS.refuse/1048576)} MB local storage limit.`);
   }
@@ -258,7 +274,7 @@ async function addLocalBookFromFile(file, overrides){
     if(!ok) throw new Error('Cancelled by user');
   }
 
-  const id = 'local-' + Date.now() + '-' + Math.floor(Math.random()*1e6);
+  const id = catalogId || 'local-' + Date.now() + '-' + Math.floor(Math.random()*1e6);
   const baseName = (file.name || 'Untitled').replace(/\.pdf$/i, '');
   const now = Date.now();
 
@@ -279,6 +295,12 @@ async function addLocalBookFromFile(file, overrides){
   };
 
   await db.localBooks.put(record);
+
+  if(catalogId){
+    _localBooksBytes = totalAfter;
+    if(typeof clearPdfCache === 'function') clearPdfCache(id);
+    return getBookById(id);
+  }
 
   if(!_localBooks) await loadLocalBooks();
   _localBooks.unshift({
