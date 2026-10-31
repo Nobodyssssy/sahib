@@ -12,6 +12,7 @@ assert.equal(config.version,'0.2.4');
 const defaults=JSON.parse(fs.readFileSync('src-tauri/Cargo.toml','utf8').match(/^default\s*=\s*(\[.*\])/m)[1]);
 for(const feature of ['native-widget-rc','brand-preview'])assert(defaults.includes(feature),'Missing default feature '+feature);
 for(const icon of ['icon.ico','icon-128.png'])assert(config.bundle.icon.includes('../branding/sahib-0.2.4/'+icon));
+for(const field of ['installerIcon','uninstallerIcon'])assert.equal(config.bundle.windows.nsis[field],'../branding/sahib-0.2.4/icon.ico');
 for(const file of Object.keys(config.bundle.resources))assert(fs.existsSync(path.resolve('src-tauri',file)));
 const hash=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 for(const [source,target]of [['app-icon.svg','icon.svg'],['pwa-192.png','icon-192.png'],['pwa-512.png','icon-512.png']])assert.equal(hash('branding/sahib-0.2.4/'+source),hash('dist/icons/'+target));

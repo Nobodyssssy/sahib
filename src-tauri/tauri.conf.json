@@ -66,6 +66,8 @@
         "type": "downloadBootstrapper"
       },
       "nsis": {
+        "installerIcon": "../branding/sahib-0.2.4/icon.ico",
+        "uninstallerIcon": "../branding/sahib-0.2.4/icon.ico",
         "installMode": "currentUser",
         "displayLanguageSelector": true,
         "languages": [
