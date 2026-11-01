@@ -164,3 +164,8 @@ Branch: `codex/windows-tauri`. Do not merge into `main` yet.
 - Built and verified the normal unsigned installer candidate, stored separately at releases-local/0.2.4-shutdown-rc-20261101/Sahib_0.2.4_x64-setup.exe (23,122,718 bytes; SHA-256 9fb4cc3ef843e7850c4f140e20b97a0e3c6cbdf2b6ef9504fed875c185cb17f2). Product/version/defaults, nine executable icon sizes, installer artwork and copied checksum pass. Existing 0.2.4 installer retained unchanged; no installation. Packaging retry used Tauri bundle outside sandbox after restricted DNS failure; details in shutdown report.
 - Source/results are ready for the requested Windows-branch push. Main remains 49fb5b9; no merge, tag or public release. The exact isolated 0x87a quit reproduction is fixed; actual Windows shutdown/restart remains a required acceptance gate.
 - Published implementation commit 19291d2 to origin/codex/windows-tauri and verified remote SHA 19291d2b609bd11e54155deabb33dc6d5dafa14f. Remote main is still 49fb5b95219c002d43b0ccdc3ac5da1d206e057a. Working tree was clean after publication. No main merge or binary upload occurred.
+
+## Working shutdown acceptance and cleanup — 2026-11-01
+
+- User manually confirmed the shutdown fix works and reported uploading the installer to GitHub Release. Working implementation remains 19291d2; no main merge authorized.
+- Requested verified source/history/assets/configuration/lockfile/working-installer backup: E:\Backups\Sahib-Working-2026-11-01. Preserve installed app, personal data, local audio and historical profile snapshots; remove only verified regenerable project outputs and superseded installer files after restore verification. Keep all previous E: backups untouched.
