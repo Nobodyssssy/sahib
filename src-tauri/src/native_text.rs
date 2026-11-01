@@ -21,6 +21,10 @@ use windows::{
     },
 };
 thread_local! {static ENGINE:RefCell<Option<Engine>>=const{RefCell::new(None)};}
+pub fn shutdown() {
+    // Release D2D/DXGI on the painting thread, before ExitProcess runs TLS destructors.
+    ENGINE.with(|cell| { cell.borrow_mut().take(); });
+}
 struct Engine {
     factory: IDWriteFactory,
     target: ID2D1DCRenderTarget,
@@ -194,6 +198,9 @@ pub unsafe fn draw(
     surface: u32,
     flags: u32,
 ) -> bool {
+    if super::widget_watch::quiescing() {
+        return false;
+    }
     let mut log = windows_sys::Win32::Graphics::Gdi::LOGFONTW::default();
     windows_sys::Win32::Graphics::Gdi::GetObjectW(
         font,

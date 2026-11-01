@@ -93,6 +93,9 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
     Ok(())
 }
 pub fn open_main(app: &tauri::AppHandle, visible: bool, action: Option<&str>) {
+    if widget_watch::quiescing() {
+        return;
+    }
     let state = app.state::<State>();
     if visible {
         state.refreshing.store(false, Ordering::Relaxed);
@@ -120,11 +123,16 @@ pub fn open_main(app: &tauri::AppHandle, visible: bool, action: Option<&str>) {
     state.ready.store(false, Ordering::Release);
     let h = app.clone();
     std::thread::spawn(move || {
+        if widget_watch::quiescing() {
+            h.state::<State>().creating.store(false, Ordering::Release);
+            return;
+        }
         let result = build_window(&h, "main");
         h.state::<State>().creating.store(false, Ordering::Release);
         if let Err(e) = result {
             eprintln!("[experiment] Recreate main: {e}");
-        } else if !h.state::<State>().refreshing.load(Ordering::Relaxed)
+        } else if !widget_watch::STOPPING.load(Ordering::Acquire)
+            && !h.state::<State>().refreshing.load(Ordering::Relaxed)
             && !h.state::<State>().close_pending.load(Ordering::Relaxed)
         {
             if let Some(w) = h.get_webview_window("main") {
@@ -149,7 +157,7 @@ pub fn request_refresh(app: &tauri::AppHandle) {
                 );
                 if let Some(w) = h.get_webview_window("main") {
                     if !w.is_visible().unwrap_or(true) {
-                        let _ = w.destroy();
+                        let _ = retire_webview(&w);
                     }
                 }
             }
@@ -222,6 +230,7 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
             let action = request["action"].as_str().unwrap_or("");
             let result: Result<serde_json::Value, String> = (|| {
                 match action {
+                    "quit" => app.exit(0),
                     "reveal" => {
                         if let Some(w) = app.get_webview_window("main") {
                             let _ = w.hide();
@@ -438,7 +447,7 @@ pub fn command(
             state.retiring.store(true, Ordering::Relaxed);
             state.ready.store(false, Ordering::Release);
             state.close_pending.store(false, Ordering::Relaxed);
-            window.destroy().map_err(|e| e.to_string())?;
+            retire_webview(&window).map_err(|e| e.to_string())?;
             state.retiring.store(false, Ordering::Relaxed);
             state.refreshing.store(false, Ordering::Relaxed);
             Ok(serde_json::json!(true))

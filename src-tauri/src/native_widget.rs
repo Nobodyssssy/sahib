@@ -66,6 +66,9 @@ pub fn focus(app: &tauri::AppHandle) {
     }
 }
 pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if widget_watch::quiescing() {
+        return;
+    }
     let count = if p.widget_monitor == "all" {
         app.available_monitors().unwrap_or_default().len()
     } else {
@@ -94,6 +97,9 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 let h = app.clone();
                 let name = label.clone();
                 let _ = w.run_on_main_thread(move || {
+                    if widget_watch::quiescing() {
+                        return;
+                    }
                     if let Some(w) = h.get_window(&name) {
                         if let Ok(handle) = w.hwnd() {
                             unsafe {
@@ -107,6 +113,9 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     }
 }
 pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if widget_watch::quiescing() {
+        return;
+    }
     let mut monitors = app.available_monitors().unwrap_or_default();
     let primary = app.primary_monitor().ok().flatten();
     monitors.sort_by_key(|m| {
@@ -370,6 +379,9 @@ fn drop_fonts(state: &State, label: &str) {
     }
 }
 pub fn tick(app: &tauri::AppHandle) {
+    if widget_watch::quiescing() {
+        return;
+    }
     for view in app.state::<State>().views.lock().unwrap().values() {
         if view.visible {
             unsafe {
@@ -487,13 +499,16 @@ pub fn hide_panel(app: &tauri::AppHandle) {
         hidden.get_or_insert_with(Instant::now).elapsed() >= panel_idle(app)
     };
     if expired {
-        let _ = w.destroy();
+        let _ = retire_webview(&w);
         state.panel_ready.store(false, Ordering::Release);
         state.panel_suspended.store(false, Ordering::Release);
         *state.panel_hidden.lock().unwrap() = None;
     }
 }
 fn reveal_panel(app: &tauri::AppHandle) {
+    if widget_watch::quiescing() {
+        return;
+    }
     let state = app.state::<DesktopState>();
     if !state.widget_expanded.load(Ordering::Relaxed) {
         hide_panel(app);

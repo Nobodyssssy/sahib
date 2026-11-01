@@ -40,7 +40,9 @@ fn widget_now_ms() -> i64 {
     #[cfg(any(debug_assertions, feature = "desktop-qa"))]
     {
         let time = WIDGET_TEST_TIME.load(Ordering::Relaxed);
-        if time > 0 { return time; }
+        if time > 0 {
+            return time;
+        }
     }
     now_ms()
 }
@@ -122,6 +124,9 @@ struct DiskState {
     timer: session_timer::SessionTimer,
 }
 struct DesktopState {
+    widget_watch: Mutex<Option<widget_watch::Watch>>,
+    widget_worker: Mutex<Option<std::thread::JoinHandle<()>>>,
+    scheduler_worker: Mutex<Option<std::thread::JoinHandle<()>>>,
     disk: Mutex<DiskState>,
     file: PathBuf,
     audio: NativeAudio,
@@ -237,6 +242,9 @@ fn build_extra_widget(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> 
 }
 // WebView2 creation must run outside synchronous commands / window callbacks.
 fn ensure_widget_windows(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if widget_watch::quiescing() {
+        return;
+    }
     #[cfg(feature = "native-widget-experiment")]
     if native_widget::active(app) {
         native_widget::ensure(app, p);
@@ -279,6 +287,9 @@ fn ensure_widget_windows(app: &tauri::AppHandle, p: &DesktopPrefs) {
     state.creating_widgets.store(false, Ordering::Release);
 }
 fn apply_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if widget_watch::quiescing() {
+        return;
+    }
     #[cfg(feature = "native-widget-experiment")]
     if experiment::mode() != "keep" && !p.widget_visible {
         app.state::<DesktopState>()
@@ -623,6 +634,9 @@ fn apply_rich_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
 }
 
 fn position_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    if widget_watch::quiescing() {
+        return;
+    }
     if let Some(w) = app.get_webview_window("widget") {
         let monitors = w.available_monitors().unwrap_or_default();
         let valid = p.widget_position.filter(|(x, y)| {
@@ -1338,7 +1352,7 @@ fn desktop_open_url(
         .map_err(|e| e.to_string())
 }
 
-fn start_scheduler(app: tauri::AppHandle) {
+fn start_scheduler(app: tauri::AppHandle) -> std::thread::JoinHandle<()> {
     std::thread::spawn(move || {
         let mut refresh_at = 0;
         #[cfg(feature = "native-widget-experiment")]
@@ -1353,7 +1367,11 @@ fn start_scheduler(app: tauri::AppHandle) {
         let mut clock_tick = Instant::now();
         let mut wall = now_ms();
         let mut last_tooltip = None;
-        loop {
+        while !widget_watch::STOPPING.load(Ordering::Acquire) {
+            if widget_watch::quiescing() {
+                std::thread::sleep(Duration::from_millis(100));
+                continue;
+            }
             let now = now_ms();
             let drift = (now - wall - clock_tick.elapsed().as_millis() as i64).abs();
             wall = now;
@@ -1529,7 +1547,7 @@ fn start_scheduler(app: tauri::AppHandle) {
             };
             std::thread::sleep(Duration::from_millis(wait));
         }
-    });
+    })
 }
 
 pub fn run() {
@@ -1561,6 +1579,7 @@ pub fn run() {
             ,desktop_panel_phase,desktop_widget_action,desktop_widget_state,desktop_widget_size,desktop_widget_drag
         ])
         .setup(|app| {
+            widget_watch::install_session_handler()?;
             let dir = app.path().app_data_dir()?;
             #[cfg(any(debug_assertions, feature = "desktop-qa"))]
             let dir = std::env::var_os("SAHIB_TEST_DATA_DIR").filter(|_| app.config().identifier == "com.sahib.companion.qa")
@@ -1576,6 +1595,9 @@ pub fn run() {
             let ar = disk.schedule.language == "ar";
             let audio_app=app.handle().clone();
             app.manage(DesktopState {
+                widget_watch: Mutex::new(None),
+                widget_worker: Mutex::new(None),
+                scheduler_worker: Mutex::new(None),
                 disk: Mutex::new(disk),
                 file,
                 audio: NativeAudio::start(move || emit_state(&audio_app)),
@@ -1656,25 +1678,43 @@ pub fn run() {
             if !prefs.start_minimized {
                 show_main(app.handle());
             }
-            start_scheduler(app.handle().clone());
+            *app.state::<DesktopState>().scheduler_worker.lock().unwrap()=Some(start_scheduler(app.handle().clone()));
             let handle=app.handle().clone();
-            let widget_events=widget_watch::start();
-            std::thread::spawn(move || loop {
-                let _=widget_events.recv_timeout(Duration::from_secs(10));
+            let (widget_events, watch)=widget_watch::start();
+            *app.state::<DesktopState>().widget_watch.lock().unwrap()=Some(watch);
+            let worker=std::thread::spawn(move || {
+              let mut audit_at=Instant::now();
+              while !widget_watch::STOPPING.load(Ordering::Acquire) {
+                match widget_events.recv_timeout(Duration::from_millis(100)) {
+                    Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
+                    Err(std::sync::mpsc::RecvTimeoutError::Timeout) if Instant::now()<audit_at => continue,
+                    _ => {}
+                }
                 std::thread::sleep(Duration::from_millis(120));
                 while widget_events.try_recv().is_ok() {}
+                if widget_watch::quiescing() { continue; }
+                audit_at=Instant::now()+Duration::from_secs(10);
                 let prefs=handle.state::<DesktopState>().disk.lock().unwrap().prefs.clone();
-                ensure_widget_windows(&handle,&prefs);
+                #[cfg(feature = "native-widget-experiment")]
+                let native=native_widget::active(&handle);
+                #[cfg(not(feature = "native-widget-experiment"))]
+                let native=false;
+                if !native { ensure_widget_windows(&handle,&prefs); }
                 let h=handle.clone();
                 let _=handle.run_on_main_thread(move || {
+                    if widget_watch::quiescing() { return; }
                     let state=h.state::<DesktopState>();
                     let prefs=state.disk.lock().unwrap().prefs.clone();
+                    if native { ensure_widget_windows(&h,&prefs); }
                     if prefs.widget_visible {apply_widget(&h,&prefs);}
                 });
+              }
             });
+            *app.state::<DesktopState>().widget_worker.lock().unwrap()=Some(worker);
             Ok(())
         })
         .on_window_event(|window, event| {
+            if widget_watch::quiescing() { return; }
             if let WindowEvent::CloseRequested { api, .. } = event {
                 let app = window.app_handle();
                 let state = app.state::<DesktopState>();
@@ -1726,12 +1766,66 @@ pub fn run() {
         .expect("Could not start Sahib")
         .run(|app, event| {
             #[cfg(feature = "native-widget-experiment")]
-            if let tauri::RunEvent::ExitRequested{code:None,api,..}=&event{if experiment::mode()!="keep"{api.prevent_exit();}}
+            if let tauri::RunEvent::ExitRequested{code:None,api,..}=&event {
+                if widget_watch::STOPPING.load(Ordering::Acquire) && !SHUTDOWN_READY.load(Ordering::Acquire) {
+                    api.prevent_exit();
+                    return;
+                }
+                // Wry emits code=None only when its last window is destroyed.
+                // Keep intentional idle WebView retirement alive, never a real exit.
+                if experiment::mode()!="keep" && !widget_watch::STOPPING.load(Ordering::Acquire)
+                    && HEADLESS_RETIREMENT.swap(false, Ordering::AcqRel) { api.prevent_exit(); return; }
+            }
+            if let tauri::RunEvent::ExitRequested{code,api,..}=&event {
+                if !SHUTDOWN_READY.load(Ordering::Acquire) { api.prevent_exit(); }
+                if !widget_watch::STOPPING.swap(true, Ordering::AcqRel) {
+                    let h=app.clone();
+                    let code=code.unwrap_or(0);
+                    // Keep pumping the UI while an in-flight window operation completes.
+                    std::thread::spawn(move || {
+                        stop_widget_workers(&h);
+                        SHUTDOWN_READY.store(true, Ordering::Release);
+                        h.exit(code);
+                    });
+                }
+            }
             if let tauri::RunEvent::Exit = event {
+                widget_watch::STOPPING.store(true, Ordering::Release);
+                #[cfg(feature = "native-widget-experiment")]
+                native_text::shutdown();
+                // Session termination bypasses ExitRequested in Tao. Hooks have no UI dependency.
+                if let Some(mut watch)=app.state::<DesktopState>().widget_watch.lock().unwrap().take() { watch.stop(); }
                 let state = app.state::<DesktopState>();
                 if let Ok(d) = state.disk.lock() {
                     let _ = state.save(&d);
                 };
             }
         });
+}
+
+static HEADLESS_RETIREMENT: AtomicBool = AtomicBool::new(false);
+static SHUTDOWN_READY: AtomicBool = AtomicBool::new(false);
+
+fn retire_webview(window: &tauri::WebviewWindow) -> tauri::Result<()> {
+    HEADLESS_RETIREMENT.store(window.app_handle().windows().len() == 1, Ordering::Release);
+    let result = window.destroy();
+    if result.is_err() {
+        HEADLESS_RETIREMENT.store(false, Ordering::Release);
+    }
+    result
+}
+
+fn stop_widget_workers(app: &tauri::AppHandle) {
+    let state = app.state::<DesktopState>();
+    if let Some(mut watch) = state.widget_watch.lock().unwrap().take() {
+        watch.stop();
+    }
+    let worker = state.widget_worker.lock().unwrap().take();
+    if let Some(worker) = worker {
+        let _ = worker.join();
+    }
+    let scheduler = state.scheduler_worker.lock().unwrap().take();
+    if let Some(scheduler) = scheduler {
+        let _ = scheduler.join();
+    }
 }
