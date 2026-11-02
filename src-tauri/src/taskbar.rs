@@ -54,6 +54,37 @@ extern "system" {
     ) -> i32;
     fn CloseHandle(handle: *mut c_void) -> i32;
 }
+fn explorer_surface(class: &str, process: u32, explorer: u32) -> bool {
+    process != 0 && process == explorer && explorer_class(class)
+}
+fn explorer_class(class: &str) -> bool {
+    matches!(
+        class,
+        "Progman"
+            | "WorkerW"
+            | "Shell_TrayWnd"
+            | "Shell_SecondaryTrayWnd"
+            | "XamlExplorerHostIslandWindow"
+    )
+}
+fn owned_shell_surface(window: *mut c_void) -> bool {
+    unsafe {
+        let mut class = [0u16; 128];
+        let count = GetClassNameW(window, class.as_mut_ptr(), class.len() as i32);
+        let class = String::from_utf16_lossy(&class[..count.max(0) as usize]);
+        if !explorer_class(&class) {
+            return false;
+        }
+        let mut process = 0;
+        let mut explorer = 0;
+        GetWindowThreadProcessId(window, &mut process);
+        let taskbar = FindWindowW(wide("Shell_TrayWnd").as_ptr(), ptr::null());
+        if !taskbar.is_null() {
+            GetWindowThreadProcessId(taskbar, &mut explorer);
+        }
+        explorer_surface(&class, process, explorer)
+    }
+}
 // Start/Search can raise Explorer's taskbar above ordinary topmost windows.
 // Match the actual shell executable, not every UWP/CoreWindow application.
 fn shell_window(window: *mut c_void) -> bool {
@@ -61,7 +92,9 @@ fn shell_window(window: *mut c_void) -> bool {
         let mut name = [0u16; 128];
         let n = GetClassNameW(window, name.as_mut_ptr(), 128);
         let name = String::from_utf16_lossy(&name[..n.max(0) as usize]);
-        if matches!(name.as_str(), "Shell_TrayWnd" | "Shell_SecondaryTrayWnd") {
+        if matches!(name.as_str(), "Shell_TrayWnd" | "Shell_SecondaryTrayWnd")
+            && owned_shell_surface(window)
+        {
             return true;
         }
         if !matches!(
@@ -215,17 +248,8 @@ unsafe extern "system" fn fullscreen_window(window: *mut c_void, data: isize) ->
         return 1;
     }
     unsafe {
-        let mut class = [0u16; 128];
-        let count = GetClassNameW(window, class.as_mut_ptr(), 128);
-        let name = String::from_utf16_lossy(&class[..count.max(0) as usize]);
-        if [
-            "Progman",
-            "WorkerW",
-            "Shell_TrayWnd",
-            "Shell_SecondaryTrayWnd",
-        ]
-        .contains(&name.as_str())
-        {
+        // Explorer preview hosts can span a monitor without representing fullscreen.
+        if owned_shell_surface(window) {
             return 1;
         }
         // A maximized outer frame can extend beyond the work area. Test the
@@ -328,6 +352,35 @@ pub fn panel_rect(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn shell_fullscreen_exemptions_require_live_explorer_ownership() {
+        for class in [
+            "Progman",
+            "WorkerW",
+            "Shell_TrayWnd",
+            "Shell_SecondaryTrayWnd",
+            "XamlExplorerHostIslandWindow",
+        ] {
+            assert!(explorer_surface(class, 42, 42));
+            assert!(!explorer_surface(class, 7, 42));
+            assert!(!explorer_surface(class, 0, 0));
+            assert!(!explorer_surface(class, 42, 0));
+            assert!(!explorer_surface(class, 42, 43));
+        }
+        for class in [
+            "Windows.UI.Core.CoreWindow",
+            "Chrome_WidgetWin_1",
+            "CabinetWClass",
+            "",
+        ] {
+            assert!(!explorer_surface(class, 42, 42));
+        }
+    }
+    #[test]
+    fn absent_window_is_not_an_explorer_surface() {
+        assert!(!owned_shell_surface(ptr::null_mut()));
+    }
 
     #[test]
     fn fullscreen_coverage_is_monitor_local() {
