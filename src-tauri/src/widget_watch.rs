@@ -125,6 +125,7 @@ static WAKE: OnceLock<SyncSender<u32>> = OnceLock::new();
 static EVENTS: AtomicU32 = AtomicU32::new(0);
 static LAST_EVENT: AtomicU32 = AtomicU32::new(0);
 static HOOKS: AtomicU32 = AtomicU32::new(0);
+pub static LAYOUT_DIRTY: AtomicBool = AtomicBool::new(true);
 fn class(window: Hwnd) -> String {
     unsafe {
         let mut name = [0u16; 160];
@@ -159,7 +160,11 @@ unsafe extern "system" fn event(
         GetWindowThreadProcessId(window, &mut process);
         // Ignore our own reorder/location events: recovery must not trigger a feedback loop.
         let own = process == std::process::id();
-        if !(shell(&name)
+        let taskbar_child = !own && shell(&class(GetAncestor(window, 2)));
+        if !own && (shell(&name) || taskbar_child) {
+            LAYOUT_DIRTY.store(true, Ordering::Release);
+        }
+        if !(shell(&name) || taskbar_child
             || (code == 0x8004 && !own)
             || (code == 0x800b && window == GetForegroundWindow())
             || (own && matches!(code, 0x8001..=0x8003 | 0x8017 | 0x8018))

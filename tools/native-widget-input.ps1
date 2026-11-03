@@ -4,6 +4,7 @@ using System;using System.Runtime.InteropServices;
 public static class SahibNativeInput {
  [StructLayout(LayoutKind.Sequential)]public struct Point{public int x,y;}
  [DllImport("user32.dll")]public static extern IntPtr SendMessage(IntPtr w,uint m,IntPtr a,IntPtr b);
+ [DllImport("user32.dll")]public static extern bool PostMessage(IntPtr w,uint m,IntPtr a,IntPtr b);
  [DllImport("user32.dll")]public static extern bool GetCursorPos(out Point p);
  [DllImport("user32.dll")]public static extern bool SetCursorPos(int x,int y);
  [DllImport("user32.dll")]public static extern bool SetForegroundWindow(IntPtr w);
@@ -11,8 +12,8 @@ public static class SahibNativeInput {
 '@
 $point=New-Object SahibNativeInput+Point;[void][SahibNativeInput]::GetCursorPos([ref]$point)
 try{
- if($Action -in @('enter','space','f10')){[void][SahibNativeInput]::SetForegroundWindow([IntPtr]$Handle);$key=if($Action -eq 'enter'){13}elseif($Action -eq 'space'){32}else{121};[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x100,[IntPtr]$key,[IntPtr]::Zero)}
- elseif($Action -eq 'settings'){[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x205,[IntPtr]::Zero,[IntPtr]::Zero)}
+ if($Action -in @('enter','space','f10')){[void][SahibNativeInput]::SetForegroundWindow([IntPtr]$Handle);$key=if($Action -eq 'enter'){13}elseif($Action -eq 'space'){32}else{121};if($Action -eq 'f10'){[void][SahibNativeInput]::PostMessage([IntPtr]$Handle,0x100,[IntPtr]$key,[IntPtr]::Zero)}else{[void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x100,[IntPtr]$key,[IntPtr]::Zero)}}
+ elseif($Action -eq 'settings'){[void][SahibNativeInput]::PostMessage([IntPtr]$Handle,0x205,[IntPtr]::Zero,[IntPtr]::Zero)}
  else{
   [void][SahibNativeInput]::SendMessage([IntPtr]$Handle,0x201,[IntPtr]1,[IntPtr]::Zero)
   if($Action -eq 'drag'){[void][SahibNativeInput]::SetCursorPos(($point.x+45),$point.y)}

@@ -1,5 +1,4 @@
-//! Native compact UI: a Tauri HWND with GDI surfaces and DirectWrite text.
-//! No WebView, Explorer parenting, IPC server or second prayer engine.
+//! Native compact UI with an independently owned Explorer child and hidden lifecycle anchor.
 use super::*;
 use std::{ptr, sync::OnceLock};
 use windows_sys::Win32::{
@@ -24,6 +23,9 @@ pub struct View {
     pub visible: bool,
     pub reason: String,
     pub handle: isize,
+    pub parent: isize,
+    pub host_process: u32,
+    pub owner: isize,
     pub shell_lifted: bool,
     pub style: String,
     #[serde(skip)]
@@ -36,6 +38,7 @@ pub struct View {
 #[derive(Default)]
 pub struct State {
     pub views: Mutex<HashMap<String, View>>,
+    pub hosts: Mutex<Vec<taskbar_host::Host>>,
     pub panel_monitor: Mutex<String>,
     panel_creating: AtomicBool,
     pub panel_ready: AtomicBool,
@@ -61,9 +64,22 @@ pub fn init(app: &tauri::AppHandle) {
     let _ = APP.set(app.clone());
 }
 pub fn focus(app: &tauri::AppHandle) {
-    if let Some(w) = app.get_window("native-widget") {
-        let _ = w.set_focus();
-    }
+    let h = app.clone();
+    let _ = app.run_on_main_thread(move || {
+        let view = h
+            .state::<State>()
+            .views
+            .lock()
+            .unwrap()
+            .get("native-widget")
+            .cloned();
+        if let Some(v) = view.filter(|v| v.visible) {
+            unsafe {
+                SetForegroundWindow(v.handle as HWND);
+                windows_sys::Win32::UI::Input::KeyboardAndMouse::SetFocus(v.handle as HWND);
+            }
+        }
+    });
 }
 pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     if widget_watch::quiescing() {
@@ -103,7 +119,12 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
                     if let Some(w) = h.get_window(&name) {
                         if let Ok(handle) = w.hwnd() {
                             unsafe {
-                                SetWindowSubclass(handle.0 as HWND, Some(subclass), 1, 0);
+                                SetWindowSubclass(
+                                    handle.0 as HWND,
+                                    Some(controller_subclass),
+                                    1,
+                                    0,
+                                );
                             }
                         }
                     }
@@ -113,6 +134,11 @@ pub fn ensure(app: &tauri::AppHandle, p: &DesktopPrefs) {
     }
 }
 pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
+    let h = app.clone();
+    let p = p.clone();
+    let _ = app.run_on_main_thread(move || apply_ui(&h, &p));
+}
+fn apply_ui(app: &tauri::AppHandle, p: &DesktopPrefs) {
     if widget_watch::quiescing() {
         return;
     }
@@ -148,6 +174,12 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 .enumerate()
                 .any(|(i, _)| native_label(i) == label)
         {
+            let view = state.views.lock().unwrap().get(&label).cloned();
+            if let Some(v) = view {
+                unsafe {
+                    DestroyWindow(v.handle as HWND);
+                }
+            }
             drop_fonts(&state, &label);
             let _ = w.destroy();
             state.views.lock().unwrap().remove(&label);
@@ -159,7 +191,7 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             continue;
         };
         let Ok(hwnd) = w.hwnd() else { continue };
-        let handle = hwnd.0 as isize;
+        let owner = hwnd.0 as isize;
         let pos = m.position();
         let size = m.size();
         let scale = m.scale_factor();
@@ -180,7 +212,7 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
         let width = (240. * scale).round() as i32;
         let safe = bar.map(|b| taskbar::safe_edges(b, scale));
         let name = m.name().cloned().unwrap_or_default();
-        let fits = safe.map(|(a, b, _)| b - a >= width).unwrap_or(false);
+        let mut fits = safe.map(|(a, b, _)| b - a >= width).unwrap_or(false);
         let mut bounds = if let (Some(b), Some((left, right, _))) = (bar, safe) {
             if fits {
                 let offset = if p.widget_edge == "right" {
@@ -204,20 +236,64 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 .clamp(left, right - width);
                 (x, b.1, width as u32, (b.3 - b.1).max(1) as u32)
             } else {
-                taskbar::panel_rect(area, None, area.2 - width, scale, 80.)
+                taskbar_host::compact_fallback(area, bar, scale)
             }
         } else {
-            taskbar::panel_rect(area, None, area.2 - width, scale, 80.)
+            taskbar_host::compact_fallback(area, bar, scale)
         };
-        let old = state.views.lock().unwrap().get(&label).cloned();
-        let shell_active = taskbar::shell_interaction();
-        let lifted = shell_active && old.as_ref().is_some_and(|v| v.shell_lifted);
-        if lifted {
-            bounds = taskbar::shell_safe_position(bounds, area, scale);
+        let host = state
+            .hosts
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|h| Some(h.rect) == bar)
+            .cloned();
+        let slot = host
+            .as_ref()
+            .and_then(|h| taskbar_host::gap(h, width, bounds.0, scale));
+        fits &= slot.is_some();
+        let (parent, host_process) = if fits {
+            bounds.0 = slot.unwrap();
+            let inset = (4. * scale).round() as i32;
+            if bounds.3 as i32 > 2 * inset + (30. * scale) as i32 {
+                bounds.1 += inset;
+                bounds.3 -= (2 * inset) as u32;
+            }
+            let host = host.as_ref().unwrap();
+            (host.handle, host.process)
+        } else {
+            bounds = taskbar_host::compact_fallback(area, bar, scale);
+            (0, 0)
+        };
+        let mut old = state.views.lock().unwrap().get(&label).cloned();
+        if let Some(v) = &old {
+            if v.parent != parent
+                || v.host_process != host_process
+                || v.scale != scale
+                || unsafe { IsWindow(v.handle as HWND) == 0 }
+            {
+                unsafe {
+                    DestroyWindow(v.handle as HWND);
+                }
+                old = None;
+            }
         }
-        let rebuilding = bar.is_none()
-            && old.as_ref().and_then(|v| v.bar).is_some()
-            && taskbar::vertical_bounds(monitor).is_none();
+        let handle = if let Some(v) = &old {
+            v.handle
+        } else {
+            let window = unsafe { taskbar_host::create(parent, owner) };
+            if window.is_null() {
+                continue;
+            }
+            if unsafe { SetWindowSubclass(window, Some(subclass), 1, 0) } == 0 {
+                unsafe {
+                    DestroyWindow(window);
+                }
+                continue;
+            }
+            window as isize
+        };
+        let rebuilding = !taskbar_host::shell_available();
         let reason = if !p.widget_visible {
             "user-hidden"
         } else if rebuilding {
@@ -238,21 +314,16 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
         let mut view = View {
             monitor: name,
             scale,
-            bounds: if rebuilding {
-                old.as_ref().unwrap().bounds
-            } else {
-                bounds
-            },
-            bar: if rebuilding {
-                old.as_ref().and_then(|v| v.bar)
-            } else {
-                bar
-            },
+            bounds,
+            bar,
             work: area,
             visible,
             reason: reason.into(),
             handle,
-            shell_lifted: lifted,
+            parent,
+            host_process,
+            owner,
+            shell_lifted: false,
             style: p.widget_style.clone(),
             clip: old.as_ref().and_then(|v| v.clip),
             drag: old.as_ref().and_then(|v| v.drag),
@@ -264,11 +335,34 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             (p.widget_opacity.clamp(0.9, 1.0) * 255.).round() as u8,
         );
         if view.flags != Some(flags) {
-            let _ = w.set_always_on_top(flags.0);
-            let _ = w.set_ignore_cursor_events(flags.1);
             unsafe {
                 let style = GetWindowLongPtrW(handle as HWND, GWL_EXSTYLE);
-                SetWindowLongPtrW(handle as HWND, GWL_EXSTYLE, style | WS_EX_LAYERED as isize);
+                let style = (style | WS_EX_LAYERED as isize) & !(WS_EX_TRANSPARENT as isize);
+                SetWindowLongPtrW(
+                    handle as HWND,
+                    GWL_EXSTYLE,
+                    style
+                        | if flags.1 {
+                            WS_EX_TRANSPARENT as isize
+                        } else {
+                            0
+                        },
+                );
+                if parent == 0 {
+                    SetWindowPos(
+                        handle as HWND,
+                        if flags.0 {
+                            HWND_TOPMOST
+                        } else {
+                            HWND_NOTOPMOST
+                        },
+                        0,
+                        0,
+                        0,
+                        0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE,
+                    );
+                }
                 SetLayeredWindowAttributes(handle as HWND, 0, flags.2, LWA_ALPHA);
             }
             view.flags = Some(flags);
@@ -279,15 +373,38 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
             .unwrap()
             .insert(label.clone(), view.clone());
         if !visible {
-            if w.is_visible().unwrap_or(false) {
-                let _ = w.hide();
+            unsafe {
+                ShowWindow(handle as HWND, SW_HIDE);
             }
         } else {
-            let position = tauri::PhysicalPosition::new(bounds.0, bounds.1);
-            let size = tauri::PhysicalSize::new(bounds.2, bounds.3);
-            let size_changed = w.inner_size().ok() != Some(size);
-            if size_changed {
-                let _ = w.set_size(size);
+            let size_changed =
+                old.as_ref().map(|v| (v.bounds.2, v.bounds.3)) != Some((bounds.2, bounds.3));
+            unsafe {
+                let mut actual = RECT::default();
+                let positioned = GetWindowRect(handle as HWND, &mut actual) != 0
+                    && (actual.left, actual.top, actual.right, actual.bottom)
+                        == (
+                            bounds.0,
+                            bounds.1,
+                            bounds.0 + bounds.2 as i32,
+                            bounds.1 + bounds.3 as i32,
+                        );
+                let hit = WindowFromPoint(POINT {
+                    x: bounds.0 + bounds.2 as i32 / 2,
+                    y: bounds.1 + bounds.3 as i32 / 2,
+                });
+                let covered = parent != 0
+                    && hit != handle as HWND
+                    && GetAncestor(hit, GA_ROOT) == parent as HWND;
+                if !positioned || covered {
+                    if !taskbar_host::position(handle as HWND, parent, bounds) {
+                        ShowWindow(handle as HWND, SW_HIDE);
+                        view.visible = false;
+                        view.reason = "host-unavailable".into();
+                        state.views.lock().unwrap().insert(label.clone(), view);
+                        continue;
+                    }
+                }
             }
             let corner = (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32;
             let clip = (bounds.2, bounds.3, corner);
@@ -315,40 +432,10 @@ pub fn apply(app: &tauri::AppHandle, p: &DesktopPrefs) {
                     }
                 }
             }
-            if w.outer_position().ok() != Some(position) {
-                let _ = w.set_position(position);
-            }
-            if !w.is_visible().unwrap_or(false) {
-                let _ = w.show();
-            }
-            let observed = widget_watch::observe(handle);
-            if observed.valid
-                && observed.visible
-                && observed.cloaked == 0
-                && flags.0
-                && (observed.covered_by_taskbar || !observed.topmost)
-            {
-                let success = widget_watch::recover_order(handle);
-                if shell_active && widget_watch::observe(handle).covered_by_taskbar {
-                    bounds = taskbar::shell_safe_position(bounds, area, scale);
-                    let _ = w.set_position(tauri::PhysicalPosition::new(bounds.0, bounds.1));
-                    view.bounds = bounds;
-                    view.shell_lifted = true;
-                    state
-                        .views
-                        .lock()
-                        .unwrap()
-                        .insert(label.clone(), view.clone());
+            unsafe {
+                if IsWindowVisible(handle as HWND) == 0 {
+                    ShowWindow(handle as HWND, SW_SHOWNOACTIVATE);
                 }
-                app.state::<DesktopState>()
-                    .widget_diagnostics
-                    .lock()
-                    .unwrap()
-                    .operation(if success {
-                        "native-raise"
-                    } else {
-                        "native-raise-failed"
-                    });
             }
         }
         let ds = app.state::<DesktopState>();
@@ -387,6 +474,21 @@ pub fn tick(app: &tauri::AppHandle) {
             unsafe {
                 InvalidateRect(view.handle as HWND, ptr::null(), 0);
             }
+        }
+    }
+}
+pub fn shutdown(app: &tauri::AppHandle) {
+    let handles: Vec<_> = app
+        .state::<State>()
+        .views
+        .lock()
+        .unwrap()
+        .values()
+        .map(|v| v.handle)
+        .collect();
+    for handle in handles {
+        unsafe {
+            DestroyWindow(handle as HWND);
         }
     }
 }
@@ -620,8 +722,8 @@ fn color(value: &str) -> Option<u32> {
     }
     Some(((n >> 16) & 255) | ((n >> 8) & 255) << 8 | (n & 255) << 16)
 }
-fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
-    let light = if d.prefs.widget_theme == "windows" {
+fn light_mode(d: &DiskState) -> bool {
+    if d.prefs.widget_theme == "windows" {
         taskbar::system_light()
     } else {
         d.schedule
@@ -629,7 +731,18 @@ fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
             .get("mode")
             .map(|s| s == "light")
             .unwrap_or(true)
-    };
+    }
+}
+fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
+    let light = light_mode(d);
+    let mut colors = palette_tokens(app, d, light);
+    if light {
+        colors[1] = 0x111111;
+        colors[2] = 0x333333;
+    }
+    colors
+}
+fn palette_tokens(app: &tauri::AppHandle, d: &DiskState, light: bool) -> [u32; 5] {
     if d.prefs.widget_theme == "windows" {
         return if light {
             [0xf3f3f3, 0x171717, 0x505050, 0xc5c5c5, 0xb85f00]
@@ -670,6 +783,7 @@ fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
                 let Some((selector, body)) = block.split_once('{') else {
                     continue;
                 };
+                let selector = selector.rsplit("*/").next().unwrap_or(selector).trim();
                 let matches = selector.contains(":root")
                     || (!selector.contains(":")
                         && (!selector.contains("data-theme")
@@ -717,11 +831,7 @@ fn palette(app: &tauri::AppHandle, d: &DiskState) -> [u32; 5] {
 }
 unsafe fn text(dc: HDC, value: &str, rect: RECT, font: HFONT, color: u32, flags: u32) {
     if let Some(app) = APP.get() {
-        let d = app.state::<DesktopState>();
-        let surface = {
-            let disk = d.disk.lock().unwrap();
-            palette(app, &disk)[0]
-        };
+        let surface = GetBkColor(dc);
         if native_text::draw(app, dc, value, rect, font, color, surface, flags) {
             return;
         }
@@ -749,7 +859,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     let Some(view) = state.views.lock().unwrap().get(label).cloned() else {
         return;
     };
-    let (name, clock, at, previous, ar, colors, style, show_seconds, period) = {
+    let (name, clock, at, previous, ar, colors, style, show_seconds, period, light) = {
         let ds = app.state::<DesktopState>();
         let d = ds.disk.lock().unwrap();
         let now = widget_now_ms();
@@ -792,6 +902,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             d.prefs.widget_style.clone(),
             d.prefs.widget_show_seconds,
             next.map(|p| p.name.clone()).unwrap_or_default(),
+            light_mode(&d),
         )
     };
     let (surface, ink, muted, line, accent) =
@@ -806,6 +917,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     let bitmap = CreateCompatibleBitmap(screen, w, h);
     let old = SelectObject(dc, bitmap);
     SetBkMode(dc, TRANSPARENT as i32);
+    SetBkColor(dc, surface);
     fill(dc, rect, surface);
     let scale = view.scale;
     let u = |n: f64| (n * scale).round() as i32;
@@ -823,7 +935,10 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     let pen = CreatePen(PS_SOLID, 1, sky_color);
     let old_pen = SelectObject(dc, pen);
     Ellipse(dc, sky_x, u(sky_y), sky_x + u(7.), u(sky_y + 7.));
-    if horizon { MoveToEx(dc, sky_x - u(2.), u(sky_y + 6.), ptr::null_mut()); LineTo(dc, sky_x + u(9.), u(sky_y + 6.)); }
+    if horizon {
+        MoveToEx(dc, sky_x - u(2.), u(sky_y + 6.), ptr::null_mut());
+        LineTo(dc, sky_x + u(9.), u(sky_y + 6.));
+    }
     SelectObject(dc, old_brush);
     SelectObject(dc, old_pen);
     DeleteObject(brush);
@@ -833,9 +948,17 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         let old_brush = SelectObject(dc, brush);
         let pen = CreatePen(PS_SOLID, 1, surface);
         let old_pen = SelectObject(dc, pen);
-        Ellipse(dc, sky_x + u(2.), u(sky_y - 1.), sky_x + u(9.), u(sky_y + 5.));
-        SelectObject(dc, old_brush); SelectObject(dc, old_pen);
-        DeleteObject(brush); DeleteObject(pen);
+        Ellipse(
+            dc,
+            sky_x + u(2.),
+            u(sky_y - 1.),
+            sky_x + u(9.),
+            u(sky_y + 5.),
+        );
+        SelectObject(dc, old_brush);
+        SelectObject(dc, old_pen);
+        DeleteObject(brush);
+        DeleteObject(pen);
     }
     let fonts = {
         let mut fonts = state.fonts.lock().unwrap();
@@ -962,7 +1085,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
                     bottom: cy + u(17.),
                 },
                 fonts.2 as _,
-                accent,
+                if light { ink } else { accent },
                 if ar { DT_LEFT } else { DT_RIGHT },
             );
         }
@@ -1140,7 +1263,8 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     }
     if let (Some(at), Some(previous)) = (at, previous) {
         if at > previous {
-            let progress = ((widget_now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);
+            let progress =
+                ((widget_now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);
             let x = u(5.);
             let width = ((w - 2 * x) as f64 * progress) as i32;
             fill(
@@ -1171,14 +1295,58 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     EndPaint(hwnd, &ps);
 }
 fn show_context_menu(app: &tauri::AppHandle, label: &str, keyboard: bool) {
-    let ar = app.state::<DesktopState>().disk.lock().unwrap().schedule.language == "ar";
+    let ar = app
+        .state::<DesktopState>()
+        .disk
+        .lock()
+        .unwrap()
+        .schedule
+        .language
+        == "ar";
     if let (Some(window), Ok(menu)) = (app.get_window(label), make_menu(app, ar)) {
+        let view = app
+            .state::<State>()
+            .views
+            .lock()
+            .unwrap()
+            .get(label)
+            .cloned();
+        if let Some(v) = &view {
+            let _ = window.set_position(tauri::PhysicalPosition::new(v.bounds.0, v.bounds.1));
+        }
         let _ = if keyboard {
             window.popup_menu_at(&menu, tauri::PhysicalPosition::new(8, 8))
         } else {
             window.popup_menu(&menu)
         };
     }
+}
+unsafe extern "system" fn controller_subclass(
+    hwnd: HWND,
+    msg: u32,
+    wp: WPARAM,
+    lp: LPARAM,
+    _: usize,
+    _: usize,
+) -> LRESULT {
+    if msg == WM_NCDESTROY {
+        if let Some(app) = APP.get() {
+            let views: Vec<_> = app
+                .state::<State>()
+                .views
+                .lock()
+                .unwrap()
+                .values()
+                .filter(|v| v.owner == hwnd as isize)
+                .map(|v| v.handle)
+                .collect();
+            for handle in views {
+                DestroyWindow(handle as HWND);
+            }
+        }
+        RemoveWindowSubclass(hwnd, Some(controller_subclass), 1);
+    }
+    DefSubclassProc(hwnd, msg, wp, lp)
 }
 unsafe extern "system" fn subclass(
     hwnd: HWND,
@@ -1211,14 +1379,14 @@ unsafe extern "system" fn subclass(
             }
             WM_KEYDOWN | WM_SYSKEYDOWN => match wp as u32 {
                 13 | 32 => {
-                    if let Some(v) = app
+                    let view = app
                         .state::<State>()
                         .views
                         .lock()
                         .unwrap()
                         .get(&label)
-                        .cloned()
-                    {
+                        .cloned();
+                    if let Some(v) = view {
                         toggle_panel(app, v.monitor);
                     }
                     return 0;
@@ -1279,6 +1447,9 @@ unsafe extern "system" fn subclass(
                 drop_fonts(&app.state::<State>(), &label);
                 app.state::<State>().views.lock().unwrap().remove(&label);
                 RemoveWindowSubclass(hwnd, Some(subclass), 1);
+            }
+            WM_DPICHANGED | WM_DISPLAYCHANGE | WM_SETTINGCHANGE => {
+                widget_watch::LAYOUT_DIRTY.store(true, Ordering::Release);
             }
             _ => {}
         }

@@ -382,8 +382,9 @@ pub fn start_qa_control(app: &tauri::AppHandle) {
                     .lock()
                     .unwrap()
                     .clone();
+                let hosts = app.state::<native_widget::State>().hosts.lock().unwrap().clone();
                 Ok(
-                    serde_json::json!({"nativeText":native_text::diagnostics(),"mode":mode(),"mainExists":app.get_webview_window("main").is_some(),"mainVisible":app.get_webview_window("main").is_some_and(|w|w.is_visible().unwrap_or(false)),"webviews":app.webview_windows().keys().cloned().collect::<Vec<_>>(),"native":native,"prefs":d.prefs,"validUntil":d.schedule.valid_until,"fired":d.fired,"audioPlaying":app.state::<DesktopState>().audio.active.load(Ordering::Relaxed),"audioError":*app.state::<DesktopState>().audio.error.lock().unwrap()}),
+                    serde_json::json!({"nativeText":native_text::diagnostics(),"mode":mode(),"mainExists":app.get_webview_window("main").is_some(),"mainVisible":app.get_webview_window("main").is_some_and(|w|w.is_visible().unwrap_or(false)),"webviews":app.webview_windows().keys().cloned().collect::<Vec<_>>(),"native":native,"taskbarHosts":hosts,"prefs":d.prefs,"validUntil":d.schedule.valid_until,"fired":d.fired,"audioPlaying":app.state::<DesktopState>().audio.active.load(Ordering::Relaxed),"audioError":*app.state::<DesktopState>().audio.error.lock().unwrap()}),
                 )
             })();
             let response = serde_json::json!({"id":request["id"],"result":result.as_ref().ok(),"error":result.as_ref().err()});

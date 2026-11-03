@@ -1,4 +1,4 @@
-// Own top-level overlay; never inject code into Explorer or modify its taskbar.
+// Read-only taskbar geometry, shell identity and monitor-local fullscreen classification.
 use std::{ffi::c_void, ptr};
 #[repr(C)]
 #[derive(Default, Clone, Copy)]
@@ -21,6 +21,7 @@ extern "system" {
     ) -> i32;
     fn IsWindowVisible(window: *mut c_void) -> i32;
     fn IsIconic(window: *mut c_void) -> i32;
+    fn IsZoomed(window: *mut c_void) -> i32;
     fn GetWindowLongPtrW(window: *mut c_void, index: i32) -> isize;
     fn WindowFromPoint(point: Point) -> *mut c_void;
     fn GetAncestor(window: *mut c_void, flags: u32) -> *mut c_void;
@@ -237,6 +238,11 @@ unsafe extern "system" fn fullscreen_window(window: *mut c_void, data: isize) ->
     let mut owner = 0;
     GetWindowThreadProcessId(window, &mut owner);
     if owner == search.owner {
+        return 1;
+    }
+    // Auto-hide can give an ordinary resizable maximized app the full monitor.
+    // Borderless fullscreen windows do not retain the resizable window frame.
+    if IsZoomed(window) != 0 && GetWindowLongPtrW(window, -16) & 0x00040000 != 0 {
         return 1;
     }
     // Click-through/non-activating overlays do not occupy the monitor.

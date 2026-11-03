@@ -1,5 +1,7 @@
 # Taskbar architecture review and first experiment
 
+The initial classification-only experiment below is retained as history. Native hosting is now implemented in the isolated continuation; see [the native host report](WINDOWS-TASKBAR-HOST.md) for current scope and acceptance. Earlier missing-linker/no-binary statements are historical.
+
 Date: 2026-11-02. Source baseline: 9fad2c6 (includes accepted shutdown fix 19291d2).
 Workspace: C:/Users/Protagonist/Sahib-Taskbar-Research.
 Branch: codex/taskbar-shell-identity. Local experiment only; no publication or installer.

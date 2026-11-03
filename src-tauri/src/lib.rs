@@ -11,6 +11,8 @@ mod panel_perf;
 mod scheduler;
 mod session_timer;
 mod taskbar;
+#[cfg(feature = "native-widget-experiment")]
+mod taskbar_host;
 mod widget_watch;
 use audio::{AudioJob, NativeAudio};
 use scheduler::Schedule;
@@ -476,6 +478,11 @@ fn apply_rich_widget(app: &tauri::AppHandle, p: &DesktopPrefs) {
                 _ => b.0 + offset,
             }
             .clamp(left, right - width);
+            #[cfg(feature = "native-widget-experiment")]
+            let x = if view.expanded && native_widget::active(app) {
+                app.state::<native_widget::State>().views.lock().unwrap().values()
+                    .find(|v| v.monitor == view.monitor).map(|v| v.bounds.0).unwrap_or(x)
+            } else { x };
             if view.expanded {
                 taskbar::panel_rect(area, bar, x, scale, view.height)
             } else {
@@ -1683,6 +1690,8 @@ pub fn run() {
             let (widget_events, watch)=widget_watch::start();
             *app.state::<DesktopState>().widget_watch.lock().unwrap()=Some(watch);
             let worker=std::thread::spawn(move || {
+              #[cfg(feature = "native-widget-experiment")]
+              let mut layout: Option<taskbar_host::Probe> = None;
               let mut audit_at=Instant::now();
               while !widget_watch::STOPPING.load(Ordering::Acquire) {
                 match widget_events.recv_timeout(Duration::from_millis(100)) {
@@ -1699,6 +1708,13 @@ pub fn run() {
                 let native=native_widget::active(&handle);
                 #[cfg(not(feature = "native-widget-experiment"))]
                 let native=false;
+                #[cfg(feature = "native-widget-experiment")]
+                if native && !widget_watch::quiescing() {
+                    let snapshot = layout.get_or_insert_with(taskbar_host::Probe::new).snapshot();
+                    *handle.state::<native_widget::State>().hosts.lock().unwrap() = snapshot;
+                }
+                #[cfg(feature = "native-widget-experiment")]
+                if !native { layout = None; }
                 if !native { ensure_widget_windows(&handle,&prefs); }
                 let h=handle.clone();
                 let _=handle.run_on_main_thread(move || {
@@ -1791,6 +1807,8 @@ pub fn run() {
             }
             if let tauri::RunEvent::Exit = event {
                 widget_watch::STOPPING.store(true, Ordering::Release);
+                #[cfg(feature = "native-widget-experiment")]
+                native_widget::shutdown(app);
                 #[cfg(feature = "native-widget-experiment")]
                 native_text::shutdown();
                 // Session termination bypasses ExitRequested in Tao. Hooks have no UI dependency.

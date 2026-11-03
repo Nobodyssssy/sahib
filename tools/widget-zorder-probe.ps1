@@ -1,4 +1,4 @@
-param([int]$TargetProcess,[int]$X,[int]$Y,[int]$Width,[int]$Height,[switch]$Cover,[string]$Capture,[long]$TargetHandle=0)
+﻿param([int]$TargetProcess,[int]$X,[int]$Y,[int]$Width,[int]$Height,[switch]$Cover,[string]$Capture,[long]$TargetHandle=0)
 Add-Type -AssemblyName System.Drawing
 Add-Type @'
 using System;using System.Runtime.InteropServices;using System.Text;
@@ -15,6 +15,8 @@ public static class SahibZProbe{
  [DllImport("user32.dll")]public static extern IntPtr GetWindow(IntPtr w,uint n);
  [DllImport("user32.dll")]public static extern IntPtr GetTopWindow(IntPtr w);
  [DllImport("user32.dll")]public static extern IntPtr GetAncestor(IntPtr w,uint n);
+ [DllImport("user32.dll")]public static extern IntPtr GetParent(IntPtr w);
+ [DllImport("user32.dll")]public static extern uint GetDpiForWindow(IntPtr w);
  [DllImport("user32.dll")]public static extern IntPtr WindowFromPoint(Point p);
  [DllImport("user32.dll")]public static extern int GetClassName(IntPtr w,StringBuilder s,int n);
  [DllImport("user32.dll")]public static extern IntPtr GetForegroundWindow();
@@ -41,7 +43,14 @@ $bar=[SahibZProbe]::Bar(($X+$Width/2),($Y+$Height/2))
 $actionAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 if($Cover){if($bar -eq [IntPtr]::Zero){throw 'Taskbar not found'};[void][SahibZProbe]::SetWindowPos($bar,[IntPtr](-1),0,0,0,0,0x213)}
 $point=New-Object SahibZProbe+Point;$point.x=$X+[int]($Width/2);$point.y=$Y+[int]($Height/2)
-$hit=[SahibZProbe]::GetAncestor([SahibZProbe]::WindowFromPoint($point),2)
+$hit=[SahibZProbe]::WindowFromPoint($point)
+$root=[SahibZProbe]::GetAncestor($hit,2)
 $cloaked=0;[void][SahibZProbe]::DwmGetWindowAttribute($handle,14,[ref]$cloaked,4)
-if($Capture){$bitmap=New-Object Drawing.Bitmap($Width,$Height);$graphics=[Drawing.Graphics]::FromImage($bitmap);try{$graphics.CopyFromScreen($X,$Y,0,0,$bitmap.Size);$bitmap.Save($Capture,[Drawing.Imaging.ImageFormat]::Png)}finally{$graphics.Dispose();$bitmap.Dispose()}}
-[pscustomobject]@{actionAt=$actionAt;observedAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds();foreground=[SahibZProbe]::GetForegroundWindow().ToInt64();visible=[SahibZProbe]::IsWindowVisible($handle);iconic=[SahibZProbe]::IsIconic($handle);cloaked=$cloaked;topmost=(([SahibZProbe]::GetWindowLongPtr($handle,-20).ToInt64()-band 8)-ne 0);widgetRank=[SahibZProbe]::Rank($handle);taskbarRank=[SahibZProbe]::Rank($bar);hitClass=[SahibZProbe]::Class($hit);hitHandle=$hit.ToInt64();coveredByTaskbar=([SahibZProbe]::Class($hit) -in @("Shell_TrayWnd","Shell_SecondaryTrayWnd"));foregroundClass=[SahibZProbe]::Class([SahibZProbe]::GetForegroundWindow());handle=$handle.ToInt64()}|ConvertTo-Json -Compress
+$paintContrast=$null
+if($Capture){$bitmap=New-Object Drawing.Bitmap($Width,$Height);$graphics=[Drawing.Graphics]::FromImage($bitmap);try{
+ $graphics.CopyFromScreen($X,$Y,0,0,$bitmap.Size);$bitmap.Save($Capture,[Drawing.Imaging.ImageFormat]::Png)
+ $low=255;$high=0
+ for($px=0;$px -lt $Width;$px+=3){for($py=0;$py -lt $Height;$py+=3){$c=$bitmap.GetPixel($px,$py);$v=($c.R+$c.G+$c.B)/3;$low=[Math]::Min($low,$v);$high=[Math]::Max($high,$v)}}
+ $paintContrast=$high-$low
+}finally{$graphics.Dispose();$bitmap.Dispose()}}
+[pscustomobject]@{actionAt=$actionAt;observedAt=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds();foreground=[SahibZProbe]::GetForegroundWindow().ToInt64();visible=[SahibZProbe]::IsWindowVisible($handle);iconic=[SahibZProbe]::IsIconic($handle);cloaked=$cloaked;topmost=(([SahibZProbe]::GetWindowLongPtr($handle,-20).ToInt64()-band 8)-ne 0);widgetRank=[SahibZProbe]::Rank($handle);taskbarRank=[SahibZProbe]::Rank($bar);hitClass=[SahibZProbe]::Class($hit);hitHandle=$hit.ToInt64();parent=[SahibZProbe]::GetParent($handle).ToInt64();dpi=[SahibZProbe]::GetDpiForWindow($handle);paintContrast=$paintContrast;child=(([SahibZProbe]::GetWindowLongPtr($handle,-16).ToInt64()-band 0x40000000)-ne 0);coveredByTaskbar=($hit -ne $handle -and [SahibZProbe]::Class($root) -in @("Shell_TrayWnd","Shell_SecondaryTrayWnd"));foregroundClass=[SahibZProbe]::Class([SahibZProbe]::GetForegroundWindow());handle=$handle.ToInt64()}|ConvertTo-Json -Compress

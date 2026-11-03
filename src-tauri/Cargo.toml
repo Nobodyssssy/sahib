@@ -30,7 +30,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 base64 = "0.22"
 rodio = { version = "0.21.1", default-features = false, features = ["playback", "symphonia-all"] }
-windows-sys = { version = "0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_UI_WindowsAndMessaging", "Win32_UI_Shell", "Win32_UI_Input_KeyboardAndMouse"] }
+windows-sys = { version = "0.61.2", optional = true, features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_UI_HiDpi", "Win32_UI_WindowsAndMessaging", "Win32_UI_Shell", "Win32_UI_Input_KeyboardAndMouse"] }
 windows = { version = "0.62.2", optional = true, features = ["Win32_Foundation", "Win32_Graphics_DirectWrite", "Win32_Graphics_Direct2D", "Win32_Graphics_Direct2D_Common", "Win32_Graphics_Dxgi_Common", "Win32_Graphics_Gdi", "Win32_UI_Accessibility", "Win32_System_Com", "Win32_System_Variant"] }
 windows-core = { version = "0.62.2", optional = true }
 webview2-com = { version = "0.39.1", optional = true }

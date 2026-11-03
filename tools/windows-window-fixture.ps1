@@ -4,6 +4,7 @@ Add-Type -AssemblyName System.Drawing
 Add-Type @'
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 public static class SahibWindowFixture {
  [DllImport("user32.dll")] public static extern IntPtr SetThreadDpiAwarenessContext(IntPtr value);
  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y);
@@ -12,6 +13,24 @@ public static class SahibWindowFixture {
  [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr window,int command);
  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr window);
  [DllImport("user32.dll")] public static extern bool IsZoomed(IntPtr window);
+ [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string c,string t);
+ [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr FindWindowEx(IntPtr p,IntPtr a,string c,string t);
+ [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern IntPtr CreateWindowEx(uint ex,string c,string t,uint style,int x,int y,int w,int h,IntPtr parent,IntPtr menu,IntPtr instance,IntPtr param);
+ [DllImport("user32.dll")] public static extern bool DestroyWindow(IntPtr window);
+ [DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr window,out Rect rect);
+ [DllImport("user32.dll")] public static extern bool SetLayeredWindowAttributes(IntPtr window,uint color,byte alpha,uint flags);
+ static readonly List<IntPtr> blockers=new List<IntPtr>();
+ public static void BlockTaskbars(bool blocked){
+  foreach(var w in blockers)DestroyWindow(w);blockers.Clear();if(!blocked)return;
+  var bar=FindWindow("Shell_TrayWnd",null);var primary=bar;
+  while(bar!=IntPtr.Zero){
+   Rect r;GetClientRect(bar,out r);
+   var w=CreateWindowEx(0x08080020,"STATIC","Sahib QA temporary taskbar crowding",0x50000000,0,0,r.right,r.bottom,bar,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero);
+   if(w==IntPtr.Zero)throw new InvalidOperationException("Cannot create crowding fixture");
+   SetLayeredWindowAttributes(w,0,1,2);blockers.Add(w);
+   bar=FindWindowEx(IntPtr.Zero,bar==primary?IntPtr.Zero:bar,"Shell_SecondaryTrayWnd",null);
+  }
+ }
  [StructLayout(LayoutKind.Sequential)] public struct Rect{public int left,top,right,bottom;}
  [StructLayout(LayoutKind.Sequential)] public struct Appbar{public uint size;public IntPtr window;public uint callback,edge;public Rect bounds;public IntPtr state;}
  [DllImport("shell32.dll")] public static extern UIntPtr SHAppBarMessage(uint message,ref Appbar data);
@@ -45,6 +64,7 @@ $timer.Add_Tick({
   $raw=Get-Content -LiteralPath $CommandFile -Raw -ErrorAction Stop
   if($raw -eq $script:last){return};$script:last=$raw;$command=$raw|ConvertFrom-Json
   if($command.mode -eq 'close'){$form.Close();return}
+  if($null -ne $command.crowded){[SahibWindowFixture]::BlockTaskbars($command.crowded);return}
   if($null -ne $command.autoHide){$value=if($command.autoHide){$originalState-bor 1}else{$originalState-band (-bnot 1)};[SahibWindowFixture]::TaskbarState([uint64]$value);return}
   if($null -ne $command.cursorX){[void][SahibWindowFixture]::SetCursorPos($command.cursorX,$command.cursorY);return}
   $screen=[Windows.Forms.Screen]::AllScreens | Where-Object DeviceName -eq $command.display | Select-Object -First 1
@@ -64,4 +84,4 @@ $timer.Add_Tick({
   [pscustomobject]@{mode=$command.mode;bounds=$form.Bounds;maximized=[SahibWindowFixture]::IsZoomed($form.Handle);foreground=([SahibWindowFixture]::GetForegroundWindow() -eq $form.Handle);handle=$form.Handle.ToInt64()}|ConvertTo-Json -Depth 3|Set-Content -LiteralPath ($CommandFile+'.actual.json') -Encoding UTF8
  } catch { $_|Out-String|Add-Content -LiteralPath ($CommandFile+'.errors.log') }
 })
-try{$timer.Start();[Windows.Forms.Application]::Run($form)}finally{[SahibWindowFixture]::TaskbarState($originalState);[void][SahibWindowFixture]::SetCursorPos($originalCursor.X,$originalCursor.Y);$timer.Dispose();$form.Dispose()}
+try{$timer.Start();[Windows.Forms.Application]::Run($form)}finally{[SahibWindowFixture]::BlockTaskbars($false);[SahibWindowFixture]::TaskbarState($originalState);[void][SahibWindowFixture]::SetCursorPos($originalCursor.X,$originalCursor.Y);$timer.Dispose();$form.Dispose()}
