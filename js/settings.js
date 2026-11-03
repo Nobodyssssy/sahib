@@ -1029,7 +1029,7 @@ async function _hydrateStorageInfo(){
    ═══════════════════════════════════════════════════════════ */
 function _aboutHTML(){
   const ar=window.SAHIB_I18N?.language==='ar';
-  const version=window.SahibDesktop?.available?'0.2.4':'v2.14.0 · service worker v2.14.0';
+  const version=window.SahibDesktop?.available?'0.2.5':'v2.14.0 · service worker v2.14.0';
   return `
     <div class="settings-section">
       <div class="settings-section-title">Sahib Islamic Companion</div>

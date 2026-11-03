@@ -118,7 +118,7 @@ window.SahibDesktop=(()=>{
    const render=renderSettingsBody;renderSettingsBody=async()=>_settingsTab==='desktop'?settings():render();
    const removeAudio=clearLocalAdhan;clearLocalAdhan=async kind=>{await removeAudio(kind);if(!await store.getMeta(ADHAN_LOCAL_KEYS[kind])){await invoke('desktop_remove_audio',{kind});imported.delete(kind);}};
    const importAudio=importAdhanFile;importAdhanFile=async(...args)=>{pendingImports++;try{return await importAudio(...args);}finally{pendingImports--;}};
-   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · 0.2.4','صاحب لويندوز · 0.2.4')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
+   const about=_aboutHTML;_aboutHTML=()=>`<section class="settings-section"><h3>${text('Sahib for Windows · 0.2.5','صاحب لويندوز · 0.2.5')}</h3><p>${text('Native reminders, tray and prayer widget. The website uses its own service worker.','تنبيهات أصلية وعلبة نظام وأداة للصلاة. يستخدم الموقع عامل الخدمة الخاص به.')}</p></section>`+about();
    const alertsHTML=_alertsHTML;_alertsHTML=async()=>{
     const html=await alertsHTML(),prefs=await getPrayerPrefs(),a=prefs.alerts,template=document.createElement('template');template.innerHTML=html;
     const timing=template.content.querySelector('.alert-setting-grid');timing?.querySelectorAll('button,select,input').forEach(control=>control.disabled=!a.enabled);

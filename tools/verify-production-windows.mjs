@@ -6,9 +6,11 @@ import {createHash} from 'node:crypto';
 import {setTimeout as sleep} from 'node:timers/promises';
 
 const config=JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json','utf8'));
+const version=JSON.parse(fs.readFileSync('package.json','utf8')).version;
 assert.equal(config.identifier,'com.sahib.companion');
 assert.equal(config.productName,'Sahib');
-assert.equal(config.version,'0.2.4');
+assert.equal(config.version,version);
+assert.match(version,/^\d+\.\d+\.\d+$/);
 const defaults=JSON.parse(fs.readFileSync('src-tauri/Cargo.toml','utf8').match(/^default\s*=\s*(\[.*\])/m)[1]);
 for(const feature of ['native-widget-rc','brand-preview'])assert(defaults.includes(feature),'Missing default feature '+feature);
 for(const icon of ['icon.ico','icon-128.png'])assert(config.bundle.icon.includes('../branding/sahib-0.2.4/'+icon));
@@ -23,14 +25,14 @@ for(const language of ['en','ar']){
  vm.createContext(context);vm.runInContext(settings.slice(start,end),context);
  const about=vm.runInContext('_aboutHTML()',context);
  assert(about.includes('https://www.youtube.com/watch?v=gNk5LmR9qJM'));
- assert(about.includes('<strong>Version:</strong> 0.2.4<br>'));
+ assert(about.includes(`<strong>Version:</strong> ${version}<br>`));
  assert(about.includes(language==='ar'?'لا يمنح إذن إعادة التوزيع':'Source credit is not redistribution permission'));
 }
 console.log('Production identity, native/brand defaults, icon hashes, licence resources and EN/AR reference credit passed');
 
 if(process.argv.includes('--installer')){
  const executable=fs.readFileSync('src-tauri/target/release/sahib-desktop.exe');
- const installer=fs.readFileSync('src-tauri/target/release/bundle/nsis/Sahib_0.2.4_x64-setup.exe');
+ const installer=fs.readFileSync(`src-tauri/target/release/bundle/nsis/Sahib_${version}_x64-setup.exe`);
  const ico=fs.readFileSync('branding/sahib-0.2.4/icon.ico'),frames=ico.readUInt16LE(4);
  assert.equal(installer.readUInt16LE(0),0x5a4d);
  for(let n=0;n<frames;n++){
@@ -50,12 +52,12 @@ if(process.argv.includes('--native')){
  try{
   main=await qa.connect('main');await qa.waitReady(main);
   assert.equal(await main.evaluate('window.__TAURI__.app.getIdentifier()'),'com.sahib.companion.qa');
-  assert.equal(await main.evaluate('window.__TAURI__.app.getVersion()'),'0.2.4');
+  assert.equal(await main.evaluate('window.__TAURI__.app.getVersion()'),version);
   await fixture(main);await sleep(2500);
   const result=await main.evaluate(`(async()=>{const state=await SahibDesktop.invoke('desktop_state');return {version:await __TAURI__.app.getVersion(),title:await __TAURI__.window.getCurrentWindow().title(),nativeAvailable:state.nativeAvailable,nativeViews:Object.keys(state.nativeWidgetViews||{}).length,about:_aboutHTML()}})()`);
   assert(result.nativeAvailable&&result.nativeViews>0,'Default build must render native compact windows');
   assert(!/RC|Preview|Brand review/.test(result.title));
-  assert(result.about.includes('Sahib for Windows · 0.2.4'));
+  assert(result.about.includes('Sahib for Windows · '+version));
   assert(!result.about.includes('Preview 0.2.4'));
   fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({pass:true,version:result.version,title:result.title,nativeAvailable:result.nativeAvailable,nativeViews:result.nativeViews},null,2));
   console.log('Actual Tauri default-feature production promotion passed',output);

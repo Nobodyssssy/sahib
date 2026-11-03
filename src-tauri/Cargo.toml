@@ -1,6 +1,6 @@
 [package]
 name = "sahib-desktop"
-version = "0.2.4"
+version = "0.2.5"
 description = "Sahib Islamic daily companion for Windows"
 authors = ["Sahib contributors"]
 edition = "2021"

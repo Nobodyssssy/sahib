@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.5 — Native Windows taskbar integration
+
+- Embed the compact prayer widget directly inside Explorer's taskbar, preserving Sahib's existing design and prayer data.
+- Keep the widget in its taskbar slot when Start opens; choose clear gaps around taskbar controls and other widgets, with a compact fallback when no space is available.
+- Improve monitor-local fullscreen hiding, auto-hide recovery, per-monitor DPI and Explorer restart recovery.
+- Use black primary text and dark secondary labels in light mode, including Countdown Focus digits; correct native theme-token matching.
+- Fix keyboard panel re-entry and monitor-switch cleanup while preserving the accepted shutdown lifecycle and bounded panel reuse.
+- Keep the compact widget native-only in the background, without an additional WebView, worker or timer.
+
+
 ## 0.2.4 — standard Windows build prepared, distribution clearance pending
 
 - Enable the completed native compact widget and bounded expanded-panel reuse in the ordinary build, retaining the existing application identifier and storage.
