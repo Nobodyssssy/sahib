@@ -1,5 +1,7 @@
 # Native taskbar host candidate
 
+Publication update: [v0.2.5 is released](https://github.com/Nobodyssssy/sahib/releases/tag/v0.2.5), from source `4ebf077d9d46b915bd37b8c20b378cd91e1227f4` on `codex/windows-tauri`. The versioned installer is 23,136,919 bytes, SHA-256 `2a8026ea83509ab65ed6f8848a876d1cb935ca525293767ab0a75baf02f3c872`; the published download was verified against the local file. See [release notes](releases/v0.2.5.md). Main remains unchanged. The candidate notes below retain the original implementation/testing history; publication was subsequently explicitly authorized by the user.
+
 Local branch: `codex/taskbar-shell-identity`, based on `9fad2c6`, retaining shutdown fix `19291d2`.
 Work continues in `C:/Users/Protagonist/Sahib-Taskbar-Research`; the original repository, installed app/profile, main and verified backup are not modified.
 
