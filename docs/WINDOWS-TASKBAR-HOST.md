@@ -42,4 +42,13 @@ Final steady native-only sample: **71.56 MiB summed working set, 18.84 MiB priva
 
 The panel harness explicitly foregrounds the QA application before opening: a background file-triggered request can otherwise be refused foreground by Windows and normal focus dismissal closes its debug connection. No production dismissal behavior was disabled.
 
-Actual Windows 10 execution, physical unplug/replug and an actual OS restart remain unperformed. API compatibility and geometry tests are not substitutes for those checks. No merge, push, installed-app replacement or publication occurred. A separately stored local installer is being packaged after these gates.
+Actual Windows 10 execution, physical unplug/replug and an actual OS restart remain unperformed. API compatibility and geometry tests are not substitutes for those checks. No merge, push, installed-app replacement or publication occurred.
+
+## Local installer
+
+- Implementation: `cee04442f1a7f7cacd72e8296d5f56177791f127`.
+- Separate normal/default-feature installer: `releases-local/0.2.4-taskbar-host-20261103/Sahib_0.2.4_x64-setup.exe`.
+- Size: 23,134,457 bytes. SHA-256: `11b0ca76f12af1aa4107af3d57e0460326b894ee2a502365d28bf81e29f6f533`.
+- Unsigned. Production identity/defaults, all nine approved executable icon resolutions, installer icon/header, embedded Windows compatibility/Common Controls manifest and copied checksum passed.
+- The installer was not run. Installer upgrade behavior and the normal installed profile were not exercised; runtime acceptance used the separately preserved optimized QA executable, SHA-256 `f494c94022017b2636f175e0ab753478529cfe23e7e1fb7212cbf566b4468807`.
+- `BUILD-INFO.json` beside the installer records source and evidence provenance. Original repository/installer, application data, main and the E: backup remain unchanged.
