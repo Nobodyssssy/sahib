@@ -58,7 +58,8 @@ html[dir="rtl"] .garden-welcome-copy { margin-inline-start: auto; text-align: ri
 
 
 /* Practice: content width, not the whole window */
-#view-practice .practice-container, #view-practice .practice-page { max-width: 960px !important; margin-inline: 0 !important; padding-inline: var(--d2-gutter) !important; }
+#view-practice .practice-container { max-width: 1160px !important; margin-inline: 0 !important; padding-inline: var(--d2-gutter) !important; }
+#view-practice .practice-page:not(.pr-page) { max-width: 960px !important; margin-inline: 0 !important; padding-inline: var(--d2-gutter) !important; }
 #view-practice .practice-head { align-items: center !important; }
 
 

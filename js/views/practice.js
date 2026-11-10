@@ -615,94 +615,6 @@ const SahibPractice = (() => {
     return `<span class="practice-chip ${cls}">${esc(text)}</span>`;
   }
 
-  function _renderTrackerLine(tracker) {
-    if (!tracker) return '';
-    const { practice, every, elapsed, daysLeft, state } = tracker;
-    if (state === 'setup') {
-      return `<p class="practice-tracker-line">No starting date yet. <button class="practice-text-btn" onclick="openPracticeDetail('${esc(practice.id)}')">Set a date</button></p>`;
-    }
-    const label = state === 'overdue'
-      ? `Day ${elapsed} of ${every} · ${Math.abs(daysLeft)} ${Math.abs(daysLeft) === 1 ? 'day' : 'days'} beyond your chosen limit`
-      : state === 'due'
-        ? `Day ${every} of ${every} · at your chosen limit`
-        : `Day ${elapsed} of ${every} · ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`;
-    return `<div class="practice-tracker-line"><div class="practice-meter practice-meter--${state}"><span style="width:${Math.min(100, Math.round((elapsed / every) * 100))}%"></span></div><p>${esc(label)}</p></div>`;
-  }
-
-  function _renderDueRow(item, key) {
-    const p = item.practice;
-    const cat = _category(p.category);
-    const time = _timeText(p);
-    const sub = _timeSub(p);
-    const isTracker = p.schedule?.type === 'interval';
-    const statusClass = item.status === 'overdue' ? 'is-overdue' : (item.status === 'approaching' ? 'is-approaching' : '');
-    return `<article class="practice-entry ${statusClass}" data-practice-id="${esc(p.id)}">
-      <div class="practice-entry-time"><strong>${esc(time)}</strong><span>${esc(sub)}</span></div>
-      <div class="practice-entry-spine" aria-hidden="true"></div>
-      <div class="practice-entry-copy">
-        <div class="practice-entry-kicker"><span>${esc(cat.label)}</span>${_statusChip(p)}</div>
-        <h3 class="practice-entry-title"><span class="practice-ar" lang="ar" dir="rtl">${esc(p.titleAr || '')}</span><span class="practice-en">${esc(p.title)}</span></h3>
-        <p class="practice-entry-summary">${esc(p.summary || '')}</p>
-        ${isTracker ? _renderTrackerLine(item.tracker) : ''}
-        <div class="practice-entry-meta"><span>${esc(_scheduleText(p))}</span><span class="practice-meta-sep">·</span>${_sourceLink(p)}</div>
-      </div>
-      <div class="practice-entry-actions">
-        <button class="practice-done-btn" onclick="practiceDone('${esc(p.id)}')" aria-label="Mark ${esc(p.title)} done for today">${icon('check', 12)} Mark done</button>
-        <button class="practice-text-btn" onclick="openPracticeDetail('${esc(p.id)}')">Details</button>
-      </div>
-    </article>`;
-  }
-
-  function _renderFinishedRow(row) {
-    const p = row.practice;
-    const done = row.entry.status === 'done';
-    return `<article class="practice-finished ${done ? 'is-done' : 'is-set-aside'}">
-      <span class="practice-finished-mark" aria-hidden="true">${done ? icon('check', 14) : ''}</span>
-      <div class="practice-finished-copy">
-        <strong>${esc(p.title)}</strong>
-        <span>${done ? 'Completed today' : 'Set aside for today · no failure implied'}</span>
-      </div>
-      <button class="practice-text-btn" onclick="practiceUndo('${esc(p.id)}')">Undo</button>
-    </article>`;
-  }
-
-  function _renderNext(snap) {
-    if (!snap.next.length) {
-      return `<p class="practice-rail-empty">No dated practices ahead. Daily anchors continue on their own.</p>`;
-    }
-    return `<ul class="practice-next-list">${snap.next.map(item => `<li>
-      <span class="practice-next-date">${esc(_fmtDate(item.key))}</span>
-      <span class="practice-next-title">${esc(item.practice.title)}</span>
-    </li>`).join('')}</ul>`;
-  }
-
-  function _renderTrackers(snap) {
-    const trackers = snap.trackers.filter(t => t.practice.enabled);
-    if (!trackers.length) {
-      return `<p class="practice-rail-empty">No time limits are being tracked. <button class="practice-text-btn" onclick="showPracticeAll()">Set one up</button></p>`;
-    }
-    return `<div class="practice-tracker-list">${trackers.map(t => {
-      const p = t.practice;
-      const state = t.state;
-      const pct = state === 'setup' ? 0 : Math.min(100, Math.round((t.elapsed / t.every) * 100));
-      const label = state === 'setup'
-        ? 'Waiting for a starting date'
-        : `Day ${t.elapsed} of ${t.every}`;
-      const sub = state === 'setup'
-        ? 'No history has been assumed.'
-        : state === 'overdue'
-          ? `${Math.abs(t.daysLeft)} ${Math.abs(t.daysLeft) === 1 ? 'day' : 'days'} beyond your chosen limit`
-          : state === 'due'
-            ? 'At your chosen limit'
-            : `${t.daysLeft} ${t.daysLeft === 1 ? 'day' : 'days'} remaining`;
-      return `<button class="practice-tracker-mini practice-tracker-mini--${state}" onclick="openPracticeDetail('${esc(p.id)}')">
-        <span class="practice-tracker-mini-top"><span>${esc(p.title)}</span><span>${esc(label)}</span></span>
-        <span class="practice-meter practice-meter--${state}"><span style="width:${pct}%"></span></span>
-        <span class="practice-tracker-mini-sub">${esc(sub)}</span>
-      </button>`;
-    }).join('')}</div>`;
-  }
-
   function _renderWelcome() {
     const choices = PRACTICE_STARTER_IDS.map(id => _get(id)).filter(Boolean);
     return `<section class="practice-welcome">
@@ -725,58 +637,176 @@ const SahibPractice = (() => {
     </section>`;
   }
 
+  /* ── Today: the day's own rhythm. Prayer times are the spine; each practice sits at its anchor. ── */
+  const PR_PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+  const PR_PRAYERS_AR = { Fajr: 'الفجر', Sunrise: 'الشروق', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' };
+  const _prAr = () => window.SAHIB_I18N && window.SAHIB_I18N.language === 'ar';
+  const _prL = (en, ar) => (_prAr() ? ar : en);
+  const _prPrayerName = name => (_prAr() ? PR_PRAYERS_AR[name] || name : name);
+
+  function _prTitle(p) {
+    const ar = _prAr();
+    const main = ar ? (p.titleAr || p.title) : p.title;
+    const sub = ar ? (p.titleAr ? p.title : '') : (p.titleAr || '');
+    return '<span class="pr-title" lang="' + (ar && p.titleAr ? 'ar' : 'en') + '" data-no-i18n>' + esc(main) + '</span>' +
+      (sub ? '<span class="pr-sub" lang="' + (ar ? 'en' : 'ar') + '" data-no-i18n>' + esc(sub) + '</span>' : '');
+  }
+
+  function _prAnchor(p) {
+    if (p.schedule && p.schedule.type === 'interval') return _prL('Every ' + Number(p.schedule.everyDays || 40) + ' days', 'كل ' + Number(p.schedule.everyDays || 40) + ' يومًا');
+    if (p.relativeTo) {
+      const off = Number(p.offsetMinutes || 0), name = _prPrayerName(p.relativeTo);
+      if (!off) return _prL(name, name);
+      return _prAr()
+        ? Math.abs(off) + ' د ' + (off < 0 ? 'قبل ' : 'بعد ') + name
+        : Math.abs(off) + ' min ' + (off < 0 ? 'before ' : 'after ') + name;
+    }
+    return '';
+  }
+
+  function _prClock(ms) {
+    const d = new Date(ms);
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function _prRows(snap) {
+    const rows = [];
+    const minutesOf = p => (p.schedule && p.schedule.type === 'interval' ? null : _dueMinutes(p));
+    snap.due.forEach(item => rows.push({ p: item.practice, state: 'open', minutes: item.dueMinutes != null ? item.dueMinutes : null, tracker: item.tracker, status: item.status }));
+    snap.completed.forEach(r => rows.push({ p: r.practice, state: 'done', minutes: minutesOf(r.practice), at: r.entry.at }));
+    snap.skipped.forEach(r => rows.push({ p: r.practice, state: 'skipped', minutes: minutesOf(r.practice) }));
+    snap.snoozed.forEach(r => rows.push({ p: r.practice, state: 'snoozed', minutes: null }));
+    return rows;
+  }
+
+  function _prMeta(row) {
+    const p = row.p;
+    const bits = [];
+    if (row.state === 'done') bits.push(_prL('Completed', 'تم') + (row.at ? ' · ' + _prClock(row.at) : ''));
+    else if (row.state === 'skipped') bits.push(_prL('Set aside today · no failure implied', 'مؤجّلة لهذا اليوم · دون تقصير'));
+    else if (row.state === 'snoozed') bits.push(_prL('Returns tomorrow', 'تعود غدًا'));
+    else {
+      if (row.tracker) {
+        const t = row.tracker, n = Math.abs(t.daysLeft);
+        bits.push(row.status === 'overdue'
+          ? _prL(n + (n === 1 ? ' day' : ' days') + ' beyond your limit', 'تجاوزت حدّك بـ ' + n + ' يومًا')
+          : row.status === 'due' ? _prL('At your chosen limit', 'عند الحدّ الذي اخترته')
+          : _prL(n + (n === 1 ? ' day' : ' days') + ' left', 'بقي ' + n + ' يومًا'));
+      } else {
+        const anchor = _prAnchor(p);
+        if (row.minutes != null && p.relativeTo) bits.push('<bdi class="pr-num">' + _fmtClock(row.minutes) + '</bdi>');
+        if (anchor) bits.push(esc(anchor));
+        if (!anchor && row.minutes == null) bits.push(_prL('Any time', 'في أي وقت'));
+      }
+    }
+    return bits.join('<span class="pr-dot"> · </span>');
+  }
+
+  function _prRow(row) {
+    const p = row.p, id = esc(p.id), done = row.state === 'done';
+    const checkable = row.state === 'open' || done;
+    const label = done ? _prL('Mark ' + p.title + ' not done', 'إلغاء إتمام ' + (p.titleAr || p.title)) : _prL('Mark ' + p.title + ' done', 'إتمام ' + (p.titleAr || p.title));
+    const lead = checkable
+      ? '<button type="button" class="pr-check" role="checkbox" aria-checked="' + done + '" aria-label="' + esc(label) + '" onclick="' + (done ? 'practiceUndo' : 'practiceDone') + '(\'' + id + '\')"><span aria-hidden="true"></span></button>'
+      : '<span class="pr-check pr-check--off" aria-hidden="true"></span>';
+    const menu = [
+      '<button type="button" onclick="openPracticeDetail(\'' + id + '\')">' + _prL('Details', 'التفاصيل') + '</button>',
+      row.state === 'open' ? '<button type="button" onclick="practiceSnooze(\'' + id + '\',1)">' + _prL('Snooze until tomorrow', 'أعدها غدًا') + '</button>' : '',
+      row.state === 'open' ? '<button type="button" onclick="practiceSkip(\'' + id + '\')">' + _prL('Set aside today', 'أجّلها اليوم') + '</button>' : '',
+      row.state === 'skipped' ? '<button type="button" onclick="practiceUndo(\'' + id + '\')">' + _prL('Bring back', 'أعدها') + '</button>' : '',
+      row.state === 'snoozed' ? '<button type="button" onclick="practiceSnoozeUndo(\'' + id + '\')">' + _prL('Bring back today', 'أعدها اليوم') + '</button>' : '',
+    ].join('');
+    return '<li class="pr-row is-' + row.state + (row.status === 'overdue' ? ' is-overdue' : '') + '" data-practice-id="' + id + '">' +
+      lead +
+      '<div class="pr-body"><div class="pr-titles">' + _prTitle(p) + '</div><div class="pr-meta">' + _prMeta(row) + '</div></div>' +
+      '<details class="pr-more"><summary aria-label="' + esc(_prL('More for ' + p.title, 'المزيد عن ' + (p.titleAr || p.title))) + '">⋯</summary><div class="pr-menu">' + menu + '</div></details>' +
+      '</li>';
+  }
+
+  function _prNext(snap) {
+    if (!snap.next.length) return '<p class="pr-note">' + _prL('No dated practices ahead. Daily anchors continue on their own.', 'لا ممارسات مؤرّخة قادمة. تستمر الممارسات اليومية في موعدها.') + '</p>';
+    const byDay = [];
+    snap.next.forEach(item => {
+      let g = byDay.find(x => x.key === item.key);
+      if (!g) { g = { key: item.key, date: item.date, items: [] }; byDay.push(g); }
+      g.items.push(item);
+    });
+    return byDay.map(g => '<div class="pr-next"><div class="pr-next-day"><span class="pr-num pr-next-num">' + g.date.getDate() + '</span><span>' +
+      esc(g.date.toLocaleDateString(_prAr() ? 'ar' : 'en-GB', { month: 'short' })) + '</span></div><div class="pr-next-items">' +
+      g.items.map(i => '<div class="pr-next-item">' + _prTitle(i.practice) + '</div>').join('') + '</div></div>').join('');
+  }
+
+  function _prTrackers(snap) {
+    const list = snap.trackers.filter(t => t.practice.enabled).slice(0, 3);
+    return list.map(t => {
+      const p = t.practice, n = Math.abs(t.daysLeft);
+      const status = t.state === 'setup' ? _prL('Set a starting date', 'حدّد تاريخ البداية')
+        : t.state === 'overdue' ? _prL(n + (n === 1 ? ' day' : ' days') + ' beyond your limit', 'تجاوزت حدّك بـ ' + n + ' يومًا')
+        : t.state === 'due' ? _prL('Due today', 'موعده اليوم')
+        : _prL('Due in ' + n + (n === 1 ? ' day' : ' days'), 'بعد ' + n + ' يومًا');
+      return '<section class="pr-tracker"><div class="pr-titles">' + _prTitle(p) + '</div>' +
+        '<p class="pr-tracker-line"><strong>' + status + '</strong></p>' +
+        '<p class="pr-tracker-line pr-muted">' + esc(_prL('Every ' + t.every + ' days', 'كل ' + t.every + ' يومًا')) + (t.last ? ' · ' + esc(_prL('Last done ', 'آخر مرة ')) + '<bdi class="pr-num">' + esc(_fmtDate(t.last)) + '</bdi>' : '') + '</p>' +
+        '<button type="button" class="pr-link" onclick="openPracticeDetail(\'' + esc(p.id) + '\')">' + _prL('View practice', 'عرض الممارسة') + '</button></section>';
+    }).join('');
+  }
+
   function _renderToday(snap) {
     if (!snap.enabled.length) {
       if (!runtime.data.dismissedSetup) return _renderWelcome();
-      return `<section class="practice-empty">
-        <span class="practice-eyebrow">Your daybook is quiet</span>
-        <h2>No practices are being tracked yet.</h2>
-        <p>Choose only what is useful to you. You can add or pause anything at any time.</p>
-        <div class="practice-empty-actions"><button class="practice-primary" onclick="showPracticeAll()">Choose practices</button><button class="practice-text-btn" onclick="openPracticeForm()">Create a personal reminder</button></div>
-      </section>`;
+      return '<section class="practice-empty"><h2>' + _prL('No practices are being tracked yet.', 'لا توجد ممارسات مفعّلة بعد.') + '</h2><p>' +
+        _prL('Choose only what is useful to you. You can add or pause anything at any time.', 'اختر ما ينفعك فقط، ويمكنك الإضافة أو الإيقاف في أي وقت.') +
+        '</p><div class="practice-empty-actions"><button class="practice-primary" onclick="showPracticeAll()">' + _prL('Choose practices', 'اختر ممارسات') +
+        '</button><button class="practice-text-btn" onclick="openPracticeForm()">' + _prL('Add your own', 'أضف ممارستك') + '</button></div></section>';
     }
+    const rows = _prRows(snap);
+    const counted = rows.filter(r => r.state !== 'snoozed');
+    const doneCount = counted.filter(r => r.state === 'done').length;
+    const now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
 
-    const dueHtml = snap.due.length
-      ? snap.due.map(item => _renderDueRow(item, snap.key)).join('')
-      : `<div class="practice-quiet"><span class="practice-quiet-mark">${icon('check', 16)}</span><p><strong>Nothing else is due today.</strong><span>What is done is enough. You can look ahead without turning the day into a score.</span></p></div>`;
+    const marks = PR_PRAYERS.map(name => ({ name, min: _prayerMinutes(name) })).filter(m => m.min != null).sort((a, b) => a.min - b.min);
+    const slotOf = minutes => {
+      let found = null;
+      marks.forEach(m => { if (m.min <= minutes) found = m; });
+      return found;
+    };
+    const anyTime = rows.filter(r => r.minutes == null);
+    const timed = rows.filter(r => r.minutes != null).sort((a, b) => a.minutes - b.minutes);
+    const before = marks.length ? timed.filter(r => !slotOf(r.minutes)) : [];
+    const currentMark = (() => { let c = null; marks.forEach(m => { if (m.min <= nowMin) c = m; }); return c; })();
 
-    const completed = snap.completed.length
-      ? `<section class="practice-finished-block"><h3 class="practice-subhead">Completed today</h3>${snap.completed.map(_renderFinishedRow).join('')}</section>`
-      : '';
-    const skipped = snap.skipped.length
-      ? `<section class="practice-finished-block"><h3 class="practice-subhead">Set aside</h3>${snap.skipped.map(_renderFinishedRow).join('')}</section>`
-      : '';
-    const snoozed = snap.snoozed.length
-      ? `<section class="practice-finished-block"><h3 class="practice-subhead">Returning later</h3>${snap.snoozed.map(row => `<div class="practice-finished is-snoozed"><span class="practice-finished-mark">${icon('clock', 14)}</span><div class="practice-finished-copy"><strong>${esc(row.practice.title)}</strong><span>Returning ${esc(_fmtDate(row.until))}</span></div><button class="practice-text-btn" onclick="practiceSnoozeUndo('${esc(row.practice.id)}')">Return now</button></div>`).join('')}</section>`
-      : '';
-
-    return `<div class="practice-today-layout">
-      <div class="practice-main-column">
-        <div class="practice-day-heading">
-          <div><h2>Due today</h2></div>
-          <p>${snap.due.length} waiting · ${snap.completed.length} complete${snap.skipped.length ? ` · ${snap.skipped.length} set aside` : ''}</p>
-        </div>
-        <div class="practice-agenda">${dueHtml}</div>
-        ${completed}${skipped}${snoozed}
-        <div class="practice-day-foot"><span>${icon('lock', 13)} Practice history stays in this browser.</span><button class="practice-text-btn" onclick="showPracticeAll()">Manage practices</button></div>
-      </div>
-      <aside class="practice-rail" aria-label="Practice overview">
-        <section class="practice-rail-block">
-          <div class="practice-rail-head"><span class="practice-eyebrow">Next</span><button class="practice-text-btn" onclick="showPracticeUpcoming()">All upcoming</button></div>
-          ${_renderNext(snap)}
-        </section>
-        <section class="practice-rail-block">
-          <div class="practice-rail-head"><span class="practice-eyebrow">Time limits</span><button class="practice-text-btn" onclick="showPracticeTab('all')">All practices</button></div>
-          ${_renderTrackers(snap)}
-          <p class="practice-rail-note">A tracker records your own date. It never assumes a completion or turns a scholarly limit into an obligation.</p>
-        </section>
-        <section class="practice-rail-block practice-rail-block--quiet">
-          <span class="practice-eyebrow">Reminders</span>
-          <p>Reminders are checked while Sahib is open. Background delivery depends on your browser, installed-app state and notification permission.</p>
-          <button class="practice-text-btn" onclick="openPracticeReminders()">Open reminder centre</button>
-        </section>
-      </aside>
-    </div>`;
+    const list = items => '<ul class="pr-rows">' + items.map(_prRow).join('') + '</ul>';
+    let rhythm = '';
+    if (anyTime.length) rhythm += '<section class="pr-slot pr-slot--any"><div class="pr-anchor"><span class="pr-anchor-name">' + _prL('Any time', 'في أي وقت') + '</span></div>' + list(anyTime) + '</section>';
+    if (!marks.length) {
+      if (timed.length) rhythm += '<section class="pr-slot"><div class="pr-anchor"><span class="pr-anchor-name">' + _prL('Timed', 'بموعد') + '</span></div>' + list(timed) + '</section>';
+    } else {
+      if (before.length) rhythm += '<section class="pr-slot"><div class="pr-anchor"><span class="pr-anchor-name">' + _prL('Before Fajr', 'قبل الفجر') + '</span></div>' + list(before) + '</section>';
+      marks.forEach(m => {
+        const items = timed.filter(r => { const s = slotOf(r.minutes); return s && s.name === m.name; });
+        const isNow = currentMark && currentMark.name === m.name;
+        if (!items.length && !isNow) {
+          rhythm += '<div class="pr-marker"><span>' + esc(_prPrayerName(m.name)) + '</span><bdi class="pr-num">' + _fmtClock(m.min) + '</bdi></div>';
+          return;
+        }
+        const ago = nowMin - m.min, agoEn = ago >= 60 ? Math.floor(ago / 60) + ' h ' + (ago % 60 ? ago % 60 + ' min' : '').trim() : ago + ' min', agoAr = ago >= 60 ? Math.floor(ago / 60) + ' س' + (ago % 60 ? ' ' + ago % 60 + ' د' : '') : ago + ' د';
+        const nowLine = isNow ? '<p class="pr-now">' + _prL('Now · ' + m.name + ' began ' + agoEn.trim() + ' ago', 'الآن · دخل وقت ' + _prPrayerName(m.name) + ' منذ ' + agoAr) + '</p>' : '';
+        rhythm += '<section class="pr-slot' + (isNow ? ' is-current' : '') + '"><div class="pr-anchor"><span class="pr-anchor-name">' + esc(_prPrayerName(m.name)) + '</span><bdi class="pr-num pr-anchor-time">' + _fmtClock(m.min) + '</bdi></div><div class="pr-slot-body">' + nowLine + (items.length ? list(items) : '') + '</div></section>';
+      });
+    }
+    const quiet = _inQuietHours(now);
+    const waiting = snap.due.length;
+    return '<div class="pr-layout">' +
+      '<section class="pr-rhythm" aria-labelledby="pr-rhythm-title"><div class="pr-rhythm-head"><h2 id="pr-rhythm-title">' + _prL('Today’s rhythm', 'إيقاع اليوم') + '</h2><span>' +
+      _prL(doneCount + ' of ' + counted.length + ' complete', 'تمّ ' + doneCount + ' من ' + counted.length) + '</span></div>' +
+      '<div class="pr-progress" aria-hidden="true"><span style="width:' + (counted.length ? Math.round(doneCount / counted.length * 100) : 0) + '%"></span></div>' + rhythm + '</section>' +
+      '<aside class="pr-margin" aria-label="' + esc(_prL('Practice overview', 'نظرة على الممارسات')) + '">' +
+      '<section><h2>' + _prL('Next dates', 'المواعيد القادمة') + '</h2>' + _prNext(snap) + '<button type="button" class="pr-link" onclick="showPracticeUpcoming()">' + _prL('All upcoming dates', 'كل المواعيد القادمة') + ' ' + (_prAr() ? '←' : '→') + '</button></section>' +
+      _prTrackers(snap) +
+      '<section><h2>' + _prL('Reminders', 'التذكيرات') + '</h2><p class="pr-note">' + _prL(waiting + (waiting === 1 ? ' waiting today' : ' waiting today'), waiting + ' بانتظارك اليوم') +
+      '</p><p class="pr-note">' + (quiet ? _prL('Quiet hours are on', 'ساعات الهدوء مفعّلة') : _prL('Quiet hours are off', 'ساعات الهدوء غير مفعّلة')) + '</p>' +
+      '<button type="button" class="pr-link" onclick="openPracticeReminders()">' + _prL('Open reminders', 'فتح التذكيرات') + '</button></section>' +
+      '</aside></div>';
   }
 
   function _renderUpcoming() {
@@ -932,29 +962,19 @@ const SahibPractice = (() => {
       host.innerHTML = '<div class="practice-loading" role="alert">Could not draw this page. <button type="button" class="btn-cancel" onclick="SahibPractice.setTab(\'today\');SahibPractice.render()">Back to Today</button></div>';
       return;
     }
-    host.innerHTML = `<div class="practice-page">
-      <div class="practice-head">
-        <div class="practice-head-copy">
-          <span class="practice-eyebrow">Sahib · daily practice · وِرد</span>
-          <h1>Your daybook</h1>
-          <p>A quiet record of what you chose to keep. Nothing is switched on for you.</p>
-        </div>
-        <div class="practice-head-side">
-          <div class="practice-head-date"><strong>${esc(_fmtLong(new Date()))}</strong><span>${esc(_hijriLine(new Date()))}</span></div>
-          <div class="practice-head-actions">
-            <button class="practice-icon-btn" onclick="openPracticeReminders()" aria-label="Open reminder centre${snap.due.length ? `, ${snap.due.length} waiting` : ''}">${icon('bell', 18)}${snap.due.length ? `<span class="practice-bell-count" aria-hidden="true">${snap.due.length}</span>` : ''}</button>
-            <button class="practice-primary practice-primary--small" onclick="openPracticeForm()">${icon('plus', 14)} Add practice</button>
-            <button class="practice-icon-btn" onclick="openPracticeSettings()" aria-label="Practice settings">${icon('settings', 18)}</button>
-          </div>
-        </div>
-      </div>
-      <nav class="practice-tabs" role="tablist" aria-label="Daily practice views">
-        ${[['today','Today'],['upcoming','Upcoming'],['calendar','Calendar'],['all','All practices']].map(([id,label]) => `<button role="tab" id="practice-tab-${id}" aria-controls="practice-tab-panel" aria-selected="${tab === id}" class="practice-tab ${tab === id ? 'is-active' : ''}" onclick="showPracticeTab('${id}')">${label}</button>`).join('')}
-      </nav>
-      <div class="practice-tab-panel" id="practice-tab-panel" role="tabpanel" aria-labelledby="practice-tab-${tab}">${content}</div>
-    </div>`;
-    if (late && tab === 'today') {
-      const bell = host.querySelector('.practice-bell-count');
+    host.innerHTML = '<div class="practice-page pr-page">' +
+      '<header class="pr-head"><div><h1 class="pr-date">' + esc(new Date().toLocaleDateString(_prAr() ? 'ar' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })) + '</h1>' +
+      '<p class="pr-subdate"><span>' + esc(_hijriLine(new Date())) + '</span><span>' + _prL('Now', 'الآن') + ' <bdi class="pr-num">' + _fmtClock(new Date().getHours() * 60 + new Date().getMinutes()) + '</bdi></span></p></div>' +
+      '<div class="pr-actions"><button type="button" class="pr-quiet-btn" onclick="openPracticeReminders()" aria-label="' + esc(_prL('Open reminders', 'فتح التذكيرات') + (snap.due.length ? ', ' + snap.due.length : '')) + '">' + _prL('Reminders', 'التذكيرات') + (snap.due.length ? ' · <bdi class="pr-num pr-count">' + snap.due.length + '</bdi>' : '') + '</button>' +
+      '<button type="button" class="pr-primary" onclick="openPracticeForm()">+ ' + _prL('Add practice', 'ممارسة جديدة') + '</button>' +
+      '<button type="button" class="pr-quiet-btn pr-icon" onclick="openPracticeSettings()" aria-label="' + esc(_prL('Practice settings', 'إعدادات الممارسات')) + '">' + icon('settings', 18) + '</button></div></header>' +
+      '<nav class="pr-tabs" role="tablist" aria-label="' + esc(_prL('Daily practice views', 'عروض الممارسة اليومية')) + '">' +
+      [['today', 'Today', 'اليوم'], ['upcoming', 'Upcoming', 'القادم'], ['calendar', 'Calendar', 'التقويم'], ['all', 'All practices', 'كل الممارسات']].map(([id, en, ar]) =>
+        '<button type="button" role="tab" id="practice-tab-' + id + '" aria-controls="practice-tab-panel" aria-selected="' + (tab === id) + '" onclick="showPracticeTab(\'' + id + '\')">' + _prL(en, ar) + '</button>').join('') +
+      '</nav>' +
+      '<div class="practice-tab-panel" id="practice-tab-panel" role="tabpanel" aria-labelledby="practice-tab-' + tab + '">' + content + '</div></div>';
+        if (late && tab === 'today') {
+      const bell = host.querySelector('.pr-count');
       if (bell) bell.setAttribute('title', `${late} reminder${late === 1 ? '' : 's'} passed while the app was closed or idle`);
     }
   }
