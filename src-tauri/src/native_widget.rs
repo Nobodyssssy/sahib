@@ -11,6 +11,16 @@ use windows_sys::Win32::{
     },
 };
 static APP: OnceLock<tauri::AppHandle> = OnceLock::new();
+static ACK: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+static BLINKING: AtomicBool = AtomicBool::new(false);
+/// True while any taskbar widget is blinking; the scheduler then ticks twice a second.
+pub fn blinking() -> bool {
+    BLINKING.load(std::sync::atomic::Ordering::Relaxed)
+}
+/// Clicking or activating the widget acknowledges the current reminder: the border stops blinking.
+fn acknowledge() {
+    ACK.store(widget_now_ms(), std::sync::atomic::Ordering::Relaxed);
+}
 type Bounds = (i32, i32, u32, u32);
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -209,7 +219,7 @@ fn apply_ui(app: &tauri::AppHandle, p: &DesktopPrefs) {
             work.position.y + work.size.height as i32,
         );
         let bar = taskbar::bounds(monitor);
-        let width = (240. * scale).round() as i32;
+        let width = (if p.widget_style == "awqat" { 196. } else { 240. } * scale).round() as i32;
         let safe = bar.map(|b| taskbar::safe_edges(b, scale));
         let name = m.name().cloned().unwrap_or_default();
         let mut fits = safe.map(|(a, b, _)| b - a >= width).unwrap_or(false);
@@ -406,7 +416,11 @@ fn apply_ui(app: &tauri::AppHandle, p: &DesktopPrefs) {
                     }
                 }
             }
-            let corner = (if p.widget_style == "minimal" { 1. } else { 14. } * scale) as i32;
+            let corner = (match p.widget_style.as_str() {
+                "minimal" => 1.,
+                "awqat" => 6.,
+                _ => 14.,
+            } * scale) as i32;
             let clip = (bounds.2, bounds.3, corner);
             if size_changed || view.clip != Some(clip) {
                 unsafe {
@@ -611,6 +625,7 @@ fn reveal_panel(app: &tauri::AppHandle) {
     if widget_watch::quiescing() {
         return;
     }
+    acknowledge();
     let state = app.state::<DesktopState>();
     if !state.widget_expanded.load(Ordering::Relaxed) {
         hide_panel(app);
@@ -907,6 +922,55 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
     };
     let (surface, ink, muted, line, accent) =
         (colors[0], colors[1], colors[2], colors[3], colors[4]);
+    // Awqat style: gold before a prayer, red just after it, blinking yellow border until acknowledged.
+    let extra = {
+        let ds = app.state::<DesktopState>();
+        let d = ds.disk.lock().unwrap();
+        let now = widget_now_ms();
+        let prev = d
+            .schedule
+            .widget_days
+            .iter()
+            .flat_map(|d| &d.prayers)
+            .filter(|p| p.at <= now)
+            .max_by_key(|p| p.at)
+            .map(|p| {
+                (
+                    p.at,
+                    if d.schedule.language == "ar" {
+                        p.name_ar.clone()
+                    } else {
+                        p.name.clone()
+                    },
+                    p.clock.clone(),
+                )
+            });
+        (prev, d.prefs.widget_warning_minutes as i64, d.prefs.widget_blink)
+    };
+    let awq = style == "awqat";
+    let now_w = widget_now_ms();
+    let warn_ms = extra.1 * 60_000;
+    let entered = awq
+        && extra
+            .0
+            .as_ref()
+            .is_some_and(|p| now_w >= p.0 && now_w - p.0 < 15 * 60_000);
+    let soon = awq && !entered && at.is_some_and(|t| t > now_w && t - now_w <= warn_ms);
+    let state_start = if entered {
+        extra.0.as_ref().map_or(0, |p| p.0)
+    } else {
+        at.unwrap_or(0) - warn_ms
+    };
+    let acked = ACK.load(std::sync::atomic::Ordering::Relaxed) >= state_start;
+    let blink = (soon || entered) && !acked && extra.2;
+    BLINKING.store(blink, std::sync::atomic::Ordering::Relaxed);
+    let (surface, ink, muted) = if soon {
+        (0x6c9eb0, 0x151515, 0x2d2d2d)
+    } else if entered {
+        (0x5a5ab8, 0xffffff, 0xf2f2f2)
+    } else {
+        (surface, ink, muted)
+    };
     let mut ps: PAINTSTRUCT = std::mem::zeroed();
     let screen = BeginPaint(hwnd, &mut ps);
     let mut rect: RECT = std::mem::zeroed();
@@ -929,6 +993,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         "Maghrib" => (0x5482e7, 21., true, false),
         _ => (0xa66759, 10., false, true),
     };
+    if !awq {
     let sky_x = if ar { w - u(14.) } else { u(7.) };
     let brush = CreateSolidBrush(sky_color);
     let old_brush = SelectObject(dc, brush);
@@ -959,6 +1024,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
         SelectObject(dc, old_pen);
         DeleteObject(brush);
         DeleteObject(pen);
+    }
     }
     let fonts = {
         let mut fonts = state.fonts.lock().unwrap();
@@ -999,7 +1065,47 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             }
         })
         .unwrap_or("—".into());
-    if style == "slim" || style == "countdown" {
+    if awq {
+        let cy = h / 2;
+        let (n, c, label, value) = if entered {
+            let p = extra.0.as_ref().unwrap();
+            let s = ((now_w - p.0) / 1000).max(0);
+            (
+                p.1.clone(),
+                p.2.clone(),
+                if ar { "منذ" } else { "Since" },
+                if show_seconds {
+                    format!("+{:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
+                } else {
+                    format!("+{:02}:{:02}", s / 3600, s / 60 % 60)
+                },
+            )
+        } else {
+            (
+                name.clone(),
+                clock.clone(),
+                if ar { "بعد" } else { "After" },
+                countdown.clone(),
+            )
+        };
+        let split = w * 45 / 100;
+        let (a_left, a_right, b_left, b_right) = if ar {
+            (w - split, w - u(5.), u(5.), w - split)
+        } else {
+            (u(5.), split, split, w - u(5.))
+        };
+        let name_flags = if ar { DT_CENTER | DT_RTLREADING } else { DT_CENTER };
+        let line = |left: i32, right: i32, second: bool| RECT {
+            left,
+            top: if second { cy } else { cy - u(17.) },
+            right,
+            bottom: if second { cy + u(17.) } else { cy },
+        };
+        text(dc, &n, line(a_left, a_right, false), fonts.0 as _, ink, name_flags);
+        text(dc, &c, line(a_left, a_right, true), fonts.1 as _, ink, DT_CENTER);
+        text(dc, label, line(b_left, b_right, false), fonts.1 as _, muted, name_flags);
+        text(dc, &value, line(b_left, b_right, true), fonts.0 as _, ink, DT_CENTER);
+    } else if style == "slim" || style == "countdown" {
         let cy = h / 2;
         let name_left = if ar { w - u(83.) } else { u(8.) };
         let name_right = if ar { w - u(8.) } else { u(83.) };
@@ -1261,7 +1367,7 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
             flags & !DT_RTLREADING,
         );
     }
-    if let (Some(at), Some(previous)) = (at, previous) {
+    if let (Some(at), Some(previous)) = (at, previous.filter(|_| !awq)) {
         if at > previous {
             let progress =
                 ((widget_now_ms() - previous) as f64 / (at - previous) as f64).clamp(0., 1.);
@@ -1277,6 +1383,26 @@ unsafe fn paint(hwnd: HWND, label: &str, app: &tauri::AppHandle) {
                 },
                 accent,
             );
+        }
+    }
+    if blink
+        && (std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis()
+            / 500)
+            % 2
+            == 0
+    {
+        let t = u(3.).max(2);
+        let yellow = 0x1fd2ff;
+        for r in [
+            RECT { left: 0, top: 0, right: w, bottom: t },
+            RECT { left: 0, top: h - t, right: w, bottom: h },
+            RECT { left: 0, top: 0, right: t, bottom: h },
+            RECT { left: w - t, top: 0, right: w, bottom: h },
+        ] {
+            fill(dc, r, yellow);
         }
     }
     if windows_sys::Win32::UI::Input::KeyboardAndMouse::GetFocus() == hwnd {
@@ -1387,6 +1513,7 @@ unsafe extern "system" fn subclass(
                         .get(&label)
                         .cloned();
                     if let Some(v) = view {
+                        acknowledge();
                         toggle_panel(app, v.monitor);
                     }
                     return 0;
@@ -1419,6 +1546,7 @@ unsafe extern "system" fn subclass(
                 };
                 if let Some((cursor, start)) = v.1 {
                     if (taskbar::cursor_x() - cursor).abs() < 4 {
+                        acknowledge();
                         toggle_panel(app, v.0.monitor);
                     } else if let Some(bar) = v.0.bar {
                         let state = app.state::<DesktopState>();

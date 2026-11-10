@@ -19,6 +19,9 @@ function reportPanelPhase(phase,renderStart=performance.now(),openId=widgetOpenI
  const icons={Fajr:'moon',Sunrise:'sunrise',Dhuhr:'sun',Asr:'cloud',Maghrib:'sunset',Isha:'moon'},action=action=>invoke('desktop_widget_action',{action});
  const icon=name=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS('http://www.w3.org/2000/svg','use');svg.setAttribute('class','wi');svg.setAttribute('aria-hidden','true');use.setAttribute('href','#wi-'+name);svg.append(use);return svg;};
  const put=(id,value)=>{if(el(id).textContent!==value)el(id).textContent=value;};
+ let ackKey=0;
+ function currentKey(){const {now,next,day}=moments(),previous=day?.prayers.filter(p=>p.at<=now).at(-1);return previous&&now-previous.at<15*60000?previous.at:next?.at;}
+ document.addEventListener('pointerdown',()=>{if(state){ackKey=currentKey();tick();}},true);
  function moments(){const now=Date.now()+presentationOffset,s=state.schedule,days=s.widgetDays||[],markers=(days.length?days.flatMap(d=>d.prayers):s.prayers).sort((a,b)=>a.at-b.at);return {now,next:markers.find(p=>p.at>now),day:days.find(d=>d.start<=now&&d.end>now)};}
  function fit(){
   if(!state||document.body.dataset.mode==='taskbar'&&!state.widgetExpanded)return;
@@ -32,10 +35,15 @@ function reportPanelPhase(phase,renderStart=performance.now(),openId=widgetOpenI
   const value=next?[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].slice(0,state.prefs.widgetShowSeconds===false?2:3).map(v=>String(v).padStart(2,'0')).join(':'):'—';
   put('widget-countdown',value);put('compact-countdown',value);el('widget-countdown').setAttribute('aria-label',value+(state.schedule.language==='ar'?' متبقي':' remaining'));
   const previous=day?.prayers.filter(p=>p.at<=now).at(-1),progress=previous&&next?Math.max(0,Math.min(1,(now-previous.at)/(next.at-previous.at))):0;el('widget-compact').style.setProperty('--prayer-progress',String(Math.floor(progress*1000)/1000));
-  const ar=state.schedule.language==='ar',since=previous?Math.floor((now-previous.at)/60000):-1;
-  if(previous&&since<15){const base=ar?previous.nameAr:previous.name,tag=ar?base+' · منذ '+since+' د':base+' · '+since+' min ago';put('widget-label',tag);put('compact-label',tag);document.body.dataset.entered='true';}
-  else{if(document.body.dataset.entered==='true'){document.body.dataset.entered='false';put('widget-label',next?.name==='Sunrise'?(ar?'التالي · الشروق':'Next · Sunrise'):(ar?'الصلاة القادمة':'Next prayer'));put('compact-label',ar?'المتبقي':'Remaining');}}
-  const soon=String(!!next&&next.at-now<=state.prefs.widgetWarningMinutes*60000);if(document.body.dataset.soon!==soon)document.body.dataset.soon=soon;
+  const ar=state.schedule.language==='ar',since=previous?Math.floor((now-previous.at)/60000):-1,entered=!!previous&&since>=0&&since<15,soonNow=!entered&&!!next&&next.at-now<=state.prefs.widgetWarningMinutes*60000,awq=state.prefs.widgetStyle==='awqat';
+  const agoLabel=entered?(ar?previous.nameAr:previous.name)+(ar?' · منذ '+since+' د':' · '+since+' min ago'):'';
+  put('widget-label',entered?agoLabel:next?.name==='Sunrise'?(ar?'التالي · الشروق':'Next · Sunrise'):(ar?'الصلاة القادمة':'Next prayer'));
+  if(awq){const secs=entered?Math.floor((now-previous.at)/1000):0,since3=[Math.floor(secs/3600),Math.floor(secs/60)%60,secs%60].slice(0,state.prefs.widgetShowSeconds===false?2:3).map(v=>String(v).padStart(2,'0')).join(':');
+   put('compact-name',entered?(ar?previous.nameAr:previous.name):next?(ar?next.nameAr:next.name):(ar?'صاحب':'Sahib'));put('compact-clock',entered?previous.clock:next?.clock||'—');put('compact-label',entered?(ar?'منذ':'Since'):(ar?'بعد':'After'));put('compact-countdown',entered?'+'+since3:value);}
+  else put('compact-label',entered?agoLabel:(ar?'المتبقي':'Remaining'));
+  const curKey=entered?previous.at:next?.at,blink=state.prefs.widgetBlink!==false&&(entered||soonNow)&&ackKey!==curKey,mood=entered?'entered':soonNow?'soon':'idle';
+  document.body.dataset.entered=String(entered);document.body.dataset.state=mood;document.body.dataset.blink=String(blink);
+  const soon=String(soonNow);if(document.body.dataset.soon!==soon)document.body.dataset.soon=soon;
  }
  function renderContent(){
   if(!state)return;const {schedule:s,prefs:p}=state,ar=s.language==='ar',text=(en,arabic)=>ar?arabic:en,{now,next,day}=moments();

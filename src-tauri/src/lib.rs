@@ -89,6 +89,7 @@ struct DesktopPrefs {
     widget_edge: String,
     widget_reminders: bool,
     widget_warning_minutes: i32,
+    widget_blink: bool,
     widget_positions: HashMap<String, f64>,
 }
 impl Default for DesktopPrefs {
@@ -104,7 +105,7 @@ impl Default for DesktopPrefs {
             widget_mode: "floating".into(),
             widget_renderer: "native".into(),
             widget_theme: "app".into(),
-            widget_style: "landmark".into(),
+            widget_style: "awqat".into(),
             widget_show_seconds: true,
             timer_sound: "timer-gentle".into(),
             timer_volume: 0.35,
@@ -114,6 +115,7 @@ impl Default for DesktopPrefs {
             widget_edge: "left".into(),
             widget_reminders: true,
             widget_warning_minutes: 10,
+            widget_blink: true,
             widget_positions: HashMap::new(),
         }
     }
@@ -889,7 +891,7 @@ async fn desktop_set_preferences(
         .contains(&prefs.widget_theme.as_str())
         || !["left", "right", "manual"].contains(&prefs.widget_edge.as_str())
         || !["native", "web"].contains(&prefs.widget_renderer.as_str())
-        || !["landmark", "minimal", "ribbon", "slim", "countdown"]
+        || !["awqat", "landmark", "minimal", "ribbon", "slim", "countdown"]
             .contains(&prefs.widget_style.as_str())
         || prefs.widget_monitor.len() > 200
     {
@@ -1538,6 +1540,8 @@ fn start_scheduler(app: tauri::AppHandle) -> std::thread::JoinHandle<()> {
                     .unwrap_or(1000)
                     .clamp(100, 1000)
             };
+            #[cfg(feature = "native-widget-experiment")]
+            let wait = if native_widget::blinking() { wait.min(500) } else { wait };
             std::thread::sleep(Duration::from_millis(wait));
         }
     })
