@@ -780,22 +780,6 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-4);
 }
-.cat-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5) var(--space-4);
-  gap: var(--space-3);
-  min-height: 168px;
-  justify-content: flex-start;
-}
-.cat-card::before { height: 3px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-.cat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-.cat-icon { width: 50px; height: 50px; border-radius: var(--radius-md); }
-.cat-icon svg { width: 26px; height: 26px; }
-.cat-name { font-size: 18px; }
-.cat-en { font-size: 11px; }
-.cat-count { font-size: 11px; }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ADKAR LIST & DETAIL
@@ -1705,158 +1689,6 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before {
 .page-header-actions .page-add-btn { color: var(--color-accent-text); border-color: var(--color-accent-border); }
 
 .cats-grid { gap: 12px; }
-.cat-card {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-  min-height: 0;
-  padding: 0;
-  text-align: start;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: transform var(--duration-fast) var(--ease-standard),
-              border-color var(--duration-fast) var(--ease-standard),
-              box-shadow var(--duration-fast) var(--ease-standard);
-}
-.cat-card::before {
-  inset-block: 0;
-  inset-inline-start: 0;
-  width: 2px;
-  height: auto;
-  border-radius: 0;
-  background: color-mix(in oklch, var(--cc, var(--color-accent)) 72%, var(--color-border));
-}
-.cat-card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--cc, var(--color-accent)) 42%, var(--color-border));
-  box-shadow: var(--shadow-sm);
-}
-.cat-open {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
-  padding: 22px 14px 14px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font-family: inherit;
-  text-align: center;
-  cursor: pointer;
-}
-.cat-icon {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 2px;
-  border-radius: var(--radius-sm);
-  border: 1px solid color-mix(in oklch, var(--cc, var(--color-accent)) 24%, transparent);
-  background: color-mix(in oklch, var(--cc, var(--color-accent)) 10%, transparent);
-  color: var(--cc, var(--color-accent));
-}
-.cat-icon svg { width: 22px; height: 22px; }
-.cat-name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  line-height: 1.2;
-  color: var(--color-text-primary);
-}
-.cat-en {
-  font-family: var(--font-label);
-  font-size: 8.5px;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-.cat-count {
-  margin-top: 2px;
-  padding: 2px 7px;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  background: transparent;
-  font-family: var(--font-label);
-  font-size: 9px;
-  color: var(--color-text-secondary);
-}
-.cat-prog-bar {
-  width: 100%;
-  height: 2px;
-  margin-top: auto;
-  border-radius: 0;
-  background: var(--color-border-subtle);
-  overflow: hidden;
-}
-.cat-prog-fill { height: 100%; background: var(--cc, var(--color-accent)); }
-.cat-progress-label {
-  font-family: var(--font-label);
-  font-size: 8.5px;
-  letter-spacing: .05em;
-  color: var(--color-text-muted);
-}
-.cat-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 7px;
-  border-top: 1px solid var(--color-border-subtle);
-  background: color-mix(in oklch, var(--color-surface-sunken) 34%, transparent);
-}
-.cat-start-btn {
-  display: inline-flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 28px;
-  padding: 5px 8px;
-  border: 1px solid var(--color-accent-border);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--color-accent-text);
-  font-family: var(--font-label);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-standard),
-              background var(--duration-fast) var(--ease-standard);
-}
-.cat-start-btn:hover { background: var(--color-accent); color: var(--color-on-accent); }
-.cat-sm-btn {
-  width: 28px;
-  height: 28px;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  background: transparent;
-  color: var(--color-text-muted);
-}
-.cat-sm-btn:hover { color: var(--color-text-primary); border-color: var(--color-border); background: transparent; }
-.cat-sm-btn.del:hover { color: var(--color-danger); border-color: color-mix(in oklch, var(--color-danger) 45%, var(--color-border)); }
-.cat-new-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 180px;
-  padding: 20px;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-lg);
-  background: transparent;
-  color: var(--color-text-muted);
-  font-family: var(--font-label);
-  font-size: 9px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.cat-new-card:hover { color: var(--color-accent-text); border-color: var(--color-accent-border); }
-.cat-new-plus { display: inline-flex; color: var(--color-accent-text); }
 
 /* â”€â”€ Adkar list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .adkar-card {
@@ -2819,18 +2651,6 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-help-btn{
 /* Category colour remains a user choice, but the index is printed in ink.
    A muted category tint on the spine and glyph keeps the page from reading as
    a row of unrelated highlighters. */
-.cat-card::before {
-  background: color-mix(in srgb, var(--cc, var(--color-accent)) 35%, var(--color-border-strong));
-}
-.cat-card:hover {
-  border-color: var(--color-accent-border);
-}
-.cat-card:hover::before { background: var(--color-accent); }
-.cat-icon {
-  border-color: color-mix(in srgb, var(--cc, var(--color-accent)) 28%, var(--color-border-subtle));
-  background: color-mix(in srgb, var(--cc, var(--color-accent)) 9%, transparent);
-  color: color-mix(in srgb, var(--cc, var(--color-accent)) 40%, var(--color-text-primary));
-}
 
 /* ==========================================================================
    DAILY PRACTICE Â· the daybook

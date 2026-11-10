@@ -68,7 +68,7 @@ try {
     };
     for (const [name, open, view] of [['Practice', 'openPracticeView("today")', 'view-practice'], ['Prayer', 'openPrayerView()', 'view-prayer'], ['Hijri', 'openHijriView()', 'view-hijri'], ['99 Names', 'openAsmaView()', 'view-asma'], ['Library', 'openBooksView()', 'view-books'], ['Tasbih', 'openTasbihView()', 'view-tasbih'], ['Home', 'goHomeView()', 'view-home']]) {
       let cur = await qa.connect('main');
-      await cur.evaluate(open); await sleep(800);
+      await cur.evaluate(open); await sleep(2000);
       await closeMain();
       await control('open', {});
       let m3 = null;

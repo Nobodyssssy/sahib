@@ -1689,34 +1689,17 @@ background: var(--bg);
 /* ═══════════════════════════════════════════════════════════
    TOUCH TARGETS, ACTIVE STATES, FOCUS INDICATORS
    ═══════════════════════════════════════════════════════════ */
-.adkar-btn,
-.cat-sm-btn,
-.crb,
-.btn-close,
-.session-close-btn,
-.reader-icon-btn,
-.icon-btn,
-.session-tap-btn,
-.cbtn,
-.filter-chip,
-.quote-lang-btn,
-.menu-item {
+.adkar-btn, .crb, .btn-close, .session-close-btn, .reader-icon-btn, .icon-btn, .session-tap-btn, .cbtn, .filter-chip, .quote-lang-btn, .menu-item{
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.adkar-card:active, .cat-card:active, .book-card:active, .asma-card:active, .hijri-cell:not(.empty):active, .search-result-card:active{
+.adkar-card:active, .book-card:active, .asma-card:active, .hijri-cell:not(.empty):active, .search-result-card:active{
   transform: scale(0.985);
   transition: transform 0.08s ease;
 }
-.adkar-btn:active,
-.cat-sm-btn:active,
-.crb:active,
-.btn-close:active,
-.session-close-btn:active,
-.reader-icon-btn:active,
-.icon-btn:active {
+.adkar-btn:active, .crb:active, .btn-close:active, .session-close-btn:active, .reader-icon-btn:active, .icon-btn:active{
   transform: scale(0.92);
   transition: transform 0.08s ease;
 }
@@ -1737,7 +1720,7 @@ background: var(--bg);
   outline-offset: 3px;
   border-radius: 4px;
 }
-.adkar-card:focus-visible, .cat-card:focus-visible, .book-card:focus-visible, .asma-card:focus-visible{
+.adkar-card:focus-visible, .book-card:focus-visible, .asma-card:focus-visible{
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

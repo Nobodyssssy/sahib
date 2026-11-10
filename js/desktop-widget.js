@@ -87,7 +87,7 @@ function reportPanelPhase(phase,renderStart=performance.now(),openId=widgetOpenI
   for(const [id,en,arabic]of [['timer-heading','Dhikr / reading timer','مؤقت الذكر والقراءة'],['timer-duration-label','Minutes','دقائق'],['timer-repeat-label','Repeat every interval','التكرار بعد كل مدة'],['timer-focus-label','Focus · allow prayer Adhan only','تركيز · السماح بأذان الصلاة فقط'],['timer-focus-note','Silences other Sahib reminders during the timer. Windows and other apps are unchanged.','يكتم تذكيرات صاحب الأخرى أثناء المؤقت فقط. لا يغيّر إعدادات ويندوز أو التطبيقات الأخرى.'],['timer-finished','Session finished','انتهت الجلسة'],['timer-start','Start / change time','بدء / تغيير المدة'],['timer-restart','Restart','إعادة التشغيل'],['timer-stop','Stop','إيقاف']])put(id,text(en,arabic));
   el('timer-minutes').setAttribute('aria-label',text('Timer duration in minutes','مدة المؤقت بالدقائق'));
   el('widget-timer-open').title=text('Session timer','مؤقت الجلسة');el('widget-timer-open').setAttribute('aria-label',el('widget-timer-open').title);
-  el('timer-finished').hidden=!t.finished;if(t.finished&&!timerFinished)expandTimer(true);timerFinished=!!t.finished;
+  el('timer-finished').hidden=!t.finished;timerFinished=!!t.finished;
   const key=JSON.stringify([t.seconds,t.repeat,t.focus]);
   if(key!==timerKey&&!timerEditing){timerKey=key;el('timer-minutes').value=Math.max(1,Math.round((t.seconds||300)/60));el('timer-repeat').checked=!!t.repeat;el('timer-focus').checked=!!t.focus;}
   document.querySelectorAll('[data-timer-minutes]').forEach(b=>b.textContent=b.dataset.timerMinutes+text(' min',' د'));

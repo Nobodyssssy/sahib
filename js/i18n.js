@@ -402,7 +402,7 @@ Search your adhkar…|ابحث في الأذكار…`;
   if(typeof _booksLang!=='undefined')_booksLang=language;if(typeof _asmaLang!=='undefined')_asmaLang=language;if(typeof _calendarLang!=='undefined')_calendarLang=language;if(typeof _cycleLang!=='undefined')_cycleLang=language;if(typeof _quoteLang!=='undefined')_quoteLang=language;
   await store.setMeta('cycleLang',language);await store.setMeta('quoteLang',language);
   const active=document.querySelector('.view.active')?.id;
-  if(active==='view-home')await renderHome();else if(active==='view-books')await renderBooksGrid();else if(active==='view-asma')renderAsmaGrid();else if(active==='view-hijri')renderHijriCalendar();else if(active==='view-prayer')renderPrayerView();else if(active==='view-practice')SahibPractice.render();
+  if(active==='view-home')await renderHome();else if(active==='view-books')await renderBooksGrid();else if(active==='view-asma')renderAsmaGrid();else if(active==='view-hijri')renderHijriCalendar();else if(active==='view-prayer')renderPrayerView();else if(active==='view-practice')SahibPractice.render();else if(active==='view-cats')renderCatsGrid();
   if(document.getElementById('ov-settings')?.classList.contains('open'))await renderSettingsBody();
   controls();apply();window.dispatchEvent(new CustomEvent('sahib:languagechange',{detail:{language}}));
  }

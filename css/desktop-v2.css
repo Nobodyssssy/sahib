@@ -61,9 +61,6 @@ html[dir="rtl"] .garden-welcome-copy { margin-inline-start: auto; text-align: ri
 #view-practice .practice-container, #view-practice .practice-page { max-width: 960px !important; margin-inline: 0 !important; padding-inline: var(--d2-gutter) !important; }
 #view-practice .practice-head { align-items: center !important; }
 
-/* Adhkar: management icons appear on hover / keyboard focus only */
-.cat-sm-btn { opacity: 0 !important; transition: opacity .12s; }
-.cat-card:hover .cat-sm-btn, .cat-card:focus-within .cat-sm-btn { opacity: .85 !important; }
 
 /* Hijri: selected day readable, events column wide enough */
 .hijri-cell.today, .hijri-cell.today .hijri-day-num, .hijri-cell.today .hijri-day-greg { color: var(--d2-on-accent) !important; }
@@ -91,19 +88,7 @@ html[dir="rtl"] .garden-welcome-copy { margin-inline-start: auto; text-align: ri
 .garden-action-icon { display: none !important; }
 .garden-action button { height: 36px !important; font-size: 14px !important; border-radius: 6px !important; }
 
-/* Adhkar collections: rows */
-.cats-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 0 !important; max-width: 1120px !important; padding-inline: var(--d2-gutter) !important; margin: 0 !important; }
-.cat-card { height: 64px !important; min-height: 0 !important; display: grid !important; grid-template-columns: 1fr auto !important; align-items: center !important; border-radius: 0 !important; border: 0 !important; border-bottom: 1px solid var(--d2-rule) !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
-.cat-open { display: grid !important; grid-template-columns: 36px 1fr 90px 140px !important; align-items: center !important; gap: 16px !important; height: 64px !important; padding: 0 8px !important; text-align: start !important; }
-.cat-open > * { margin: 0 !important; }
-.cat-icon { width: 28px !important; height: 28px !important; background: none !important; border-radius: 0 !important; }
-.cat-name { font-size: 16px !important; height: auto !important; text-align: start !important; }
-.cat-count { font-size: 14px !important; color: var(--d2-muted) !important; }
-.cat-prog-bar { width: 120px !important; height: 4px !important; position: static !important; }
-.cat-progress-label { display: none !important; }
-.cat-actions { display: flex !important; gap: 8px !important; align-items: center !important; height: 64px !important; padding: 0 !important; }
-.cat-start-btn { height: 36px !important; font-size: 14px !important; border-radius: 6px !important; background: transparent !important; color: var(--d2-accent) !important; border: 1px solid var(--d2-accent) !important; box-shadow: none !important; }
-.cat-sm-btn, .icon-btn { min-width: 32px !important; min-height: 32px !important; }
+.icon-btn{ min-width: 32px !important; min-height: 32px !important; }
 
 /* Hijri: whole month fits */
 .hijri-container { padding-inline: var(--d2-gutter) !important; max-width: 1000px !important; }

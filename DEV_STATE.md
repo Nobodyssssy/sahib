@@ -289,3 +289,10 @@ QA notes: build a QA binary with `TAURI_CONFIG='{"identifier":"com.sahib.compani
 - practice.js: renderPracticeView now catches render errors and shows "Back to Today" instead of leaving a blank page.
 - tools/qa/verify-open-practice.mjs (isolated QA build): window loaded, window unloaded+recreated via widget route, and last-page restore for 7 pages: 10/10 pass after the fix (the Practice restore check failed before it).
 - Not tested: the user's real profile data (it may contain practice entries my fixtures do not).
+
+## 2026-11-10 Adhkar redesign + timer-ring expansion + 900px sidebar
+- Adhkar page rebuilt from a Sol mockup (adhkar-mockup-prompt.md; screenshots in workspace/sahib-design-review/adhkar/): "Now" feature chosen by prayer phase (fajr/sunrise/duha -> morning, dhuhr -> everlasting good deeds, asr/maghrib -> evening, isha -> sleep) + quiet "Today" progress column, then 23 categories in 6 groups (+ "My categories" for custom ones) as a contents list; Start is one click, Edit/Delete live in a hover/focus menu. Arabic text is marked data-no-i18n so the translation pass does not swap it to English. New js/views/cats.js renderer + css/views/adhkar-home.css; old card/row CSS removed. Arabic RTL, light/dark checked in a browser; interactions (group switch, menu, Start, browse, back) tested.
+- Bug: finishing the session timer grew the FLOATING widget (673 -> 1088 px tall) because desktop-widget.js called expandTimer(true) on finish. Removed. tools/qa/verify-timer-no-expand.mjs (taskbar+native, floating+native, floating+web): failed 16/18 before, 18/18 after.
+- Bug: at 900-960 px the old responsive CSS hid the sidebar while the shell still reserved 216 px (blank strip). Sidebar-hiding rules removed from responsive.css and garden-system.css.
+- Known: one run of verify-open-practice failed once for Prayer (restored view-cats); 5 later runs passed; test wait lengthened. Cause not identified, treat as unconfirmed race.
+- Pending: Sol mockup for Daily Practice (practice-mockup-prompt.md) not yet generated/implemented.
