@@ -163,10 +163,6 @@ function goHome(){
   goHomeView();
 }
 
-/* Kept as a compatibility no-op: the add and manage actions now live in the
-   static page header beside each other. */
-function ensureCatsSettingsButton(){}
-
 function toggleTheme(){
   if(typeof SAHIB_THEME !== 'undefined' && SAHIB_THEME.toggleMode){
     SAHIB_THEME.toggleMode();

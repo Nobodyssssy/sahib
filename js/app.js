@@ -130,21 +130,11 @@ window.addEventListener('sahib:counters-reset',()=>{
       }
     });
 
-    /* 7. Standalone-mode class */
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true;
-    if(isStandalone) document.documentElement.classList.add('pwa-standalone');
-
-    /* Apply installed shortcuts only after IndexedDB, language and shell are ready. */
-    const shortcut = new URLSearchParams(location.search);
-    if(shortcut.get('cat')) openCat(shortcut.get('cat'));
-    else if(shortcut.get('favs')) toggleFavsView();
     window.dispatchEvent(new Event('sahib:ready'));
 
     /* 8. Log */
     console.log(
-      '%cصاحب · Sahib' + (isStandalone ? ' (installed)' : ''),
+      '%cصاحب · Sahib',
       'color:#c9a84c;font-weight:bold'
     );
   }catch(err){
@@ -382,10 +372,6 @@ var _viewStack = [];
 function pushViewState(name){
   _viewStack.push(name);
   try{ history.pushState({ sahibView: name }, ''); }catch(e){}
-}
-
-function popViewStateSilently(){
-  if(_viewStack.length) _viewStack.pop();
 }
 
 window.addEventListener('popstate', function(){

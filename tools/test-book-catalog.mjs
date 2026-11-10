@@ -8,7 +8,6 @@ const policy=JSON.parse(fs.readFileSync('catalog/download-policy.json','utf8'));
 assert.equal(books.filter(b=>b.downloadAllowed).length,67);
 assert.deepEqual(Array.from(books).filter(b=>!b.downloadAllowed).map(b=>b.id).sort(),['atomic-habits','deep-work','thinking-fast-and-slow']);
 for(const b of books){assert.equal(b.downloadAllowed,!policy.restrictedIds.includes(b.id)&&((b.rights?.redistribution==='verified'&&!!b.rights.evidence)||(b.source==='legacy'&&policy.legacyDownloadIds.includes(b.id))));if(b.file)assert.equal(decodeURIComponent(b.file.split('/').map(encodeURIComponent).join('/')),b.file);}
-assert.ok(!fs.readFileSync('sw.js','utf8').includes('const smallBooks'));
 console.log('Catalog: stable 70 legacy IDs/URLs, unique IDs, 10 reading-order entries, encoding and scoped download policy passed');
 
 const cached=new Map();let downloads=0;

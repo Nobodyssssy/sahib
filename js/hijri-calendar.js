@@ -170,38 +170,6 @@ function getTodayHijri(){
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Find the NEXT upcoming event (by Hijri calendar)
-   Scans the next 400 days for the closest event date.
-   Returns: { event, gregorianDate, daysAway } or null
-   ═══════════════════════════════════════════════════════════ */
-function getNextUpcomingEvent(){
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  for(let offset = 0; offset <= 400; offset++){
-    const candidate = new Date(today);
-    candidate.setDate(today.getDate() + offset);
-    const h = getHijriFromGregorian(candidate);
-    if(!h) continue;
-
-    const matches = getEventsForHijriDate(h.month, h.day, candidate);
-    if(matches.length){
-      /* For range events (e.g. first 10 Dhul-Hijjah), pick the one whose
-         current-day match is most "significant" — prefer the earliest
-         event in the list, which is usually the primary one. */
-      const ev = matches[0];
-      return {
-        event: ev,
-        gregorianDate: candidate,
-        daysAway: offset,
-        hijri: h,
-      };
-    }
-  }
-  return null;
-}
-
-/* ═══════════════════════════════════════════════════════════
    Get today's events if any (for header banner)
    ═══════════════════════════════════════════════════════════ */
 function getTodaysEvents(){

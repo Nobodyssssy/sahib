@@ -1422,13 +1422,6 @@ const SahibPractice = (() => {
   async function _sendNotification(title, body) {
     if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
     try {
-      if ('serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.ready;
-        if (reg && typeof reg.showNotification === 'function') {
-          await reg.showNotification(title, { body, tag: 'sahib-practice', renotify: false, icon: 'icons/icon-192.png' });
-          return;
-        }
-      }
       new Notification(title, { body, tag: 'sahib-practice', icon: 'icons/icon-192.png' });
     } catch (err) { /* Notifications are an enhancement, never a requirement. */ }
   }

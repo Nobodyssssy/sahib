@@ -208,11 +208,9 @@ function renderSessionDone(){
   $('sess-footer').style.display = 'none';
   $('session-overlay').classList.add('is-done');
 
-  if(window.innerWidth >= 768){
-    var body = $('sess-body');
-    body.style.borderBottom = '1px solid var(--border)';
-    body.style.borderRadius = '0 0 20px 20px';
-  }
+  const doneBody = $('sess-body');
+  doneBody.style.borderBottom = '1px solid var(--border)';
+  doneBody.style.borderRadius = '0 0 20px 20px';
   $('sess-back-btn').style.opacity = '0.3';
   $('sess-back-btn').style.pointerEvents = 'none';
 }
@@ -261,7 +259,7 @@ function _closeSessionFromHistory(){
 /* Desktop keys: Space counts (and moves on once the dhikr is complete), Backspace undoes one,
    arrows / PageUp / PageDown move between adkar (arrows follow the reading direction). */
 document.addEventListener('keydown', event => {
-  if(!matchMedia('(min-width: 1024px)').matches || !$('session-overlay')?.classList.contains('open')) return;
+  if(!$('session-overlay')?.classList.contains('open')) return;
   if(event.altKey || event.ctrlKey || event.metaKey || event.repeat || event.target.closest?.('input,textarea,select,[contenteditable]')) return;
   if(event.key === ' ' && event.target.closest?.('button')) return;
   if(sessIdx >= sessItems.length) return;

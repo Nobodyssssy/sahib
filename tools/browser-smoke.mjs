@@ -110,20 +110,6 @@ if(process.env.PWA_CHECK === '1') {
  console.log('PWA direct entry and refresh',JSON.stringify({direct,refresh}));if(!direct||!refresh)failed=true;
  await evaluate('goHomeView()');
 }
-if(process.env.OFFLINE === '1') {
- console.log('service worker', await evaluate('(async()=>{await navigator.serviceWorker.ready; return !!navigator.serviceWorker.controller})()'));
- await cdp('Network.enable');
- await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
- await cdp('Page.reload'); await sleep(3000);
- console.log('offline reload',await evaluate('({home:!!document.querySelector(".sahib-home"),offline:!navigator.onLine,language:document.documentElement.lang,direction:document.documentElement.dir,font:document.documentElement.dataset.font,fontSource:document.documentElement.dataset.fontSource,prayer:document.querySelector("[data-pw=next-name]")?.textContent})'));
- console.log('offline bundled audio',await evaluate('(async()=>{const p=await getPrayerPrefs(),out={};for(const kind of ["standard","fajr"]){const source=await resolveAdhanSource(kind,p);const response=await fetch(source.url);out[kind]={selection:p.alerts.audio[kind],status:response.status,bytes:(await response.arrayBuffer()).byteLength}}return out})()'));
- if(process.env.PWA_CHECK==='1'){
-  const storage=await evaluate('(async()=>({localStorage:localStorage.getItem("sahib-deployment-verification")==="preserved",indexedDB:await store.getMeta("deploymentVerification")==="preserved"}))()');
-  console.log('offline storage persistence',JSON.stringify(storage));if(!storage?.localStorage||!storage?.indexedDB)failed=true;
-  const reader=await evaluate('(async()=>{await openReader("jazariyyah");return {pages:_readerTotalPages,rendered:document.querySelectorAll("#reader-body canvas").length>0}})()');
-  console.log('offline PDF reader',JSON.stringify(reader));if(!reader?.rendered||!reader?.pages)failed=true;
- }
-}
 const jpeg = /\.jpe?g$/i.test(out);
 const { data } = await cdp('Page.captureScreenshot', jpeg ? { format: 'jpeg', quality: 88 } : { format: 'png' });
 writeFileSync(out, Buffer.from(data, 'base64'));

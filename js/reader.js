@@ -70,10 +70,6 @@ async function loadPdfDocument(bookId, overrideUrl){
   return wrapped;
 }
 
-function getCachedPdf(bookId){
-  return _pdfDocs[bookId] || null;
-}
-
 function clearPdfCache(bookId){
   if(bookId){
     delete _pdfDocs[bookId];
@@ -191,32 +187,6 @@ async function generateCoversForGrid(){
   }
 }
 
-async function ensureAllCovers(){
-  await loadCoverCache();
-
-  const missing = BOOKS.filter(b => !getCachedCover(b.id));
-  if(!missing.length) return;
-
-  for(const book of missing){
-    await generateBookCover(book.id);
-  }
-}
-
-function getCoverCacheStats(){
-  if(!_coverCache) return { count: 0, size: 0 };
-  const all = {..._legacyCoverCache,..._coverCache};
-  const keys = Object.keys(all);
-  let size = 0;
-  for(const cache of [_legacyCoverCache,_coverCache]) Object.values(cache).forEach(value => {size += (value || '').length;});
-  return { count: keys.length, size };
-}
-
-async function clearCoverCache(){
-  _coverCache = {};
-  _legacyCoverCache = {};
-  await Promise.all([saveCoverCache(),store.setMeta('book-covers',{})]);
-}
-
 async function renderPageToCanvas(pdf, pageNum, canvas, containerWidth, zoomFactor){
   zoomFactor = zoomFactor || 1;
 
@@ -271,13 +241,6 @@ async function getPdfOutline(pdf){
   }
 }
 
-async function getPdfMetadata(pdf){
-  return { title: null, author: null, pages: pdf.numPages };
-}
-
-function enterFullscreen(el){
-  if(el.requestFullscreen) el.requestFullscreen().catch(() => {});
-}
 function exitFullscreen(){
   if(document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }

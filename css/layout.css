@@ -304,8 +304,7 @@ header{
    ═══════════════════════════════════════════════════════════ */
 @media(max-width:480px){
   header{padding:8px 12px;gap:8px;min-height:auto;}
-  .header-date-ar{font-size:13px;}
-  .header-date-en{display:none;}      /* hide Gregorian on small screens */
+    /* hide Gregorian on small screens */
   .header-left{gap:4px;}
   .icon-btn{width:34px;height:34px;font-size:14px;}
       .logo-icon{
@@ -321,8 +320,7 @@ header{
 }
 
 @media(max-width:400px){
-  .header-date-ar{font-size:11px;}
-  .header-left{gap:3px;}
+    .header-left{gap:3px;}
   .icon-btn{width:32px;height:32px;font-size:13px;}
 }
 

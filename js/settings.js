@@ -244,12 +244,6 @@ function setSidebarPositionOption(position){
   updateSettingsUI();
 }
 
-async function toggleSidebarCollapseOption(){
-  if(typeof SAHIB_THEME === 'undefined') return;
-  await SAHIB_THEME.toggleSidebarCollapsed();
-  updateSettingsUI();
-}
-
 async function resetAppearanceSettings(){
   if(typeof SAHIB_THEME === 'undefined') return;
   await SAHIB_THEME.setTheme('sahib');
@@ -919,18 +913,6 @@ async function togglePrayerAlertSetting(field){
 async function setAlertLead(value){
   const minutes = Math.max(1, Math.min(120, Math.round(Number(value) || 10)));
   await savePrayerPrefs({ alerts: { leadMinutes: minutes } });
-}
-
-async function togglePerPrayerSetting(name, field){
-  const prefs = await getPrayerPrefs();
-  const pp = { ...(prefs.alerts.perPrayer[name] || { alert: true, sound: true }) };
-  pp[field] = !pp[field];
-  await savePrayerPrefs({ alerts: { perPrayer: { [name]: pp } } });
-  const el = document.querySelector(`[data-pp-switch="${name}:${field}"]`);
-  if(el){
-    el.classList.toggle('on', pp[field]);
-    el.setAttribute('aria-checked', pp[field] ? 'true' : 'false');
-  }
 }
 
 async function onSoundVolumeChange(value){

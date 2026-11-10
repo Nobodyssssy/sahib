@@ -773,29 +773,8 @@ const PrayerAlerts = (() => {
   function _notify(title, body){
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
     try{
-      if(navigator.serviceWorker && navigator.serviceWorker.ready){
-        navigator.serviceWorker.ready.then(reg => {
-          if(reg && reg.showNotification){
-            reg.showNotification(title, {
-              body,
-              icon: 'icons/icon-192.png',
-              badge: 'icons/icon-192.png',
-              tag: 'sahib-prayer',
-              renotify: true,
-              data: { url: './index.html' }
-            });
-          } else {
-            const n = new Notification(title, { body, icon: 'icons/icon-192.png', tag: 'sahib-prayer' });
-            n.onclick = () => { window.focus(); n.close(); };
-          }
-        }).catch(() => {
-          const n = new Notification(title, { body, icon: 'icons/icon-192.png', tag: 'sahib-prayer' });
-          n.onclick = () => { window.focus(); n.close(); };
-        });
-      } else {
-        const n = new Notification(title, { body, icon: 'icons/icon-192.png', tag: 'sahib-prayer' });
-        n.onclick = () => { window.focus(); n.close(); };
-      }
+      const n = new Notification(title, { body, icon: 'icons/icon-192.png', tag: 'sahib-prayer' });
+      n.onclick = () => { window.focus(); n.close(); };
     }catch(err){
       console.warn('[prayer-alerts] notification failed', err.message);
     }

@@ -846,22 +846,3 @@ function getEventsForHijriDate(month, day, gregorianDate){
   });
 }
 
-/* Get upcoming events within N days from a given Hijri date */
-function getUpcomingEvents(month, day, daysAhead){
-  daysAhead = daysAhead || 7;
-  const hits = [];
-  for(let i = 0; i <= daysAhead; i++){
-    const d = (day + i - 1) % 30 + 1;
-    const m = month;
-    const matches = getEventsForHijriDate(m, d);
-    matches.forEach(ev => {
-      hits.push({ event: ev, daysAway: i });
-    });
-  }
-  return hits;
-}
-
-/* All events — for calendar display */
-function getAllHijriEvents(){
-  return HIJRI_EVENTS;
-}

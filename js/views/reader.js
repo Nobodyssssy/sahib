@@ -575,12 +575,6 @@ async function readerZoomOut(){
   await refreshReaderPages();
 }
 
-async function readerZoomReset(){
-  _readerZoom = 1;
-  _updateReaderZoomReadout();
-  await refreshReaderPages();
-}
-
 function _updateReaderZoomReadout(){
   const el = $('reader-zoom-readout');
   if(el) el.textContent = Math.round(_readerZoom * 100) + '%';
@@ -787,7 +781,6 @@ function renderReaderBookmarks(){
       label.style.flex = '1';
       label.onclick = () => {
         gotoReaderPage(page);
-        if(window.innerWidth < 700) toggleReaderSidebar();
       };
 
       const del = document.createElement('button');
@@ -923,7 +916,6 @@ async function renderReaderThumbs(){
     thumb.dataset.page = i;
     thumb.onclick = () => {
       gotoReaderPage(i);
-      if(window.innerWidth < 700) toggleReaderSidebar();
     };
     host.appendChild(thumb);
     observer.observe(thumb);
@@ -958,7 +950,6 @@ function renderReaderToc(){
       row.onclick = () => {
         if(!item.page) return;
         gotoReaderPage(item.page);
-        if(window.innerWidth < 700) toggleReaderSidebar();
       };
       if(item.page){
         const num = document.createElement('span');
@@ -1158,7 +1149,7 @@ document.addEventListener('fullscreenchange', updateReaderFullscreenIcon);
 let _readerChromeTimer = null;
 function readerWakeControls(){
   const overlay = $('reader-overlay');
-  if(!overlay?.classList.contains('open') || !matchMedia('(min-width: 1024px)').matches) return;
+  if(!overlay?.classList.contains('open')) return;
   clearTimeout(_readerChromeTimer);
   overlay.classList.remove('reader-idle');
   _readerControlsVisible = true;

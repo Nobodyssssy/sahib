@@ -57,7 +57,7 @@ async function runReaderSearch(raw){
       const text = String(texts[i] || '').replace(/\s+/g, ' ');
       const at = Math.min(lead, h.charIndex);
       const before = esc(text.slice(0, at)), match = esc(text.slice(at, at + h.charCount)), after = esc(text.slice(at + h.charCount));
-      return `<button type="button" class="reader-search-hit" onclick="gotoReaderPage(${h.pageIndex + 1}); if(window.innerWidth < 700) toggleReaderSidebar();"><span class="reader-search-page">p. ${h.pageIndex + 1}</span><span class="reader-search-snippet">…${before}<mark>${match}</mark>${after}…</span></button>`;
+      return `<button type="button" class="reader-search-hit" onclick="gotoReaderPage(${h.pageIndex + 1});"><span class="reader-search-page">p. ${h.pageIndex + 1}</span><span class="reader-search-snippet">…${before}<mark>${match}</mark>${after}…</span></button>`;
     }).join('');
     const more = found.total > hits.length ? ` (showing first ${hits.length})` : '';
     const html = `<div class="reader-search-note">${found.total} match${found.total === 1 ? '' : 'es'} on ${pages.size} page${pages.size === 1 ? '' : 's'}${more}</div>${rows}`;

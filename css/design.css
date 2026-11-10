@@ -1153,29 +1153,8 @@ body {
   flex-direction: column;
   gap: var(--space-6);
 }
-.books-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
 .books-title { font-family: var(--font-arabic); font-size: 26px; color: var(--color-text-primary); }
 .books-subtitle { font-size: 12px; color: var(--color-text-muted); }
-.books-section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-3);
-}
-.cat-cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
-.cat-card-lg {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
-}
-.cat-card-lg:hover { transform: translateY(-3px); border-color: var(--cc); box-shadow: var(--shadow-md); }
 .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-4); }
 .book-card {
   background: var(--color-surface);
@@ -1185,34 +1164,6 @@ body {
   transition: all var(--duration-fast) var(--ease-standard);
 }
 .book-card:hover { transform: translateY(-3px); border-color: var(--color-accent-border); box-shadow: var(--shadow-md); }
-.continue-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
-.continue-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-}
-.books-beginner-banner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-5);
-  border-radius: var(--radius-xl);
-  background: linear-gradient(120deg, var(--color-accent-subtle), transparent 65%);
-  border: 1px solid var(--color-accent-border);
-  cursor: pointer;
-}
-.books-beginner-icon {
-  width: 52px; height: 52px;
-  border-radius: var(--radius-md);
-  display: grid;
-  place-items: center;
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  flex-shrink: 0;
-}
-.books-beginner-title { font-family: var(--font-arabic); font-size: 18px; color: var(--color-text-primary); }
-.books-beginner-sub { font-size: 12px; color: var(--color-text-muted); }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TASBIH
@@ -2671,47 +2622,6 @@ html[data-mode="light"] .prayer-daily-cycle-card .cycle-help-btn{
 #view-hijri .hijri-event-dot { background: var(--color-accent); }
 
 /* Books */
-#view-books .books-header {
-  border: 0;
-  border-bottom: 1px solid var(--color-rule);
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-#view-books .books-offline-btn {
-  border-radius: 2px;
-  background: transparent;
-  border-color: var(--color-border);
-  color: var(--color-text-secondary);
-}
-#view-books .books-offline-btn:hover {
-  border-color: var(--color-accent-border);
-  color: var(--color-accent-text);
-  background: var(--color-accent-subtle);
-}
-#view-books .books-beginner-banner {
-  border: 1px solid var(--color-border);
-  border-inline-start: 2px solid var(--color-accent);
-  border-radius: 2px;
-  background: var(--color-surface);
-  background-image: none;
-}
-#view-books .books-beginner-banner:hover {
-  background: var(--color-accent-subtle);
-  border-color: var(--color-accent-border);
-  border-inline-start-color: var(--color-accent);
-}
-#view-books .cat-card-lg {
-  border-radius: 4px;
-  border-color: var(--color-border-subtle);
-  background: var(--color-surface);
-  box-shadow: none;
-}
-#view-books .cat-card-lg:hover {
-  border-color: var(--color-accent-border);
-  background: var(--color-accent-subtle);
-}
-#view-books .books-section-title { font-family: var(--font-label); letter-spacing: .16em; }
 
 /* Asma */
 #view-asma .asma-header {
@@ -3472,19 +3382,6 @@ a.practice-source-link:hover { color: var(--color-accent-text); text-decoration-
 .home-practice-title { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
 .home-practice-title > span[lang="ar"] { font-family: var(--font-arabic); font-size: 20px; line-height: 1.4; color: var(--color-text-primary); }
 .home-practice-title > span:not([lang]) { overflow: hidden; color: var(--color-text-secondary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.home-index-item { display: grid; grid-template-columns: 27px 24px minmax(0, 1fr) 16px; align-items: center; gap: 11px; padding: 15px 0; border: 0; border-bottom: 1px solid var(--color-border-subtle); background: transparent; text-align: start; cursor: pointer; }
-.home-index-item:hover { background: var(--color-hover); }
-.home-index-item:hover .home-index-en { color: var(--color-accent-text); }
-.home-index-num { color: var(--color-text-muted); font-family: var(--font-label); font-size: 9px; letter-spacing: .1em; }
-.home-index-glyph { color: var(--color-text-muted); }
-.home-index-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.home-index-ar { font-family: var(--font-arabic); font-size: 20px; line-height: 1.4; color: var(--color-text-primary); }
-.home-index-en { color: var(--color-text-secondary); font-size: 13px; }
-.home-index-note { color: var(--color-text-muted); font-size: 10px; }
-.home-index-arrow { color: var(--color-text-muted); opacity: .55; }
-.home-index-item--practice .home-index-num,
-.home-index-item--practice .home-index-glyph,
-.home-index-item--practice .home-index-en { color: var(--color-accent-text); }
 
 /* Cycle legibility: keep the printed-strip character, but let the names read. */
 .cycle-panel { border-radius: 1px; }
@@ -3492,7 +3389,7 @@ a.practice-source-link:hover { color: var(--color-accent-text); text-decoration-
 /* English copy reads left-to-right inside the RTL almanac. The blocks stay
    on their existing side of the page; only the sentence direction changes so
    punctuation and line breaks follow English, not Arabic, conventions. */
-.practice-head h1, .practice-head-copy > p, .practice-head .practice-eyebrow, .practice-view-intro h2, .practice-view-intro > p, .practice-entry-summary, .practice-tracker-line, .practice-catalog-head h3, .practice-catalog-head p, .practice-catalog-row p, .practice-catalog-foot p, .practice-welcome-copy, .practice-empty > h2, .practice-empty > p, .practice-quiet p, .practice-rail-empty, .practice-rail-note, .practice-detail-lead > p, .practice-detail-grid p, .practice-detail-source p, .practice-personal-note p, .practice-detail-history p, .practice-detail-foot, .practice-detail-muted, .practice-form-note, .practice-form-source p, .practice-check-row small, .practice-reminder-copy span, .practice-reminder-foot p, .home-index-note{
+.practice-head h1, .practice-head-copy > p, .practice-head .practice-eyebrow, .practice-view-intro h2, .practice-view-intro > p, .practice-entry-summary, .practice-tracker-line, .practice-catalog-head h3, .practice-catalog-head p, .practice-catalog-row p, .practice-catalog-foot p, .practice-welcome-copy, .practice-empty > h2, .practice-empty > p, .practice-quiet p, .practice-rail-empty, .practice-rail-note, .practice-detail-lead > p, .practice-detail-grid p, .practice-detail-source p, .practice-personal-note p, .practice-detail-history p, .practice-detail-foot, .practice-detail-muted, .practice-form-note, .practice-form-source p, .practice-check-row small, .practice-reminder-copy span, .practice-reminder-foot p{
   direction: ltr;
   text-align: right;
 }
@@ -3521,9 +3418,6 @@ a.practice-source-link:hover { color: var(--color-accent-text); text-decoration-
   direction: ltr;
   text-align: left;
 }
-.home-index-note{
-  text-align: right;
-}
 .practice-head h1, .practice-view-intro h2, .practice-welcome h2, .practice-empty h2, .practice-catalog-head h3, .practice-detail-modal h2, .practice-form-modal h2, .practice-modal-head h2{
   text-wrap: balance;
 }
@@ -3531,10 +3425,7 @@ a.practice-source-link:hover { color: var(--color-accent-text); text-decoration-
 /* Legibility floor for editorial labels and metadata. */
 .practice-eyebrow { font-size: 10.5px; letter-spacing: .1em; }
 .home-practice-title > span:not([lang]) { font-size: 13px; }
-.home-index-num { font-size: 10px; }
-.home-index-en { font-size: 13.5px; direction: ltr; text-align: right; }
 .side-label { direction: ltr; text-align: right; }
-.home-index-note { font-size: 11px; line-height: 1.55; }
 .practice-entry-kicker { font-size: 10px; letter-spacing: .08em; }
 .practice-entry-time span { font-size: 10px; letter-spacing: .03em; direction: ltr; text-align: right; }
 .practice-entry-meta { font-size: 10.5px; }

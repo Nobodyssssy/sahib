@@ -4,16 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1e1e2e">
-<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="صاحب">
-<meta name="mobile-web-app-capable" content="yes">
 <title>صاحب · Sahib</title>
 <meta name="description" content="Sahib — your offline-first Islamic daily companion for prayer, adhkar and reading.">
-<link rel="canonical" href="https://nobodyssssy.github.io/sahib/">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
@@ -107,7 +100,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <div class="sidebar-status" id="sidebar-status" title="Offline-first PWA">
+      <div class="sidebar-status" id="sidebar-status">
         <span class="sidebar-status-dot" id="sidebar-status-dot"></span>
         <span id="sidebar-status-text">Local-first · offline ready</span>
       </div>
@@ -520,7 +513,6 @@
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/icons.js"></script>
-<script src="js/scroll-preserve.js"></script>
 <script src="js/dict.js"></script>
 <script src="js/vendor/fuse.min.js"></script>
 <!-- PDF.js removed — using EmbedPDF (PDFium WASM) via dynamic import in js/reader.js?v=20261110-outline-1 -->
@@ -535,7 +527,6 @@
 <script src="js/vendor/adhan.js"></script>
 <script src="js/prayer.js?v=20261023-timezone-1"></script>
 <script src="js/prayer-widget.js?v=20261110-owner-1"></script>
-<script src="js/qibla.js"></script>
 <script src="js/location.js"></script>
 <script src="js/quotes.js"></script>
 <script src="js/dates.js"></script>
@@ -604,33 +595,5 @@
   </div>
 </div>
 
-<script>
-  // ── Service worker registration ──
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      const appBase = new URL('./', location.href);
-      navigator.serviceWorker.register(new URL('sw.js', appBase), {
-        scope: appBase.href,
-        updateViaCache: 'none'
-      })
-        .then((reg) => {
-          reg.addEventListener('updatefound', () => {
-            const nw = reg.installing;
-            if (!nw) return;
-            nw.addEventListener('statechange', () => {
-              if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                nw.postMessage('SKIP_WAITING');
-                window.location.reload();
-              }
-            });
-          });
-          console.log('[pwa] service worker registered');
-        })
-        .catch((err) => console.warn('[pwa] SW registration failed', err));
-    });
-  }
-
-  // Manifest shortcuts are applied by app.js after the stored state is ready.
-</script>
 </body>
 </html>

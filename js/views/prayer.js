@@ -20,17 +20,6 @@ function _formatAgo(ts){
   return `${days}d ago`;
 }
 
-/* Absolute local time, short form, for the offline hint. */
-function _formatStamp(ts){
-  if(!ts) return '';
-  const d = new Date(ts);
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  const mo  = String(d.getMonth()+1).padStart(2,'0');
-  return `${day}/${mo} ${hh}:${mm}`;
-}
-
 let _prayerTab = 'today';
 
 async function openPrayerView(){
@@ -161,29 +150,6 @@ function _formatHM(minutes){
   const h = Math.floor(m / 60);
   const mm = m % 60;
   return String(h).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
-}
-
-function _formatDuration(minutes){
-  const h = Math.floor(minutes / 60);
-  const m = Math.round(minutes % 60);
-  if(h === 0) return `${m}m`;
-  if(m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
-}
-
-function _computeForbiddenWindows(day){
-  if(!day) return [];
-  const fajr    = _parseHM(day.timings.Fajr);
-  const sunrise = _parseHM(day.timings.Sunrise);
-  const dhuhr   = _parseHM(day.timings.Dhuhr);
-  const asr     = _parseHM(day.timings.Asr);
-  const maghrib = _parseHM(day.timings.Maghrib);
-
-  return [
-    { key:'dawn',   labelEn:'After Fajr until sunrise', labelAr:'من الفجر حتى طلوع الشمس', startMin:fajr,       endMin:sunrise + 15 },
-    { key:'zenith', labelEn:'At solar zenith',          labelAr:'عند استواء الشمس',        startMin:dhuhr - 5,  endMin:dhuhr },
-    { key:'asr',    labelEn:'After Asr until Maghrib',  labelAr:'من العصر حتى غروب الشمس', startMin:asr,        endMin:maghrib },
-  ];
 }
 
 function _computeForbiddenOnBar(cycle, day, nextDay){
@@ -380,24 +346,6 @@ function setCycleLang(lang){
   } else {
     renderPrayerView();
   }
-}
-
-function _computeNightThirds(day, nextDay){
-  if(!day || !nextDay) return null;
-  const maghrib = _parseHM(day.timings.Maghrib);
-  const fajrNext = _parseHM(nextDay.timings.Fajr) + 1440;
-  const total = fajrNext - maghrib;
-  if(total <= 0) return null;
-  const third = total / 3;
-  return {
-    maghrib,
-    awwabin:        maghrib + 20,
-    firstThirdEnd:  maghrib + third,
-    midnight:       maghrib + total / 2,
-    secondThirdEnd: maghrib + 2 * third,
-    fajr:           fajrNext,
-    total,
-  };
 }
 
 function _cycleIdlePanelHTML(){
@@ -642,84 +590,6 @@ function onCycleForbiddenTap(idx){
 async function _loadForbiddenLang(){
   const saved = await store.getMeta('forbiddenLang');
   _forbiddenLang = (saved === 'ar' || saved === 'en') ? saved : 'en';
-}
-
-function setForbiddenLang(lang){
-  _forbiddenLang = (lang === 'ar') ? 'ar' : 'en';
-  store.setMeta('forbiddenLang', _forbiddenLang);
-
-  const card = document.querySelector('.prayer-forbidden-card');
-  if(card && _prayerData && _prayerData.selectedDay){
-    const forbidden = _computeForbiddenWindows(_prayerData.selectedDay);
-    const isAr = _forbiddenLang === 'ar';
-
-    card.querySelectorAll('.forbidden-lang-btn').forEach(btn => {
-      const isOn = (isAr && btn.textContent.trim() === 'عربي') ||
-                   (!isAr && btn.textContent.trim() === 'EN');
-      btn.classList.toggle('on', isOn);
-    });
-
-    card.querySelectorAll('.forbidden-row').forEach((row, i) => {
-      const w = forbidden[i];
-      if(w){
-        const labelEl = row.querySelector('.forbidden-label');
-        if(labelEl) labelEl.textContent = isAr ? w.labelAr : w.labelEn;
-      }
-    });
-  }
-
-  const modalBody = document.getElementById('forbidden-note-body');
-  if(modalBody){
-    modalBody.innerHTML = _forbiddenModalBodyHTML();
-  }
-}
-
-function _forbiddenModalBodyHTML(){
-  const isAr = _forbiddenLang === 'ar';
-  return `
-    <div class="forbidden-hadith-label">${icon('book-open', 14)} Hadith \u00B7 الحديث</div>
-    <div class="forbidden-hadith-body ${isAr?'ar':'en'}">${isAr ? FORBIDDEN_TIMES_HADITH.ar : FORBIDDEN_TIMES_HADITH.en}</div>
-    <div class="forbidden-sources-label">${icon('library', 14)} Sources \u00B7 المصادر</div>
-    <div class="forbidden-sources-list">
-      <a href="https://sunnah.com/bukhari:5819" target="_blank" rel="noopener">Sahih al-Bukhari 5819</a>
-      <a href="https://sunnah.com/bukhari:547" target="_blank" rel="noopener">Sahih al-Bukhari 547</a>
-      <a href="https://sunnah.com/bukhari:548" target="_blank" rel="noopener">Sahih al-Bukhari 548</a>
-      <a href="https://sunnah.com/bukhari:551" target="_blank" rel="noopener">Sahih al-Bukhari 551</a>
-    </div>
-    <div class="forbidden-note-label">${icon('info', 14)} Note \u00B7 ملاحظة</div>
-    <div class="forbidden-note-body ${isAr?'ar':'en'}">${isAr ? FORBIDDEN_TIMES_HADITH.noteAr : FORBIDDEN_TIMES_HADITH.noteEn}</div>
-  `;
-}
-
-function openForbiddenNote(){
-  let modal = document.getElementById('ov-forbidden-note');
-  if(!modal){
-    modal = document.createElement('div');
-    modal.className = 'ov center';
-    modal.id = 'ov-forbidden-note';
-    modal.setAttribute('onclick', 'if(event.target===this)closeForbiddenNote()');
-    modal.innerHTML = `
-      <div class="modal-box" style="max-width:520px">
-        <div class="mh">
-          <h2>Forbidden times \u00B7 أوقات النهي</h2>
-          <button class="btn-close" onclick="closeForbiddenNote()" aria-label="Close">${icon('x', 16)}</button>
-        </div>
-        <div class="mb" id="forbidden-note-body"></div>
-      </div>`;
-    document.body.appendChild(modal);
-  }
-  document.getElementById('forbidden-note-body').innerHTML = _forbiddenModalBodyHTML();
-  modal.classList.add('open');
-  lockBody();
-  if(typeof injectHeaderIcons === 'function'){
-    setTimeout(() => injectHeaderIcons(), 0);
-  }
-}
-
-function closeForbiddenNote(){
-  const modal = document.getElementById('ov-forbidden-note');
-  if(modal) modal.classList.remove('open');
-  unlockBody();
 }
 
 function openDailyCycleHelp(){
@@ -1091,11 +961,6 @@ function _mountPrayerWidget(){
   PrayerWidget.mount('prayer-view-widget', { variant: 'garden', showTimes: false, showLink: false });
 }
 
-function startCountdown(){
-  /* The shared PrayerWidget ticker handles the live countdown. */
-  _mountPrayerWidget();
-}
-
 async function prayerGoToday(){
   const now = new Date();
   if(now.getFullYear() !== _prayerData.monthYear || (now.getMonth() + 1) !== _prayerData.monthMonth){
@@ -1270,15 +1135,3 @@ function _attachPrayerSwipe(){
   card.dataset.swipeAttached = '1';
 }
 
-async function refreshLocation(){
-  toast('Updating location...', 'compass');
-  try{
-    const loc = await requestGPSLocation();
-    await store.setMeta('location', loc);
-    await ensureCache();
-    toast('Location updated', 'map-pin');
-    openPrayerView();
-  }catch(err){
-    toast(err.message, 'alert');
-  }
-}

@@ -29,12 +29,6 @@ async function getBookAvailability(id){
   return { readable, canDownload:!readable && !!book.downloadAllowed };
 }
 
-function getBooksByCategory(categoryId){
-  if(!categoryId || categoryId === 'all') return allBooks();
-  if(categoryId === 'local') return getLocalBooks();
-  return BOOKS.filter(b => b.category === categoryId);
-}
-
 function getCategoryById(id){
   if(id === 'local'){
     return { id: 'local', ar: 'كتبي المحلية', en: 'My local books', color: '#7aa2f7' };
@@ -67,18 +61,6 @@ function resolveBookPath(book){
   if(!book.file) return '';
   if(book.source==='included') return 'assets/books/' + book.file.split('/').map(encodeURIComponent).join('/');
   return BOOKS_BASE_PATH + book.file.split('/').map(encodeURIComponent).join('/');
-}
-
-/* --- Category counts --------------------------------------------------- */
-function getCategoryBookCounts(){
-  const counts = {};
-  BOOK_CATEGORIES.forEach(c => {
-    counts[c.id] = BOOKS.filter(b => b.category === c.id).length;
-  });
-  if(typeof getLocalBooks === 'function'){
-    counts['local'] = getLocalBooks().length;
-  }
-  return counts;
 }
 
 /* ==========================================================================
@@ -158,11 +140,6 @@ async function toggleBookBookmark(bookId, page){
   return list;
 }
 
-function isBookPageBookmarked(bookId, page){
-  if(!_bookmarks) return false;
-  return (_bookmarks[bookId] || []).includes(page);
-}
-
 /* ==========================================================================
    Beginner path - curated reading order for newcomers.
    Virtual category id: '__beginner' (double underscore = not a real category).
@@ -183,21 +160,10 @@ const BEGINNER_BOOK_NOTES = {
   'hisn-muslim':          { ar: 'تطبيق عملي: أذكار اليوم والليلة.', en: 'Practical application: daily and nightly adhkar.' },
 };
 
-function isBeginnerCategoryId(id){
-  return id === '__beginner';
-}
-
 function getBeginnerBooks(){
   return BEGINNER_BOOK_IDS
     .map(id => getBookById(id))
     .filter(Boolean);
-}
-
-function getBeginnerBookNote(bookId){
-  const n = BEGINNER_BOOK_NOTES[bookId];
-  if(!n) return null;
-  const lang = (typeof _booksLang === 'string') ? _booksLang : 'ar';
-  return lang === 'ar' ? n.ar : n.en;
 }
 
 /* ==========================================================================
@@ -246,10 +212,6 @@ function getLocalBooks(){
 function getLocalBookById(id){
   if(!_localBooks) return null;
   return _localBooks.find(b => b.id === id) || null;
-}
-
-function getLocalBooksBytes(){
-  return _localBooksBytes;
 }
 
 async function addLocalBookFromFile(file, overrides){
@@ -350,15 +312,6 @@ async function deleteLocalBook(id){
         await store.setMeta('book-covers-local', stored);
       }
     }catch(e){}
-  }
-}
-
-async function deleteAllLocalBooks(){
-  await db.localBooks.clear();
-  _localBooks = [];
-  _localBooksBytes = 0;
-  if(typeof store !== 'undefined'){
-    try{ await store.setMeta('book-covers-local', {}); }catch(e){}
   }
 }
 

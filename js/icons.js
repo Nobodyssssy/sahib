@@ -16,9 +16,3 @@ function icon(name, size, className, extraAttrs){
   return `<svg width="${size}" height="${size}"${cls}${attrs} aria-hidden="true"><use href="assets/icons/sprite.svg#icon-${name}"></use></svg>`;
 }
 
-/* Same but with explicit color override (rare, prefer CSS classes) */
-function iconColored(name, size, color, className){
-  size = size || 20;
-  const cls = className ? ` class="${className}"` : '';
-  return `<svg width="${size}" height="${size}"${cls} style="color:${color}" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-${name}"></use></svg>`;
-}

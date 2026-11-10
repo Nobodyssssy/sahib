@@ -158,8 +158,7 @@
 @media(max-width:1180px){
   :root{ --sidebar-width:216px; --page-gutter:24px; }
     .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .cat-cards-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
 }
 
@@ -182,9 +181,7 @@
   .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .adkar-grid,
   .search-results{ grid-template-columns:1fr; }
-  .cat-cards-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .continue-strip{ grid-template-columns:1fr; }
-    .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+        .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .pw-countdown-unit{ font-size:28px; }
 }
 
@@ -294,9 +291,7 @@
   .practice-details-btn{ grid-column:2; justify-self:start; margin-top:0; }
   .practice-catalog-foot{ flex-direction:column; align-items:start; }
                             .home-practice-title > span:not([lang]){ white-space:normal; }
-        .home-index-item{ grid-template-columns:24px 22px minmax(0,1fr) 16px; }
-  .home-index-ar{ font-size:19px; }
-}
+          }
 @media(max-width:980px){
   .practice-catalog-layout{ display:block; }
   .practice-catalog-index{ display:none; }
@@ -313,8 +308,7 @@
   .practice-upcoming-time{ font-size:11px; }
   .home-practice-title > span:not([lang]){ white-space:normal; }
     .home-practice-title > span[lang="ar"]{ font-size:19px; }
-  .home-index-note{ display:none; }
-    .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+      .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   .pw-empty-times > div:nth-child(3n){ border-inline-end:0; }
   .pw-empty-times > div:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
 }
@@ -385,20 +379,6 @@
   }
 
 /* Sahib Home: responsive editorial layout */
-.sh-home-explore-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
-.sh-home-times { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); }
-
-@media(max-width:760px){
-            .sh-home-times { grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .sh-home-time:nth-child(3n) { border-inline-end:0; }
-  .sh-home-time:nth-child(-n+3) { border-bottom:1px solid var(--color-border-subtle); }
-  .sh-home-explore-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  }
-@media(max-width:480px){
-            .sh-home-times { gap:0; }
-  .sh-home-explore-grid { grid-template-columns:minmax(0,1fr); }
-  .sh-home-explore-item { min-height:68px; }
-    }
 
 /* ═══════════════════════════════════════════════════════════
    SAHIB HOME · quiet cadence
@@ -406,45 +386,6 @@
    ═══════════════════════════════════════════════════════════ */
 
 
-.sh-home-times { border-color: var(--color-rule); }
-.sh-home-time { min-height: 72px; padding: 11px 14px; border-color: var(--color-border-subtle); }
-.sh-home-time-name { font-size: 9px; letter-spacing: .1em; }
-.sh-home-time-ar { font-size: 13px; }
-.sh-home-time strong { font-size: 15px; }
-.sh-home-time.is-next { background: var(--success-subtle); box-shadow: inset 0 -2px var(--color-success); }
-.sh-home-times-empty { justify-content: flex-start; min-height: 54px; color: var(--color-text-secondary); }
 
-.sh-home-explore-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
-.sh-home-explore-item {
-  grid-template-columns: 26px minmax(0, 1fr) 14px;
-  gap: 10px;
-  min-height: 62px;
-  padding: 8px 2px;
-  border: 0;
-  border-bottom: 1px solid var(--color-border-subtle);
-  border-radius: 0;
-  background: transparent;
-}
-.sh-home-explore-item:hover { background: transparent; }
-.sh-home-explore-icon { width: 26px; height: 26px; border-radius: 50%; background: transparent; color: var(--color-success); }
-.sh-home-explore-copy { align-items: flex-start; }
-.sh-home-explore-ar { align-self: flex-end; font-size: 14px; }
-.sh-home-explore-en { font-size: 12px; }
-.sh-home-explore-note { display: none; }
-.sh-home-explore-arrow svg { transform: none; }
-
-@media(max-width:760px){
-                    .sh-home-times { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .sh-home-time:nth-child(3n) { border-inline-end: 0; }
-  .sh-home-time:nth-child(-n+3) { border-bottom: 1px solid var(--color-border-subtle); }
-      .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
-  }
-@media(max-width:480px){
-                  .sh-home-time { min-height: 65px; padding: 9px 10px; }
-          .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
-  .sh-home-explore-item { grid-template-columns: 22px minmax(0, 1fr) 12px; gap: 6px; min-height: 56px; }
-  .sh-home-explore-icon { width: 22px; height: 22px; }
-  .sh-home-explore-en { font-size: 11px; }
-  }
 
 /* Home-specific corrections over the app-wide mobile header rules. */

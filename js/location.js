@@ -19,10 +19,6 @@ async function setManualLocation(lat, lng, label){
   return loc;
 }
 
-async function clearManualLocation(){
-  await store.setMeta('location', null);
-}
-
 async function getRecentCities(){
   const list = await store.getMeta('recentCities');
   return Array.isArray(list) ? list : [];

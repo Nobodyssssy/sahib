@@ -24,14 +24,6 @@ function normalizeEn(s){
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 }
-/** Fuzzy-ish match: query tokens must all appear as substrings */
-function fuzzyMatch(haystack, query){
-  if(!query) return true;
-  const h = haystack;
-  const tokens = query.trim().split(/\s+/).filter(Boolean);
-  return tokens.every(t => h.includes(t));
-}
-
 /* Escape HTML for safe injection */
 function esc(s){
   if(s == null) return '';

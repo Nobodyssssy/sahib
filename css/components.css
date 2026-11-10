@@ -320,64 +320,62 @@
 }
 
 /* Session Overlay — Desktop */
-@media (min-width: 768px) {
-  .session-overlay {
-    background: rgba(0, 0, 0, .55);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-    transform: none;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity .22s ease, visibility 0s linear .22s;
-  }
-  .session-overlay.open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-    transition: opacity .22s ease, visibility 0s;
-  }
-  .session-overlay > .session-header,
-  .session-overlay > .session-body,
-  .session-overlay > .session-footer {
-    width: 100%;
-    max-width: 560px;
-    box-sizing: border-box;
-    flex: 0 0 auto;
-  }
-  .session-header {
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    border: 1px solid var(--border);
-    border-bottom: none;
-    background: var(--surface);
-  }
-  .session-body {
-    background: var(--surface);
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    min-height: 0;
-    max-height: calc(90vh - 140px);
-    padding: 24px;
-  }
-  .session-footer {
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    border: 1px solid var(--border);
-    border-top: none;
-    background: var(--surface);
-  }
+.session-overlay {
+  background: rgba(0, 0, 0, .55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  transform: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .22s ease, visibility 0s linear .22s;
+}
+.session-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: opacity .22s ease, visibility 0s;
+}
+.session-overlay > .session-header,
+.session-overlay > .session-body,
+.session-overlay > .session-footer {
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+.session-header {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--surface);
+}
+.session-body {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  min-height: 0;
+  max-height: calc(90vh - 140px);
+  padding: 24px;
+}
+.session-footer {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border: 1px solid var(--border);
+  border-top: none;
+  background: var(--surface);
+}
 
-  /* When the footer is hidden or has style="display: none", the body gets the bottom edge */
-  .session-overlay:has(.session-footer[style*="display: none"]) .session-body,
-  .session-overlay.is-done .session-body {
-    border-bottom: 1px solid var(--border);
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  }
+/* When the footer is hidden or has style="display: none", the body gets the bottom edge */
+.session-overlay:has(.session-footer[style*="display: none"]) .session-body,
+.session-overlay.is-done .session-body {
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1708,7 +1706,7 @@ background: var(--bg);
   -webkit-tap-highlight-color: transparent;
 }
 
-.adkar-card:active, .cat-card:active, .cat-card-lg:active, .book-card:active, .continue-card:active, .asma-card:active, .hijri-cell:not(.empty):active, .search-result-card:active{
+.adkar-card:active, .cat-card:active, .book-card:active, .asma-card:active, .hijri-cell:not(.empty):active, .search-result-card:active{
   transform: scale(0.985);
   transition: transform 0.08s ease;
 }
@@ -1726,7 +1724,7 @@ background: var(--bg);
   transform: scale(0.96);
   transition: transform 0.1s ease;
 }
-.menu-item:active, .filter-chip:active, .quote-lang-btn:active, .cat-card-lg:active{
+.menu-item:active, .filter-chip:active, .quote-lang-btn:active{
   transform: scale(0.97);
 }
 .cbtn:active {
@@ -1739,7 +1737,7 @@ background: var(--bg);
   outline-offset: 3px;
   border-radius: 4px;
 }
-.adkar-card:focus-visible, .cat-card:focus-visible, .cat-card-lg:focus-visible, .book-card:focus-visible, .asma-card:focus-visible{
+.adkar-card:focus-visible, .cat-card:focus-visible, .book-card:focus-visible, .asma-card:focus-visible{
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

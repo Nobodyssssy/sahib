@@ -373,13 +373,6 @@ function closeAsmaDetail(){
   });
 }
 
-function setAsmaDetailLang(id, lang){
-  _asmaLang = lang;
-  const n = getAsmaById(id);
-  if(!n) return;
-  renderAsmaDetail(n, lang);
-}
-
 async function toggleAsmaMemo(id){
   await toggleMemorized(id);
   const n = getAsmaById(id);

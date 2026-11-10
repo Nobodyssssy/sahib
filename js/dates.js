@@ -75,51 +75,8 @@ function formatHeaderDate(date){
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Short form — for compact spaces
-   ═══════════════════════════════════════════════════════════ */
-function formatShortHijri(date){
-  date = date || new Date();
-  const h = getHijriParts(date);
-  if(!h) return '';
-  return `${h.day} ${h.monthNameAr} ${h.year}`;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Render into the header element
-   ═══════════════════════════════════════════════════════════ */
-function renderHeaderDate(){
-  const arEl = document.getElementById('header-date-ar');
-  const enEl = document.getElementById('header-date-en');
-  if(!arEl || !enEl) return;
-
-  const date = new Date();
-  const hijri = getHijriParts(date);
-  const weekdayAr = WEEKDAYS_AR[date.getDay()];
-
-  /* Arabic line: الأحد 2 ربيع الثاني 1448 */
-  if(hijri){
-    arEl.textContent = `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year}`;
-  } else {
-    arEl.textContent = '';
-  }
-
-  /* English line: Tuesday 15 Sep 2026 */
-  const weekdayEn = date.toLocaleDateString('en-US', { weekday: 'long' });
-  const monthEn = MONTHS_EN[date.getMonth()];
-  enEl.textContent = `${weekdayEn} ${date.getDate()} ${monthEn} ${date.getFullYear()}`;
-}
-
-/* ═══════════════════════════════════════════════════════════
    Auto-refresh at midnight — check every minute
    ═══════════════════════════════════════════════════════════ */
 let _lastDateStr = '';
-function checkHeaderDateChange(){
-  const today = new Date().toDateString();
-  if(today !== _lastDateStr){
-    _lastDateStr = today;
-    renderHeaderDate();
-  }
-}
-
 /* Date watcher moved to home dashboard */
 /* (kept as no-op for compatibility) */

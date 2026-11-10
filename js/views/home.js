@@ -124,54 +124,6 @@ function gardenAdhkarCard(key, label, glyph){
   return `<article class="garden-action"><span class="garden-action-icon">${icon(glyph,25)}</span><h2>${label}</h2><p>${items.length} adhkar in your collection</p><div class="garden-progress"><progress value="${done}" max="${items.length || 1}" aria-label="${label} completed"></progress><span>${done} / ${items.length}</span></div><button onclick="startSessionFromCategory('${key}',event)" ${items.length ? '' : 'disabled'}>Start session ${icon('arrow-left',14)}</button></article>`;
 }
 
-function renderHomePrayerTimes(today, prefs){
-  const timings = today && today.timings;
-  if(!timings){
-    return `<div class="sh-home-times-empty"><span>No local timetable yet. Set a location above to calculate today’s times.</span></div>`;
-  }
-
-  const order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-  let nextName = '';
-  try{
-    const next = typeof findNextPrayer === 'function' ? findNextPrayer(timings) : null;
-    if(next && !next.tomorrow) nextName = next.name;
-  }catch(err){ nextName = ''; }
-
-  return `<div class="sh-home-times" role="list" aria-label="Today's prayer and sunrise times">${order.map(name => {
-    const arabic = (typeof PRAYER_NAMES_AR !== 'undefined' && PRAYER_NAMES_AR[name]) || (name === 'Sunrise' ? 'الشروق' : '');
-    const formatted = typeof formatPrayerTime === 'function'
-      ? formatPrayerTime(timings[name], prefs && prefs.timeFormat)
-      : timings[name];
-    return `<div class="sh-home-time${name === nextName ? ' is-next' : ''}" role="listitem"${name === nextName ? ' aria-current="time"' : ''}>
-      <span class="sh-home-time-name">${esc(name)}</span>
-      <span class="sh-home-time-ar" lang="ar" dir="rtl">${esc(arabic)}</span>
-      <strong dir="ltr">${esc(formatted || '—')}</strong>
-    </div>`;
-  }).join('')}</div>`;
-}
-
-function renderHomeExploreHTML(){
-  const features = [
-    { id:'prayer', icon:'mosque', ar:'الصلاة', en:'Prayer', note:'Your local timetable', action:'openPrayerView()' },
-    { id:'adhkar', icon:'book-open', ar:'الأذكار', en:'Adhkar', note:'Words to return to', action:'goToAdkarCategories()' },
-    { id:'practice', icon:'practice', ar:'الورد اليومي', en:'Daily practice', note:'Routines you choose', action:"openPracticeView('today')" },
-    { id:'hijri', icon:'calendar', ar:'التقويم الهجري', en:'Hijri calendar', note:'Dates and observances', action:'openHijriView()' },
-    { id:'asma', icon:'sparkles', ar:'الأسماء الحسنى', en:'99 Names', note:'Meaning and reflection', action:'openAsmaView()' },
-    { id:'tasbih', icon:'beads', ar:'المسبحة', en:'Tasbih', note:'A quiet counter', action:'openTasbihView()' }
-  ];
-
-  return `<div class="sh-home-explore-grid">${features.map(item => `
-    <button type="button" class="sh-home-explore-item" onclick="${item.action}">
-      <span class="sh-home-explore-icon" aria-hidden="true">${icon(item.icon, 18)}</span>
-      <span class="sh-home-explore-copy">
-        <span class="sh-home-explore-ar" lang="ar" dir="rtl">${item.ar}</span>
-        <span class="sh-home-explore-en">${item.en}</span>
-        <span class="sh-home-explore-note">${item.note}</span>
-      </span>
-      <span class="sh-home-explore-arrow" aria-hidden="true">${icon('arrow-left', 14)}</span>
-    </button>`).join('')}</div>`;
-}
-
 function renderHomePracticePanel(){
   const loading = `<section class="desk-side-block">
     <div class="desk-section-head"><h2 class="desk-section-title">Daily practice</h2></div>
@@ -319,13 +271,6 @@ function renderHomeContinue(book){
   </section>`;
 }
 
-function _homeDate(key){
-  if(!key) return '';
-  const parts = String(key).split('-').map(Number);
-  if(parts.length !== 3) return key;
-  return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-}
-
 function greetingForNow(date){
   const h = date.getHours();
   if(h < 5)  return 'Peaceful night';
@@ -342,75 +287,6 @@ function greetingArForNow(date){
   if(h < 17) return 'طاب نهارك';
   if(h < 20) return 'مساء الخير';
   return 'سلامٌ في المساء';
-}
-
-/* Kept for older callers: a compact today card. The home page renders its
-   own editorial hero, but other modules still use this helper. */
-async function renderTodayCardHTML(){
-  const date = new Date();
-  const hijri = (typeof getHijriParts === 'function') ? getHijriParts(date) : null;
-  const weekdayAr = (typeof WEEKDAYS_AR !== 'undefined') ? WEEKDAYS_AR[date.getDay()] : '';
-  const uiLocale = window.SAHIB_I18N?.language==='ar'?'ar':'en-US';
-  const weekdayEn = date.toLocaleDateString(uiLocale, { weekday: 'long' });
-
-  let prayerLine = '';
-  try{
-    const result = await getToday();
-    if(result && result.today){
-      const next = findNextPrayer(result.today.timings);
-      prayerLine = `
-        <div class="home-today-prayer" onclick="openPrayerView()">
-          <span class="home-prayer-icon">${icon('mosque', 16)}</span>
-          <span class="home-prayer-label">${next.name}${next.tomorrow ? ' (tomorrow)' : ''}</span>
-          <span class="home-prayer-time">${next.time}</span>
-          <span class="home-prayer-countdown">in ${formatCountdown(next.minutesLeft)}</span>
-        </div>`;
-    }
-  }catch(err){
-    prayerLine = `
-      <div class="home-today-prayer" onclick="openLocationPicker()">
-        <span class="home-prayer-icon">${icon('map-pin', 16)}</span>
-        <span class="home-prayer-label">Set your location</span>
-        <span class="home-prayer-countdown">for prayer times</span>
-      </div>`;
-  }
-
-  return `
-    <div class="home-today-card">
-      <div class="home-today-date-ar">${hijri ? `${weekdayAr} ${hijri.day} ${hijri.monthNameAr} ${hijri.year}` : ''}</div>
-      <div class="home-today-date-en">${weekdayEn} ${date.getDate()} ${date.toLocaleDateString('en-US', { month: 'short' })} ${date.getFullYear()}</div>
-      ${prayerLine}
-    </div>`;
-}
-
-function setHomeTab(idx){
-  window._homeTab = idx;
-  const tabs = document.getElementById('home-tabs');
-  const dots = document.querySelectorAll('.home-tab-dot');
-  const arrows = document.querySelectorAll('.home-tab-arrow');
-  if(tabs) tabs.dataset.tab = String(idx);
-  dots.forEach((d, i) => d.classList.toggle('on', i === idx));
-  if(arrows[0]) arrows[0].disabled = (idx === 0);
-  if(arrows[1]) arrows[1].disabled = (idx === 1);
-}
-
-function _attachHomeTabsSwipe(){
-  const body = document.getElementById('home-tabs-body');
-  if(!body || body.dataset.swipeAttached === '1') return;
-  let startX = 0;
-  body.addEventListener('touchstart', e => {
-    if(e.touches.length !== 1) return;
-    startX = e.touches[0].clientX;
-  }, { passive: true });
-  body.addEventListener('touchend', e => {
-    if(!e.changedTouches.length) return;
-    const dx = e.changedTouches[0].clientX - startX;
-    if(Math.abs(dx) < 50) return;
-    const cur = window._homeTab || 0;
-    if(dx > 0 && cur > 0) setHomeTab(cur - 1);
-    else if(dx < 0 && cur < 1) setHomeTab(cur + 1);
-  }, { passive: true });
-  body.dataset.swipeAttached = '1';
 }
 
 function renderHomeQuotePreviewHTML(){
@@ -504,40 +380,6 @@ function toggleHomeQuote(event){
       teaser.innerHTML = `${_quoteExpanded ? 'Close tafsir' : 'Open today’s tafsir'} ${icon(_quoteExpanded ? 'chevron-up' : 'arrow-left', 13)}`;
     }
   }
-}
-
-function renderHomeFeaturesHTML(){
-  const features = [
-    { id:'practice', icon:'practice', ar:'الورد', en:'Daily practice', note:'What you chose to keep', action:"openPracticeView('today')" },
-    { id:'adkar', icon:'book-open', ar:'الأذكار', en:'Adkar', note:'Morning, evening and the daily fortress', action:'goToAdkarCategories()' },
-    { id:'prayer', icon:'mosque', ar:'الصلاة', en:'Prayer times', note:'The day’s five anchors', action:'openPrayerView()' },
-    { id:'hijri', icon:'calendar', ar:'التقويم الهجري', en:'Hijri calendar', note:'Lunar dates and events', action:'openHijriView()' },
-    { id:'asma', icon:'sparkles', ar:'الأسماء الحسنى', en:'99 Names', note:'A slow reading of the names', action:'openAsmaView()' },
-    { id:'books', icon:'library', ar:'المكتبة', en:'Library', note:'Books and local reading', action:'openBooksView()' },
-    { id:'tasbih', icon:'beads', ar:'المسبحة', en:'Tasbih', note:'A quiet counter', action:'openTasbihView()' },
-    { id:'search', icon:'search', ar:'البحث', en:'Search', note:'Find any dhikr or book', action:'goToAdkarCategories();focusGlobalSearch()' }
-  ];
-
-  return `
-    <div class="home-index-list">
-      ${features.map((f, i) => `
-        <button type="button" class="home-index-item ${f.id === 'practice' ? 'home-index-item--practice' : ''}" onclick="${f.action}">
-          <span class="home-index-num">${String(i + 1).padStart(2, '0')}</span>
-          <span class="home-index-glyph">${icon(f.icon, 17)}</span>
-          <span class="home-index-copy">
-            <span class="home-index-ar" lang="ar" dir="rtl">${f.ar}</span>
-            <span class="home-index-en">${f.en}</span>
-            <span class="home-index-note">${f.note}</span>
-          </span>
-          <span class="home-index-arrow">${icon('arrow-left', 14)}</span>
-        </button>
-      `).join('')}
-    </div>
-  `;
-}
-
-function goToAdkar(){
-  goToAdkarCategories();
 }
 
 function goHomeView(){

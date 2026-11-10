@@ -162,9 +162,3 @@ function renderCatChips(catKeys){
   }).join('');
 }
 
-function renderTagChips(tags){
-  if(!Array.isArray(tags) || !tags.length) return '';
-  return tags.map(t =>
-    `<span class="badge badge-tag">#${esc(t)}</span>`
-  ).join('');
-}
