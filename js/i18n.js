@@ -386,7 +386,7 @@ Search your adhkar…|ابحث في الأذكار…`;
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode())translateNode(node);
   const elements=root.querySelectorAll?.('[placeholder],[aria-label],[title]')||[];
   for(const el of elements){if(el.closest('svg,[data-no-i18n]'))continue;let saved=attributes.get(el)||{};for(const name of ['placeholder','aria-label','title']){if(!el.hasAttribute(name))continue;const current=el.getAttribute(name),previous=saved[name],source=previous&&current===previous.last?previous.source:current,next=text(source);saved[name]={source,last:next};if(next!==current)el.setAttribute(name,next)}attributes.set(el,saved);}
-  document.documentElement.lang=language;document.documentElement.dir=language==='ar'?'rtl':'ltr';document.documentElement.dataset.language=language;
+  document.documentElement.lang=language;document.documentElement.dir=language==='ar'?'rtl':'ltr';document.documentElement.dataset.language=language;window.SAHIB_THEME?.followLanguage?.(language);
   document.querySelectorAll('[data-app-language]').forEach(b=>{const on=b.dataset.appLanguage===language;b.classList.toggle('active',on);if(b.getAttribute('aria-pressed')!==String(on))b.setAttribute('aria-pressed',String(on))});
   document.querySelectorAll('[data-global-language]').forEach(b=>{const label=language==='ar'?'EN':'عربي';if(b.textContent!==label)b.textContent=label;const aria=language==='ar'?'Switch interface to English':'تغيير لغة الواجهة إلى العربية';if(b.getAttribute('aria-label')!==aria)b.setAttribute('aria-label',aria);const title=language==='ar'?'English':'العربية';if(b.title!==title)b.title=title});
  }

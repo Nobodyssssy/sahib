@@ -218,10 +218,19 @@
     apply(state);
     await Promise.all([store.setMeta('font', state.font),store.setMeta('fontFollowsTheme',fontFollowsTheme)]);
   }
+  let sidebarUserSet = false;
   async function setSidebarPosition(position) {
     state.sidebarPosition = normalizeSidebarPosition(position);
+    sidebarUserSet = true;
     apply(state);
-    await store.setMeta('sidebarPosition', state.sidebarPosition);
+    await Promise.all([store.setMeta('sidebarPosition', state.sidebarPosition), store.setMeta('sidebarPositionUser', true)]);
+  }
+  /* Arabic mirrors the sidebar to the right unless the user chose a side explicitly. */
+  async function followLanguage(language) {
+    try { sidebarUserSet = (await store.getMeta('sidebarPositionUser')) === true; } catch (err) { sidebarUserSet = false; }
+    if (sidebarUserSet) return;
+    const want = language === 'ar' ? 'right' : 'left';
+    if (state.sidebarPosition !== want) { state.sidebarPosition = want; apply(state); }
   }
   async function setSidebarCollapsed(collapsed) {
     state.sidebarCollapsed = !!collapsed;
@@ -240,7 +249,7 @@
   window.SAHIB_THEME = {
     THEMES, MODES, ACCENTS, ACCENT_SETS, FONTS, THEME_FONTS,
     state, init, apply, accentsForTheme,
-    setTheme, setMode, setAccent, setFont, setSidebarPosition, setSidebarCollapsed,
+    setTheme, setMode, setAccent, setFont, setSidebarPosition, setSidebarCollapsed, followLanguage,
     toggleSidebarCollapsed, toggleMode,
     normalizeTheme, normalizeMode, normalizeAccent, normalizeFont, normalizeSidebarPosition
   };

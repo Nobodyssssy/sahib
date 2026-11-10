@@ -67,9 +67,7 @@ async function renderHome(){
       </div>
       <div class="garden-grid">
         <div class="garden-main">
-          <section class="garden-welcome" aria-labelledby="garden-greeting">
-            <div class="garden-welcome-copy"><h1 id="garden-greeting" data-no-i18n lang="${uiLocale==='ar'?'ar':'en'}">${uiLocale==='ar'?'السَّلَامُ عَلَيْكُمْ':'Peace be upon you'}</h1><div class="garden-greeting-secondary" id="garden-time-greeting" data-no-i18n>${esc(uiLocale==='ar'?greetingAr:greeting)}</div><p>A little time for remembrance.<br>A little space for reflection.</p><div class="garden-flourish" aria-hidden="true"><span></span>◇<span></span></div></div>
-          </section>
+          <section class="garden-welcome" aria-labelledby="garden-greeting"><div class="garden-scene" aria-hidden="true"></div><div class="garden-welcome-copy"><h1 id="garden-greeting" data-no-i18n lang="${uiLocale==='ar'?'ar':'en'}">${uiLocale==='ar'?'السَّلَامُ عَلَيْكُمْ':'Peace be upon you'}</h1><div class="garden-greeting-secondary" id="garden-time-greeting" data-no-i18n>${esc(uiLocale==='ar'?greetingAr:greeting)}</div><div class="garden-scene-phase" id="garden-scene-phase"></div></div></section>
           <section class="garden-prayer-suite" aria-label="Prayer and day breakdown" data-prayer-face="${window._homePrayerFace || 0}"><div class="home-prayer-switch"><button onclick="turnHomePrayer(-1)" aria-label="Previous prayer card">${icon('chevron-left',17)}</button><div role="tablist" aria-label="Prayer card"><button role="tab" data-prayer-tab="0" onclick="turnHomePrayer(0,0)">Prayer times</button><button role="tab" data-prayer-tab="1" onclick="turnHomePrayer(0,1)">Day rhythm</button></div><button onclick="turnHomePrayer(1)" aria-label="Next prayer card">${icon('chevron-right',17)}</button></div><div class="garden-prayer" aria-label="Prayer times"><div id="home-prayer-widget"></div><div class="garden-timezone">Times use ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone || 'your device timezone')}</div></div><div id="home-day-cycle" class="home-tab-cycle"></div></section>
           <section class="garden-actions" aria-label="Daily shortcuts">
             ${gardenAdhkarCard('sabah', 'Morning adhkar', 'sunrise')}
@@ -97,6 +95,7 @@ async function renderHome(){
   renderHomeDayCycle();
   host.querySelectorAll('[data-home-cover]').forEach(el => attachBookCover(el.dataset.homeCover,el));
   if(typeof PrayerWidget !== 'undefined') PrayerWidget.mount('home-prayer-widget', { variant:'garden', showTimes:true });
+  loadHomeScene();
   if(typeof injectHeaderIcons === 'function'){
     setTimeout(() => injectHeaderIcons(), 0);
   }
@@ -599,3 +598,12 @@ function refreshHomeGreeting(){
 setInterval(refreshHomeGreeting, 60000);
 document.addEventListener('visibilitychange', refreshHomeGreeting);
 window.addEventListener('focus', refreshHomeGreeting);
+
+async function loadHomeScene(){
+  if(typeof refreshHomeScene === 'function') refreshHomeScene();
+  try{
+    const result = typeof getToday === 'function' ? await getToday() : null;
+    window._homeSceneTimings = result && result.today ? result.today.timings : null;
+  }catch(err){ window._homeSceneTimings = null; }
+  if(typeof refreshHomeScene === 'function') refreshHomeScene();
+}

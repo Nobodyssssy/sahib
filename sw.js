@@ -7,12 +7,13 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.14.8';
+const VERSION = 'v2.15.0-d2';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
 const APP_SHELL = [
   './css/daily-rhythm.css?v=20261022-rhythm-5',
+  './css/desktop-v2.css?v=20261110-d2-1',
   './assets/home/rhythm-phases.webp',
   './',
   './index.html',
@@ -107,6 +108,7 @@ const APP_SHELL = [
   './js/vendor/embedpdf/fonts-latin/dist/index.js',
 
   './js/views/cats.js',
+  './js/home-scene.js?v=20261110-d2-1',
   './js/views/home.js?v=20261022-language-5',
   './js/views/practice.js?v=20261023-widget-1',
   './js/views/adkar.js',
