@@ -37,6 +37,22 @@ impl SessionTimer {
         };
         Ok(())
     }
+    /// Restart honours the values the user has just chosen; anything omitted keeps its previous value.
+    pub fn restart(
+        &mut self,
+        seconds: Option<u32>,
+        repeat: Option<bool>,
+        focus: Option<bool>,
+        now: i64,
+    ) -> Result<(), String> {
+        let (old_seconds, old_repeat, old_focus) = (self.seconds, self.repeat, self.focus);
+        self.start(
+            seconds.unwrap_or(old_seconds).max(10),
+            repeat.unwrap_or(old_repeat),
+            focus.unwrap_or(old_focus),
+            now,
+        )
+    }
     pub fn tick(&mut self, now: i64) -> bool {
         if self.deadline == 0 || now < self.deadline {
             return false;
@@ -57,6 +73,33 @@ impl SessionTimer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn restart_uses_the_newly_chosen_duration_and_repeat() {
+        let mut t = SessionTimer::default();
+        t.start(300, true, false, 0).unwrap();
+        t.restart(Some(600), Some(false), None, 1000).unwrap();
+        assert_eq!(t.seconds, 600);
+        assert!(!t.repeat);
+        assert_eq!(t.deadline, 601000);
+        assert!(t.tick(601000));
+        assert_eq!(t.deadline, 0, "a non-repeating timer must not schedule another chime");
+    }
+    #[test]
+    fn restart_without_values_keeps_previous_settings() {
+        let mut t = SessionTimer::default();
+        t.start(120, true, true, 0).unwrap();
+        t.restart(None, None, None, 5000).unwrap();
+        assert_eq!((t.seconds, t.repeat, t.focus), (120, true, true));
+        assert_eq!(t.deadline, 125000);
+    }
+    #[test]
+    fn stopping_clears_every_scheduled_event() {
+        let mut t = SessionTimer::default();
+        t.start(300, true, true, 0).unwrap();
+        t = SessionTimer::default();
+        assert!(!t.tick(10_000_000));
+        assert_eq!(t.deadline, 0);
+    }
     #[test]
     fn focus_allows_adhan_but_consumes_other_reminders() {
         assert!(allows_alert(true, "prayer:today:Dhuhr:time", "qatami"));

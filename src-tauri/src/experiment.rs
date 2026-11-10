@@ -78,7 +78,12 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
     } else {
         builder
     };
-    builder
+    let builder = if label == "main" {
+        builder.center()
+    } else {
+        builder
+    };
+    let window = builder
         .on_navigation(move |url| {
             if url.host_str() == Some("tauri.localhost") || url.scheme() == "tauri" {
                 true
@@ -90,6 +95,9 @@ pub fn build_window(app: &tauri::AppHandle, label: &str) -> tauri::Result<()> {
             }
         })
         .build()?;
+    if label == "main" {
+        crate::placement::place_main(app, &window, true);
+    }
     Ok(())
 }
 pub fn open_main(app: &tauri::AppHandle, visible: bool, action: Option<&str>) {
@@ -107,6 +115,7 @@ pub fn open_main(app: &tauri::AppHandle, visible: bool, action: Option<&str>) {
     }
     if let Some(w) = app.get_webview_window("main") {
         if visible {
+            crate::placement::place_main(app, &w, false);
             let _ = w.show();
             let _ = w.unminimize();
             let _ = w.set_focus();

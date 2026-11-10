@@ -80,7 +80,7 @@ const APP_SHELL = [
   './js/search.js',
   './js/vendor/adhan.js',
   './js/prayer.js?v=20261023-timezone-1',
-  './js/prayer-widget.js?v=20261022-desktop-1',
+  './js/prayer-widget.js?v=20261110-owner-1',
   './js/qibla.js',
   './js/location.js',
   './js/quotes.js',

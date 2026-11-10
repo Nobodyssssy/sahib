@@ -551,6 +551,10 @@ if(typeof document !== 'undefined'){
 
 /* Three soft rising tones. Original composition, no sampled material. */
 function playPrayerChime(volume = 0.55){
+  if(window.SahibDesktop?.available){
+    try{ window.SahibDesktop.invoke('desktop_preview_audio', { id: 'chime', volume: Math.max(0, Math.min(1, Number(volume) || 0)) }).catch(() => {}); return true; }
+    catch(err){ return false; }
+  }
   const ctx = _audioContext();
   if(!ctx) return false;
   if(ctx.state === 'suspended') ctx.resume().catch(() => {});
@@ -610,6 +614,9 @@ async function resolveAdhanSource(kind, prefs){
 }
 
 function stopPrayerAdhan(){
+  if(window.SahibDesktop?.available){
+    try{ window.SahibDesktop.invoke('desktop_stop_audio').catch(() => {}); }catch(err){ /* native stop unavailable */ }
+  }
   if(_sahibAdhanAudio){
     try{ _sahibAdhanAudio.pause(); }catch(err){ /* already stopped */ }
     _sahibAdhanAudio = null;
@@ -621,6 +628,10 @@ function stopPrayerAdhan(){
 }
 
 async function playPrayerAdhan(kind, volume, prefs){
+  /* One playback owner: in the Windows app the native player is the only Adhan output. */
+  if(window.SahibDesktop?.available){
+    return typeof window.SahibDesktop.preview === 'function' ? window.SahibDesktop.preview(kind, volume, prefs) : false;
+  }
   unlockPrayerAudio();
   stopPrayerAdhan();
   if(!prefs) prefs = await getPrayerPrefs();

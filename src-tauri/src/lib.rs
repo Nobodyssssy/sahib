@@ -8,6 +8,7 @@ mod native_text;
 #[cfg(feature = "native-widget-experiment")]
 mod native_widget;
 mod panel_perf;
+mod placement;
 mod scheduler;
 mod session_timer;
 mod taskbar;
@@ -202,6 +203,7 @@ fn show_main(app: &tauri::AppHandle) {
         return;
     }
     if let Some(w) = app.get_webview_window("main") {
+        placement::place_main(app, &w, false);
         let _ = w.show();
         let _ = w.unminimize();
         let _ = w.set_focus();
@@ -1209,11 +1211,7 @@ fn desktop_timer(
             focus.unwrap_or(false),
             now_ms(),
         )?,
-        "restart" => {
-            let old = d.timer.clone();
-            d.timer
-                .start(old.seconds.max(10), old.repeat, old.focus, now_ms())?;
-        }
+        "restart" => d.timer.restart(seconds, repeat, focus, now_ms())?,
         "stop" => d.timer = session_timer::SessionTimer::default(),
         "dismiss" => d.timer.finished = false,
         _ => return Err("Unknown timer action".into()),
@@ -1460,46 +1458,34 @@ fn start_scheduler(app: tauri::AppHandle) -> std::thread::JoinHandle<()> {
                                 let d = state.disk.lock().unwrap();
                                 (d.prefs.clone(), d.schedule.language == "ar")
                             };
-                            let _ = app
+                            let notify_allowed = app
                                 .notification()
-                                .builder()
-                                .title(if ar {
-                                    "انتهى المؤقت"
-                                } else {
-                                    "Session timer finished"
-                                })
-                                .body(if ar {
-                                    "أعد تشغيله أو غيّر المدة أو أوقفه من الأداة."
-                                } else {
-                                    "Restart, change the duration or stop from the widget."
-                                })
-                                .show();
+                                .permission_state()
+                                .map(|s| s == tauri_plugin_notification::PermissionState::Granted)
+                                .unwrap_or(true);
+                            if notify_allowed {
+                                let _ = app
+                                    .notification()
+                                    .builder()
+                                    .title(if ar {
+                                        "انتهى المؤقت"
+                                    } else {
+                                        "Session timer finished"
+                                    })
+                                    .body(if ar {
+                                        "أعد تشغيله أو غيّر المدة أو أوقفه من الأداة."
+                                    } else {
+                                        "Restart, change the duration or stop from the widget."
+                                    })
+                                    .show();
+                            }
                             if !state.audio.active.load(Ordering::Relaxed)
                                 && !due.iter().any(|e| e.sound != "off")
                             {
                                 let _ = play(&app, &p.timer_sound, p.timer_volume);
                             }
-                            if p.widget_visible {
-                                #[cfg(feature = "native-widget-experiment")]
-                                if native_widget::active(&app) {
-                                    native_widget::panel(
-                                        &app,
-                                        m.name().cloned().unwrap_or_default(),
-                                    );
-                                }
-                                if let Some(w) = app.get_webview_window("widget") {
-                                    state.widget_expanded.store(true, Ordering::Relaxed);
-                                    state
-                                        .widget_views
-                                        .lock()
-                                        .unwrap()
-                                        .entry("widget".into())
-                                        .or_default()
-                                        .expanded = true;
-                                    apply_widget(&app, &p);
-                                    let _ = w.set_focus();
-                                }
-                            }
+                            // A finished timer must never expand the widget or take focus:
+                            // the toast (when allowed) and the sound are the only signals.
                             emit_state(&app);
                         }
                     }
