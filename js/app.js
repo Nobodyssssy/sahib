@@ -5,6 +5,13 @@ window.addEventListener('sahib:counters-reset',()=>{
   sessTapCount = 0;
   sessIdx = 0;
   lastReset = new Date().toDateString();
+  /* Every open counter surface must show the new day, not only the lists. */
+  setTimeout(() => {
+    try{
+      if(typeof detailId !== 'undefined' && detailId && typeof openDetail === 'function') openDetail(detailId);
+      if(document.getElementById('session-overlay')?.classList.contains('open') && typeof renderSessionStep === 'function') renderSessionStep();
+    }catch(err){ console.warn('[daily-reset] refresh failed', err); }
+  }, 0);
 });
 
 /* ═══════════════════════════════════════════════════════════
