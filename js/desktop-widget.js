@@ -32,6 +32,9 @@ function reportPanelPhase(phase,renderStart=performance.now(),openId=widgetOpenI
   const value=next?[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].slice(0,state.prefs.widgetShowSeconds===false?2:3).map(v=>String(v).padStart(2,'0')).join(':'):'—';
   put('widget-countdown',value);put('compact-countdown',value);el('widget-countdown').setAttribute('aria-label',value+(state.schedule.language==='ar'?' متبقي':' remaining'));
   const previous=day?.prayers.filter(p=>p.at<=now).at(-1),progress=previous&&next?Math.max(0,Math.min(1,(now-previous.at)/(next.at-previous.at))):0;el('widget-compact').style.setProperty('--prayer-progress',String(Math.floor(progress*1000)/1000));
+  const ar=state.schedule.language==='ar',since=previous?Math.floor((now-previous.at)/60000):-1;
+  if(previous&&since<15){const base=ar?previous.nameAr:previous.name,tag=ar?base+' · منذ '+since+' د':base+' · '+since+' min ago';put('widget-label',tag);put('compact-label',tag);document.body.dataset.entered='true';}
+  else{if(document.body.dataset.entered==='true'){document.body.dataset.entered='false';put('widget-label',next?.name==='Sunrise'?(ar?'التالي · الشروق':'Next · Sunrise'):(ar?'الصلاة القادمة':'Next prayer'));put('compact-label',ar?'المتبقي':'Remaining');}}
   const soon=String(!!next&&next.at-now<=state.prefs.widgetWarningMinutes*60000);if(document.body.dataset.soon!==soon)document.body.dataset.soon=soon;
  }
  function renderContent(){

@@ -254,8 +254,21 @@ async function renderPageToCanvas(pdf, pageNum, canvas, containerWidth, zoomFact
   return { width: baseWidth * scale, height: page.size.height * scale };
 }
 
+/* Real PDF outline from PDFium: [{ title, page, items }] (page is 1-based or null). */
 async function getPdfOutline(pdf){
-  return [];
+  try{
+    const engine = await initPdfEngine();
+    const result = await engine.getBookmarks(pdf._doc).toPromise();
+    const walk = list => (list || []).map(b => ({
+      title: String(b.title || '').trim() || '—',
+      page: b.target && b.target.type === 'destination' ? b.target.destination.pageIndex + 1 : null,
+      items: walk(b.children),
+    }));
+    return walk(result && result.bookmarks);
+  }catch(err){
+    console.warn('[reader] outline unavailable', err);
+    return [];
+  }
 }
 
 async function getPdfMetadata(pdf){

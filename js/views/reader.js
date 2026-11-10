@@ -110,6 +110,7 @@ function ensureReaderOverlay(){
     <div class="reader-topbar" id="reader-topbar">
       <div class="reader-topbar-actions">
         <button class="reader-icon-btn" id="reader-sidebar-btn" onclick="toggleReaderSidebar()" title="Contents" data-icon="panel-left"><span class="btn-icon"></span></button>
+        <button class="reader-icon-btn" id="reader-search-btn" onclick="openReaderSearch()" title="Search in book (Ctrl+F)" aria-label="Search in book" data-icon="search"><span class="btn-icon"></span></button>
         <button class="reader-icon-btn" id="reader-page-bookmark-btn" onclick="togglePageBookmark()" title="Bookmark this page" aria-label="Bookmark this page"><span class="btn-icon"></span></button>
         <button class="reader-icon-btn" id="reader-bookmarks-list-btn" onclick="openReaderBookmarksPanel()" title="Bookmarks list" aria-label="Bookmarks list" data-icon="list"><span class="btn-icon"></span></button>
         <button class="reader-icon-btn" onclick="toggleReaderSettings()" title="Settings" data-icon="sliders"><span class="btn-icon"></span></button>
@@ -757,6 +758,7 @@ function openReaderBookmarksPanel(){
 
 function renderReaderBookmarks(){
   const sb = $('reader-sidebar');
+  if(!_readerNotes){ loadReaderNotes().then(renderReaderBookmarks); return; }
   const list = getBookBookmarks(_readerBookId);
 
   sb.innerHTML = `
@@ -777,6 +779,7 @@ function renderReaderBookmarks(){
       row.style.display = 'flex';
       row.style.alignItems = 'center';
       row.style.justifyContent = 'space-between';
+      row.style.flexWrap = 'wrap';
 
       const label = document.createElement('span');
       label.textContent = `Page ${page}`;
@@ -801,10 +804,26 @@ function renderReaderBookmarks(){
         updateReaderBookmarkBtn();
       };
 
+      const note = document.createElement('input');
+      note.type = 'text';
+      note.className = 'reader-note-input';
+      note.placeholder = 'Add a note…';
+      note.maxLength = 1000;
+      note.value = getReaderNote(_readerBookId, page);
+      note.setAttribute('aria-label', `Note for page ${page}`);
+      note.onchange = () => saveReaderNote(_readerBookId, page, note.value);
+      note.onkeydown = e => { e.stopPropagation(); if(e.key === 'Enter') note.blur(); };
+
       row.appendChild(label);
       row.appendChild(del);
+      row.appendChild(note);
       host.appendChild(row);
     });
+    const copy = document.createElement('button');
+    copy.className = 'reader-setting-btn wide';
+    copy.textContent = 'Copy bookmarks and notes';
+    copy.onclick = copyReaderNotes;
+    host.appendChild(copy);
   }
 
   if(typeof injectHeaderIcons === 'function') injectHeaderIcons();
@@ -843,6 +862,8 @@ async function toggleReaderSidebar(mode){
     renderReaderToc();
   } else if(mode === 'bookmarks'){
     renderReaderBookmarks();
+  } else if(mode === 'search'){
+    renderReaderSearch();
   } else {
     renderReaderThumbs();
   }
@@ -931,28 +952,20 @@ function renderReaderToc(){
       const row = document.createElement('div');
       row.className = 'reader-toc-item';
       row.style.paddingLeft = (12 + depth * 16) + 'px';
-      row.textContent = item.title;
-      row.onclick = async () => {
-        try{
-          let pageNum = 1;
-          if(item.dest){
-            const dest = typeof item.dest === 'string'
-              ? await _readerPdf.getDestination(item.dest)
-              : item.dest;
-            if(dest && dest[0]){
-              const ref = dest[0];
-              if(typeof ref === 'object' && ref.num !== undefined){
-                const idx = await _readerPdf.getPageIndex(ref);
-                pageNum = idx + 1;
-              }
-            }
-          }
-          gotoReaderPage(pageNum);
-          if(window.innerWidth < 700) toggleReaderSidebar();
-        }catch(err){
-          console.warn('[reader] toc jump failed', err);
-        }
+      const title = document.createElement('span');
+      title.textContent = item.title;
+      row.appendChild(title);
+      row.onclick = () => {
+        if(!item.page) return;
+        gotoReaderPage(item.page);
+        if(window.innerWidth < 700) toggleReaderSidebar();
       };
+      if(item.page){
+        const num = document.createElement('span');
+        num.className = 'reader-toc-page';
+        num.textContent = item.page;
+        row.appendChild(num);
+      }
       host.appendChild(row);
       if(item.items && item.items.length){
         renderItems(item.items, depth + 1);
@@ -1084,6 +1097,7 @@ document.addEventListener('keydown', (e) => {
       readerZoomOut();
       break;
     default:
+      if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'f' || e.key === 'F')){ e.preventDefault(); openReaderSearch(); break; }
       if(e.ctrlKey || e.metaKey || e.altKey) break;
       if(_readerShortcut(e.key)) e.preventDefault();
   }
@@ -1092,6 +1106,7 @@ document.addEventListener('keydown', (e) => {
 /* Single-key reader shortcuts (desktop). Returns true when the key was handled. */
 function _readerShortcut(key){
   switch(key){
+    case '/': openReaderSearch(); return true;
     case 'g': case 'G': {
       const panel = $('reader-settings-panel');
       if(panel && !panel.classList.contains('open')) toggleReaderSettings();
@@ -1122,6 +1137,7 @@ function toggleReaderShortcuts(){
   box.innerHTML = `<h3>Reader shortcuts</h3><dl>
     <dt>← → ↑ ↓ · PgUp PgDn</dt><dd>Previous / next page</dd>
     <dt>Home · End</dt><dd>First / last page</dd>
+    <dt>Ctrl + F · /</dt><dd>Search in book</dd>
     <dt>G</dt><dd>Go to page</dd>
     <dt>+ · − · 0</dt><dd>Zoom in / out / actual size</dd>
     <dt>W · P</dt><dd>Fit width / fit page</dd>

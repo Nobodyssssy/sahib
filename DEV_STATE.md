@@ -263,3 +263,8 @@ QA notes: build a QA binary with `TAURI_CONFIG='{"identifier":"com.sahib.compani
 - Adhkar session: count capped at target, Space advances when done, Backspace undo, arrows follow reading direction; dead `sessProgress` writes removed.
 - PDF reader: single-key shortcuts (G, B, L, T, F, W, P, 0) and `?` help. Not exercised against a real PDF (none in the test environment); key mapping tested only.
 - Redundancy: css/views/home.css (534 lines) removed after computed-style diff showed no effect. Coverage sweep: 49% of 4947 CSS rules never matched (design.css 895, responsive.css 361, home.css 156, prayer.css 132, books.css 125). Further removal needs per-sheet diffs; asma.css/books.css showed real differences, so not safe to delete.
+
+## 2026-11-10 widget + library pass
+- Widget: prayer alerts (adhan/toast) never expand or focus the widget; expansion only via click/tray. Added "Asr · 6 min ago" label for 15 min after a prayer enters (idea from Khiro95/Awqat-Salaat "elapsed" notification; MIT, no code copied). Not live-checked in the QA build: needs a Tauri rebuild? No, JS only, but not yet exercised in desktop-widget.html.
+- Reader: contents panel was dead (getPdfOutline returned []). Now uses PDFium getBookmarks. Added in-book search (Ctrl+F or /, searchAllPages + snippets), page notes on bookmarks (meta `books-notes`), copy bookmarks+notes. Tested on a hand-built 3-page PDF. Search does not highlight on the page itself; Arabic diacritics are not normalised by PDFium search.
+- Ideas not built: collections for local books, two-page spread, auto-scroll, reading ruler.
