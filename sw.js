@@ -7,7 +7,7 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.15.2-d2';
+const VERSION = 'v2.15.3-d2';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
@@ -22,7 +22,6 @@ const APP_SHELL = [
   './css/base.css',
   './css/layout.css',
   './css/tokens.css',
-  './css/views/home.css',
   './css/views/home-refresh.css?v=20261022-garden-app-4',
   './css/garden-tokens.css?v=20261022-garden-app-4',
   './css/garden-system.css?v=20261022-garden-app-4',

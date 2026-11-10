@@ -257,3 +257,9 @@ Done and verified:
 Open issues: Bug 1 and Bug 5 symptoms not reproduced; no listening test; toast action buttons not implemented (plugin has none on Windows); Practice history and PDF reader only audited; Settings modal not compacted; physical DPI 125/150/200 %, sleep/resume, fullscreen-game and Narrator tests not run; main window position is not remembered between opens. No installer built, nothing pushed or merged, installed app and profile untouched. Details: `docs/windows-v2/`.
 
 QA notes: build a QA binary with `TAURI_CONFIG='{"identifier":"com.sahib.companion.qa","productName":"Sahib QA"}' cargo build --locked --features "desktop-qa,tauri/custom-protocol"` (target dir on a healthy drive, `CARGO_BUILD_JOBS=3`); the data-dir override only applies to the QA identifier. Measure windows with a per-monitor DPI-aware probe (`tools/qa/win32.ps1`); a system-DPI-aware probe gives virtualised coordinates on mixed-DPI monitors.
+
+## 2026-11-10 desktop-v2 continuation
+- 99 Names: Leitner SRS (js/asma-srs.js, 9 unit tests). Legacy `asma-memorized` migrates to box 3 and stays in sync. "Today" session = due reviews + 5 new names/day; misses retry once. Keyboard: Space reveal, 1 missed, 2 knew, Esc end.
+- Adhkar session: count capped at target, Space advances when done, Backspace undo, arrows follow reading direction; dead `sessProgress` writes removed.
+- PDF reader: single-key shortcuts (G, B, L, T, F, W, P, 0) and `?` help. Not exercised against a real PDF (none in the test environment); key mapping tested only.
+- Redundancy: css/views/home.css (534 lines) removed after computed-style diff showed no effect. Coverage sweep: 49% of 4947 CSS rules never matched (design.css 895, responsive.css 361, home.css 156, prayer.css 132, books.css 125). Further removal needs per-sheet diffs; asma.css/books.css showed real differences, so not safe to delete.
