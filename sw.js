@@ -7,13 +7,13 @@
      - Stale-while-revalidate for fonts
    ================================================================= */
 
-const VERSION = 'v2.15.1-d2';
+const VERSION = 'v2.15.2-d2';
 const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
 const APP_SHELL = [
   './css/daily-rhythm.css?v=20261022-rhythm-7',
-  './css/desktop-v2.css?v=20261110-d2-7',
+  './css/desktop-v2.css?v=20261110-d2-8',
   './assets/home/rhythm-phases.webp',
   './',
   './index.html',

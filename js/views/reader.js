@@ -1066,7 +1066,9 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'Escape':
       e.preventDefault();
-      if($('reader-settings-panel')?.classList.contains('open')){
+      if($('reader-shortcuts')){
+        toggleReaderShortcuts();
+      } else if($('reader-settings-panel')?.classList.contains('open')){
         toggleReaderSettings();
       } else {
         closeReader();
@@ -1081,8 +1083,57 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault();
       readerZoomOut();
       break;
+    default:
+      if(e.ctrlKey || e.metaKey || e.altKey) break;
+      if(_readerShortcut(e.key)) e.preventDefault();
   }
 });
+
+/* Single-key reader shortcuts (desktop). Returns true when the key was handled. */
+function _readerShortcut(key){
+  switch(key){
+    case 'g': case 'G': {
+      const panel = $('reader-settings-panel');
+      if(panel && !panel.classList.contains('open')) toggleReaderSettings();
+      setTimeout(() => { const i = $('reader-jump-input'); if(i){ i.focus(); i.select(); } }, 60);
+      return true;
+    }
+    case 'b': case 'B': togglePageBookmark(); return true;
+    case 'l': case 'L': openReaderBookmarksPanel(); return true;
+    case 't': case 'T': toggleReaderSidebar(); return true;
+    case 'f': case 'F': toggleReaderFullscreen(); return true;
+    case 'w': case 'W': readerFit('width'); return true;
+    case 'p': case 'P': readerFit('page'); return true;
+    case '0': readerFit('actual'); return true;
+    case '?': toggleReaderShortcuts(); return true;
+  }
+  return false;
+}
+
+function toggleReaderShortcuts(){
+  const overlay = $('reader-overlay');
+  if(!overlay) return;
+  let box = $('reader-shortcuts');
+  if(box){ box.remove(); return; }
+  box = document.createElement('div');
+  box.id = 'reader-shortcuts';
+  box.setAttribute('role', 'dialog');
+  box.setAttribute('aria-label', 'Reader shortcuts');
+  box.innerHTML = `<h3>Reader shortcuts</h3><dl>
+    <dt>← → ↑ ↓ · PgUp PgDn</dt><dd>Previous / next page</dd>
+    <dt>Home · End</dt><dd>First / last page</dd>
+    <dt>G</dt><dd>Go to page</dd>
+    <dt>+ · − · 0</dt><dd>Zoom in / out / actual size</dd>
+    <dt>W · P</dt><dd>Fit width / fit page</dd>
+    <dt>T</dt><dd>Contents</dd>
+    <dt>B · L</dt><dd>Bookmark this page · bookmark list</dd>
+    <dt>F</dt><dd>Full screen</dd>
+    <dt>Ctrl + wheel</dt><dd>Zoom</dd>
+    <dt>Esc</dt><dd>Close panel / reader</dd>
+  </dl><button type="button" onclick="toggleReaderShortcuts()">Close</button>`;
+  overlay.appendChild(box);
+  box.querySelector('button').focus();
+}
 
 /* Sync fullscreen button icon */
 document.addEventListener('fullscreenchange', updateReaderFullscreenIcon);

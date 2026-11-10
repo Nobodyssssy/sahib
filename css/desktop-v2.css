@@ -154,6 +154,13 @@
 
   .session-key-hint { color: var(--d2-muted); font-size: 14px; text-align: center; margin-top: 12px; }
 
+  /* PDF reader shortcut help */
+  #reader-shortcuts { position: fixed; inset-block-start: 72px; inset-inline-end: 24px; z-index: 60; width: 340px; padding: 18px 20px; border-radius: 8px; background: var(--d2-surface); color: var(--d2-ink); border: 1px solid var(--d2-rule); box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+  #reader-shortcuts h3 { margin: 0 0 10px; font-size: 16px; }
+  #reader-shortcuts dl { margin: 0 0 12px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; }
+  #reader-shortcuts dt { font-weight: 600; white-space: nowrap; }
+  #reader-shortcuts dd { margin: 0; color: var(--d2-muted); }
+
   /* Type floor */
   button, input, select, label, small, .sidebar-footnote { font-size: max(14px, 1em); }
 }
