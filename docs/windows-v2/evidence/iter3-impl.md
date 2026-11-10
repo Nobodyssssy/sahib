@@ -1,0 +1,21 @@
+**Aesthetic read:** A quiet devotional daybook: warm paper, forest-green ink, terracotta controls, serif headings and Arabic calligraphy. The first impression is respectful and calm; the second is a collection of web templates without a settled desktop composition.
+
+**Top gaps** (max 5, most important first)
+
+1. **[Across screens / composition]**: The cream-and-serif direction is familiar, and the layouts lack the discipline to distinguish it. Home fills almost every available space; Practice stretches a small onboarding task across 1,700px; Prayer and Tasbih float near the top of enormous empty canvases. **Fix:** establish 32px content gutters and consistent alignment below a 64px header. Limit Practice to roughly 960px. Give Prayer a directly editable, 480px-wide city-search form. Remove Tasbih’s enclosing card and deliberately centre its counting instrument within the usable workspace. Compose space around each task instead of letting container defaults determine it.
+
+2. **[Home / competing priorities]**: The illustrated greeting, oversized location panel, five equally strong brown buttons and reading sidebar all demand attention. The primary daily action disappears into a feature catalogue. **Fix:** reduce the greeting to one line; replace the 250px prayer module with a roughly 112px location-setup strip until configured. Give the relevant adhkar session the sole filled primary button. Consolidate calendar, counter and library access into compact secondary links; retain one substantial reading area below.
+
+3. **[Practice, Adhkar and Library / desktop efficiency]**: Practice separates its heading and actions across the entire window. Adhkar’s toolbar extends far beyond its actual rows, while every row repeats prominent session, edit and delete controls. Library repeats its title and spends roughly 445px of height per book. **Fix:** place Practice’s date, tabs and Add action within one content header; present suggestions as five 56–64px rows. Align Adhkar search, toolbar and list to the same width; move edit/delete into a secondary menu. Delete Library’s duplicate title, reduce covers to about 160px high and titles to 17–18px so more books remain identifiable without scrolling.
+
+4. **[Typography, Hijri and Tasbih / legibility]**: Small captions and hairline icons look frail beside large, loosely spaced headings. Hijri event labels wrap awkwardly while their dates fragment into tiny annotations; the selected day’s secondary numeral is weak against brown. Tasbih’s keyboard instruction collides with its container edge. **Fix:** use a consistent 14–16px sans-serif for controls and metadata, reserving serif for 24–28px page headings. Keep Arabic devotional text around 30–36px with generous line height. Give events a 360px column with explicit date lines; use white for both selected-day numerals. Place the keyboard instruction 24px below the counter controls.
+
+5. **[Settings / misplaced emphasis]**: Six large theme previews dominate a nearly full-height modal, pushing basic mode settings below the fold. The visible language selector also omits French despite the stated product scope. **Fix:** use an approximately 880px-wide dialog with 24px section spacing. Put English, Français and العربية together, followed by mode; reduce theme choices to compact 48px rows with small swatches. Appearance preferences should be quick to scan and finish.
+
+**AI tells:** cream-and-serif editorial default, Home bento grid, repeated rounded containers, centred onboarding card with icon in tinted square, “Choose a few anchors, not a checklist” copy.
+
+**Remove:** illustrated greeting banner, duplicate Library heading, Prayer’s HTTPS implementation tip, repeated local-storage reassurance, permanent per-row delete icons.
+
+**Keep:** the forest-green and terracotta palette; the persistent sidebar with clearly marked selection.
+
+**Score:** 6/10. Reaching 7 requires a consistent desktop layout system and decisive task hierarchy, with substantially less container chrome.
