@@ -917,14 +917,21 @@ const SahibPractice = (() => {
       init().then(renderPracticeView);
       return;
     }
-    const snap = getTodaySnapshot();
-    const tab = runtime.tab || 'today';
-    let content = '';
-    if (tab === 'upcoming') content = _renderUpcoming();
-    else if (tab === 'calendar') content = _renderCalendar();
-    else if (tab === 'all') content = _renderAll();
-    else content = _renderToday(snap);
-    const late = snap.due.filter(item => item.dueMinutes != null && item.dueMinutes < _parseClock(new Date().toTimeString().slice(0, 5))).length;
+    let snap, tab, content, late;
+    try {
+      snap = getTodaySnapshot();
+      tab = runtime.tab || 'today';
+      content = '';
+      if (tab === 'upcoming') content = _renderUpcoming();
+      else if (tab === 'calendar') content = _renderCalendar();
+      else if (tab === 'all') content = _renderAll();
+      else content = _renderToday(snap);
+      late = snap.due.filter(item => item.dueMinutes != null && item.dueMinutes < _parseClock(new Date().toTimeString().slice(0, 5))).length;
+    } catch (err) {
+      console.error('[practice] render failed', err);
+      host.innerHTML = '<div class="practice-loading" role="alert">Could not draw this page. <button type="button" class="btn-cancel" onclick="SahibPractice.setTab(\'today\');SahibPractice.render()">Back to Today</button></div>';
+      return;
+    }
     host.innerHTML = `<div class="practice-page">
       <div class="practice-head">
         <div class="practice-head-copy">

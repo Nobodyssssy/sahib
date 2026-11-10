@@ -283,3 +283,9 @@ QA notes: build a QA binary with `TAURI_CONFIG='{"identifier":"com.sahib.compani
 - Panel + web renderer: same states via body[data-state], blinking outline on .prayer-widget/.widget-compact; any pointerdown acknowledges. Reduced-motion: static outline.
 - Live QA tools/qa/verify-awqat-widget.mjs (isolated QA identifier, fake clock via widget-time): 16/16 pass on the real taskbar (fills, blink seen on and off, ack stops blink, re-arms for next prayer, pref off, Arabic, panel outline). tools/qa/verify-native-fixes.mjs re-run on the same build: 11/11.
 - Not verified: real mouse click on the taskbar widget (ack tested via the panel path), web-renderer compact in a real window, multi-monitor taskbar.
+
+## 2026-11-10 blank page after widget -> Open Sahib (fixed, verified live)
+- Root cause: when the main window is unloaded (close to tray) the app saves the last view; on reopen desktop.js restored it with a bare showView(). Pages that render lazily (Practice, and in principle others) were shown empty (view-practice active, 0 chars). Reproduced on the QA build, then fixed: js/desktop.js restoreView() uses the same opener as the sidebar (goHomeView/openPracticeView/openPrayerView/openHijriView/openAsmaView/openBooksView/openTasbihView).
+- practice.js: renderPracticeView now catches render errors and shows "Back to Today" instead of leaving a blank page.
+- tools/qa/verify-open-practice.mjs (isolated QA build): window loaded, window unloaded+recreated via widget route, and last-page restore for 7 pages: 10/10 pass after the fix (the Practice restore check failed before it).
+- Not tested: the user's real profile data (it may contain practice entries my fixtures do not).

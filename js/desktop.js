@@ -151,11 +151,13 @@ window.SahibDesktop=(()=>{
    await window.__TAURI__.event.listen('sahib:widget-open',event=>event.payload==='settings'?openSettings('desktop'):event.payload==='timetable'?document.querySelector('[data-nav=prayer]').click():openPracticeView('today'));
    const experiment=await invoke('desktop_experiment',{action:'ready',snapshot:null});
    if(experiment.enabled){
+    /* A page restored after the window was unloaded must be rendered by its own opener (the one the sidebar uses); a bare showView() leaves lazily rendered pages such as Practice empty. */
+    const restoreView=id=>{const open={'view-home':()=>goHomeView(),'view-practice':()=>openPracticeView('today'),'view-prayer':()=>openPrayerView(),'view-hijri':()=>openHijriView(),'view-asma':()=>openAsmaView(),'view-books':()=>openBooksView(),'view-tasbih':()=>openTasbihView()}[id];try{if(open)open();else showView(id);}catch(error){console.warn('[desktop] restore failed',id,error);showView(id);}};
     const route=action=>action==='settings'?openSettings('desktop'):action==='timetable'?document.querySelector('[data-nav=prayer]').click():action==='practice'?openPracticeView('today'):null;
     if(!experiment.refreshing){
      const saved=experiment.snapshot;
      if(saved?.cat&&cats.some(c=>c.key===saved.cat))openCat(saved.cat);
-     else if(saved?.view&&document.getElementById(saved.view)?.classList.contains('view'))showView(saved.view);
+     else if(saved?.view&&document.getElementById(saved.view)?.classList.contains('view'))restoreView(saved.view);
      if(saved?.session&&saved.cat&&!experiment.action)await startSession();
      if(saved?.book&&!experiment.action)await openReader(saved.book);
      if(saved?.scroll)requestAnimationFrame(()=>scrollTo(0,saved.scroll));
