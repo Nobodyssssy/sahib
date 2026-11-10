@@ -109,6 +109,7 @@ function renderSessionStep(){
       <div class="session-prog-bar">
         <div class="session-prog-fill ${isDone?'done-fill':''}" id="sess-pfill" style="width:${pct}%"></div>
       </div>
+      <div class="session-key-hint">Space: count${isDone ? ' / next' : ''} · Backspace: undo · ← →: previous / next</div>
     </aside>`;
 
   setTimeout(() => {
@@ -139,28 +140,14 @@ function sessSetLang(lang){
   }
 }
 
-async function _saveSessProgress(){
-  if(!currentCat || sessIdx >= sessItems.length) return;
-  try{
-    await store.setMeta('sessProgress', {
-      cat: currentCat,
-      idx: sessIdx,
-      tap: sessTapCount,
-    });
-  }catch(e){ console.warn('[sess] save progress failed', e); }
-}
-
-async function _clearSessProgress(){
-  try{ await store.setMeta('sessProgress', null); }catch(e){}
-}
 
 async function sessionTap(id, target){
   await store.checkDailyReset();
   const k = `c_${id}`;
+  if((counters[k] || 0) >= target) return;   /* never count past the prescribed repetitions */
   counters[k] = (counters[k] || 0) + 1;
   persistCounters();
   sessTapCount = counters[k];
-  _saveSessProgress();
 
   const pct = Math.min(100, Math.round(sessTapCount / target * 100));
   const isDone = sessTapCount >= target;
@@ -187,21 +174,26 @@ async function sessionTap(id, target){
 
 function sessionNext(){
   sessIdx++; sessTapCount = 0;
-  if(sessIdx >= sessItems.length){ _clearSessProgress(); renderSessionDone(); }
-  else { renderSessionStep(); _saveSessProgress(); }
+  if(sessIdx >= sessItems.length) renderSessionDone();
+  else renderSessionStep();
 }
 
-function sessionSkip(){
-  sessIdx++; sessTapCount = 0;
-  if(sessIdx >= sessItems.length){ _clearSessProgress(); renderSessionDone(); }
-  else { renderSessionStep(); _saveSessProgress(); }
-}
+function sessionSkip(){ sessionNext(); }
 
 function sessionPrev(){
   if(sessIdx === 0) return;
   sessIdx--; sessTapCount = 0;
   renderSessionStep();
-  _saveSessProgress();
+}
+
+/* Undo the last repetition of the current dhikr. */
+async function sessionUndo(){
+  if(sessIdx >= sessItems.length) return;
+  const k = `c_${sessItems[sessIdx].id}`;
+  if(!(counters[k] > 0)) return;
+  counters[k]--;
+  persistCounters();
+  renderSessionStep();
 }
 
 function renderSessionDone(){
@@ -266,17 +258,25 @@ function _closeSessionFromHistory(){
 }
 
 
+/* Desktop keys: Space counts (and moves on once the dhikr is complete), Backspace undoes one,
+   arrows / PageUp / PageDown move between adkar (arrows follow the reading direction). */
 document.addEventListener('keydown', event => {
   if(!matchMedia('(min-width: 1024px)').matches || !$('session-overlay')?.classList.contains('open')) return;
   if(event.altKey || event.ctrlKey || event.metaKey || event.repeat || event.target.closest?.('input,textarea,select,[contenteditable]')) return;
   if(event.key === ' ' && event.target.closest?.('button')) return;
-  if(event.key === ' ' && sessIdx < sessItems.length){
+  if(sessIdx >= sessItems.length) return;
+  const rtl = document.documentElement.dir === 'rtl';
+  const nextKey = rtl ? 'ArrowLeft' : 'ArrowRight', prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+  if(event.key === ' '){
     event.preventDefault();
     const item = sessItems[sessIdx];
-    sessionTap(item.id, item.repeat);
-  } else if(event.key === 'PageDown'){
+    if((counters[`c_${item.id}`] || 0) >= item.repeat) sessionNext();
+    else sessionTap(item.id, item.repeat);
+  } else if(event.key === 'Backspace'){
+    event.preventDefault(); sessionUndo();
+  } else if(event.key === 'PageDown' || event.key === nextKey){
     event.preventDefault(); sessionNext();
-  } else if(event.key === 'PageUp'){
+  } else if(event.key === 'PageUp' || event.key === prevKey){
     event.preventDefault(); sessionPrev();
   }
 });

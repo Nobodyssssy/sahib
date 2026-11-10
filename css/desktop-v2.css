@@ -152,6 +152,8 @@
   .flash-btn { padding: 16px 20px; font-size: 16px; }
   .flash-keys { color: var(--d2-muted); font-size: 14px; text-align: center; }
 
+  .session-key-hint { color: var(--d2-muted); font-size: 14px; text-align: center; margin-top: 12px; }
+
   /* Type floor */
   button, input, select, label, small, .sidebar-footnote { font-size: max(14px, 1em); }
 }
