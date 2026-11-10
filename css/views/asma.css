@@ -191,16 +191,6 @@
   font-weight: 400;
   margin-left: 6px;
 }
-.asma-detail-tabs {
-  display: flex;
-  gap: 4px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3px;
-  align-self: flex-start;
-  margin: 12px 0;
-}
 .asma-detail-tafsir {
   font-size: 15px;
   line-height: 1.8;

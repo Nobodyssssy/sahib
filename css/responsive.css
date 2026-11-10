@@ -25,25 +25,14 @@
     padding-right:calc(12px + env(safe-area-inset-right));
   }
   .logo-icon{width:30px;height:30px;font-size:14px;}
-  .logo-text{font-size:17px;}
-  .logo-sub{display:none;}
-  .hright{gap:4px;}
-
+      
   .icon-btn{
     width:38px;height:38px;
     font-size:14px;
     border-radius:9px;
   }
   /* Collapse "Add" text into icon only */
-  .btn-add{
-    padding:0;
-    width:38px;height:38px;
-    justify-content:center;
-    font-size:18px;
-    border-radius:9px;
-  }
-  .btn-add span.text{display:none;}
-
+    
   /* Search */
   .search-wrap input{
     padding:11px 40px 11px 38px;
@@ -56,10 +45,7 @@
     padding:0 12px 90px;
     gap:10px;
   }
-  .home-features-grid{ grid-template-columns:1fr; }
-  .home-hero-meta{ gap:4px; }
-  .home-hero-colophon{ font-size:10px; }
-  .cat-card{
+        .cat-card{
     padding:0;
     gap:0;
   }
@@ -110,8 +96,7 @@
   .session-body{padding:18px 14px;gap:16px;}
   .session-tap-btn:active{transform:scale(.9);}
   .session-situation{font-size:12px;}
-  .session-info{font-size:12px;padding:10px 12px;}
-
+  
   /* Buttons in bar */
   .btn-back,.btn-session{
     padding:8px 11px;
@@ -135,16 +120,6 @@
 /* ══════════════════════════════════════════
    VERY SMALL PHONE (≤ 360px)
    ══════════════════════════════════════════ */
-@media (max-width: 360px){
-  .cats-grid{grid-template-columns:repeat(2,1fr);}
-  .icon-btn{width:34px;height:34px;font-size:13px;}
-  .btn-add{width:34px;height:34px;font-size:16px;}
-  .adkar-card{padding:12px 12px;}
-  .adkar-text{font-size:15px;}
-  .arabic-big{font-size:18px;}
-  .session-arabic{font-size:18px;}
-  .session-tap-btn{width:88px;height:88px;font-size:22px;}
-}
 
 /* ══════════════════════════════════════════
    LANDSCAPE PHONE — keep session usable
@@ -169,13 +144,6 @@
   .cats-grid{max-width:1100px;margin:0 auto;}
   .adkar-grid,.search-results{max-width:1100px;margin:0 auto;}
 }
-@media (max-width: 1080px) {
-  .desk-lower { grid-template-columns: 1fr; }
-  .desk-lower-side { flex-direction: row; flex-wrap: wrap; gap: 24px 40px; }
-  .desk-lower-side > .desk-side-block { flex: 1 1 280px; }
-  .almanac-desk .desk-prayer .pw-empty { grid-template-columns: 1fr; }
-  .almanac-desk .desk-prayer .pw-empty-actions { justify-content: flex-start; }
-}
 /* ══════════════════════════════════════════
    DESKTOP (≥ 1200) — a bit more air
    ══════════════════════════════════════════ */
@@ -189,8 +157,7 @@
    ══════════════════════════════════════════════════════════ */
 @media(max-width:1180px){
   :root{ --sidebar-width:216px; --page-gutter:24px; }
-  .home-features-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .cats-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .cat-cards-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
@@ -207,17 +174,8 @@
   .topbar{ grid-template-columns:1fr auto 1fr; padding:8px 16px; }
   .topbar-center{ display:none; }
   .topbar-logo{ display:none; }
-  .home-hero,
-  .home-dashboard,
   .prayer-layout{ grid-template-columns:1fr; }
-  .home-hero-card{
-    min-height:220px;
-    border-inline-end:0;
-    border-bottom:1px solid var(--color-border);
-  }
-  .home-hero .prayer-widget{ min-height:auto; }
-  .home-features-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .hijri-container{
+        .hijri-container{
     grid-template-columns:1fr;
     grid-template-areas:"hhead" "hgrid" "htoday" "hside";
   }
@@ -226,31 +184,18 @@
   .search-results{ grid-template-columns:1fr; }
   .cat-cards-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .continue-strip{ grid-template-columns:1fr; }
-  .settings-grid-3{ grid-template-columns:1fr 1fr; }
-  .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .theme-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .pw-countdown-unit{ font-size:28px; }
 }
 
 @media(max-width:720px){
-  .page-gutter,
-  .home-container,
-  .prayer-container,
-  .asma-container,
-  .books-container,
-  .hijri-container{ padding-inline:14px; }
-  .home-container{ padding-bottom:88px; }
-  .home-features-grid{ grid-template-columns:1fr 1fr; }
-  .home-reading .quote-text{ font-size:clamp(23px,5vw,32px); }
-  .home-hero-card{ padding:26px 20px; }
-  .home-hero .prayer-widget{ padding:24px 20px; }
-  .home-colophon{ flex-direction:column; }
-  .page-header{ padding-block:20px 14px; }
+  .prayer-container, .asma-container, .books-container, .hijri-container{ padding-inline:14px; }
+              .page-header{ padding-block:20px 14px; }
   .page-title{ font-size:28px; }
   .cats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); padding-inline:14px; }
   .adkar-grid{ padding-inline:14px; }
   .settings-modal{ max-height:92vh; }
-  .settings-grid-2,
-  .settings-grid-3{ grid-template-columns:1fr; }
+  .settings-grid-2{ grid-template-columns:1fr; }
   .theme-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .accent-grid{ grid-template-columns:repeat(5,minmax(0,1fr)); }
   .font-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -282,24 +227,18 @@
    DAILY PRACTICE / DAYBOOK
    ========================================================================== */
 @media(max-width:1180px){
-  .home-daybook-grid{ grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr); }
-  .practice-today-layout{ grid-template-columns:minmax(0,1.3fr) minmax(270px,.7fr); }
+    .practice-today-layout{ grid-template-columns:minmax(0,1.3fr) minmax(270px,.7fr); }
   .practice-form-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media(max-width:980px){
-  .almanac-home .home-hero{ grid-template-columns:1fr; }
-  .almanac-home .home-hero-card{ padding-inline-end:0; }
-  .almanac-home .home-prayer-widget-host{ border-inline-start:0; border-top:1px solid var(--color-rule); padding-inline-start:0; }
-  .home-daybook-grid{ grid-template-columns:1fr; }
-  .practice-head{ grid-template-columns:1fr; align-items:start; }
+          .practice-head{ grid-template-columns:1fr; align-items:start; }
   .practice-head-side{ align-items:start; }
   .practice-head-date{ text-align:start; }
   .practice-today-layout{ grid-template-columns:1fr; }
   .practice-rail{ border-inline-start:0; border-top:1px solid var(--color-rule); padding-inline-start:0; padding-top:20px; }
   .practice-calendar-layout{ grid-template-columns:1fr; }
   .practice-detail-grid{ grid-template-columns:1fr; gap:20px; }
-  .almanac-home .home-index-list{ column-gap:32px; }
-}
+  }
 @media(max-width:720px){
   .practice-container{ padding-inline:14px; padding-bottom:88px; }
   .practice-head-actions{ flex-wrap:wrap; }
@@ -319,8 +258,7 @@
   .practice-ar{ font-size:23px; }
   .practice-entry-summary{ font-size:12px; }
   .practice-day-foot{ align-items:start; flex-direction:column; }
-  .practice-welcome-choices,
-  .almanac-home .home-index-list{ grid-template-columns:1fr; }
+  .practice-welcome-choices{ grid-template-columns:1fr; }
   .practice-welcome{ padding:22px 18px; }
   .practice-view-intro,
   .practice-view-intro--actions{ flex-direction:column; align-items:start; gap:10px; }
@@ -355,24 +293,8 @@
   .practice-catalog-row{ grid-template-columns:30px minmax(0,1fr); }
   .practice-details-btn{ grid-column:2; justify-self:start; margin-top:0; }
   .practice-catalog-foot{ flex-direction:column; align-items:start; }
-  .almanac-home .home-hero-card{ padding-block:22px 18px; }
-  .home-hero-topline{ align-items:start; }
-  .home-greeting{ line-height:1.7; }
-  .home-local-mark{ flex:0 0 auto; }
-  .home-date-ar{ font-size:clamp(25px,7vw,34px); }
-  .home-date-en{ font-size:15px; }
-  .home-hero-colophon{ flex-direction:column; gap:4px; }
-  .home-practice-panel{ padding:18px 16px 15px; }
-  .home-practice-head{ gap:10px; }
-  .home-practice-head .home-section-link{ white-space:nowrap; }
-  .home-practice-summary{ gap:8px; }
-  .home-practice-summary-local{ margin-inline-start:0; }
-  .home-practice-meta{ white-space:normal; }
-  .home-practice-title > span:not([lang]){ white-space:normal; }
-  .home-practice-foot{ flex-direction:column; align-items:start; gap:6px; }
-  .almanac-home .home-reading .quote-card{ height:auto; }
-  .almanac-home .home-index-list{ column-gap:0; }
-  .home-index-item{ grid-template-columns:24px 22px minmax(0,1fr) 16px; }
+                            .home-practice-title > span:not([lang]){ white-space:normal; }
+        .home-index-item{ grid-template-columns:24px 22px minmax(0,1fr) 16px; }
   .home-index-ar{ font-size:19px; }
 }
 @media(max-width:980px){
@@ -390,11 +312,9 @@
   .practice-calendar-head strong{ font-size:21px; }
   .practice-upcoming-time{ font-size:11px; }
   .home-practice-title > span:not([lang]){ white-space:normal; }
-  .home-practice-row{ grid-template-columns:minmax(0,1fr) 14px; gap:9px; }
-  .home-practice-title > span[lang="ar"]{ font-size:19px; }
+    .home-practice-title > span[lang="ar"]{ font-size:19px; }
   .home-index-note{ display:none; }
-  .home-cycle-wide{ display:none; }
-  .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+    .pw-empty-times{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   .pw-empty-times > div:nth-child(3n){ border-inline-end:0; }
   .pw-empty-times > div:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
 }
@@ -402,73 +322,9 @@
 /* ==========================================================================
    DAILY DESK fallback — two-axis Home composition, 2026-10-20
    ========================================================================== */
-@media(max-width:1180px){
-  .desk-masthead{ gap:32px; }
-  .desk-masthead-right{ max-width:440px; }
-  .desk-reading{ padding-inline-end:28px; }
-  .desk-practice{ padding-inline-start:26px; }
-  .desk-now .prayer-widget{ column-gap:32px; }
-}
-
-@media(max-width:960px){
-  .desk-masthead{
-    grid-template-columns:minmax(0,1fr);
-    gap:18px;
-    align-items:start;
-  }
-  .desk-masthead-right{
-    justify-self:start;
-    align-items:flex-start;
-    max-width:none;
-    padding-bottom:0;
-    text-align:start;
-  }
-  .desk-masthead-side{ justify-content:flex-start; }
-  .desk-now .prayer-widget{
-    grid-template-columns:minmax(0,1fr);
-    grid-template-areas:"head" "main" "progress" "times" "foot";
-    column-gap:0;
-  }
-  .desk-now .pw-foot{
-    align-items:flex-start;
-    margin-top:10px;
-    padding-bottom:0;
-    text-align:start;
-  }
-  .desk-now .pw-times{ margin-top:2px; }
-  .desk-board{ grid-template-columns:minmax(0,1fr); }
-  .desk-practice{
-    order:1;
-    padding:24px 0 28px;
-  }
-  .desk-reading{
-    order:2;
-    padding:24px 0 30px;
-    border-inline-end:0;
-    border-top:1px solid var(--color-border-subtle);
-  }
-}
-
 @media(max-width:720px){
-  .desk-home{ padding-inline:16px; }
-  .desk-day-number{ font-size:58px; }
-  .desk-hijri{ white-space:normal; }
-  .desk-now .pw-main{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
-  .desk-now .pw-countdown-block{ align-items:flex-start; }
-  .desk-now .pw-times{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .desk-now .pw-time-cell:nth-child(3n){ border-inline-end:0; }
-  .desk-now .pw-time-cell:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
-  .desk-reading .quote-text{ font-size:clamp(25px,6vw,34px); }
-  .desk-panel-title{ white-space:normal; }
-  .desk-practice-copy{ grid-template-columns:68px minmax(0,1fr); }
-  .desk-practice-foot{ flex-direction:column; align-items:flex-start; }
-  .desk-shelf{ gap:8px 14px; }
-  .desk-foot{ flex-direction:column; gap:6px; }
-}
+                      .desk-practice-copy{ grid-template-columns:68px minmax(0,1fr); }
+      }
 
 /* Quiet topbar returns to the compact app bar on touch layouts. */
 @media(max-width:960px){
@@ -488,23 +344,11 @@
   .topbar .header-right{ grid-column:3; justify-self:end; }
 }
 
-@media(max-width:1320px){
-  .desk-practice-foot{ flex-direction:column; align-items:flex-start; gap:4px; }
-}
-
 /* ==========================================================================
    FOLIO HOME — the only place that adapts the new reading composition.
    ========================================================================== */
 @media(max-width:1100px){
-  .desk-lower{
-    grid-template-columns:minmax(0,1fr);
-    gap:28px;
-  }
-  .desk-lower-side{
-    border-top:1px solid var(--color-rule);
-    padding-top:22px;
-  }
-  .quote-page{
+      .quote-page{
     grid-template-columns:minmax(0,1fr);
     gap:4px;
   }
@@ -520,232 +364,48 @@
   }
 }
 
-@media(max-width:760px){
-  .almanac-desk{
-    padding-top:12px;
-    padding-bottom:40px;
-  }
-  .desk-mast{
-    gap:10px;
-    padding-bottom:12px;
-  }
-  .desk-mast-date{ gap:2px 10px; }
-  .desk-mast-hijri{ font-size:15px; }
-  .desk-mast-side{ justify-content:flex-start; }
-  .almanac-desk .desk-prayer .prayer-widget{
-    grid-template-columns:minmax(0,1fr);
-    grid-template-areas:"head" "main" "times" "foot";
-    row-gap:10px;
-  }
-  .almanac-desk .desk-prayer .pw-main{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
-  .almanac-desk .desk-prayer .pw-countdown-block{ align-items:flex-start; }
-  .almanac-desk .desk-prayer .pw-foot{
-    direction:rtl;
-    align-items:flex-start;
-    text-align:right;
-  }
-  .almanac-desk .desk-prayer .pw-times{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-  .almanac-desk .desk-prayer .pw-time-cell:nth-child(3n){ border-inline-end:0; }
-  .almanac-desk .desk-prayer .pw-time-cell:nth-child(-n+3){ border-bottom:1px solid var(--color-border-subtle); }
-  .desk-mast-greeting{ display:none; }
-  .desk-lower-main .quote-text{ font-size:clamp(25px,6vw,32px); }
-}
-
 @media(max-width:480px){
   .topbar-sub{ display:none; }
   .topbar-imprint{ font-size:14px; }
-  .desk-mast .home-chip{ font-size:9.5px; }
-}
+  }
 
 /* Wide desktop: the folio gains presence rather than merely stretching. */
 @media(min-width:1600px){
-  .almanac-desk{
-    padding-top:26px;
-    padding-bottom:64px;
-  }
-  .desk-mast{ padding-bottom:20px; }
-  .desk-mast-weekday{ font-size:12px; }
-  .desk-mast-greg{ font-size:16px; }
-  .desk-mast-hijri{ font-size:22px; }
-  .desk-mast-greeting{ font-size:13px; }
-  .desk-mast-greeting [lang="ar"]{ font-size:15px; }
-  .almanac-desk .desk-prayer .prayer-widget{
-    padding-top:26px;
-    padding-bottom:28px;
-  }
-  .almanac-desk .desk-prayer .pw-prayer-ar{ font-size:76px; }
-  .almanac-desk .desk-prayer .pw-countdown-unit{ font-size:48px; }
-  .almanac-desk .desk-prayer .pw-main::after{ opacity:1; }
-  .almanac-desk .desk-prayer .pw-time-cell{ min-height:78px; }
-  .almanac-desk .desk-prayer .pw-time-cell strong{ font-size:16px; }
-  .almanac-desk .desk-prayer .pw-time-cell span{ font-size:10.5px; }
-  .almanac-desk .desk-prayer .pw-time-ar{ font-size:13px; }
-  .almanac-desk .desk-prayer .pw-times{ margin-top:18px; }
-  .desk-lower{
-    padding-top:34px;
-    padding-bottom:20px;
-  }
-  .desk-section-title{ font-size:24px; }
-  .desk-lower-side .desk-section-title{ font-size:20px; }
-  .side-label-ar{ font-size:17px; }
+                                    .desk-section-title{ font-size:24px; }
+    .side-label-ar{ font-size:17px; }
   .side-label{ font-size:9.5px; }
   .side-nav-section{ font-size:9.5px; }
   .sidebar-status{ font-size:10px; }
-  .desk-lower-main .quote-text{ font-size:54px; }
-  .quote-page{
+    .quote-page{
     grid-template-columns:minmax(0,1fr) 300px;
     gap:40px;
   }
   .quote-margin .quote-ref{ font-size:16px; }
   .quote-margin .home-reading-preview{ font-size:13.5px; }
-  .desk-foot{ font-size:10.5px; }
-}
+  }
 
 /* Sahib Home: responsive editorial layout */
-.sh-home { width: min(100%, 1180px); margin-inline: auto; padding: 28px clamp(18px, 3.6vw, 48px) 34px; }
-.sh-home-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; }
-.sh-home-hero { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr); }
-.sh-home-lower { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(310px,.95fr); }
 .sh-home-explore-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
 .sh-home-times { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); }
 
-@media(max-width:1080px){
-  .sh-home { padding-inline:clamp(18px,3vw,32px); }
-  .sh-home-hero { grid-template-columns:minmax(0,1fr) minmax(300px,.9fr); }
-  .sh-home-lower { grid-template-columns:minmax(0,1fr); }
-  .sh-home-reading { border-inline-end:0; border-bottom:1px solid var(--color-border-subtle); padding-inline-end:0; padding-bottom:24px; }
-  .sh-home-practices { padding-inline-start:0; padding-top:22px; }
-}
 @media(max-width:760px){
-  .sh-home { padding:18px 18px 34px; }
-  .sh-home-heading { align-items:flex-start; flex-direction:column; gap:15px; }
-  .sh-home-hero { grid-template-columns:minmax(0,1fr); }
-  .sh-home-hero-copy { padding:clamp(24px,6vw,38px); }
-  .sh-home-prayer-widget { border-inline-start:0; border-top:1px solid var(--color-border-subtle); padding:20px clamp(20px,5vw,32px); }
-  .sh-home-times { grid-template-columns:repeat(3,minmax(0,1fr)); }
+            .sh-home-times { grid-template-columns:repeat(3,minmax(0,1fr)); }
   .sh-home-time:nth-child(3n) { border-inline-end:0; }
   .sh-home-time:nth-child(-n+3) { border-bottom:1px solid var(--color-border-subtle); }
   .sh-home-explore-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .sh-home-footer { align-items:flex-start; flex-direction:column; }
-}
+  }
 @media(max-width:480px){
-  .sh-home { padding:14px 14px 28px; }
-  .sh-home-context { align-items:flex-start; justify-content:flex-start; text-align:start; }
-  .sh-home-actions { width:100%; }
-  .sh-home-actions > * { flex:1; }
-  .sh-home-hero-copy { padding:24px 20px; }
-  .sh-home-times { gap:0; }
+            .sh-home-times { gap:0; }
   .sh-home-explore-grid { grid-template-columns:minmax(0,1fr); }
   .sh-home-explore-item { min-height:68px; }
-  .sh-home-lower { padding-top:22px; }
-  .sh-home-footer { font-size:9px; }
-}
+    }
 
 /* ═══════════════════════════════════════════════════════════
    SAHIB HOME · quiet cadence
    English reading order stays LTR; Arabic content declares RTL locally.
    ═══════════════════════════════════════════════════════════ */
-.sh-home {
-  width: min(100%, 1360px);
-  max-width: 1360px;
-  margin-inline: auto;
-  padding: clamp(22px, 3vw, 42px) clamp(22px, 4vw, 58px) 48px;
-  gap: clamp(22px, 2.6vw, 34px);
-  direction: ltr;
-}
-.sh-home-heading { justify-content: flex-start; align-items: center; }
-.sh-home-context { justify-content: flex-start; text-align: left; direction: ltr; gap: 6px 12px; }
-.sh-home-gregorian { color: var(--color-text-primary); font-family: var(--font-label); font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.sh-home-greeting { order: 3; }
-.sh-home-hijri { font-size: 13px; }
-.sh-home-chips { order: 4; }
-.sh-home-chips .home-chip { min-height: 34px; border-radius: 3px; background: transparent; }
-.sh-home-chips .home-chip--quiet { border-color: transparent; }
 
-.sh-home-hero {
-  grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr);
-  min-height: 300px;
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
-  background: var(--color-surface-raised);
-}
-.sh-home-hero-copy { align-items: flex-start; padding: clamp(30px, 4.2vw, 64px); }
-.sh-home-kicker { font-size: 10px; letter-spacing: .14em; }
-.sh-home-hero-copy h1 {
-  max-width: 11ch;
-  margin: 15px 0 13px;
-  font-size: clamp(38px, 4.1vw, 62px);
-  font-weight: 550;
-  letter-spacing: -.055em;
-  line-height: 1.02;
-  text-wrap: pretty;
-}
-.sh-home-lede { max-width: 43ch; font-size: 14px; line-height: 1.7; }
-.sh-home-actions { gap: 10px; margin-top: 24px; }
-.sh-home-action { min-height: 44px; border-radius: 3px; }
-.sh-home-action svg, .sh-home-text-link svg { transform: none; }
-.sh-home-action--primary { background: var(--color-success); }
-.sh-home-prayer {
-  justify-content: center;
-  padding: clamp(24px, 3.2vw, 46px);
-  border-inline-start: 0;
-  background: color-mix(in srgb, var(--color-success) 91%, #071a08);
-  color: #fff;
-}
-.sh-home-prayer-widget.prayer-widget {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  min-width: 0;
-  padding: 0;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  color: #fff;
-}
-.sh-home-prayer-widget.prayer-widget::before { display: none; }
-.sh-home-prayer-widget .prayer-widget { color: #fff; }
-.sh-home-prayer-widget .pw-head { display: flex; align-items: center; padding: 0; }
-.sh-home-prayer-widget .pw-label { color: rgba(255,255,255,.78); font-family: var(--font-label); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
-.sh-home-prayer-widget .pw-status { color: rgba(255,255,255,.72); }
-.sh-home-prayer-widget .pw-status-dot { background: #a7c49b; }
-.sh-home-prayer-widget .pw-main { align-items: flex-end; justify-content: space-between; gap: 18px; }
-.sh-home-prayer-widget .pw-main-name { align-items: flex-start; }
-.sh-home-prayer-widget .pw-prayer-ar { color: #d7dfb8; font-size: 11px; letter-spacing: .12em; }
-.sh-home-prayer-widget .pw-prayer-name { color: #fff; font-family: var(--font-ui); font-size: clamp(30px, 3vw, 42px); font-weight: 500; line-height: 1.15; }
-.sh-home-prayer-widget .pw-main-time { color: rgba(255,255,255,.76); font-variant-numeric: tabular-nums; }
-.sh-home-prayer-widget .pw-countdown-block { align-items: flex-end; }
-.sh-home-prayer-widget .pw-countdown-label { color: rgba(255,255,255,.7); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
-.sh-home-prayer-widget .pw-countdown-unit { color: #fff; font-variant-numeric: tabular-nums; }
-.sh-home-prayer-widget .pw-countdown-sep { color: rgba(255,255,255,.55); }
-.sh-home-prayer-widget .pw-period { color: rgba(255,255,255,.72); }
-.sh-home-prayer-widget .pw-progress { background: rgba(255,255,255,.2); }
-.sh-home-prayer-widget .pw-progress-fill { background: #d4bd7d; }
-.sh-home-prayer-widget .pw-foot { margin-top: 6px; color: rgba(255,255,255,.64); }
-.sh-home-prayer-widget .pw-foot button { color: #f1dfad; }
-.sh-home-prayer-widget .pw-empty { display: flex; align-items: flex-start; gap: 0; padding: 2px 0; text-align: left; }
-.sh-home-prayer-widget .pw-empty-icon { display: none; }
-.sh-home-prayer-widget .pw-empty-title { color: #fff; font-family: var(--font-ui); font-size: clamp(24px, 2.4vw, 32px); font-weight: 500; }
-.sh-home-prayer-widget .pw-empty-text { max-width: 40ch; color: rgba(255,255,255,.78); font-size: 12px; line-height: 1.65; text-align: left; }
-.sh-home-prayer-widget .pw-empty-times { display: none; }
-.sh-home-prayer-widget .pw-empty-actions { justify-content: flex-start; margin-top: 16px; }
-.sh-home-prayer-widget .pw-empty-actions .btn-save { min-height: 42px; padding-inline: 16px; border: 1px solid #e4d8b5; border-radius: 3px; background: #e4d8b5; color: #183a30; }
-.sh-home-prayer-widget .pw-empty-actions .btn-cancel { min-height: 42px; padding-inline: 8px; border-color: transparent; color: rgba(255,255,255,.82); }
-.sh-home-prayer-widget .pw-empty-actions .btn-cancel:hover { background: rgba(255,255,255,.1); }
 
-.sh-home-section-heading { align-items: flex-end; border-color: var(--color-rule); }
-.sh-home-section-heading h2 { font-size: 17px; letter-spacing: -.025em; }
-.sh-home-section-kicker { font-size: 9px; letter-spacing: .16em; }
-.sh-home-text-link { gap: 7px; min-height: 34px; border-bottom: 0; color: var(--color-text-primary); font-size: 11px; }
-.sh-home-text-link:hover { color: var(--color-success); }
 .sh-home-times { border-color: var(--color-rule); }
 .sh-home-time { min-height: 72px; padding: 11px 14px; border-color: var(--color-border-subtle); }
 .sh-home-time-name { font-size: 9px; letter-spacing: .1em; }
@@ -754,27 +414,6 @@
 .sh-home-time.is-next { background: var(--success-subtle); box-shadow: inset 0 -2px var(--color-success); }
 .sh-home-times-empty { justify-content: flex-start; min-height: 54px; color: var(--color-text-secondary); }
 
-.sh-home-lower { grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: clamp(28px, 4vw, 58px); }
-.sh-home-reading, .sh-home-daybook, .sh-home-practices { min-width: 0; }
-.sh-home-reading .sh-home-section-heading { margin-bottom: 4px; }
-.sh-home-reading .home-quote-card { padding: 0; border: 0; border-radius: 0; background: transparent; }
-.sh-home-reading .home-quote-card:hover { border: 0; }
-.sh-home-reading .quote-header { padding: 7px 0; }
-.sh-home-reading .quote-page { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(145px, .85fr); align-items: stretch; gap: 22px; direction: rtl; }
-.sh-home-reading .quote-text { max-width: 20ch; margin: 12px 0; font-size: clamp(27px, 2.5vw, 36px); line-height: 1.85; text-align: right; }
-.sh-home-reading .quote-margin { width: auto; margin: 0; padding: 12px 0 12px 18px; border-inline-end: 0; border-inline-start: 1px solid var(--color-border-subtle); }
-.sh-home-reading .quote-ref { margin: 0 0 12px; text-align: right; }
-.sh-home-reading .home-reading-preview { margin-top: 0; padding-top: 12px; font-size: 12px; line-height: 1.75; }
-.sh-home-reading .quote-teaser { width: fit-content; margin-top: 6px; padding-top: 10px; }
-.sh-home-daybook { padding-inline-start: clamp(20px, 2.6vw, 36px); border-inline-start: 1px solid var(--color-rule); }
-.sh-home-daybook-note { margin: -2px 0 10px; font-size: 12px; }
-.sh-home-practices .desk-section-head { display: none; }
-.sh-home-practices .desk-side-block { padding: 0; }
-.sh-home-practices .desk-practice-row { min-height: 60px; }
-.sh-home-practices .desk-practice-done { width: 40px; height: 40px; }
-.sh-home-continue { margin-top: 20px; padding-top: 13px; }
-.sh-home-explore { padding-top: 0; }
-.sh-home-explore .sh-home-section-heading { margin-bottom: 6px; }
 .sh-home-explore-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
 .sh-home-explore-item {
   grid-template-columns: 26px minmax(0, 1fr) 14px;
@@ -793,69 +432,19 @@
 .sh-home-explore-en { font-size: 12px; }
 .sh-home-explore-note { display: none; }
 .sh-home-explore-arrow svg { transform: none; }
-.sh-home-footer { padding-top: 11px; }
 
-@media(max-width:1080px){
-  .sh-home { padding-inline: clamp(20px, 3vw, 34px); }
-  .sh-home-hero { grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); }
-  .sh-home-lower { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .sh-home-daybook { padding: 22px 0 0; border-inline-start: 0; border-top: 1px solid var(--color-rule); }
-}
 @media(max-width:760px){
-  .sh-home { padding: 18px 18px 34px; gap: 22px; }
-  .sh-home-heading { align-items: flex-start; }
-  .sh-home-context { align-items: flex-start; text-align: left; }
-  .sh-home-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-  .sh-home-hero-copy { padding: clamp(26px, 7vw, 40px); }
-  .sh-home-hero-copy h1 { max-width: 12ch; font-size: clamp(38px, 9vw, 52px); }
-  .sh-home-prayer { padding: 24px clamp(22px, 6vw, 34px); }
-  .sh-home-prayer-widget .pw-main { align-items: flex-start; }
-  .sh-home-prayer-widget .pw-countdown-block { align-items: flex-start; }
-  .sh-home-times { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+                    .sh-home-times { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sh-home-time:nth-child(3n) { border-inline-end: 0; }
   .sh-home-time:nth-child(-n+3) { border-bottom: 1px solid var(--color-border-subtle); }
-  .sh-home-reading .quote-page { grid-template-columns: minmax(0, 1fr) minmax(120px, .7fr); gap: 16px; }
-  .sh-home-reading .quote-text { font-size: clamp(25px, 6vw, 32px); }
-  .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
-  .sh-home-footer { align-items: flex-start; flex-direction: column; }
-}
+      .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+  }
 @media(max-width:480px){
-  .sh-home { padding: 15px 14px 28px; }
-  .sh-home-context { gap: 6px 10px; }
-  .sh-home-chips { width: 100%; }
-  .sh-home-hero-copy { padding: 26px 22px 28px; }
-  .sh-home-actions { width: 100%; }
-  .sh-home-action { flex: 1; padding-inline: 10px; font-size: 11px; }
-  .sh-home-prayer-widget .pw-main { flex-direction: column; gap: 16px; }
-  .sh-home-prayer-widget .pw-countdown-block { align-items: flex-start; }
-  .sh-home-time { min-height: 65px; padding: 9px 10px; }
-  .sh-home-reading .quote-page { grid-template-columns: minmax(0, 1fr); direction: ltr; }
-  .sh-home-reading .quote-margin { padding: 12px 0 0; border-inline-start: 0; border-top: 1px solid var(--color-border-subtle); }
-  .sh-home-reading .quote-text { justify-self: end; max-width: 100%; }
-  .sh-home-reading .quote-ref { text-align: right; }
-  .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+                  .sh-home-time { min-height: 65px; padding: 9px 10px; }
+          .sh-home-explore-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
   .sh-home-explore-item { grid-template-columns: 22px minmax(0, 1fr) 12px; gap: 6px; min-height: 56px; }
   .sh-home-explore-icon { width: 22px; height: 22px; }
   .sh-home-explore-en { font-size: 11px; }
-  .sh-home-footer { font-size: 9px; }
-}
+  }
 
 /* Home-specific corrections over the app-wide mobile header rules. */
-.sh-home-prayer-widget .pw-empty {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-@media(max-width:480px){
-  .sh-home-heading { height: auto; min-height: 0; padding: 0; }
-  .sh-home-context { width: 100%; min-width: 0; flex-direction: column; align-items: flex-start; }
-  .sh-home-gregorian { order: 0; }
-  .sh-home-hijri { order: 1; width: 100%; white-space: normal; text-align: left; }
-  .sh-home-greeting { order: 2; }
-  .sh-home-chips { order: 3; }
-  .sh-home-chips { flex-wrap: wrap; }
-  .sh-home-section-heading { min-width: 0; }
-  .sh-home-section-heading > .sh-home-text-link { flex-shrink: 0; }
-}

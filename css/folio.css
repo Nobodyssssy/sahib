@@ -95,11 +95,6 @@
 
 /* The folio is RTL: a left-pointing arrow is forward, so cancel the legacy
    mirroring applied to the old LTR composition. */
-.almanac-desk .quote-teaser svg,
-.almanac-desk .desk-link svg,
-.almanac-desk .desk-primary svg,
-.almanac-desk .desk-continue-arrow svg,
-.almanac-desk .desk-foot-link svg { transform: none; }
 
 /* ── Bound-index navigation ───────────────────────────────────────────────
    The sidebar is a table of contents: hairline rows, no pills, one accent
@@ -125,19 +120,7 @@
   font: inherit;
   text-align: start;
 }
-.sidebar-brand-text { display: block; min-width: 0; }
-.sidebar-brand-name,
-.sidebar-brand-sub { display: block; }
 .topbar-logo { padding: 0; color: inherit; }
-.sidebar-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 0;
-  border: 0;
-  background: transparent;
-}
-.sidebar-brand-name { font-size: 29px; letter-spacing: -.01em; }
-.sidebar-brand-sub { margin-top: 4px; font-size: 8px; letter-spacing: .2em; }
 .sidebar-collapse-btn { border-radius: 0; }
 
 .side-nav {
@@ -262,170 +245,17 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
   display: block;
   gap: 0;
 }
-.almanac-desk {
-  /* Wide enough to meet the index at 1920 without letting the prayer band
-     stretch into a billboard; the reading measure is set by the grid below. */
-  max-width: var(--folio-measure);
-  padding-top: 18px;
-  padding-bottom: 56px;
-}
 
 /* Masthead: reset the layout.css `header` band. It should be printed matter,
    not a surface card. */
-.desk-mast {
-  position: static;
-  inset: auto;
-  z-index: auto;
-  direction: rtl;
-  height: auto;
-  min-height: 0;
-  background: transparent;
-  padding: 0 0 18px;
-  border-bottom: var(--folio-rule);
-  align-items: baseline;
-}
-.desk-mast-date {
-  direction: ltr;
-  justify-content: flex-end;
-  align-items: baseline;
-  gap: 4px 12px;
-  margin: 0;
-  font: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-}
-.desk-mast-weekday {
-  font-size: 10.5px;
-  letter-spacing: .18em;
-}
-.desk-mast-greg {
-  font-family: var(--font-editorial);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-.desk-mast-hijri {
-  order: -1;
-  flex-basis: 100%;
-  margin: 0 0 3px;
-  padding: 0;
-  border: 0;
-  font-size: 20px;
-  line-height: 1.45;
-  text-align: right;
-}
-.desk-mast-side {
-  direction: ltr;
-  justify-content: flex-start;
-  gap: 4px 8px;
-  text-align: left;
-}
-.desk-mast-side { gap: 4px 8px; }
-.desk-mast-greeting { font-size: 11px; }
-.desk-mast-greeting [lang="ar"] { font-size: 13px; }
-.desk-mast .home-chip {
-  min-height: 26px;
-  padding: 3px 7px;
-  border-color: var(--color-border-subtle);
-  font-size: 10px;
-}
 
 /* The prayer band is the folio's opening statement. Arabic holds the start
    edge: the prayer name sits at the right, the countdown and its provenance
    at the left. The timetable itself reads right-to-left, Fajr first. */
-.desk-prayer { border-bottom: 0; }
-.almanac-desk .desk-prayer .prayer-widget {
-  direction: rtl;
-  padding-top: 24px;
-  padding-bottom: 26px;
-}
-.almanac-desk .desk-prayer .pw-head {
-  justify-content: flex-start;
-}
-.almanac-desk .desk-prayer .pw-main {
-  position: relative;
-}
 /* At full spread the poles are far enough apart to need a fold: one hairline
    at the centre turns the pause into a gutter instead of a void. */
-.almanac-desk .desk-prayer .pw-main::after {
-  content: "";
-  position: absolute;
-  inset-block: 6%;
-  inset-inline-start: 50%;
-  width: 1px;
-  background: var(--folio-rule-soft-color);
-  opacity: 0;
-  pointer-events: none;
-}
-.almanac-desk .desk-prayer .pw-main-name {
-  align-items: flex-start;
-  text-align: right;
-}
-.almanac-desk .desk-prayer .pw-countdown-block {
-  align-items: flex-end;
-}
-.almanac-desk .desk-prayer .pw-foot {
-  direction: ltr;
-  align-items: flex-start;
-  text-align: left;
-}
-.almanac-desk .desk-prayer .pw-foot [data-pw="fresh"] {
-  font-family: var(--font-label);
-  font-size: 9.5px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.almanac-desk .desk-prayer .pw-foot button {
-  padding-bottom: 1px;
-  border-bottom: 1px solid var(--color-border);
-}
-.almanac-desk .desk-prayer .pw-foot button:hover {
-  border-bottom-color: var(--color-accent);
-}
-.almanac-desk .desk-prayer .pw-times {
-  direction: rtl;
-}
-.almanac-desk .desk-prayer .pw-time-cell {
-  align-items: flex-start;
-  text-align: right;
-}
-.almanac-desk .desk-prayer .pw-prayer-ar {
-  font-size: clamp(42px, 4vw, 60px);
-}
-.almanac-desk .desk-prayer .pw-countdown-unit {
-  font-size: clamp(30px, 2.8vw, 40px);
-}
-.almanac-desk .desk-prayer .pw-time-cell {
-  min-height: 68px;
-  padding-top: 9px;
-  padding-bottom: 9px;
-}
-.almanac-desk .desk-prayer .pw-time-ar {
-  display: block;
-  font-family: var(--font-arabic);
-  font-size: 12.5px;
-  font-style: normal;
-  line-height: 1.2;
-  color: var(--color-text-muted);
-}
-.almanac-desk .desk-prayer .pw-time-cell.next .pw-time-ar {
-  color: var(--color-text-primary);
-}
-.almanac-desk .desk-prayer .pw-time-cell.next {
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-}
-.almanac-desk .desk-prayer .pw-countdown [data-pw="s"],
-.almanac-desk .desk-prayer .pw-countdown .pw-countdown-sep--seconds {
-  display: none;
-}
 
 /* Reading + daybook. The reading is the recto page and holds the start edge. */
-.desk-lower {
-  direction: rtl;
-  padding-top: 30px;
-  padding-bottom: 20px;
-  gap: clamp(28px, 3.2vw, 52px);
-  border-bottom: 0;
-}
 .desk-section-head {
   direction: rtl;
   padding-bottom: 9px;
@@ -436,18 +266,6 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
   font-size: 21px;
   font-weight: 400;
   letter-spacing: 0;
-  text-align: right;
-}
-.desk-lower-side .desk-section-title { font-size: 18px; }
-.desk-lower-side .desk-side-empty {
-  max-width: none;
-  direction: ltr;
-  text-align: right;
-  text-wrap: balance;
-}
-.desk-lower-side .desk-practice-title > span:not([lang]),
-.desk-lower-side .desk-side-note {
-  direction: ltr;
   text-align: right;
 }
 .desk-link {
@@ -461,41 +279,6 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
 /* The reading is set as a page with a true margin for the reference and the
    reflection. Arabic occupies the wide column; marginalia sits in the narrow
    left column, separated by a rule. */
-.desk-lower-main .quote-card {
-  cursor: default;
-  overflow: visible;
-}
-.desk-lower-main .quote-card::before { display: none; }
-.desk-lower-main .quote-header {
-  direction: rtl;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 9px;
-  width: 100%;
-  min-height: 32px;
-  padding: 4px 0;
-  margin-bottom: 2px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-.desk-lower-main .quote-header:hover .quote-expand-hint,
-.desk-lower-main .quote-header:hover .quote-badge { color: var(--color-accent-text); }
-.desk-lower-main .quote-expand-hint {
-  display: inline-flex;
-  align-items: center;
-}
-.almanac-desk .quote-card.expanded .quote-expand-hint svg { transform: rotate(180deg); }
-.desk-lower-main .quote-badge {
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-.desk-lower-main .quote-expand-hint { color: var(--color-text-muted); }
 
 .quote-page {
   direction: rtl;
@@ -503,16 +286,6 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
   grid-template-columns: minmax(0, 1fr) clamp(210px, 18vw, 270px);
   align-items: start;
   gap: clamp(18px, 2.2vw, 34px);
-}
-.desk-lower-main .quote-text {
-  max-width: none;
-  margin: 16px 0 10px;
-  font-family: var(--font-arabic);
-  font-size: clamp(30px, 3vw, 46px);
-  line-height: 1.62;
-  letter-spacing: 0;
-  text-align: right;
-  color: var(--color-text-primary);
 }
 .quote-margin {
   direction: ltr;
@@ -560,82 +333,11 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
-.desk-lower-main .quote-teaser {
-  direction: rtl;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
-  width: 100%;
-  min-height: 28px;
-  margin-top: 16px;
-  padding: 6px 0;
-  border: 0;
-  border-top: 0;
-  background: transparent;
-  font-family: var(--font-label);
-  font-size: 10px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  text-align: right;
-  cursor: pointer;
-}
-.desk-lower-main .quote-teaser:hover { color: var(--color-accent-text); }
-.desk-lower-main .quote-teaser:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 4px;
-}
-.almanac-desk .quote-card.expanded .quote-teaser { display: flex; }
-.almanac-desk .quote-card.expanded .home-reading-preview { display: none; }
-.almanac-desk .quote-tafsir-wrap {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: var(--folio-rule);
-}
-.almanac-desk .quote-tafsir-header {
-  justify-content: flex-start;
-  gap: 16px;
-}
-.almanac-desk .quote-lang-toggle {
-  padding: 0;
-  gap: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.almanac-desk .quote-lang-btn {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 3px 8px;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-family: var(--font-label);
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.almanac-desk .quote-lang-btn.on {
-  background: transparent;
-  border-bottom-color: var(--color-accent);
-  color: var(--color-accent-text);
-}
-.almanac-desk .quote-tafsir-label { color: var(--color-text-muted); }
-.almanac-desk .quote-tafsir-body.ar { font-size: 17.5px; line-height: 1.85; }
 /* The shell is RTL; an English paragraph with a measure would otherwise be
    pinned to the inline-start (right) edge. Anchor it to the page's left edge
    so the Latin text starts where the eye expects. */
-.desk-lower-main .quote-tafsir-body.en {
-  margin-right: auto;
-  margin-left: 0;
-}
 /* Keep the source link on the same side as the English paragraph. Falls back
    to the RTL default where :has() is unsupported. */
-.desk-lower-main .quote-tafsir-wrap:has(.quote-tafsir-body.en) { text-align: left; }
 
 /* Daybook column: ledger rows, a ruled completion column. */
 .desk-section-head + .desk-practice-list { margin-top: 2px; }
@@ -714,42 +416,6 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
 }
 .desk-practice-undo:hover { color: var(--color-text-primary); }
 .desk-practice-row.is-done .desk-practice-title [lang="ar"] { color: var(--color-text-secondary); }
-.desk-side-note { font-size: 10px; letter-spacing: .03em; }
-.almanac-desk .desk-primary {
-  background: transparent;
-  border-color: var(--color-accent-border);
-  color: var(--color-accent-text);
-}
-.almanac-desk .desk-primary:hover {
-  background: var(--color-accent-subtle);
-  border-color: var(--color-accent);
-  color: var(--color-text-primary);
-}
-.almanac-desk .desk-primary--quiet {
-  min-height: 28px;
-  padding: 4px 9px;
-  border: 1px solid var(--color-accent-border);
-  border-radius: 0;
-  background: transparent;
-  color: var(--color-accent-text);
-  font-size: 11.5px;
-}
-.almanac-desk .desk-primary--quiet:hover {
-  background: var(--color-accent-subtle);
-  border-color: var(--color-accent);
-  color: var(--color-text-primary);
-}
-.almanac-desk .desk-continue-none {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: flex-end;
-  gap: 3px 8px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 11.5px;
-}
 .desk-micro-head {
   margin: 0 0 6px;
   padding-top: 9px;
@@ -769,28 +435,9 @@ html[data-sidebar-collapsed="true"] .side-nav-item.active::before { inset-inline
   padding: 7px 0 8px;
   border-bottom: var(--folio-rule-soft);
 }
-.almanac-desk .desk-side-block--quiet .desk-continue-none {
-  padding-bottom: 2px;
-}
 .desk-continue-copy strong { font-family: var(--font-editorial); font-size: 13.5px; }
 
 /* Colophon */
-.desk-foot {
-  margin-top: 28px;
-  padding-top: 12px;
-  border-top: var(--folio-rule);
-  font-size: 10px;
-  color: var(--color-text-muted);
-}
-.desk-foot-note { letter-spacing: .02em; }
-.desk-foot-link {
-  min-height: 24px;
-  padding-block: 4px;
-  font-size: 9.5px;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-}
-.desk-foot-note svg { width: 11px; height: 11px; }
 
 /* ── Notice slip ──────────────────────────────────────────────────────────
    Feedback is a printed ticket, not a floating pill: square corners, a hair

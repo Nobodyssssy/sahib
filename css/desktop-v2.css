@@ -82,7 +82,7 @@
   .garden-welcome-copy h1 { font-size: 28px !important; line-height: 1.15 !important; margin: 0 !important; color: inherit !important; }
   .garden-greeting-secondary, .garden-scene-phase { font-size: 14px !important; line-height: 1.3 !important; color: inherit !important; opacity: .95; }
   .garden-scene-phase { font-weight: 600; }
-  .garden-flourish, .garden-welcome-copy p { display: none !important; }
+  .garden-welcome-copy p{ display: none !important; }
   .garden-main { gap: 20px !important; }
   .garden-toolbar { padding: 12px 0 !important; }
 

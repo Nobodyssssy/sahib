@@ -316,14 +316,3 @@
   color: var(--color-accent-text);
   border-bottom-color: var(--accent2);
 }
-@media (max-width: 480px) {
-  .hijri-container { padding: 12px 14px 90px; gap: 12px; }
-  .hijri-header { padding: 12px; }
-  .hijri-month-title { font-size: 19px; }
-  .hijri-grid { padding: 10px; gap: 3px; }
-  .hijri-cell { min-height: 34px; }
-  .hijri-day-num { font-size: 14px; }
-  .hijri-day-greg { font-size: 8px; }
-  .hijri-weekday { font-size: 10px; padding: 4px 0; }
-  .hijri-nav-btn { width: 36px; height: 36px; font-size: 20px; }
-}

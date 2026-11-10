@@ -239,23 +239,6 @@ font-size: 12px;
 color: var(--text2);
 font-weight: 600;
 }
-.forbidden-label-ar {
-grid-column: 1;
-font-family: 'Amiri', serif;
-font-size: 12px;
-color: var(--text3);
-text-align: right;
-direction: rtl;
-}
-.forbidden-times {
-grid-column: 2;
-grid-row: 1 / span 2;
-font-family: 'DM Mono', monospace;
-font-size: 12px;
-color: var(--color-accent-text);
-align-self: center;
-direction: ltr;
-}
 
 /* ── Forbidden modal content ── */
 .forbidden-hadith-label,
@@ -287,15 +270,6 @@ color: var(--text2);
 padding: 8px 10px;
 background: var(--surface2);
 border-radius: var(--rs);
-}
-.forbidden-lang-toggle {
-display: inline-flex;
-background: var(--surface2);
-border: 1px solid var(--border);
-border-radius: 6px;
-padding: 1px;
-flex-shrink: 0;
-gap: 0;
 }
 .forbidden-lang-btn {
 padding: 3px 8px;
@@ -372,52 +346,6 @@ font-family: 'Amiri', serif;
 font-size: 13px;
 color: var(--color-accent-text);
 }
-.night-third-row {
-display: grid;
-grid-template-columns: 12px 1fr auto;
-align-items: center;
-gap: 10px;
-padding: 8px 0;
-font-size: 13px;
-color: var(--text2);
-border-bottom: 1px dashed rgba(201, 168, 76, .12);
-}
-.night-third-row:last-child { border-bottom: none; }
-.night-third-row.active {
-color: var(--color-accent-text);
-font-weight: 700;
-}
-.night-third-dot {
-width: 8px;
-height: 8px;
-border-radius: 50%;
-background: var(--border);
-justify-self: center;
-}
-.night-third-row.active .night-third-dot {
-background: var(--accent);
-box-shadow: 0 0 8px var(--glow);
-}
-.night-third-label {
-display: flex;
-flex-direction: column;
-gap: 2px;
-min-width: 0;
-}
-.night-third-en { font-size: 13px; }
-.night-third-ar {
-font-family: 'Amiri', serif;
-font-size: 13px;
-color: var(--text3);
-direction: rtl;
-}
-.night-third-row.active .night-third-ar { color: var(--color-accent-text); }
-.night-third-time {
-font-family: 'DM Mono', monospace;
-font-size: 13px;
-color: var(--color-accent-text);
-direction: ltr;
-}
 
 /* ═══════════════════════════════════════════════════════════
 DAILY CYCLE CARD
@@ -447,39 +375,7 @@ padding: 16px 18px 14px;
 }
 
 /* Head, title, help button, language toggle */
-.prayer-daily-cycle-card .cycle-title { color: var(--color-accent-text); }
 .prayer-daily-cycle-card .cycle-help-btn { color: var(--color-accent-text); }
-.prayer-daily-cycle-card .cycle-marker-label { color: var(--color-accent-text); }
-.prayer-daily-cycle-card .cycle-hijri-dates { color: var(--c-day); }
-.cycle-marker-label:first-child {
-transform: none;
-left: 4px !important;
-}
-.cycle-head {
-display: flex;
-align-items: baseline;
-justify-content: space-between;
-gap: 8px;
-margin-bottom: 4px;
-padding: 0 6px;
-}
-.cycle-head-left {
-flex: 1;
-min-width: 0;
-}
-.cycle-title {
-font-size: 11px;
-text-transform: uppercase;
-letter-spacing: 0.12em;
-color: var(--text3);
-font-weight: 700;
-display: block;
-}
-.cycle-title-ar {
-font-family: 'Amiri', serif;
-font-size: 13px;
-color: var(--color-accent-text);
-}
 .cycle-help-btn {
 width: 22px;
 height: 22px;
@@ -499,23 +395,6 @@ justify-content: center;
 .cycle-help-btn:hover {
 border-color: var(--accent);
 background: var(--glow);
-}
-.cycle-subtitle {
-font-size: 11px;
-color: var(--text3);
-margin-bottom: 20px;
-display: flex;
-justify-content: center;
-gap: 8px;
-flex-wrap: wrap;
-}
-.cycle-lang-toggle {
-display: inline-flex;
-background: var(--surface2);
-border: 1px solid var(--border);
-border-radius: 6px;
-padding: 1px;
-flex-shrink: 0;
 }
 .cycle-lang-btn {
 padding: 3px 8px;
@@ -539,95 +418,12 @@ color: #1a1200;
 .cycle-lang-btn:not(.on):hover { color: var(--color-accent-text); }
 
 /* NIGHT / DAY captions — same colors as their segments */
-.cycle-captions {
-position: relative;
-height: 26px;
-margin-bottom: 24px;
-}
-.cycle-caption {
-position: absolute;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 4px;
-font-size: 10px;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-font-weight: 700;
-height: 100%;
-}
-.cycle-caption
-}
-.cycle-caption-icon { font-size: 12px; }
-.cycle-caption-ar {
-font-family: 'Amiri', serif;
-font-size: 12px;
-text-transform: none;
-letter-spacing: 0;
-}
 
 /* Hijri date line */
-.cycle-hijri-dates {
-display: flex;
-justify-content: center;
-padding: 8px 0;
-border-top: 1px solid var(--border);
-border-bottom: 1px solid var(--border);
-margin-bottom: 12px;
-font-family: 'Amiri', serif;
-font-size: 12px;
-}
-.cycle-hijri-date {
-direction: rtl;
-white-space: nowrap;
-}
-.cycle-hijri-date-right::before {
-content: 'غداً · ';
-color: var(--text3);
-opacity: 0.7;
-}
 
 /* Bar wrapper + marker labels */
-.cycle-bar-wrap {
-position: relative;
-margin-bottom: 12px;
-}
-.cycle-marker-labels {
-position: relative;
-height: 16px;
-margin-top: 6px;
-}
-.cycle-marker-label {
-position: absolute;
-top: 0;
-transform: translateX(-50%);
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 0.04em;
-text-transform: uppercase;
-color: var(--color-accent-text);
-white-space: nowrap;
-pointer-events: none;
-}
-.cycle-zenith-hit {
-position: absolute;
-top: -14px;
-width: 24px;
-height: 24px;
-transform: translateX(-50%);
-cursor: pointer;
-z-index: 10;
-border-radius: 50%;
-}
 
 /* The bar */
-.cycle-bar {
-position: relative;
-height: 56px;
-border-radius: 28px;
-background: var(--surface2);
-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04);
-}
 .cycle-seg {
 position: absolute;
 top: 0;
@@ -645,34 +441,8 @@ box-shadow: inset 0 0 0 1px var(--bg);
 z-index: 3;
 }
 /* Night — clear blue */
-.cycle-seg-night {
-background: linear-gradient(180deg,
-color-mix(in srgb, var(--c-night) 36%, transparent),
-color-mix(in srgb, var(--c-night) 22%, transparent));
-}
 /* Last third — lifted teal, the special segment */
-.cycle-seg-last-third {
-background: linear-gradient(180deg,
-color-mix(in srgb, var(--c-teal) 48%, transparent),
-color-mix(in srgb, var(--c-green) 32%, transparent));
-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-teal) 50%, transparent),
-inset -1px 0 0 color-mix(in srgb, var(--bg) 50%, transparent);
-}
 /* Day — warm honey, matches caption + legend */
-.cycle-seg-day {
-background: linear-gradient(180deg,
-color-mix(in srgb, var(--c-day) 32%, transparent),
-color-mix(in srgb, var(--c-day) 20%, transparent));
-}
-.cycle-seg-star {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-color: var(--c-on);
-font-size: 14px;
-opacity: 0.7;
-}
 .cycle-seg:first-child {
 border-top-left-radius: 28px;
 border-bottom-left-radius: 28px;
@@ -681,111 +451,11 @@ border-bottom-left-radius: 28px;
 border-top-right-radius: 28px;
 border-bottom-right-radius: 28px;
 }
-.cycle-forbidden.cycle-forbidden--right-edge {
-border-top-right-radius: 28px;
-border-bottom-right-radius: 28px;
-}
 /* Light mode hairline so tints keep their shape */
-.light .cycle-seg-night,
-.light .cycle-seg-day {
-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06),
-inset -1px 0 0 color-mix(in srgb, var(--surface) 60%, transparent);
-}
-.light .cycle-seg-last-third {
-box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-teal) 55%, transparent),
-inset -1px 0 0 color-mix(in srgb, var(--surface) 60%, transparent);
-}
 
 /* Segment labels */
-.cycle-seg-label {
-position: absolute;
-left: 50%;
-transform: translateX(-50%);
-pointer-events: none;
-white-space: nowrap;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 1px;
-line-height: 1;
-}
-.cycle-seg-label.row-1 { top: 4px; }
-.cycle-seg-label.row-2 { bottom: 4px; top: auto; }
-.cycle-seg-label-name {
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 0.03em;
-color: var(--c-on);
-text-transform: uppercase;
-}
-.cycle-seg-label-time {
-font-family: 'DM Mono', monospace;
-font-size: 9px;
-color: var(--c-on-dim);
-direction: ltr;
-}
-.cycle-seg-last-third .cycle-seg-label-name,
-.cycle-seg-last-third .cycle-seg-label-time {
-color: var(--c-on);
-}
-.cycle-seg:first-child .cycle-seg-label { left: 10px; transform: none; }
-.cycle-seg:last-of-type .cycle-seg-label { left: auto; right: 10px; transform: none; }
-.cycle-seg-label-multi {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 2px;
-padding: 2px 0;
-}
-.cycle-seg-inline-time {
-display: flex;
-align-items: center;
-gap: 4px;
-font-size: 8px;
-line-height: 1;
-}
-.cycle-seg-inline-name {
-font-weight: 700;
-color: var(--c-on);
-text-transform: uppercase;
-letter-spacing: 0.02em;
-}
-.cycle-seg-inline-value {
-font-family: 'DM Mono', monospace;
-color: var(--c-on-dim);
-direction: ltr;
-}
 
 /* Markers (dashed lines + dots) */
-.cycle-marker {
-position: absolute;
-top: -4px;
-bottom: -4px;
-width: 0;
-border-left: 1px dashed color-mix(in srgb, var(--accent) 70%, transparent);
-z-index: 4;
-pointer-events: none;
-}
-.cycle-marker-dot {
-position: absolute;
-top: -3px;
-left: -4px;
-width: 8px;
-height: 8px;
-border-radius: 50%;
-background: var(--accent);
-box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
-}
-.cycle-marker-tap {
-pointer-events: auto;
-cursor: pointer;
-}
-.cycle-marker-tap .cycle-marker-dot {
-transition: transform var(--tr);
-}
-.cycle-marker-tap:hover .cycle-marker-dot {
-transform: scale(1.4);
-}
 
 /* Forbidden overlays on the bar */
 .cycle-forbidden {
@@ -800,33 +470,11 @@ border-top: 2px solid color-mix(in srgb, var(--c-red) 88%, transparent);
 z-index: 3;
 margin-left: 1px;
 }
-.cycle-forbidden--zenith {
-min-width: 3px;
-}
-.cycle-forbidden--zenith::before {
-content: '';
-position: absolute;
-top: -7px;
-left: 50%;
-transform: translateX(-50%);
-border: 5px solid transparent;
-border-top: 0;
-border-bottom: 6px solid color-mix(in srgb, var(--c-red) 90%, transparent);
-}
 .cycle-forbidden.selected {
 outline: 3px solid var(--accent);
 outline-offset: -3px;
 z-index: 6;
 box-shadow: inset 0 0 0 1px var(--bg);
-}
-.cycle-forbidden-hit {
-position: absolute;
-top: -6px;
-bottom: -6px;
-cursor: pointer;
-z-index: 10;
-background: transparent !important;
-box-shadow: none !important;
 }
 
 /* Panel below the bar */
@@ -914,11 +562,6 @@ font-size: 14px;
 font-weight: 700;
 color: var(--text);
 }
-.cycle-panel-ar {
-font-family: 'Amiri', serif;
-font-size: 15px;
-color: var(--color-accent-text);
-}
 .cycle-panel-dur {
 margin-left: auto;
 font-family: 'DM Mono', monospace;
@@ -980,28 +623,6 @@ border-bottom-color: var(--accent2);
 }
 
 /* Panel idle state */
-.cycle-panel-idle {
-align-items: center;
-text-align: center;
-}
-.cycle-panel-idle-title {
-font-size: 11px;
-color: var(--text3);
-margin-bottom: 8px;
-}
-.cycle-panel-idle-chips {
-display: flex;
-justify-content: center;
-gap: 12px;
-flex-wrap: wrap;
-}
-.cycle-panel-chip {
-display: flex;
-align-items: center;
-gap: 6px;
-font-size: 11px;
-color: var(--text2);
-}
 
 /* Help modal */
 .cycle-help-content {
@@ -1081,8 +702,3 @@ border-color: var(--accent);
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-.prayer-nav-btn { width: 36px; height: 36px; }
-.cycle-legend-note { display: none; }
-.cycle-time-label { font-size: 9px; }
-}

@@ -205,39 +205,6 @@
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-  .tasbih-wrap {
-    padding: 20px 16px 32px;
-    gap: 20px;
-  }
-  .tasbih-ring-wrap {
-    width: 260px;
-    height: 260px;
-    margin-bottom: 22px;
-  }
-  .tasbih-center {
-    padding: 32px;
-  }
-  .tasbih-dhikr {
-    font-size: 22px;
-  }
-  .tasbih-count {
-    font-size: 20px;
-  }
-  .tasbih-tap-btn {
-    width: 130px;
-    height: 130px;
-  }
-  .tasbih-tap-btn svg {
-    width: 36px;
-    height: 36px;
-  }
-  .tasbih-minus-btn,
-  .tasbih-reset-btn {
-    width: 46px;
-    height: 46px;
-  }
-}
 
 @media (max-height: 700px) {
   .tasbih-wrap {

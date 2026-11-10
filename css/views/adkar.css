@@ -59,13 +59,6 @@
   text-align: right;
   color: var(--text);
 }
-.adkar-translit {
-  font-size: 11px;
-  color: var(--text3);
-  font-style: italic;
-  direction: ltr;
-  text-align: left;
-}
 .adkar-badges {
   display: flex;
   gap: 5px;
@@ -300,16 +293,6 @@
 .session-done-icon { color: var(--ctp-green); }
 
 /* ── Session info boxes ── */
-.session-hadith {
-  background: color-mix(in srgb, var(--ctp-yellow) 12%, transparent);
-  border-color: var(--ctp-yellow);
-  color: var(--text2);
-}
-.session-virtue {
-  background: color-mix(in srgb, var(--ctp-green) 10%, transparent);
-  border-color: var(--ctp-green);
-  color: var(--text2);
-}
 
 /* ── Badges ── */
 .badge-repeat {
@@ -391,14 +374,6 @@
    ═══════════════════════════════════════════════════════════ */
 .session-overlay .session-situation { color: var(--color-accent-text); }
 
-.session-overlay .session-hadith {
-  background: color-mix(in srgb, var(--ctp-yellow) 10%, transparent);
-  border-color: color-mix(in srgb, var(--ctp-yellow) 55%, transparent);
-}
-.session-overlay .session-virtue {
-  background: color-mix(in srgb, var(--ctp-green) 10%, transparent);
-  border-color: color-mix(in srgb, var(--ctp-green) 55%, transparent);
-}
 
 .session-overlay .session-tap-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -431,34 +406,6 @@
 }
 
 /* ── Mobile: actions drop below content, touch targets preserved ── */
-@media (max-width: 480px) {
-  .adkar-card {
-    flex-wrap: wrap;
-    direction: ltr;
-    gap: 8px;
-    padding: 12px 14px;
-  }
-  .adkar-left {
-    order: 1;
-    flex: 1 1 100%;
-    direction: rtl;
-  }
-  .adkar-actions {
-    order: 2;
-    flex: 0 0 auto;
-    margin-inline-start: auto;
-  }
-  .adkar-meta {
-    order: 3;
-    flex-direction: row;
-    flex: 0 0 auto;
-    justify-content: flex-end;
-  }
-  .adkar-btn {
-    width: 34px;
-    height: 34px;
-  }
-}
 @media (pointer: coarse) {
   .adkar-btn {
     min-width: 44px;
