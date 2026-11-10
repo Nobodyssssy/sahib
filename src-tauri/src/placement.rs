@@ -35,31 +35,50 @@ fn target_monitor(app: &AppHandle, window: &WebviewWindow) -> Option<Monitor> {
 /// already visible and not minimised is left where the user put it.
 pub fn place_main(app: &AppHandle, window: &WebviewWindow, force: bool) {
     if !force && window.is_visible().unwrap_or(false) && !window.is_minimized().unwrap_or(false) {
+        eprintln!("[placement] skipped: already visible");
         return;
     }
     if window.is_maximized().unwrap_or(false) || window.is_fullscreen().unwrap_or(false) {
+        eprintln!("[placement] skipped: maximised/fullscreen");
         return;
     }
     let Some(monitor) = target_monitor(app, window) else {
-        return;
-    };
-    let Ok(outer) = window.outer_size() else {
+        eprintln!("[placement] no monitor");
         return;
     };
     let area = monitor.work_area();
-    let target = centered(
-        Rect {
-            x: area.position.x,
-            y: area.position.y,
-            w: area.size.width,
-            h: area.size.height,
-        },
-        (outer.width, outer.height),
-    );
+    let work = Rect {
+        x: area.position.x,
+        y: area.position.y,
+        w: area.size.width,
+        h: area.size.height,
+    };
+    // Move onto the target monitor first: crossing a DPI boundary makes Windows rescale the
+    // window, so its size must be measured in that monitor's DPI, not the one it was created on.
+    let _ = window.set_position(PhysicalPosition::new(work.x + 1, work.y + 1));
+    let Ok(outer) = window.outer_size() else {
+        eprintln!("[placement] no outer size");
+        return;
+    };
+    let target = centered(work, (outer.width, outer.height));
     if (target.w, target.h) != (outer.width, outer.height) {
         let _ = window.set_size(PhysicalSize::new(target.w, target.h));
     }
-    let _ = window.set_position(PhysicalPosition::new(target.x, target.y));
+    let moved = window.set_position(PhysicalPosition::new(target.x, target.y));
+    eprintln!(
+        "[placement] monitor={:?} scale={} work=({},{},{},{}) outer={}x{} target=({},{}) moved={:?}",
+        monitor.name(),
+        monitor.scale_factor(),
+        work.x,
+        work.y,
+        work.w,
+        work.h,
+        outer.width,
+        outer.height,
+        target.x,
+        target.y,
+        moved
+    );
 }
 
 #[cfg(test)]
