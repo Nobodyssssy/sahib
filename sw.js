@@ -13,7 +13,7 @@ const APP_BASE = new URL(self.registration.scope);
 
 const APP_SHELL = [
   './css/daily-rhythm.css?v=20261022-rhythm-7',
-  './css/desktop-v2.css?v=20261110-d2-4',
+  './css/desktop-v2.css?v=20261110-d2-6',
   './assets/home/rhythm-phases.webp',
   './',
   './index.html',
@@ -89,6 +89,7 @@ const APP_SHELL = [
   './js/hijri-calendar.js',
   './js/practices-data.js',
   './js/asma-data.js',
+  './js/asma-srs.js?v=20261110-srs-2',
   './js/asma.js',
   './js/books-data.js',
   './js/books.js',
@@ -124,7 +125,7 @@ const APP_SHELL = [
   './js/views/quote.js?v=20261022-garden-app-4',
   './js/views/prayer.js?v=20261022-rhythm-6',
   './js/views/hijri.js?v=20261022-garden-app-4',
-  './js/views/asma.js?v=20261022-language-5',
+  './js/views/asma.js?v=20261110-srs-3',
   './js/views/books.js',
   './js/views/tasbih.js?v=20261022-refine-4',
   './js/views/reader.js',

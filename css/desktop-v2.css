@@ -134,6 +134,24 @@
   .books-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important; gap: 20px !important; }
   .books-grid [class*="badge"], .books-grid [class*="chip"], .books-grid [class*="cat-tag"] { display: none !important; }
 
+  /* 99 Names: progress card keeps the count on one line; due/new sits beneath */
+  #view-asma .asma-progress-card { display: grid !important; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px 20px; }
+  #view-asma .asma-progress-text { flex-wrap: wrap; align-items: baseline; }
+  #view-asma .asma-progress-count { white-space: nowrap; font-size: 22px !important; }
+  #view-asma .asma-progress-due { flex-basis: 100%; font-size: 14px; color: var(--garden-panel-text); opacity: .9; }
+
+  /* Flashcards: sized for a desktop screen so the Arabic is readable at a glance */
+  .flash-progress, .flash-card, .flash-controls, .flash-picker, .flash-done { max-width: 760px !important; }
+  .flash-front-meaning { font-size: 38px; }
+  .flash-front-ar, .flash-back-ar { font-size: 96px; line-height: 1.8; padding-block: 6px; }
+  .flash-back-divider { margin-block: 22px 14px; }
+  .flash-front-translit, .flash-back-translit { font-size: 26px; }
+  .flash-back-meaning { font-size: 26px; }
+  .flash-back-tafsir { font-size: 18px; line-height: 1.7; }
+  .flash-card { padding-block: 40px; }
+  .flash-btn { padding: 16px 20px; font-size: 16px; }
+  .flash-keys { color: var(--d2-muted); font-size: 14px; text-align: center; }
+
   /* Type floor */
   button, input, select, label, small, .sidebar-footnote { font-size: max(14px, 1em); }
 }

@@ -17,7 +17,8 @@ let _asmaDetailId = null;
 let _flashDeck = null;
 let _flashIdx = 0;
 let _flashRevealed = false;
-let _flashMode = 'memorized';
+let _flashMode = 'due';
+let _flashRetry = null;
 let _flashDirection = 'meaning-to-name';
 let _flashCardDirection = 'meaning-to-name';
 let _flashStats = { correct: 0, missed: 0 };
@@ -70,6 +71,7 @@ function renderAsmaGrid(){
       <div class="asma-progress-text">
         <span class="asma-progress-count">${memo} / ${total}</span>
         <span class="asma-progress-label">${_asmaLang === 'ar' ? 'محفوظة' : 'memorized'}</span>
+        ${(() => { const c = asmaSrsCounts(); return `<span class="asma-progress-due">${_asmaLang === 'ar' ? `للمراجعة اليوم: ${c.due} · جديدة: ${c.fresh}` : `Due today: ${c.due} · New: ${c.fresh}`}</span>`; })()}
       </div>
       <div class="asma-progress-bar">
         <div class="asma-progress-fill" style="width:${pct}%"></div>
@@ -406,13 +408,19 @@ async function startFlashcards(){
   ensureFlashOverlay();
   await loadMemorized();
 
+  const c = asmaSrsCounts();
+  if(c.due + c.fresh > 0){
+    _flashMode = 'due';
+    launchFlashDeck();
+    return;
+  }
   if(getMemorizedCount() === 0){
     _flashMode = 'all';
     _flashDirection = 'meaning-to-name';
     launchFlashDeck();
     return;
   }
-
+  _flashMode = 'memorized';
   showFlashPicker();
 }
 
@@ -430,6 +438,11 @@ function showFlashPicker(){
       <div class="flash-picker-section">
         <div class="flash-picker-section-label">${icon('beads', 14)} ${ar ? 'الأسماء' : 'Which names'}</div>
         <div class="flash-picker-options">
+          <button class="flash-picker-btn ${_flashMode==='due'?'selected':''}" onclick="setFlashMode('due')">
+            <div class="flash-picker-icon">${icon('flashcard', 22)}</div>
+            <div class="flash-picker-name">${ar ? 'مراجعة اليوم' : 'Today'}</div>
+            <div class="flash-picker-count">${asmaSrsCounts().due + asmaSrsCounts().fresh}</div>
+          </button>
           <button class="flash-picker-btn ${_flashMode==='memorized'?'selected':''}" onclick="setFlashMode('memorized')">
             <div class="flash-picker-icon">${icon('memory', 22)}</div>
             <div class="flash-picker-name">${ar ? 'المحفوظة' : 'Memorized'}</div>
@@ -501,8 +514,8 @@ function launchFlashDeck(){
   if(!_flashDeck.length){
     const ar = _asmaLang === 'ar';
     toast(ar
-      ? (_flashMode === 'memorized' ? 'لا توجد أسماء محفوظة بعد' : 'كل الأسماء محفوظة')
-      : (_flashMode === 'memorized' ? 'No memorized names yet' : 'All names memorized'),
+      ? (_flashMode === 'due' ? 'لا مراجعة مستحقة اليوم' : _flashMode === 'memorized' ? 'لا توجد أسماء محفوظة بعد' : 'كل الأسماء محفوظة')
+      : (_flashMode === 'due' ? 'Nothing due today' : _flashMode === 'memorized' ? 'No memorized names yet' : 'All names memorized'),
       'alert');
     showFlashPicker();
     return;
@@ -511,6 +524,7 @@ function launchFlashDeck(){
   _flashIdx = 0;
   _flashRevealed = false;
   _flashStats = { correct: 0, missed: 0 };
+  _flashRetry = new Set();
   computeCardDirection();
 
   $('flash-overlay').classList.add('open');
@@ -607,6 +621,7 @@ function renderFlashcard(){
         ${icon('x', 14)} ${ar ? 'إنهاء الجلسة' : 'End session'}
       </button>
     </div>
+    <div class="flash-keys">${ar ? 'مسافة: كشف · 1: نسيت · 2: أعرفها · Esc: إنهاء' : 'Space: reveal · 1: missed · 2: knew it · Esc: end'}</div>
   `;
 
   const overlay = $('flash-overlay');
@@ -615,6 +630,21 @@ function renderFlashcard(){
     lockBody();
   }
 }
+
+/* Keyboard review: Space/Enter reveals, 1 = missed, 2 (or Enter once revealed) = knew it, Esc ends. */
+document.addEventListener('keydown', function(e){
+  const overlay = document.getElementById('flash-overlay');
+  if(!overlay || !overlay.classList.contains('open') || !_flashDeck || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(_flashIdx >= _flashDeck.length) return;
+  if(e.target && e.target.closest && e.target.closest('input, textarea, select')) return;
+  if(e.key === 'Escape'){ e.preventDefault(); stopFlashcards(); return; }
+  if(!_flashRevealed){
+    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); revealFlashcard(); }
+    return;
+  }
+  if(e.key === '1'){ e.preventDefault(); flashNext(false); }
+  else if(e.key === '2' || e.key === 'Enter'){ e.preventDefault(); flashNext(true); }
+});
 
 function revealFlashcard(){
   if(_flashRevealed) return;
@@ -625,12 +655,16 @@ function revealFlashcard(){
 async function flashNext(knewIt){
   const n = _flashDeck[_flashIdx];
 
+  const firstTry = !_flashRetry.has(n.id);
   if(knewIt){
-    _flashStats.correct++;
-    if(!isMemorized(n.id)) await toggleMemorized(n.id);
-  } else {
+    if(firstTry){ _flashStats.correct++; await gradeAsma(n.id, true); }
+    else await retryPassedAsma(n.id);
+  } else if(firstTry){
     _flashStats.missed++;
-    if(isMemorized(n.id)) await toggleMemorized(n.id);
+    await gradeAsma(n.id, false);
+    /* Missed names come back once more at the end of this session. */
+    _flashRetry.add(n.id);
+    _flashDeck.push(n);
   }
 
   _flashRevealed = false;
@@ -650,6 +684,7 @@ function renderFlashDone(){
   const ar = _asmaLang === 'ar';
   const { correct, missed } = _flashStats;
   const total = correct + missed;
+  const sc = asmaSrsCounts();
 
   $('flash-body').innerHTML = `
     <div class="flash-done">
@@ -667,8 +702,8 @@ function renderFlashDone(){
       </div>
       <div class="flash-done-sub">
         ${ar
-          ? `راجعت ${total} اسمًا — ${getMemorizedCount()} / ${ASMA_NAMES.length} محفوظة الآن`
-          : `Reviewed ${total} names — ${getMemorizedCount()} / ${ASMA_NAMES.length} now memorized`}
+          ? `راجعت ${total} اسمًا — ${getMemorizedCount()} / ${ASMA_NAMES.length} محفوظة الآن · ما زال ${sc.learning} قيد التعلّم`
+          : `Reviewed ${total} names — ${getMemorizedCount()} / ${ASMA_NAMES.length} learned · ${sc.learning} still being learned`}
       </div>
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center">
         <button class="btn-save" onclick="showFlashPicker()">

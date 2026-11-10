@@ -45,12 +45,42 @@ function searchAsma(query){
    ═══════════════════════════════════════════════════════════ */
 
 let _memorizedSet = null;
+let _asmaSrs = null;
 
+/* "Memorised" now means "learned" in the spaced-repetition state (box 3 or higher). The old
+   asma-memorized list is kept in sync so older code and backups keep working. */
 async function loadMemorized(){
   if(_memorizedSet) return _memorizedSet;
-  const stored = await store.getMeta('asma-memorized');
-  _memorizedSet = new Set(Array.isArray(stored) ? stored : []);
+  const [saved, legacy] = await Promise.all([store.getMeta('asma-srs'), store.getMeta('asma-memorized')]);
+  _asmaSrs = (saved && typeof saved === 'object' && !Array.isArray(saved)) ? saved : srsMigrate(legacy, srsDay());
+  _memorizedSet = new Set(srsLearnedIds(_asmaSrs));
+  if(!saved) await _persistAsmaSrs();
   return _memorizedSet;
+}
+
+async function _persistAsmaSrs(){
+  _memorizedSet = new Set(srsLearnedIds(_asmaSrs));
+  await Promise.all([store.setMeta('asma-srs', _asmaSrs), store.setMeta('asma-memorized', [..._memorizedSet])]);
+}
+
+function getAsmaSrs(){ return _asmaSrs || {}; }
+
+/* Record one flashcard answer. */
+async function gradeAsma(id, correct){
+  if(!_memorizedSet) await loadMemorized();
+  _asmaSrs = srsGrade(_asmaSrs, id, !!correct, srsDay());
+  await _persistAsmaSrs();
+  return srsIsLearned(_asmaSrs[id]);
+}
+
+async function retryPassedAsma(id){
+  if(!_memorizedSet) await loadMemorized();
+  _asmaSrs = srsRetryPassed(_asmaSrs, id, srsDay());
+  await _persistAsmaSrs();
+}
+
+function asmaSrsCounts(){
+  return srsCounts(getAsmaSrs(), ASMA_NAMES.map(n => n.id), srsDay());
 }
 
 function isMemorized(id){
@@ -59,9 +89,8 @@ function isMemorized(id){
 
 async function toggleMemorized(id){
   if(!_memorizedSet) await loadMemorized();
-  if(_memorizedSet.has(id)) _memorizedSet.delete(id);
-  else _memorizedSet.add(id);
-  await store.setMeta('asma-memorized', [..._memorizedSet]);
+  _asmaSrs = srsSetLearned(_asmaSrs, id, !_memorizedSet.has(id), srsDay());
+  await _persistAsmaSrs();
   return _memorizedSet.has(id);
 }
 
@@ -93,7 +122,11 @@ function shuffleArray(arr){
 
 /* Build a deck for the flashcard mode */
 function buildFlashcardDeck(mode){
-  /* mode: 'all' | 'not-memorized' | 'memorized' */
+  /* mode: 'due' | 'all' | 'not-memorized' | 'memorized' */
+  if(mode === 'due'){
+    const q = srsBuildQueue(getAsmaSrs(), ASMA_NAMES.map(n => n.id), srsDay());
+    return [...shuffleArray(q.due), ...q.fresh].map(id => getAsmaById(id)).filter(Boolean);
+  }
   let pool = ASMA_NAMES;
   if(mode === 'not-memorized') pool = filterNotMemorized(ASMA_NAMES);
   if(mode === 'memorized')     pool = filterMemorized(ASMA_NAMES);
