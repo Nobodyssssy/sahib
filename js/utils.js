@@ -84,3 +84,9 @@ function progressRing(pct, color, isDone){
       font-size="8" font-family="Tajawal,sans-serif">${label}</text>
   </svg>`;
 }
+
+/* Previous/next chevron that follows reading direction (LTR: prev = left, RTL: prev = right). */
+function navChevron(which){
+  const rtl = document.documentElement.dir === 'rtl';
+  return (which === 'prev') === rtl ? 'chevron-right' : 'chevron-left';
+}

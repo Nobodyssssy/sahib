@@ -75,3 +75,10 @@ body .rhythm-dashboard .day-period-last-third{background:var(--garden-soft);bord
 @media(max-width:820px){.rhythm-chart{padding-top:65px}.rhythm-events{top:0}.rhythm-lower-events{height:66px}.rhythm-restriction-key{font-size:10px}}
 .rhythm-restricted-dawn{background:repeating-linear-gradient(125deg,#bb4828 0 2px,#fff4dc99 2px 8px)}
 .rhythm-restricted-asr{background:repeating-linear-gradient(125deg,#bb4828 0 2px,#fff4dc80 2px 8px);border-radius:0 22px 22px 0;overflow:hidden}
+.rhythm-daybreak,.rhythm-now{position:absolute;top:44px;bottom:0;width:0;pointer-events:none;z-index:4}
+.rhythm-daybreak{border-left:1px dashed var(--garden-muted);opacity:.8}
+.rhythm-daybreak span{position:absolute;top:-2px;left:6px;white-space:nowrap;font:600 12px var(--font-ui);color:var(--garden-muted)}
+.rhythm-now{border-left:2px solid var(--color-accent,#7b3f25);z-index:5}
+.rhythm-now span{position:absolute;top:26px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:1px 6px;border-radius:4px;font:600 12px var(--font-ui);background:var(--color-accent,#7b3f25);color:var(--color-on-accent,#fff);font-variant-numeric:tabular-nums}
+.rhythm-event time,.rhythm-isha-label time{font-size:13px;font-weight:600}
+.rhythm-event,.rhythm-isha-label{font-size:12px}

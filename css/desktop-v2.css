@@ -25,7 +25,7 @@
   html:not([data-sidebar-collapsed="true"])[data-sidebar-position="right"] body .app-main { margin: 0 216px 0 0 !important; }
   html[data-sidebar-collapsed="true"][data-sidebar-position="left"] body .app-main { margin: 0 0 0 92px !important; }
   html[data-sidebar-collapsed="true"][data-sidebar-position="right"] body .app-main { margin: 0 92px 0 0 !important; }
-  .view, .view.active { margin-inline: 0 !important; max-width: none !important; padding-inline: 0 !important; }
+  body .view:not(#view-home), .view, .view.active { margin: 0 !important; max-width: none !important; padding-inline: 0 !important; }
 
   /* One 56px header; no duplicate page titles; Back kept for drill-down */
   .topbar { height: 56px !important; padding-inline: var(--d2-gutter) !important; border-bottom: 1px solid var(--d2-rule) !important; }
@@ -43,6 +43,35 @@
   /* Interior page heroes: no scenic banners (scenery lives on Home only) */
   #view-cats .page-header, #view-practice .practice-head, #view-books .books-header, #view-asma .asma-header { background: none !important; box-shadow: none !important; min-height: 0 !important; border-radius: 0 !important; padding-block: 12px !important; padding-inline: var(--d2-gutter) !important; margin-bottom: 8px !important; }
   .garden-feature-body, .garden-name-body { background-image: none !important; }
+
+
+  /* Top-level pages are reached from the sidebar: no Back bar, no duplicate in-page title */
+  #view-cats > .back-bar, #view-prayer > .back-bar, #view-hijri > .back-bar, #view-asma > .back-bar, #view-books > .back-bar, #view-tasbih > .back-bar { display: none !important; }
+  #view-cats .page-title { display: none !important; }
+  #view-cats .page-header { justify-content: flex-end !important; padding-block: 8px !important; }
+  .view > div:first-child { padding-top: 0; }
+
+  /* Practice: drop the eyebrow and the second introduction */
+  .practice-eyebrow, .practice-welcome-copy p { display: none !important; }
+  #view-practice .practice-head { padding-block: 12px 4px !important; min-height: 0 !important; }
+  #view-practice .practice-head h1 { font-size: 28px !important; }
+  #view-practice .practice-head-copy > p { display: none !important; }
+
+
+  /* Practice: content width, not the whole window */
+  #view-practice .practice-container, #view-practice .practice-page { max-width: 960px !important; margin-inline: 0 !important; padding-inline: var(--d2-gutter) !important; }
+  #view-practice .practice-head { align-items: center !important; }
+
+  /* Adhkar: management icons appear on hover / keyboard focus only */
+  .cat-sm-btn { opacity: 0 !important; transition: opacity .12s; }
+  .cat-card:hover .cat-sm-btn, .cat-card:focus-within .cat-sm-btn { opacity: .85 !important; }
+
+  /* Hijri: selected day readable, events column wide enough */
+  .hijri-cell.today, .hijri-cell.today .hijri-day-num, .hijri-cell.today .hijri-day-greg { color: var(--d2-on-accent) !important; }
+  .hijri-cell.today .hijri-day-greg { opacity: .9; }
+
+  /* Tasbih hint sits clear of the controls */
+  .tasbih-key-hint { margin-top: 12px !important; padding-bottom: 8px; }
 
   /* Home scene strip */
   .garden-welcome { position: relative !important; min-height: 0 !important; height: 132px !important; padding: 0 !important; border-radius: 8px !important; overflow: hidden !important; background: none !important; box-shadow: none !important; border: 0 !important; display: block !important; --scene-ink: #13281f; }
@@ -88,12 +117,14 @@
 
   /* Tasbih: the count is the hero */
   #tasbih-body { display: flex !important; justify-content: center !important; }
-  .tasbih-wrap { position: relative !important; width: auto !important; height: auto !important; border: 0 !important; box-shadow: none !important; background: transparent !important; margin: 24px auto !important; padding: 0 !important; }
+  .tasbih-wrap { position: relative !important; width: 360px !important; height: auto !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 18px !important; border: 0 !important; box-shadow: none !important; background: transparent !important; margin: 24px auto !important; padding: 0 !important; }
+  .tasbih-wrap::before, .tasbih-wrap::after, #tasbih-body::before, #tasbih-body::after { display: none !important; }
+  .tasbih-wrap > * { margin-block: 0 !important; }
   .tasbih-count { font-size: 88px !important; line-height: 1 !important; height: auto !important; font-variant-numeric: tabular-nums !important; transform: none !important; }
   .tasbih-dhikr { font-size: 32px !important; height: auto !important; }
   .tasbih-target { font-size: 16px !important; color: var(--d2-muted) !important; }
-  .tasbih-tap-btn { width: 80px !important; height: 80px !important; margin-top: 16px !important; }
-  .tasbih-actions { width: auto !important; gap: 16px !important; margin-top: 8px !important; }
+  .tasbih-tap-btn { width: 80px !important; height: 80px !important; }
+  .tasbih-actions { width: auto !important; gap: 16px !important; }
   .tasbih-minus-btn { margin-inline-end: 24px !important; }
   .tasbih-settings-btn { position: absolute !important; inset-block-start: 0 !important; inset-inline-end: 0 !important; background: none !important; }
   .tasbih-key-hint { text-align: center; color: var(--d2-muted); font-size: 14px; margin-top: 12px; }

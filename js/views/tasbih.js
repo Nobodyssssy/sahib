@@ -336,8 +336,29 @@ function _buildTasbih() {
   actions.appendChild(resetBtn);
   wrap.appendChild(actions);
 
+  const hint = document.createElement('div');
+  hint.className = 'tasbih-key-hint';
+  const arUi = document.documentElement.lang === 'ar';
+  hint.textContent = arUi ? 'مسافة أو إدخال للعدّ · مسح للتراجع' : 'Space or Enter to count · Backspace to undo';
+  wrap.appendChild(hint);
+
   return wrap;
 }
+
+/* Keyboard counting: only while the Tasbih view is open, never while typing, a button has focus, or a dialog is open. Key repeat is ignored. */
+document.addEventListener('keydown', function(e){
+  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Backspace') return;
+  const view = document.getElementById('view-tasbih');
+  if (!view || !view.classList.contains('active')) return;
+  if (document.getElementById('ov-tasbih-settings')?.classList.contains('open')) return;
+  if (document.querySelector('.ov.open, .modal-box, [role="dialog"]:not([hidden])') && document.querySelector('.ov.open')) return;
+  const el = e.target;
+  if (el && el.closest && el.closest('input, textarea, select, [contenteditable="true"], a[href]')) return;
+  if (e.key !== 'Backspace' && el && el.closest && el.closest('button')) return;
+  e.preventDefault();
+  if (e.key === 'Backspace') tasbihMinus(); else tasbihPlus();
+});
 
 /* ── View entry ── */
 async function openTasbihView() {

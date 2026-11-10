@@ -409,6 +409,31 @@ function _cycleDuration(minutes){
   return _cycleLang==='ar'?`${h?h+' س ':''}${m?m+' د':''}`.trim():`${h?h+'h ':''}${m?m+'m':''}`.trim();
 }
 
+function _rhythmShortDate(key,ar){
+  const s=String(key||''); let y,m,d,x;
+  if((x=s.match(/^(\d{4})-(\d{2})-(\d{2})/))){y=+x[1];m=+x[2];d=+x[3];}
+  else if((x=s.match(/^(\d{2})-(\d{2})-(\d{4})/))){d=+x[1];m=+x[2];y=+x[3];}
+  else return '';
+  return new Date(y,m-1,d,12).toLocaleDateString(ar?'ar':'en',{day:'numeric',month:'short'});
+}
+function _rhythmNowMinutes(cycle){
+  const n=new Date(),m=n.getHours()*60+n.getMinutes();
+  return m>=cycle.nightStart?m:null;
+}
+function _rhythmNowHTML(cycle,pct,t){
+  const m=_rhythmNowMinutes(cycle);
+  if(m==null) return '';
+  return `<div class="rhythm-now" data-ns="${cycle.nightStart}" data-total="${cycle.total}" style="left:${pct(m)}%"><span>${esc(t('Now','الآن'))} ${_formatHM(m)}</span></div>`;
+}
+setInterval(function(){
+  document.querySelectorAll('.rhythm-now').forEach(function(el){
+    const ns=Number(el.dataset.ns),total=Number(el.dataset.total),n=new Date(),m=n.getHours()*60+n.getMinutes();
+    if(m<ns){el.hidden=true;return;}
+    el.hidden=false;el.style.left=Math.max(0,Math.min(100,(m-ns)/total*100))+'%';
+    const s=el.querySelector('span');if(s)s.textContent=s.textContent.replace(/\d{1,2}:\d{2}.*$/,'')+_formatHM(m);
+  });
+},30000);
+
 function _renderRhythmTimeline(cycle,day,nextDay){
   const ar=_cycleLang==='ar',t=(en,arabic)=>ar?arabic:en;
   const pct=min=>Math.max(0,Math.min(100,(min-cycle.nightStart)/cycle.total*100));
@@ -431,6 +456,8 @@ function _renderRhythmTimeline(cycle,day,nextDay){
         <button class="rhythm-sunrise-buffer" style="${range(sr,Math.min(sr+15,dh))}" onclick="onCycleForbiddenTap(0)" aria-label="${t('Sunrise to Ishraq · approximately 15 minutes','من الشروق إلى الإشراق · نحو ١٥ دقيقة')}"></button>
         <button class="rhythm-midpoint" style="left:${pct(cycle.markers.midnight.time)}%" onclick="onCycleMarkerTap('midnight')" aria-label="${t('Islamic midnight','منتصف الليل الإسلامي')} ${_formatHM(cycle.markers.midnight.time)}"><time>${_formatHM(cycle.markers.midnight.time)}</time><span>◆</span></button>
       </div>
+      <div class="rhythm-daybreak" style="left:${pct(1440)}%" aria-hidden="true"><span>${esc(t('Tomorrow','غدًا'))} · ${esc(_rhythmShortDate(nextDay.date,ar))}</span></div>
+      ${_rhythmNowHTML(cycle,pct,t)}
       <div class="rhythm-lower-events"><div class="rhythm-isha-label" style="left:${pct(ish)}%"><span>${icon('moon',17)}</span><strong>${t('Isha','العشاء')}</strong><time>${_formatHM(ish)}</time></div></div>
       <div class="rhythm-brackets"><span style="${range(cycle.nightStart,cycle.nightEnd)}">${t('Night · Maghrib to Fajr','الليل · من المغرب إلى الفجر')}</span><span style="${range(cycle.dayStart,cycle.dayEnd)}">${t('Day · Fajr to Maghrib','النهار · من الفجر إلى المغرب')}</span></div>
       <div class="rhythm-third-labels">${cycle.segments.slice(0,3).map((seg,i)=>`<button class="${i===2?'rhythm-third-emphasis':''}" style="${range(seg.start,seg.end)}" onclick="onCycleSegTap(${i})">${esc(ar?seg.shortAr:seg.shortEn)}</button>`).join('')}<button class="rhythm-duha" style="${range(Math.min(sr+15,dh-5),dh-5)}" onclick="onCycleSegTap(4)">${t('Ishraq / Duha · optional worship','الإشراق / الضحى · نافلة')}</button></div>
@@ -910,12 +937,12 @@ function _renderTodayHTML(today, nextDay, cycleHTML){
     <div class="prayer-layout">
       <div class="prayer-card">
         <div class="prayer-nav-row">
-          <button class="prayer-nav-btn" onclick="prayerGoPrevDay()" aria-label="Previous day">${icon('chevron-right', 18)}</button>
+          <button class="prayer-nav-btn" onclick="prayerGoPrevDay()" aria-label="Previous day">${icon(navChevron('prev'), 18)}</button>
           <div class="prayer-date-block">
             <div class="prayer-date">${_formatGregorianDate(today)}</div>
             ${today.hijri ? `<div class="prayer-hijri">${_formatHijriDate(today.hijri)}</div>` : ''}
           </div>
-          <button class="prayer-nav-btn" onclick="prayerGoNextDay()" aria-label="Next day">${icon('chevron-left', 18)}</button>
+          <button class="prayer-nav-btn" onclick="prayerGoNextDay()" aria-label="Next day">${icon(navChevron('next'), 18)}</button>
         </div>
 
         <div class="prayer-loc">
@@ -984,12 +1011,12 @@ function _renderMonthHTML(){
   return `
     <div class="prayer-month-card">
       <div class="prayer-month-head">
-        <button class="prayer-nav-btn" onclick="prayerMonthOffset(-1)" aria-label="Previous month">${icon('chevron-right', 18)}</button>
+        <button class="prayer-nav-btn" onclick="prayerMonthOffset(-1)" aria-label="Previous month">${icon(navChevron('prev'), 18)}</button>
         <div>
           <div class="prayer-month-title">${label}</div>
           <div class="settings-file-name" style="text-align:center">${data.length} days · ${_prayerSourceLabel(getPrayerStatus())}</div>
         </div>
-        <button class="prayer-nav-btn" onclick="prayerMonthOffset(1)" aria-label="Next month">${icon('chevron-left', 18)}</button>
+        <button class="prayer-nav-btn" onclick="prayerMonthOffset(1)" aria-label="Next month">${icon(navChevron('next'), 18)}</button>
       </div>
 
       <div class="month-table-wrap">

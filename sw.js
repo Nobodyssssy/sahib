@@ -12,8 +12,8 @@ const CACHE = `sahib-${VERSION}`;
 const APP_BASE = new URL(self.registration.scope);
 
 const APP_SHELL = [
-  './css/daily-rhythm.css?v=20261022-rhythm-5',
-  './css/desktop-v2.css?v=20261110-d2-1',
+  './css/daily-rhythm.css?v=20261022-rhythm-7',
+  './css/desktop-v2.css?v=20261110-d2-4',
   './assets/home/rhythm-phases.webp',
   './',
   './index.html',
@@ -122,7 +122,7 @@ const APP_SHELL = [
   './js/views/confirm.js',
   './js/views/menu.js',
   './js/views/quote.js?v=20261022-garden-app-4',
-  './js/views/prayer.js?v=20261022-rhythm-5',
+  './js/views/prayer.js?v=20261022-rhythm-6',
   './js/views/hijri.js?v=20261022-garden-app-4',
   './js/views/asma.js?v=20261022-language-5',
   './js/views/books.js',

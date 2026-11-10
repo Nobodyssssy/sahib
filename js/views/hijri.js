@@ -121,7 +121,7 @@ function renderHijriCalendar(){
 
   host.innerHTML = `
     <div class="hijri-header">
-      <button class="hijri-nav-btn" onclick="hijriPrevMonth()" aria-label="Previous month">${icon('chevron-right', 18)}</button>
+      <button class="hijri-nav-btn" onclick="hijriPrevMonth()" aria-label="Previous month">${icon(navChevron('prev'), 18)}</button>
       <div class="hijri-title-wrap" onclick="toggleCalendarLang()">
         <div class="hijri-month-title">${monthName}</div>
         <div class="hijri-year-sub">
@@ -129,7 +129,7 @@ function renderHijriCalendar(){
           <span class="hijri-lang-badge">${_calendarLang === 'ar' ? 'EN' : 'عربي'}</span>
         </div>
       </div>
-      <button class="hijri-nav-btn" onclick="hijriNextMonth()" aria-label="Next month">${icon('chevron-left', 18)}</button>
+      <button class="hijri-nav-btn" onclick="hijriNextMonth()" aria-label="Next month">${icon(navChevron('next'), 18)}</button>
     </div>
 
     <div class="hijri-grid">
